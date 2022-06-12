@@ -1,0 +1,8 @@
+.vscode/
+*.stash
+Makefile
+parasol
+*.zip
+*.o
+blz
+lzss
