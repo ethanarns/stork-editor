@@ -17,6 +17,9 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QToolBar>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QPushButton>
 
 #include <iostream>
 using namespace std;
@@ -91,9 +94,35 @@ MainWindow::MainWindow() {
      ***************/
 
     QToolBar* toolbar = addToolBar("primary_toolbar");
+    toolbar->setObjectName("toolbar_primary");
     toolbar->setMovable(false);
     QPixmap newpix("assets/icon_test.png");
     auto testAction = toolbar->addAction(QIcon(newpix), tr("Test"));
+
+    /**************
+     *** LAYOUT ***
+     **************/
+    QHBoxLayout* mainLayout = new QHBoxLayout(centralWidget);
+    mainLayout->setObjectName(tr("layout_main"));
+
+    // Left Panel //
+    QVBoxLayout* leftPanelLayout = new QVBoxLayout(centralWidget);
+    leftPanelLayout->setObjectName(tr("layout_left"));
+    QPushButton* button1 = new QPushButton("Test1");
+    leftPanelLayout->addWidget(button1);
+    mainLayout->addLayout(leftPanelLayout);
+
+    // Central Panel //
+    QVBoxLayout* centerPanelLayout = new QVBoxLayout(centralWidget);
+    centerPanelLayout->setObjectName(tr("layout_center"));
+    QPushButton* button2 = new QPushButton(tr("Test2"));
+    centerPanelLayout->addWidget(button2);
+    mainLayout->addLayout(centerPanelLayout);
+
+    // Initiate the layout //
+    mainLayout->setStretch(0,2);
+    mainLayout->setStretch(1,5);
+    centralWidget->setLayout(mainLayout);
 }
 
 void MainWindow::LoadRom() {
