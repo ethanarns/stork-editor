@@ -27,7 +27,7 @@ public:
     std::map<std::string,uint32_t> fileIdMap;
     std::fstream romFile;
     RomMetadata metadata;
-    YidsRom();
+    YidsRom(bool verbose);
     void openRom(std::string fileName);
 
     std::string getLevelFileNameFromMapIndex(uint32_t levelIndex, uint32_t worldIndex);

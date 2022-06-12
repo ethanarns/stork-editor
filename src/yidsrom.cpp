@@ -45,7 +45,7 @@ const uint32_t MPDZ_MAGIC_NUM = 0x00544553; // "SET "
 const uint32_t SCEN_MAGIC_NUM = 0x4e454353; // "SCEN"
 const uint32_t INFO_MAGIC_NUM = 0x4f464e49; // "INFO"
 
-YidsRom::YidsRom() {
+YidsRom::YidsRom(bool verbose) {
     cout << "YidsRom constructed" << endl;
     this->filesLoaded = false;
 }

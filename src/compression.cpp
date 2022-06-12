@@ -15,7 +15,6 @@
 
 using namespace std;
 
-const char* ROM_FILENAME = "rom.nds";
 const char* BLZ_PATH = "./blz";
 const char* LZSS_PATH = "./lzss";
 

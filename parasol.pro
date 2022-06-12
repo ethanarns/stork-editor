@@ -7,5 +7,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++17
 
-SOURCES += parasol.cpp src/yidsrom.h src/yidsrom.cpp src/utils.h src/utils.cpp src/compression.h src/compression.cpp # src/lzss.c src/blz.c
+SOURCES += parasol.cpp src/yidsrom.cpp src/utils.cpp src/compression.cpp src/MainWindow.cpp
+HEADERS += src/yidsrom.h src/utils.h src/compression.h src/MainWindow.h
 QT += widgets core gui

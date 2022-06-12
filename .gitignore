@@ -6,3 +6,6 @@ parasol
 *.o
 blz
 lzss
+*.bin
+*.mpdz
+*.nds
