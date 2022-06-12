@@ -8,8 +8,8 @@ using namespace std;
 
 class YCompression {
 public:
-    static bool blzDecompress(std::string filepath);
-    static bool lzssDecomp(std::string filepath);
+    static bool blzDecompress(std::string filepath, bool verbose = false);
+    static bool lzssDecomp(std::string filepath, bool verbose = false);
 };
 
 #endif

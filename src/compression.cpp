@@ -24,37 +24,31 @@ const char* LZSS_PATH = "./lzss";
  * @param filepath File to be modified
  * @return True if succeeded, false if failed
  */
-bool YCompression::blzDecompress(std::string filepath) {
+bool YCompression::blzDecompress(std::string filepath, bool verbose) {
     if (filepath.size() == 0 || filepath.compare("/") == 0) {
         cerr << "Invalid filepath: " << filepath << endl;
         return false;
     }
     std::string blzPath = BLZ_PATH;
     std::string blzCmd = blzPath.append(" -d ").append(filepath);
-    #ifdef DEBUG
-    cout << "> " << blzCmd << endl;
-    #else
+    if (verbose) cout << "> " << blzCmd << endl;
     // Silence stdout
-    blzCmd.append(" 1> /dev/null");
-    #endif
+    if (!verbose) blzCmd.append(" 1> /dev/null");
     auto result = system(blzCmd.c_str());
     cout << "System result: " << endl;
     return true;
 }
 
-bool YCompression::lzssDecomp(std::string filepath) {
+bool YCompression::lzssDecomp(std::string filepath, bool verbose) {
     if (filepath.size() == 0 || filepath.compare("/") == 0) {
         cerr << "Invalid filepath: " << filepath << endl;
         return false;
     }
     std::string lzssPath = LZSS_PATH;
     std::string lzssCmd = lzssPath.append(" -d ").append(filepath);
-    #ifdef DEBUG
-    cout << "> " << lzssCmd << endl;
-    #else
-    // Silence stdout
-    lzssCmd.append(" 1> /dev/null");
-    #endif
+    if (verbose) cout << "> " << lzssCmd << endl;
+    // Silence stdout?
+    if (!verbose) lzssCmd.append(" 1> /dev/null");
     system(lzssCmd.c_str());
     return true;
 }

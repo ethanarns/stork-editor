@@ -27,6 +27,7 @@ public:
     std::map<std::string,uint32_t> fileIdMap;
     std::fstream romFile;
     RomMetadata metadata;
+    bool verbose;
     YidsRom(bool verbose);
     void openRom(std::string fileName);
 

@@ -48,6 +48,7 @@ const uint32_t INFO_MAGIC_NUM = 0x4f464e49; // "INFO"
 YidsRom::YidsRom(bool verbose) {
     cout << "YidsRom constructed" << endl;
     this->filesLoaded = false;
+    this->verbose = verbose;
 }
 
 void YidsRom::openRom(std::string fileName) {
@@ -58,29 +59,23 @@ void YidsRom::openRom(std::string fileName) {
         cerr << "Reported load error code: " << errno << endl;
         exit(EXIT_FAILURE);
     } else {
-        #ifdef DEBUG
-        cout << "File loaded: " << fileName << " [SUCCESS]" << endl;
-        #endif
+        if (this->verbose) {
+            cout << "File loaded: " << fileName << " [SUCCESS]" << endl;
+        }
     }
 
     /************************
      *** METADATA/HEADERS *** 
      ************************/
-    #ifdef DEBUG
-    cout << "Checking ROM game code... ";
-    #endif
+    if (this->verbose) cout << "Checking ROM game code... ";
     std::string romCode = this->getTextAt(0x0c,4);
-    #ifdef DEBUG
-    cout << romCode << " ";
-    #endif
+    if (this->verbose) cout << romCode << " ";
     if (romCode.compare(YidsRom::GAME_CODE) != 0) {
         cout << "[FAIL]";
         cerr << "Game code AYWE not found! Got '" << romCode << "' instead. Wrong ROM?" << endl;
         exit(EXIT_FAILURE);
     } else {
-        #ifdef DEBUG
-        cout << "[SUCCESS]" << endl;
-        #endif
+        if (this->verbose) cout << "[SUCCESS]" << endl;
     }
 
     // http://problemkaputt.de/gbatek.htm#dscartridgeheader
@@ -191,34 +186,26 @@ void YidsRom::initArm9RomData(std::string fileName) {
     Address romStart9;
     this->romFile.read(reinterpret_cast<char *>(&romStart9),sizeof(romStart9));
 
-    #ifdef DEBUG
-    cout << "Checking ARM9 ROM offset... 0x" << hex << romStart9 << " ";
+    if (this->verbose) cout << "Checking ARM9 ROM offset... 0x" << hex << romStart9 << " ";
     if (ARM9_ROM_OFFSET != romStart9) {
         cout << "[FAIL]" << endl;
         cerr << "Found ARM9 ROM offset not equal to " << hex << ARM9_ROM_OFFSET << endl;
         exit(EXIT_FAILURE);
     } else {
-        cout << "[SUCCESS]" << endl;
+        if (this->verbose) cout << "[SUCCESS]" << endl;
     }
-    #endif
 
     // Size of ARM9 ROM data, aka "MainSize"
     this->romFile.seekg(0x2c);
     uint32_t romSize9;
     this->romFile.read(reinterpret_cast<char *>(&romSize9),sizeof(romSize9));
-    #ifdef DEBUG
-    cout << "ARM9 ROM Size: 0x" << hex << romSize9 << endl;
-    #endif
+    if (this->verbose) cout << "ARM9 ROM Size: 0x" << hex << romSize9 << endl;
 
     // End of ARM9 ROM (exclusive)
     Address endAddress = romStart9 + romSize9;
-    #ifdef DEBUG
-    cout << "ARM9 ROM End: 0x" << hex << endAddress << endl;
-    #endif
+    if (this->verbose) cout << "ARM9 ROM End: 0x" << hex << endAddress << endl;
 
-    #ifdef DEBUG
-    cout << "Checking SDK_NITROCODE_BE (" << SDK_NITROCODE_BE << ")... ";
-    #endif
+    if (this->verbose) cout << "Checking SDK_NITROCODE_BE (" << SDK_NITROCODE_BE << ")... ";
     this->romFile.seekg(endAddress);
     uint32_t endAddressMagicNumber;
     this->romFile.read(reinterpret_cast<char *>(&endAddressMagicNumber),sizeof(endAddressMagicNumber));
@@ -227,13 +214,11 @@ void YidsRom::initArm9RomData(std::string fileName) {
         cerr << "SDK_NITROCODE_BE magic number " << SDK_NITROCODE_BE << " not found" << endl;
         exit(EXIT_FAILURE);
     } else {
-        #ifdef DEBUG
-        cout << "[SUCCESS]" << endl;
-        #endif
+        if (this->verbose) cout << "[SUCCESS]" << endl;
     } 
 
     this->writeUncompressedARM9(romStart9,romSize9);
-    bool arm9decompResult = YCompression::blzDecompress(NEW_BIN_FILE);
+    bool arm9decompResult = YCompression::blzDecompress(NEW_BIN_FILE, this->verbose);
     if (!arm9decompResult) {
         cerr << "Could not decompress the ARM9 BIN!" << endl;
         exit(EXIT_FAILURE);
@@ -269,9 +254,7 @@ void YidsRom::initArm9RomData(std::string fileName) {
     arm9fileUncomped.close();
 
     // Test it
-    #ifdef DEBUG
-    cout << "Testing Decompression and text retrieval... ";
-    #endif
+    if (this->verbose) cout << "Testing Decompression and text retrieval... ";
     const Address TEST_POSITION = 0xe9e6e;
     const auto TEST_TEXT = "1-1_D3";
     auto testText1 = this->getTextAt(TEST_POSITION,6);
@@ -286,9 +269,7 @@ void YidsRom::initArm9RomData(std::string fileName) {
         cerr << "File decompression may have failed, or been modified improperly" << endl;
         exit(EXIT_FAILURE);
     }
-    #ifdef DEBUG
-    cout << "[SUCCESS]" << endl;
-    #endif
+    if (this->verbose) cout << "[SUCCESS]" << endl;
 
     // Delete the old file (Consider streaming to memory instead)
     filesystem::remove(NEW_ROM_FILE);
@@ -315,9 +296,7 @@ void YidsRom::writeUncompressedARM9(Address arm9start_rom, uint32_t arm9length) 
 
     YUtils::writeByteVectorToFile(outvec,NEW_BIN_FILE);
 
-    #ifdef DEBUG
-    cout << "[SUCCESS] Wrote file" << endl;
-    #endif
+    if (this->verbose) cout << "[SUCCESS] Wrote file" << endl;
 }
 
 /**
@@ -437,7 +416,7 @@ void YidsRom::loadCrsb(std::string fileName_noext) {
 
     // Number of CSCN records, aka maps in level!
     uint16_t mapFileCount = this->getNumberAt<uint16_t>(startAddr + 8);
-    cout << "Map count: " << mapFileCount << endl;
+    if (this->verbose) cout << "Map count: " << mapFileCount << endl;
 
     const uint32_t OFFSET_TO_FIRST_CSCN = 0xC; // 12
 
@@ -465,15 +444,15 @@ void YidsRom::loadCrsb(std::string fileName_noext) {
         return;
     }
 
-    cout << "All MPDZ files loaded" << endl;
+    if (this->verbose) cout << "All MPDZ files loaded" << endl;
 }
 
 void YidsRom::loadMpdz(std::string fileName_noext) {
-    cout << "Loading MPDZ '" << fileName_noext << "'" << endl;
+    if (this->verbose) cout << "Loading MPDZ '" << fileName_noext << "'" << endl;
     std::string mpdzFileName = fileName_noext.append(MPDZ_EXTENSION);
     auto fileVector = this->getFileByteVector(mpdzFileName);
     YUtils::writeByteVectorToFile(fileVector,mpdzFileName);
-    bool decompResult = YCompression::lzssDecomp(mpdzFileName);
+    bool decompResult = YCompression::lzssDecomp(mpdzFileName, this->verbose);
     if (!decompResult) {
         cerr << "Failed to extract MPDZ file" << endl;
         return;
@@ -500,6 +479,8 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
         cerr << "MPDZ Magic number not found! Expected " << hex << MPDZ_MAGIC_NUM;
         cerr << ", got " << hex << magic << " instead." << endl;
         return;
+    } else {
+        if (this->verbose) cout << "[SUCCESS] MPDZ Magic number found" << endl;
     }
     // 4 because the file length is written at bytes 4-7
     uint32_t mpdzFileLength = YUtils::getUint32FromVec(uncompVec, 4);
