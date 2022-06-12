@@ -525,7 +525,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             uint32_t unknownValue1 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 12); // 00000000
             uint32_t unknownValue2 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 16); // 0x1000
             uint32_t unknownValue3 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 20); // 0x1000
-            uint32_t unknownValue4 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 24); // 020202
+            uint32_t unknownValue4 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 24); // 0x020202
             uint32_t unknownValue5 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 28); // 00000000
             Q_UNUSED(unknownValue0);
             Q_UNUSED(unknownValue1);
@@ -535,7 +535,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             Q_UNUSED(unknownValue5);
             // Get charfile string
             auto charFileNoExt = YUtils::getNullTermTextFromVec(mpdzVec, indexPointer + 32);
-            cout << "'" << charFileNoExt << "'" << endl;
+            this->handleImbz(charFileNoExt);
             // Increment based on earlier length, +8 is to skip instruction and length
             indexPointer += infoLength + 8;
         } else {
@@ -543,6 +543,14 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             return;
         }
     }
+}
+
+void YidsRom::handleImbz(std::string fileName_noext) {
+    cout << "Handling IMBZ file: " << fileName_noext << endl;
+    auto fileVector = this->getFileByteVector(fileName_noext.append(".imbz"));
+    std::vector uncompressedImbz = YCompression::lzssVectorDecomp(fileVector);
+    fileVector.clear();
+    cout << (int)uncompressedImbz.at(0x30) << endl;
 }
 
 std::vector<uint8_t> YidsRom::getFileByteVector(std::string fileName) {

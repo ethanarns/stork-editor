@@ -52,3 +52,32 @@ bool YCompression::lzssDecomp(std::string filepath, bool verbose) {
     system(lzssCmd.c_str());
     return true;
 }
+
+std::vector<uint8_t> YCompression::lzssVectorDecomp(std::vector<uint8_t>& inputVec) {
+    const std::string tempName = "TEMP.lz10";
+    YUtils::writeByteVectorToFile(inputVec,tempName);
+    bool decompResult = YCompression::lzssDecomp(tempName, true);
+    if (!decompResult) {
+        cerr << "Failed to extract MPDZ file" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    std::ifstream uncomped{tempName, ios::binary};
+    if (!uncomped) {
+        cerr << "Failed to load uncompressed file '" << tempName << "'" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    size_t uncomped_length = YUtils::getStreamLength(uncomped);
+    std::vector<uint8_t> uncompVec;
+    uncompVec.reserve(uncomped_length);
+    std::copy(
+        std::istreambuf_iterator<char>(uncomped),
+        std::istreambuf_iterator<char>(),
+        std::back_inserter(uncompVec)
+    );
+    // Cleanup
+    uncomped.close();
+    std::filesystem::remove(tempName);
+    return uncompVec;
+}

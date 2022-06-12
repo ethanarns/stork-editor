@@ -52,6 +52,7 @@ private:
     void loadCrsb(std::string fileName_noext);
     void loadMpdz(std::string fileName_noext);
     void handleSCEN(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
+    void handleImbz(std::string fileName_noext);
 };
 
 #endif
