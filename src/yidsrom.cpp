@@ -546,11 +546,11 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
 }
 
 void YidsRom::handleImbz(std::string fileName_noext) {
-    cout << "Handling IMBZ file: " << fileName_noext << endl;
+    if (this->verbose) cout << "Handling IMBZ file: '" << fileName_noext << "'" << endl;
     auto fileVector = this->getFileByteVector(fileName_noext.append(".imbz"));
     std::vector uncompressedImbz = YCompression::lzssVectorDecomp(fileVector);
     fileVector.clear();
-    cout << (int)uncompressedImbz.at(0x30) << endl;
+    
 }
 
 std::vector<uint8_t> YidsRom::getFileByteVector(std::string fileName) {
