@@ -17,6 +17,7 @@ make
 # Remove crap
 rm *.o
 rm .qmake.stash
+rm moc_*
 
 # Execute
 ./parasol

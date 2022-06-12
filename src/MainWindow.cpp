@@ -115,14 +115,20 @@ MainWindow::MainWindow() {
     // Central Panel //
     QVBoxLayout* centerPanelLayout = new QVBoxLayout(centralWidget);
     centerPanelLayout->setObjectName(tr("layout_center"));
-    QPushButton* button2 = new QPushButton(tr("Test2"));
-    centerPanelLayout->addWidget(button2);
+    //QPushButton* button2 = new QPushButton(tr("Test2"));
+    //centerPanelLayout->addWidget(button2);
     mainLayout->addLayout(centerPanelLayout);
 
     // Initiate the layout //
     mainLayout->setStretch(0,2);
     mainLayout->setStretch(1,5);
     centralWidget->setLayout(mainLayout);
+
+    /********************
+     *** CENTER PANEL ***
+     ********************/
+    this->grid = new DisplayTable(centralWidget);
+    centerPanelLayout->addWidget(this->grid);
 }
 
 void MainWindow::LoadRom() {

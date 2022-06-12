@@ -11,6 +11,8 @@ int main(int argc, char *argv[]) {
     // This class is the real main
     MainWindow window;
     window.resize(800, 600);
+    window.setMinimumWidth(600);
+    window.setMinimumHeight(400);
     window.setWindowTitle("Parasol Editor");
     window.show();
 

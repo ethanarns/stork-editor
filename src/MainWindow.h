@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QMainWindow>
 #include "yidsrom.h"
+#include "DisplayTable.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -13,6 +14,8 @@ public:
 
     MainWindow();
     void LoadRom();
+private:
+    DisplayTable* grid;
 };
 
 #endif
