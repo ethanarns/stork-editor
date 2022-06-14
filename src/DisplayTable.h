@@ -9,7 +9,7 @@ class DisplayTable : public QTableWidget {
 public:
     DisplayTable(QWidget *parent = Q_NULLPTR);
 private:
-    const static int CELL_SIZE_PX = 30;
+    const static int CELL_SIZE_PX = 24;
 };
 
 #endif
