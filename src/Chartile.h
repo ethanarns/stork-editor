@@ -1,0 +1,17 @@
+#ifndef CHARTILESTRUCT_H
+#define CHARTILESTRUCT_H
+
+#include <cstdint>
+
+enum ScreenEngine {
+    A,// Top screen
+    B // Bottom screen
+};
+
+struct Chartile {
+    ScreenEngine engine; // A (top screen) or B (bottom screen)
+    uint32_t index;
+    QByteArray tiles; // 8x8, each 0-15, representing their connection the current palette
+};
+
+#endif

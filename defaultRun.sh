@@ -5,9 +5,6 @@ rm parasol
 rm blz
 rm lzss
 
-# Delete prior Makefile
-rm Makefile
-
 # Do separate executables
 gcc src/blz.c -o blz
 gcc src/lzss.c -o lzss

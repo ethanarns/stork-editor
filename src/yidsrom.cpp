@@ -1,6 +1,7 @@
 #include "yidsrom.h"
 #include "utils.h"
 #include "compression.h"
+#include "Chartile.h"
 
 // std::cerr, std::endl, std::ios
 #include <iostream>
@@ -560,23 +561,45 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 this->currentPalettes[globalPaletteIndex++] = currentLoadingPalette;
                 pltbReadIndex += PALETTE_SIZE; // 1 palette is 32 bytes, or 0x20
             }
-            for (int i = 0; i < PALETTE_SIZE; i+=2) {
-                auto tempResult = YUtils::getColorFromBytes(this->currentPalettes[0].at(i),this->currentPalettes[0].at(i+1));
-                cout << hex << tempResult.red() << endl;
-            }
+            // for (int i = 0; i < PALETTE_SIZE; i+=2) {
+            //     auto tempResult = YUtils::getColorFromBytes(this->currentPalettes[0].at(i),this->currentPalettes[0].at(i+1));
+            //     cout << hex << tempResult.red() << endl;
+            // }
         } else {
             cout << "Unknown instruction: " << hex << curSubInstruction << endl;
             return;
         }
     }
 }
-
+const int CHARTILE_DATA_SIZE = 0x20;
 void YidsRom::handleImbz(std::string fileName_noext) {
     if (this->verbose) cout << "Handling IMBZ file: '" << fileName_noext << "'" << endl;
     auto fileVector = this->getFileByteVector(fileName_noext.append(".imbz"));
     std::vector uncompressedImbz = YCompression::lzssVectorDecomp(fileVector);
     fileVector.clear();
-    
+
+    // Use ints since they're natural and not stored excessively anyway
+    int currentTileIndex = 0; // The index of the tile within list of tiles. Start at -1 due to first time ++
+    int imbzIndex = 0; // Goes up by 0x20 each time, offset it
+    const int imbzLength = uncompressedImbz.size();
+    // Do it 0x20 by 0x20
+    while (imbzIndex < imbzLength) { // Kill when equal to length, meaning it's outside
+        Chartile curTile;
+        curTile.engine = ScreenEngine::A;
+        curTile.index = currentTileIndex;
+        curTile.tiles.resize(64);
+        // Go up by 2 since you split the bytes
+        for (int currentTileBuildIndex = 0; currentTileBuildIndex < CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
+            uint8_t curByte = uncompressedImbz.at(imbzIndex + currentTileBuildIndex);
+            int curPos = imbzIndex + (currentTileBuildIndex*2);
+            curTile.tiles[curPos+1] = curByte >> 0x4;
+            curTile.tiles[curPos+0] = curByte % 0x10;
+        }
+        // Skip ahead by 0x20
+        imbzIndex += CHARTILE_DATA_SIZE;
+        currentTileIndex++;
+    }
+    cout << "Total tiles: " << dec << currentTileIndex << endl;
 }
 
 std::vector<uint8_t> YidsRom::getFileByteVector(std::string fileName) {

@@ -150,6 +150,7 @@ void MainWindow::LoadRom() {
         this->chartilesPopup->resize(300, 400);
         this->chartilesPopup->setMinimumWidth(300);
         this->chartilesPopup->setMinimumHeight(300);
+        this->chartilesPopup->setWindowTitle("Tile Viewer");
         this->chartilesPopup->show();
     }
 }
