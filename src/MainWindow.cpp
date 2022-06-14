@@ -136,7 +136,7 @@ MainWindow::MainWindow() {
      *****************/
     this->chartilesPopup = new QWidget;
     QBoxLayout* chartilesLayout = new QHBoxLayout(this);
-    this->chartilesTable = new ChartilesTable(this);;
+    this->chartilesTable = new ChartilesTable(this,this->rom);
     chartilesLayout->addWidget(this->chartilesTable);
     this->chartilesPopup->setLayout(chartilesLayout);
 }

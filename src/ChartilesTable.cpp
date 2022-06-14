@@ -4,7 +4,9 @@
 #include <QTableWidget>
 #include <QHeaderView>
 
-ChartilesTable::ChartilesTable(QWidget* parent) {
+ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
+    this->yidsRom = rom;
+
     this->horizontalHeader()->setMinimumSectionSize(0);
     this->horizontalHeader()->setDefaultSectionSize(ChartilesTable::CELL_SIZE_PX);
     this->verticalHeader()->setMinimumSectionSize(0);

@@ -9,3 +9,4 @@ lzss
 *.bin
 *.mpdz
 *.nds
+moc_*
