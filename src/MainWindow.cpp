@@ -9,8 +9,10 @@
  */
 
 #include "MainWindow.h"
+#include "ChartilesTable.h"
 
 #include <QtCore>
+#include <QWidget>
 #include <QMainWindow>
 #include <QAction>
 #include <QMenuBar>
@@ -20,6 +22,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QDialog>
 
 #include <iostream>
 using namespace std;
@@ -115,8 +118,6 @@ MainWindow::MainWindow() {
     // Central Panel //
     QVBoxLayout* centerPanelLayout = new QVBoxLayout(centralWidget);
     centerPanelLayout->setObjectName(tr("layout_center"));
-    //QPushButton* button2 = new QPushButton(tr("Test2"));
-    //centerPanelLayout->addWidget(button2);
     mainLayout->addLayout(centerPanelLayout);
 
     // Initiate the layout //
@@ -129,6 +130,15 @@ MainWindow::MainWindow() {
      ********************/
     this->grid = new DisplayTable(centralWidget);
     centerPanelLayout->addWidget(this->grid);
+
+    /*****************
+     *** CHARTILES ***
+     *****************/
+    this->chartilesPopup = new QWidget;
+    QBoxLayout* chartilesLayout = new QHBoxLayout(this);
+    this->chartilesTable = new ChartilesTable(this);;
+    chartilesLayout->addWidget(this->chartilesTable);
+    this->chartilesPopup->setLayout(chartilesLayout);
 }
 
 void MainWindow::LoadRom() {
@@ -137,5 +147,6 @@ void MainWindow::LoadRom() {
         cout << "Canceled file dialog" << endl;
     } else {
         this->rom->openRom(fileName.toStdString());
+        this->chartilesPopup->show();
     }
 }
