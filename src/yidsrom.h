@@ -10,6 +10,8 @@
 // std::map<key,value>
 #include <map>
 
+#include <QByteArray>
+
 // Variable sizes and explanations: http://problemkaputt.de/gbatek.htm#dscartridgeheader
 /**
  * @brief The YIDS ROM's Metadata. Mainly from the header.
@@ -27,6 +29,7 @@ public:
     std::map<std::string,uint32_t> fileIdMap;
     std::fstream romFile;
     RomMetadata metadata;
+    QByteArray currentPalettes[0x10]; // Will probably only use first 8
     bool verbose;
     YidsRom(bool verbose);
     void openRom(std::string fileName);

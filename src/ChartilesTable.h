@@ -11,7 +11,7 @@ class ChartilesTable : public QTableWidget {
 public:
     ChartilesTable(QWidget *parent, YidsRom* rom);
 private:
-    const static int CELL_SIZE_PX = 30;
+    const static int CELL_SIZE_PX = 16;
     YidsRom* yidsRom;
 };
 #endif

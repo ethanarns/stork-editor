@@ -147,6 +147,9 @@ void MainWindow::LoadRom() {
         cout << "Canceled file dialog" << endl;
     } else {
         this->rom->openRom(fileName.toStdString());
+        this->chartilesPopup->resize(300, 400);
+        this->chartilesPopup->setMinimumWidth(300);
+        this->chartilesPopup->setMinimumHeight(300);
         this->chartilesPopup->show();
     }
 }

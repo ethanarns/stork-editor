@@ -21,6 +21,7 @@
 
 // Q_UNUSED
 #include <QtGlobal>
+#include <QByteArray>
 
 using namespace std;
 
@@ -44,6 +45,9 @@ const char* MPDZ_EXTENSION = ".mpdz";
 const uint32_t MPDZ_MAGIC_NUM = 0x00544553; // "SET "
 const uint32_t SCEN_MAGIC_NUM = 0x4e454353; // "SCEN"
 const uint32_t INFO_MAGIC_NUM = 0x4f464e49; // "INFO"
+const uint32_t PLTB_MAGIC_NUM = 0x42544c50; // "PLTB"
+
+const int PALETTE_SIZE = 0x20;
 
 YidsRom::YidsRom(bool verbose) {
     cout << "YidsRom constructed" << endl;
@@ -538,6 +542,28 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             this->handleImbz(charFileNoExt);
             // Increment based on earlier length, +8 is to skip instruction and length
             indexPointer += infoLength + 8;
+        } else if (curSubInstruction == PLTB_MAGIC_NUM) {
+            uint32_t pltbLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First time: 0x1c0
+            Address pltbReadIndex = indexPointer + 8; // +8 is to skip instruction and length
+            indexPointer += pltbLength + 8; // Do this ahead of time in order to control the while loop
+            // Cycle up to the index pointer
+            int globalPaletteIndex = 0;
+            while (pltbReadIndex < indexPointer) {
+                QByteArray currentLoadingPalette;
+                currentLoadingPalette.resize(PALETTE_SIZE);
+                for (int curPaletteIndex = 0; curPaletteIndex < PALETTE_SIZE; curPaletteIndex++) {
+                    currentLoadingPalette[curPaletteIndex] = mpdzVec.at(pltbReadIndex + curPaletteIndex);
+                    // cout << "Loc: " << hex << (pltbReadIndex + curPaletteIndex) << ", val: ";
+                    // cout << hex << (int)mpdzVec.at(pltbReadIndex + curPaletteIndex) << ";" << endl;
+                }
+                // Should round down because of int
+                this->currentPalettes[globalPaletteIndex++] = currentLoadingPalette;
+                pltbReadIndex += PALETTE_SIZE; // 1 palette is 32 bytes, or 0x20
+            }
+            for (int i = 0; i < PALETTE_SIZE; i+=2) {
+                auto tempResult = YUtils::getColorFromBytes(this->currentPalettes[0].at(i),this->currentPalettes[0].at(i+1));
+                cout << hex << tempResult.red() << endl;
+            }
         } else {
             cout << "Unknown instruction: " << hex << curSubInstruction << endl;
             return;

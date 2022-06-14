@@ -6,6 +6,8 @@
 #include <vector>
 #include <fstream>
 
+#include <QColor>
+
 using namespace std;
 
 class YUtils {
@@ -17,6 +19,7 @@ public:
     static size_t getStreamLength(std::ifstream& buffer);
     static uint32_t getUint32FromVec(std::vector<uint8_t> &bytes, uint32_t location);
     static std::string getNullTermTextFromVec(std::vector<uint8_t> &bytes, uint32_t location);
+    static QColor getColorFromBytes(uint8_t firstByte, uint8_t secondByte);
 };
 
 #endif
