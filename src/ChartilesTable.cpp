@@ -5,6 +5,7 @@
 #include <QHeaderView>
 
 ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
+    Q_UNUSED(parent);
     this->yidsRom = rom;
 
     this->horizontalHeader()->setMinimumSectionSize(0);

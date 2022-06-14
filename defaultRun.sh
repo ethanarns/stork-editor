@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Delete prior executable
+# Delete prior executables
 rm parasol
+rm blz
+rm lzss
 
 # Delete prior Makefile
 rm Makefile
@@ -21,3 +23,5 @@ rm moc_*
 
 # Execute
 ./parasol
+
+rm Makefile

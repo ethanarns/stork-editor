@@ -134,9 +134,9 @@ MainWindow::MainWindow() {
     /*****************
      *** CHARTILES ***
      *****************/
-    this->chartilesPopup = new QWidget;
-    QBoxLayout* chartilesLayout = new QHBoxLayout(this);
-    this->chartilesTable = new ChartilesTable(this,this->rom);
+    this->chartilesPopup = new QWidget; // No parent to avoid anchoring
+    QBoxLayout* chartilesLayout = new QVBoxLayout(this);
+    this->chartilesTable = new ChartilesTable(this,this->rom); // Connect the rom
     chartilesLayout->addWidget(this->chartilesTable);
     this->chartilesPopup->setLayout(chartilesLayout);
 }

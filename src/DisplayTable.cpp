@@ -1,4 +1,5 @@
 #include "DisplayTable.h"
+#include "PixelDelegate.h"
 
 #include <QtCore>
 #include <QTableWidget>
@@ -20,4 +21,6 @@ DisplayTable::DisplayTable(QWidget* parent) {
 
     // Drag and Drop //
     this->setMouseTracking(true);
+
+    setItemDelegate(new PixelDelegate);
 }
