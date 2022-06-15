@@ -35,7 +35,7 @@ bool YCompression::blzDecompress(std::string filepath, bool verbose) {
     // Silence stdout
     if (!verbose) blzCmd.append(" 1> /dev/null");
     auto result = system(blzCmd.c_str());
-    cout << "System result: " << endl;
+    cout << "System result: " << result << endl;
     return true;
 }
 
@@ -49,7 +49,8 @@ bool YCompression::lzssDecomp(std::string filepath, bool verbose) {
     if (verbose) cout << "> " << lzssCmd << endl;
     // Silence stdout?
     if (!verbose) lzssCmd.append(" 1> /dev/null");
-    system(lzssCmd.c_str());
+    auto result = system(lzssCmd.c_str());
+    cout << "System result: " << result << endl;
     return true;
 }
 

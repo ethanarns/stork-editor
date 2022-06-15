@@ -10,6 +10,7 @@
 
 #include "MainWindow.h"
 #include "ChartilesTable.h"
+#include "PaletteTable.h"
 #include "utils.h"
 
 #include <QtCore>
@@ -102,6 +103,7 @@ MainWindow::MainWindow() {
     toolbar->setMovable(false);
     QPixmap newpix("assets/icon_test.png");
     auto testAction = toolbar->addAction(QIcon(newpix), tr("Test"));
+    Q_UNUSED(testAction);
 
     /**************
      *** LAYOUT ***
@@ -136,10 +138,19 @@ MainWindow::MainWindow() {
      *** CHARTILES ***
      *****************/
     this->chartilesPopup = new QWidget; // No parent to avoid anchoring
-    QBoxLayout* chartilesLayout = new QVBoxLayout(this);
+    QHBoxLayout* chartilesLayout = new QHBoxLayout(this); // H cause it's skinny, so stuff next to each other
     this->chartilesTable = new ChartilesTable(this,this->rom); // Connect the rom
     chartilesLayout->addWidget(this->chartilesTable);
     this->chartilesPopup->setLayout(chartilesLayout);
+
+    /*********************
+     *** PALETTE TABLE ***
+     *********************/
+    this->palettePopup = new QWidget;
+    QVBoxLayout* paletteLayout = new QVBoxLayout(this); // Since it's wide, V, so stuff below and above
+    this->paletteTable = new PaletteTable(this,this->rom);
+    paletteLayout->addWidget(this->paletteTable);
+    this->palettePopup->setLayout(paletteLayout);
 }
 
 void MainWindow::LoadRom() {
@@ -148,11 +159,21 @@ void MainWindow::LoadRom() {
         cout << "Canceled file dialog" << endl;
     } else {
         this->rom->openRom(fileName.toStdString());
+
+        // Chartiles popup //
         this->chartilesPopup->resize(300, 400);
         this->chartilesPopup->setMinimumWidth(300);
         this->chartilesPopup->setMinimumHeight(300);
         this->chartilesPopup->setWindowTitle("Tile Viewer");
         this->chartilesPopup->show();
         this->chartilesTable->refreshLoadedTiles();
+
+        // Palette popup //
+        this->palettePopup->resize(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH,PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);
+        this->palettePopup->setMinimumWidth(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH);
+        this->palettePopup->setMinimumHeight(PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);
+        this->palettePopup->setWindowTitle("Palette Viewer");
+        this->palettePopup->show();
+        this->paletteTable->refreshLoadedTiles();
     }
 }

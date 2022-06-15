@@ -9,6 +9,7 @@
 #include "yidsrom.h"
 #include "DisplayTable.h"
 #include "ChartilesTable.h"
+#include "PaletteTable.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -22,6 +23,8 @@ private:
     DisplayTable* grid;
     QWidget* chartilesPopup;
     ChartilesTable* chartilesTable;
+    QWidget* palettePopup;
+    PaletteTable* paletteTable;
 };
 
 #endif

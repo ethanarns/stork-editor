@@ -616,16 +616,16 @@ void YidsRom::handleImbz(std::string fileName_noext) {
         imbzIndex += CHARTILE_DATA_SIZE;
         currentTileIndex++;
     }
-    cout << "Total tiles: " << dec << currentTileIndex << endl;
-    for (int i = 0; i < 0x10; i++) {
-        cout << endl;
-        for (int j = 0; j < 64; j++) {
-            cout << setw(2) << hex << (int)this->pixelTiles.at(i).tiles[j] << " ";
-            if (j % 8 == 0) {
-                cout << endl;
-            }
-        }
-    }
+    // cout << "Total tiles: " << dec << currentTileIndex << endl;
+    // for (int i = 0; i < 0x10; i++) {
+    //     cout << endl;
+    //     for (int j = 0; j < 64; j++) {
+    //         cout << setw(2) << hex << (int)this->pixelTiles.at(i).tiles[j] << " ";
+    //         if (j % 8 == 0) {
+    //             cout << endl;
+    //         }
+    //     }
+    // }
 }
 
 std::vector<uint8_t> YidsRom::getFileByteVector(std::string fileName) {
