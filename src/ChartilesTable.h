@@ -10,8 +10,10 @@ class ChartilesTable : public QTableWidget {
     Q_OBJECT
 public:
     ChartilesTable(QWidget *parent, YidsRom* rom);
+    void refreshLoadedTiles();
 private:
     const static int CELL_SIZE_PX = 16;
+    const static int CHARTILES_TABLE_WIDTH = 0x10;
     YidsRom* yidsRom;
 };
 #endif

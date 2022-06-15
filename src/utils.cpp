@@ -10,6 +10,9 @@
 #include <vector>
 #include <fstream>
 
+#include <QtCore>
+#include <QColor>
+
 using namespace std;
 
 /**
@@ -87,8 +90,6 @@ QColor YUtils::getColorFromBytes(uint8_t firstByte, uint8_t secondByte) {
     uint16_t red = colorBytes & 0b00000'00000'11111;
     uint16_t green = (colorBytes & 0b00000'11111'00000) >> 5;
     uint16_t blue = (colorBytes & 0b11111'00000'00000) >> 10;
-    cout << "red: " << red << endl;
-    cout << "red2: " << (red*8.2) << endl;
     // (0b11111*8.2 = 254.2)
     auto colRes = QColor(red*8.2,green*8.2,blue*8.2);
     return colRes;

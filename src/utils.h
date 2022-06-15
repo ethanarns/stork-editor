@@ -6,6 +6,7 @@
 #include <vector>
 #include <fstream>
 
+#include <QtCore>
 #include <QColor>
 
 using namespace std;

@@ -4,8 +4,9 @@
 #include <QtCore>
 #include <QStyledItemDelegate>
 
-enum PixelDelegateInfo {
-    PIXEL_ARRAY
+enum PixelDelegateData {
+    PIXEL_ARRAY = 101,
+    PALETTE_ARRAY = 102
 };
 
 class PixelDelegate : public QStyledItemDelegate {

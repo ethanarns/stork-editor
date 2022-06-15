@@ -592,9 +592,11 @@ void YidsRom::handleImbz(std::string fileName_noext) {
         // Go up by 2 since you split the bytes
         for (int currentTileBuildIndex = 0; currentTileBuildIndex < CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
             uint8_t curByte = uncompressedImbz.at(imbzIndex + currentTileBuildIndex);
-            int curPos = imbzIndex + (currentTileBuildIndex*2);
-            curTile.tiles[curPos+1] = curByte >> 0x4;
-            curTile.tiles[curPos+0] = curByte % 0x10;
+            uint8_t highBit = curByte >> 4;
+            uint8_t lowBit = curByte % 0x10;
+            int innerPosition = currentTileBuildIndex*2;
+            curTile.tiles[innerPosition+1] = highBit;
+            curTile.tiles[innerPosition+0] = lowBit;
         }
         this->pixelTiles.push_back(curTile);
         // Skip ahead by 0x20
@@ -602,6 +604,15 @@ void YidsRom::handleImbz(std::string fileName_noext) {
         currentTileIndex++;
     }
     cout << "Total tiles: " << dec << currentTileIndex << endl;
+    for (int i = 0; i < 0x10; i++) {
+        cout << endl;
+        for (int j = 0; j < 64; j++) {
+            cout << setw(2) << hex << (int)this->pixelTiles.at(i).tiles[j] << " ";
+            if (j % 8 == 0) {
+                cout << endl;
+            }
+        }
+    }
 }
 
 std::vector<uint8_t> YidsRom::getFileByteVector(std::string fileName) {
