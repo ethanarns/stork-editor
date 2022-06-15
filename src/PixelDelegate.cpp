@@ -38,22 +38,6 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     
     for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
         char colIndex = byteArray.at(i);
-        // QColor qc("lightGray");
-        // if (colIndex == 0) {
-        //     qc = QColor("red");
-        // } else if (colIndex == 1) {
-        //     qc = QColor("blue");
-        // } else if (colIndex == 2) {
-        //     qc = QColor("green");
-        // } else if (colIndex == 3) {
-        //     qc = QColor("cyan");
-        // } else if (colIndex == 0xF) {
-        //     qc = QColor("black");
-        // }
-        // uint16_t colorBytes = (resultArray[writtenIndex+1] << 8) + resultArray[writtenIndex];
-        // uint16_t red = colorBytes & 0b00000'00000'11111;
-        // uint16_t green = (colorBytes & 0b00000'11111'00000) >> 5;
-        // uint16_t blue = (colorBytes & 0b11111'00000'00000) >> 10;
         auto qc = YUtils::getColorFromBytes(
             (colIndex*2),
             (colIndex*2)+1

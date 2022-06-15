@@ -36,6 +36,9 @@ const uint32_t SDK_NITROCODE_BE	= 0xdec00621;
 const uint32_t ARM9_ROM_OFFSET = 0x4000;
 const uint32_t MAIN_MEM_OFFSET = 0x0200'0000;
 
+// Universal Palette 0: 0x020d6f40
+const AddressMemory UNIVERSAL_PALETTE_0_ADDR = 0x020d6f40;
+
 const char* NEW_BIN_FILE = "bin9.bin";
 const char* NEW_ROM_FILE = "rom_uncomp.nds";
 const std::string CRSB_MAGIC = "CRSB";
@@ -283,7 +286,15 @@ void YidsRom::initArm9RomData(std::string fileName) {
     // It worked! Report them as loaded successfully
     this->filesLoaded = true;
 
+    // Write universal palette
     this->currentPalettes[0].resize(PALETTE_SIZE);
+    Address universalPalette0base = this->conv2xAddrToFileAddr(UNIVERSAL_PALETTE_0_ADDR);
+    for (int univPalIndex = 0; univPalIndex < PALETTE_SIZE; univPalIndex++) {
+        this->romFile.seekg(universalPalette0base + univPalIndex);
+        uint8_t container;
+        this->romFile.read(reinterpret_cast<char *>(&container), sizeof(container));
+        this->currentPalettes[0][univPalIndex] = container;
+    }
 }
 
 void YidsRom::writeUncompressedARM9(Address arm9start_rom, uint32_t arm9length) {
