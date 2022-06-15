@@ -10,6 +10,7 @@
 
 #include "MainWindow.h"
 #include "ChartilesTable.h"
+#include "utils.h"
 
 #include <QtCore>
 #include <QWidget>

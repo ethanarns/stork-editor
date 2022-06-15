@@ -282,6 +282,8 @@ void YidsRom::initArm9RomData(std::string fileName) {
 
     // It worked! Report them as loaded successfully
     this->filesLoaded = true;
+
+    this->currentPalettes[0].resize(PALETTE_SIZE);
 }
 
 void YidsRom::writeUncompressedARM9(Address arm9start_rom, uint32_t arm9length) {
@@ -549,7 +551,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             Address pltbReadIndex = indexPointer + 8; // +8 is to skip instruction and length
             indexPointer += pltbLength + 8; // Do this ahead of time in order to control the while loop
             // Cycle up to the index pointer
-            int globalPaletteIndex = 0;
+            int globalPaletteIndex = 1; // Start at 1 because universal
             while (pltbReadIndex < indexPointer) {
                 QByteArray currentLoadingPalette;
                 currentLoadingPalette.resize(PALETTE_SIZE);
@@ -559,12 +561,12 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                     // cout << hex << (int)mpdzVec.at(pltbReadIndex + curPaletteIndex) << ";" << endl;
                 }
                 // Should round down because of int
-                this->currentPalettes[globalPaletteIndex++] = currentLoadingPalette;
+                this->currentPalettes[globalPaletteIndex] = currentLoadingPalette;
+                globalPaletteIndex++;
                 pltbReadIndex += PALETTE_SIZE; // 1 palette is 32 bytes, or 0x20
             }
             // for (int i = 0; i < PALETTE_SIZE; i+=2) {
-            //     auto tempResult = YUtils::getColorFromBytes(this->currentPalettes[0].at(i),this->currentPalettes[0].at(i+1));
-            //     cout << hex << tempResult.red() << endl;
+            //     YUtils::getColorFromBytes(this->currentPalettes[1].at(i),this->currentPalettes[1].at(i+1));
             // }
         } else {
             cout << "Unknown instruction: " << hex << curSubInstruction << endl;

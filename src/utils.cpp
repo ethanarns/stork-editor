@@ -90,6 +90,7 @@ QColor YUtils::getColorFromBytes(uint8_t firstByte, uint8_t secondByte) {
     uint16_t red = colorBytes & 0b00000'00000'11111;
     uint16_t green = (colorBytes & 0b00000'11111'00000) >> 5;
     uint16_t blue = (colorBytes & 0b11111'00000'00000) >> 10;
+    //cout << "red: " << hex << red << ", green: " << green << ", blue: " << blue << endl;
     // (0b11111*8.2 = 254.2)
     auto colRes = QColor(red*8.2,green*8.2,blue*8.2);
     return colRes;
