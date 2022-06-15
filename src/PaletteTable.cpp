@@ -2,6 +2,7 @@
 #include "yidsrom.h"
 #include "Chartile.h"
 #include "PixelDelegate.h"
+#include "utils.h"
 
 #include <iostream>
 
@@ -33,23 +34,28 @@ PaletteTable::PaletteTable(QWidget* parent, YidsRom* rom) {
 void PaletteTable::refreshLoadedTiles() {
     // Probably do something unique here
 
-    // int killStop = 0x100;
-    // int killIndex = 0;
-    // for (auto it = this->yidsRom->pixelTiles.begin(); it != this->yidsRom->pixelTiles.end(); it++) {
-    //     QTableWidgetItem *newItem = new QTableWidgetItem();
-    //     newItem->setData(PixelDelegateData::PIXEL_ARRAY,it->tiles);
-    //     newItem->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[0]);
-    //     if (it->tiles.size() != 64) {
-    //         cerr << "Wanted 64 pixels, got " << dec << it->tiles.size() << endl;
-    //         continue;
-    //     }
-    //     newItem->setText(tr(""));
-    //     int y = it->index / 0x10;
-    //     int x = it->index % 0x10;
-    //     this->setItem(y,x,newItem);
-    //     killIndex++;
-    //     if (killIndex >= killStop) {
-    //         return;
-    //     }
-    // }
+    const int PALETTE_DIMS = 16;
+
+    for (int paletteIndex = 0; paletteIndex < PALETTE_DIMS; paletteIndex++) {
+        QByteArray curPalette = this->yidsRom->currentPalettes[paletteIndex];
+        for (int colorIndex = 0; colorIndex < PALETTE_DIMS; colorIndex++) {
+            // Do not delete this, it is being stored in this class
+            // That said, if you are re-setting it, delete the existing one (TODO)
+            QTableWidgetItem *newItem = new QTableWidgetItem();
+            QByteArray fill;
+            fill.resize(64);
+            for (int i = 0; i < 64; i++) {
+                fill[i] = colorIndex;
+            }
+            newItem->setData(PixelDelegateData::PIXEL_ARRAY,fill);
+            newItem->setData(PixelDelegateData::PALETTE_ARRAY,curPalette);
+            cout << "Placing " << hex << colorIndex << " at (" << colorIndex << "," << paletteIndex << ")" << endl;
+            this->setItem(paletteIndex,colorIndex,newItem);
+        }
+        cout << "Palette " << paletteIndex << endl;
+        for (int testIndex = 0; testIndex < curPalette.size(); testIndex += 2) {
+            auto tempCol = YUtils::getColorFromBytes(curPalette.at(testIndex),curPalette.at(testIndex+1));
+            cout << "Color: " << dec << tempCol.red() << "," << tempCol.green() << "," << tempCol.blue() << endl;
+        }
+    }
 }
