@@ -50,6 +50,7 @@ const uint32_t MPDZ_MAGIC_NUM = 0x00544553; // "SET "
 const uint32_t SCEN_MAGIC_NUM = 0x4e454353; // "SCEN"
 const uint32_t INFO_MAGIC_NUM = 0x4f464e49; // "INFO"
 const uint32_t PLTB_MAGIC_NUM = 0x42544c50; // "PLTB"
+const uint32_t MPBZ_MAGIC_NUM = 0x5a42504d; // "MPBZ" / 4D 50 42 5A
 
 const int PALETTE_SIZE = 0x20;
 
@@ -579,6 +580,18 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             // for (int i = 0; i < PALETTE_SIZE; i+=2) {
             //     YUtils::getColorFromBytes(this->currentPalettes[1].at(i),this->currentPalettes[1].at(i+1));
             // }
+        } else if (curSubInstruction == MPBZ_MAGIC_NUM) {
+            // First time, size is 0x85CC, found accurate
+            uint32_t mpbzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
+            cout << "mpBz size: " << hex << mpbzLength << endl;
+            Address compressedDataStart = indexPointer + 8;
+            Address compressedDataEnd = compressedDataStart + mpbzLength;
+            
+            cout << "Getting sub array..." << endl;
+            auto compressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
+            cout << hex << (int)compressedSubArray.at(1) << endl; // should be 0x60
+            cout << hex << (int)compressedSubArray.at(compressedSubArray.size()-2) << endl; // 0x33
+            indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
         } else {
             cout << "Unknown instruction: " << hex << curSubInstruction << endl;
             return;

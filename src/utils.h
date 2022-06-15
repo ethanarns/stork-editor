@@ -21,6 +21,8 @@ public:
     static uint32_t getUint32FromVec(std::vector<uint8_t> &bytes, uint32_t location);
     static std::string getNullTermTextFromVec(std::vector<uint8_t> &bytes, uint32_t location);
     static QColor getColorFromBytes(uint8_t firstByte, uint8_t secondByte);
+
+    static std::vector<uint8_t> subVector(std::vector<uint8_t> inVec, uint32_t startOffset, uint32_t endOffset);
 };
 
 #endif

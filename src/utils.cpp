@@ -95,3 +95,8 @@ QColor YUtils::getColorFromBytes(uint8_t firstByte, uint8_t secondByte) {
     auto colRes = QColor(red*8.2,green*8.2,blue*8.2);
     return colRes;
 }
+
+std::vector<uint8_t> YUtils::subVector(std::vector<uint8_t> inVec, uint32_t startOffset, uint32_t endOffset) {
+    std::vector<uint8_t> newVec(inVec.begin() + startOffset,inVec.begin() + endOffset);
+    return newVec;
+}

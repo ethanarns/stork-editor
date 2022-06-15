@@ -32,9 +32,7 @@ PaletteTable::PaletteTable(QWidget* parent, YidsRom* rom) {
 }
 
 void PaletteTable::refreshLoadedTiles() {
-    // Probably do something unique here
-
-    const int PALETTE_DIMS = 16;
+    const int PALETTE_DIMS = 16; // 0x0-0xf
 
     for (int paletteIndex = 0; paletteIndex < PALETTE_DIMS; paletteIndex++) {
         QByteArray curPalette = this->yidsRom->currentPalettes[paletteIndex];
@@ -49,13 +47,13 @@ void PaletteTable::refreshLoadedTiles() {
             }
             newItem->setData(PixelDelegateData::PIXEL_ARRAY,fill);
             newItem->setData(PixelDelegateData::PALETTE_ARRAY,curPalette);
-            cout << "Placing " << hex << colorIndex << " at (" << colorIndex << "," << paletteIndex << ")" << endl;
+            //cout << "Placing " << hex << colorIndex << " at (" << colorIndex << "," << paletteIndex << ")" << endl;
             this->setItem(paletteIndex,colorIndex,newItem);
         }
-        cout << "Palette " << paletteIndex << endl;
-        for (int testIndex = 0; testIndex < curPalette.size(); testIndex += 2) {
-            auto tempCol = YUtils::getColorFromBytes(curPalette.at(testIndex),curPalette.at(testIndex+1));
-            cout << "Color: " << dec << tempCol.red() << "," << tempCol.green() << "," << tempCol.blue() << endl;
-        }
+        // cout << "Palette " << paletteIndex << endl;
+        // for (int testIndex = 0; testIndex < curPalette.size(); testIndex += 2) {
+        //     auto tempCol = YUtils::getColorFromBytes(curPalette.at(testIndex),curPalette.at(testIndex+1));
+        //     cout << "Color: " << dec << tempCol.red() << "," << tempCol.green() << "," << tempCol.blue() << endl;
+        // }
     }
 }
