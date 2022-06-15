@@ -15,9 +15,8 @@ const int PIXEL_TILE_DIVISIONS = 8;
 const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
-    //QPen pen;
-    auto byteArray = index.data(PixelDelegateData::PIXEL_ARRAY).toByteArray();
-    auto palette = index.data(PixelDelegateData::PALETTE_ARRAY).toByteArray();
+    QByteArray byteArray = index.data(PixelDelegateData::PIXEL_ARRAY).toByteArray();
+    QByteArray palette = index.data(PixelDelegateData::PALETTE_ARRAY).toByteArray();
     if (byteArray.size() == 0) {
         const char testArrayPrimitive[] = {
             0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1,
@@ -37,10 +36,10 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     }
     
     for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
-        char colIndex = byteArray.at(i);
+        char whichPalette = byteArray.at(i);
         auto qc = YUtils::getColorFromBytes(
-            (colIndex*2),
-            (colIndex*2)+1
+            palette.at(whichPalette*2),
+            palette.at(whichPalette*2+1)
         );
         this->drawPixel(painter, option.rect, i % 8, i / 8, qc);
     }
