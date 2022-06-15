@@ -2,6 +2,7 @@
 #define CHARTILESTRUCT_H
 
 #include <cstdint>
+#include <QByteArray>
 
 enum ScreenEngine {
     A,// Top screen

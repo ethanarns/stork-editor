@@ -54,6 +54,7 @@ YidsRom::YidsRom(bool verbose) {
     cout << "YidsRom constructed" << endl;
     this->filesLoaded = false;
     this->verbose = verbose;
+    this->pixelTiles.reserve(1000); // Found 988 in 1-1's first IMBZ
 }
 
 void YidsRom::openRom(std::string fileName) {
@@ -595,6 +596,7 @@ void YidsRom::handleImbz(std::string fileName_noext) {
             curTile.tiles[curPos+1] = curByte >> 0x4;
             curTile.tiles[curPos+0] = curByte % 0x10;
         }
+        this->pixelTiles.push_back(curTile);
         // Skip ahead by 0x20
         imbzIndex += CHARTILE_DATA_SIZE;
         currentTileIndex++;
