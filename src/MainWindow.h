@@ -29,6 +29,9 @@ private:
 
     QAction* button_iconPalette;
     QAction* button_iconTiles;
+
+    void toolbarClick_palette();
+    void toolbarClick_tiles();
 };
 
 #endif

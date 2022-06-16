@@ -107,11 +107,13 @@ MainWindow::MainWindow() {
     this->button_iconPalette = toolbar->addAction(QIcon(iconPalette), tr("Open Palette Dialog"));
     this->button_iconPalette->setObjectName("button_iconPalette");
     this->button_iconPalette->setDisabled(true);
+    connect(this->button_iconPalette, &QAction::triggered, this, &MainWindow::toolbarClick_palette);
 
     QPixmap iconTiles("assets/icon_tiles.png");
     this->button_iconTiles = toolbar->addAction(QIcon(iconTiles), tr("Open Tiles Dialog"));
     this->button_iconTiles->setObjectName("button_iconTiles");
     this->button_iconTiles->setDisabled(true);
+    connect(this->button_iconTiles, &QAction::triggered, this, &MainWindow::toolbarClick_tiles);
 
     /**************
      *** LAYOUT ***
@@ -189,5 +191,21 @@ void MainWindow::LoadRom() {
         // Main table //
         auto testPren = YUtils::getCharPreRender(0x7028);
         this->grid->putTile(0,0,testPren);
+    }
+}
+
+void MainWindow::toolbarClick_palette() {
+    if (this->palettePopup->isVisible()) {
+        this->palettePopup->close();
+    } else {
+        this->palettePopup->show();
+    }
+}
+
+void MainWindow::toolbarClick_tiles() {
+    if (this->chartilesPopup->isVisible()) {
+        this->chartilesPopup->close();
+    } else {
+        this->chartilesPopup->show();
     }
 }
