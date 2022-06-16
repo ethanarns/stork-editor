@@ -103,17 +103,17 @@ MainWindow::MainWindow() {
     toolbar->setObjectName("toolbar_primary");
     toolbar->setMovable(false);
 
-    QPixmap iconPalette("assets/icon_palette.png");
-    this->button_iconPalette = toolbar->addAction(QIcon(iconPalette), tr("Open Palette Dialog"));
-    this->button_iconPalette->setObjectName("button_iconPalette");
-    this->button_iconPalette->setDisabled(true);
-    connect(this->button_iconPalette, &QAction::triggered, this, &MainWindow::toolbarClick_palette);
-
     QPixmap iconTiles("assets/icon_tiles.png");
     this->button_iconTiles = toolbar->addAction(QIcon(iconTiles), tr("Open Tiles Dialog"));
     this->button_iconTiles->setObjectName("button_iconTiles");
     this->button_iconTiles->setDisabled(true);
     connect(this->button_iconTiles, &QAction::triggered, this, &MainWindow::toolbarClick_tiles);
+
+    QPixmap iconPalette("assets/icon_palette.png");
+    this->button_iconPalette = toolbar->addAction(QIcon(iconPalette), tr("Open Palette Dialog"));
+    this->button_iconPalette->setObjectName("button_iconPalette");
+    this->button_iconPalette->setDisabled(true);
+    connect(this->button_iconPalette, &QAction::triggered, this, &MainWindow::toolbarClick_palette);
 
     /**************
      *** LAYOUT ***
@@ -175,7 +175,6 @@ void MainWindow::LoadRom() {
         this->chartilesPopup->setMinimumWidth(300);
         this->chartilesPopup->setMinimumHeight(300);
         this->chartilesPopup->setWindowTitle("Tile Viewer");
-        //this->chartilesPopup->show();
         this->button_iconTiles->setDisabled(false);
         this->chartilesTable->refreshLoadedTiles();
 
@@ -184,7 +183,6 @@ void MainWindow::LoadRom() {
         this->palettePopup->setMinimumWidth(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH);
         this->palettePopup->setMinimumHeight(PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);
         this->palettePopup->setWindowTitle("Palette Viewer");
-        //this->palettePopup->show();
         this->button_iconPalette->setDisabled(false);
         this->paletteTable->refreshLoadedTiles();
 
