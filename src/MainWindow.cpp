@@ -178,7 +178,6 @@ void MainWindow::LoadRom() {
 
         // Main table //
         auto testPren = YUtils::getCharPreRender(0x7028);
-        testPren.tileId = 1;
         this->grid->putTile(0,0,testPren);
     }
 }

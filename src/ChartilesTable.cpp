@@ -31,8 +31,6 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
 }
 
 void ChartilesTable::refreshLoadedTiles() {
-    int killStop = 0x100;
-    int killIndex = 0;
     for (auto it = this->yidsRom->pixelTiles.begin(); it != this->yidsRom->pixelTiles.end(); it++) {
         QTableWidgetItem *newItem = new QTableWidgetItem();
         newItem->setData(PixelDelegateData::PIXEL_ARRAY,it->tiles);
@@ -45,9 +43,5 @@ void ChartilesTable::refreshLoadedTiles() {
         int y = it->index / 0x10;
         int x = it->index % 0x10;
         this->setItem(y,x,newItem);
-        killIndex++;
-        if (killIndex >= killStop) {
-            return;
-        }
     }
 }
