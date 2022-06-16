@@ -14,6 +14,7 @@
 #include "utils.h"
 
 #include <QtCore>
+#include <QObject>
 #include <QWidget>
 #include <QMainWindow>
 #include <QAction>
@@ -101,9 +102,16 @@ MainWindow::MainWindow() {
     QToolBar* toolbar = addToolBar("primary_toolbar");
     toolbar->setObjectName("toolbar_primary");
     toolbar->setMovable(false);
-    QPixmap newpix("assets/icon_test.png");
-    auto testAction = toolbar->addAction(QIcon(newpix), tr("Test"));
-    Q_UNUSED(testAction);
+
+    QPixmap iconPalette("assets/icon_palette.png");
+    this->button_iconPalette = toolbar->addAction(QIcon(iconPalette), tr("Open Palette Dialog"));
+    this->button_iconPalette->setObjectName("button_iconPalette");
+    this->button_iconPalette->setDisabled(true);
+
+    QPixmap iconTiles("assets/icon_tiles.png");
+    this->button_iconTiles = toolbar->addAction(QIcon(iconTiles), tr("Open Tiles Dialog"));
+    this->button_iconTiles->setObjectName("button_iconTiles");
+    this->button_iconTiles->setDisabled(true);
 
     /**************
      *** LAYOUT ***
@@ -165,7 +173,8 @@ void MainWindow::LoadRom() {
         this->chartilesPopup->setMinimumWidth(300);
         this->chartilesPopup->setMinimumHeight(300);
         this->chartilesPopup->setWindowTitle("Tile Viewer");
-        this->chartilesPopup->show();
+        //this->chartilesPopup->show();
+        this->button_iconTiles->setDisabled(false);
         this->chartilesTable->refreshLoadedTiles();
 
         // Palette popup //
@@ -173,7 +182,8 @@ void MainWindow::LoadRom() {
         this->palettePopup->setMinimumWidth(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH);
         this->palettePopup->setMinimumHeight(PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);
         this->palettePopup->setWindowTitle("Palette Viewer");
-        this->palettePopup->show();
+        //this->palettePopup->show();
+        this->button_iconPalette->setDisabled(false);
         this->paletteTable->refreshLoadedTiles();
 
         // Main table //

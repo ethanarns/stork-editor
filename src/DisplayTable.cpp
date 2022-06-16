@@ -38,10 +38,10 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         pal = 0;
     }
     auto loadedTile = this->yidsRom->pixelTiles.at(pren.tileId);
-    for (int i = 0; i < loadedTile.tiles.size(); i++) {
-        cout << hex << (int)loadedTile.tiles.at(i) << " ";
-    }
-    cout << endl;
+    // for (int i = 0; i < loadedTile.tiles.size(); i++) {
+    //     cout << hex << (int)loadedTile.tiles.at(i) << " ";
+    // }
+    // cout << endl;
     QTableWidgetItem *newItem = new QTableWidgetItem();
     newItem->setData(PixelDelegateData::PIXEL_ARRAY,loadedTile.tiles);
     newItem->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[pal]);

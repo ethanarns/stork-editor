@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QMainWindow>
 #include <QDialog>
+#include <QAction>
 
 #include "yidsrom.h"
 #include "DisplayTable.h"
@@ -25,6 +26,9 @@ private:
     ChartilesTable* chartilesTable;
     QWidget* palettePopup;
     PaletteTable* paletteTable;
+
+    QAction* button_iconPalette;
+    QAction* button_iconTiles;
 };
 
 #endif
