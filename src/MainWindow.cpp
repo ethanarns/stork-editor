@@ -131,7 +131,7 @@ MainWindow::MainWindow() {
     /********************
      *** CENTER PANEL ***
      ********************/
-    this->grid = new DisplayTable(centralWidget);
+    this->grid = new DisplayTable(centralWidget,this->rom);
     centerPanelLayout->addWidget(this->grid);
 
     /*****************
@@ -175,5 +175,10 @@ void MainWindow::LoadRom() {
         this->palettePopup->setWindowTitle("Palette Viewer");
         this->palettePopup->show();
         this->paletteTable->refreshLoadedTiles();
+
+        // Main table //
+        auto testPren = YUtils::getCharPreRender(0x7028);
+        testPren.tileId = 1;
+        this->grid->putTile(0,0,testPren);
     }
 }
