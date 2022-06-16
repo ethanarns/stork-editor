@@ -13,8 +13,8 @@ public:
     DisplayTable(QWidget *parent, YidsRom* rom);
     void putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren);
 private:
-    const static int CELL_SIZE_PX = 16;
-    const static int CELL_COUNT = 0xff*2;
+    const static int CELL_SIZE_PX = 8;
+    const static int CELL_COUNT = 0xff*4;
     YidsRom* yidsRom;
 };
 
