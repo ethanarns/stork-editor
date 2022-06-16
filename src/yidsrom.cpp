@@ -581,17 +581,25 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             //     YUtils::getColorFromBytes(this->currentPalettes[1].at(i),this->currentPalettes[1].at(i+1));
             // }
         } else if (curSubInstruction == MPBZ_MAGIC_NUM) {
-            // First time, size is 0x85CC, found accurate
             uint32_t mpbzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
-            cout << "mpBz size: " << hex << mpbzLength << endl;
+            // Slice out MPBZ data
             Address compressedDataStart = indexPointer + 8;
             Address compressedDataEnd = compressedDataStart + mpbzLength;
-            
-            cout << "Getting sub array..." << endl;
             auto compressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
-            cout << hex << (int)compressedSubArray.at(1) << endl; // should be 0x60
-            cout << hex << (int)compressedSubArray.at(compressedSubArray.size()-2) << endl; // 0x33
+            // Decompress MPBZ data
+            auto uncompressedMpbz = YCompression::lzssVectorDecomp(compressedSubArray);
             indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
+            // Handle uncompressedMpbz data
+            const uint32_t uncompressedMpbzTwoByteCount = uncompressedMpbz.size() / 2;
+            //for (int mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
+            this->preRenderData.reserve(0xff);
+            for (int mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
+                uint32_t trueOffset = mpbzIndex*2;
+                uint16_t firstByte = (uint16_t)uncompressedMpbz.at(trueOffset);
+                uint16_t secondByte = (uint16_t)uncompressedMpbz.at(trueOffset+1);
+                uint16_t curShort = (secondByte << 8) + firstByte;
+                this->preRenderData.push_back(curShort);
+            }
         } else {
             cout << "Unknown instruction: " << hex << curSubInstruction << endl;
             return;

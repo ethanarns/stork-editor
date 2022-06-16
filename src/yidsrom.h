@@ -33,6 +33,7 @@ public:
     RomMetadata metadata;
     QByteArray currentPalettes[0x10]; // Will probably only use first 8
     std::vector<Chartile> pixelTiles;
+    std::vector<uint16_t> preRenderData;
     bool verbose;
     YidsRom(bool verbose);
     void openRom(std::string fileName);

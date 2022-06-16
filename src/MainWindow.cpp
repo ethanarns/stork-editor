@@ -11,6 +11,7 @@
 #include "MainWindow.h"
 #include "ChartilesTable.h"
 #include "PaletteTable.h"
+#include "Chartile.h"
 #include "utils.h"
 
 #include <QtCore>
@@ -187,8 +188,16 @@ void MainWindow::LoadRom() {
         this->paletteTable->refreshLoadedTiles();
 
         // Main table //
-        auto testPren = YUtils::getCharPreRender(0x7028);
-        this->grid->putTile(0,0,testPren);
+        //auto testPren = YUtils::getCharPreRender(0x0454);
+        //this->grid->putTile(0,0,testPren);
+        uint32_t preRenderSize = this->rom->preRenderData.size();
+        const uint32_t cutOff = 0x10*32.5;
+        for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSize; preRenderIndex++) {
+            uint32_t y = preRenderIndex / cutOff;
+            uint32_t x = preRenderIndex % cutOff;
+            ChartilePreRenderData curShort = YUtils::getCharPreRender(this->rom->preRenderData.at(preRenderIndex));
+            this->grid->putTile(x,y,curShort);
+        }
     }
 }
 
