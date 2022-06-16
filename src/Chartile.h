@@ -15,4 +15,11 @@ struct Chartile {
     QByteArray tiles; // 8x8, each 0-15, representing their connection the current palette
 };
 
+struct ChartilePreRenderData {
+    uint32_t tileId;
+    uint8_t paletteId;
+    bool flipH;
+    bool flipV;
+};
+
 #endif

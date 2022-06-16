@@ -1,5 +1,7 @@
 #include "utils.h"
 
+#include "Chartile.h"
+
 // std::cerr, std::endl, std::ios
 #include <iostream>
 // filesystem::current_path
@@ -99,4 +101,13 @@ QColor YUtils::getColorFromBytes(uint8_t firstByte, uint8_t secondByte) {
 std::vector<uint8_t> YUtils::subVector(std::vector<uint8_t> inVec, uint32_t startOffset, uint32_t endOffset) {
     std::vector<uint8_t> newVec(inVec.begin() + startOffset,inVec.begin() + endOffset);
     return newVec;
+}
+
+ChartilePreRenderData YUtils::getCharPreRender(uint16_t tileAttr) {
+    ChartilePreRenderData res;
+    res.flipV = ((tileAttr >> 11) % 2) == 1;
+    res.flipH = ((tileAttr >> 10) % 2) == 1;
+    res.paletteId = tileAttr >> 12;
+    res.tileId = tileAttr & 0b1111111111;
+    return res;
 }
