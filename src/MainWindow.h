@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QDialog>
 #include <QAction>
+#include <QLabel>
 
 #include "yidsrom.h"
 #include "DisplayTable.h"
@@ -20,6 +21,8 @@ public:
 
     MainWindow();
     void LoadRom();
+
+    QLabel* paletteHoverLabel;
 private:
     DisplayTable* grid;
     QWidget* chartilesPopup;

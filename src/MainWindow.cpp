@@ -13,6 +13,7 @@
 #include "PaletteTable.h"
 #include "Chartile.h"
 #include "utils.h"
+#include "DisplayTable.h"
 
 #include <QtCore>
 #include <QObject>
@@ -25,14 +26,18 @@
 #include <QToolBar>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QGroupBox>
 #include <QPushButton>
 #include <QDialog>
+#include <QLabel>
 
 #include <iostream>
 using namespace std;
 
 MainWindow::MainWindow() {
+    this->setObjectName("mainWindow");
     QWidget* centralWidget = new QWidget;
+    centralWidget->setObjectName("centralWidget");
     setCentralWidget(centralWidget);
     
     /****************
@@ -125,8 +130,6 @@ MainWindow::MainWindow() {
     // Left Panel //
     QVBoxLayout* leftPanelLayout = new QVBoxLayout(centralWidget);
     leftPanelLayout->setObjectName(tr("layout_left"));
-    QPushButton* button1 = new QPushButton("Test1");
-    leftPanelLayout->addWidget(button1);
     mainLayout->addLayout(leftPanelLayout);
 
     // Central Panel //
@@ -142,8 +145,29 @@ MainWindow::MainWindow() {
     /********************
      *** CENTER PANEL ***
      ********************/
-    this->grid = new DisplayTable(centralWidget,this->rom);
+    this->grid = new DisplayTable(this,this->rom);
     centerPanelLayout->addWidget(this->grid);
+
+    /******************
+     *** LEFT PANEL ***
+     ******************/
+    qApp->setStyleSheet("QGroupBox {  border: 1px solid gray;}"); // Debug
+
+    // Top groupbox //
+    QGroupBox* leftPanelTopGroupBox = new QGroupBox(tr("Tile Info"));
+    leftPanelTopGroupBox->setObjectName("groupBox_leftPanel_top");
+    leftPanelLayout->addWidget(leftPanelTopGroupBox);
+    QVBoxLayout* leftPanelTopGroupBoxLayout = new QVBoxLayout;
+
+    this->paletteHoverLabel = new QLabel;
+    this->paletteHoverLabel->setText(tr("Palette: 0xF"));
+    leftPanelTopGroupBoxLayout->addWidget(this->paletteHoverLabel);
+    leftPanelTopGroupBox->setLayout(leftPanelTopGroupBoxLayout);
+
+    // Bottom groupbox //
+    QGroupBox* leftPanelBottomGroupBox = new QGroupBox(tr("Objects"));
+    leftPanelBottomGroupBox->setObjectName("groupBox_leftPanel_bottom");
+    leftPanelLayout->addWidget(leftPanelBottomGroupBox);
 
     /*****************
      *** CHARTILES ***
@@ -188,8 +212,6 @@ void MainWindow::LoadRom() {
         this->paletteTable->refreshLoadedTiles();
 
         // Main table //
-        //auto testPren = YUtils::getCharPreRender(0x0454);
-        //this->grid->putTile(0,0,testPren);
         uint32_t preRenderSize = this->rom->preRenderData.size();
         const uint32_t cutOff = 0x10*32.5;
         for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSize; preRenderIndex++) {
