@@ -24,6 +24,7 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     this->setColumnCount(DisplayTable::CELL_COUNT);
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
+    this->setShowGrid(false);
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
 
     // Drag and Drop //
@@ -52,10 +53,6 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         pal = 0;
     }
     auto loadedTile = this->yidsRom->pixelTiles.at(pren.tileId);
-    // for (int i = 0; i < loadedTile.tiles.size(); i++) {
-    //     cout << hex << (int)loadedTile.tiles.at(i) << " ";
-    // }
-    // cout << endl;
     QTableWidgetItem *newItem = new QTableWidgetItem();
     newItem->setData(PixelDelegateData::PIXEL_ARRAY,loadedTile.tiles);
     newItem->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[pal]);
@@ -66,11 +63,11 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
 }
 
 void DisplayTable::cellEnteredTriggered(int y, int x) {
-    cout << "Cell entered at x,y: " << hex << x << "," << y << endl;
+    //cout << "Cell entered at x,y: " << hex << x << "," << y << endl;
     QTableWidgetItem* curCell = this->item(y,x);
     if (curCell == nullptr) {
         return;
     } else {
-        cout << hex << curCell->data(PixelDelegateData::TILEATTR).toUInt() << endl;
+        //cout << hex << curCell->data(PixelDelegateData::TILEATTR).toUInt() << endl;
     }
 }
