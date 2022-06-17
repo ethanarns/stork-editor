@@ -6,6 +6,7 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -29,6 +30,8 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     this->setMouseTracking(true);
 
     setItemDelegate(new PixelDelegate);
+
+    QTableWidget::connect(this, &QTableWidget::cellEntered, this, &DisplayTable::cellEnteredTriggered);
 }
 
 void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) {
@@ -54,4 +57,12 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
     newItem->setData(PixelDelegateData::PIXEL_ARRAY,loadedTile.tiles);
     newItem->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[pal]);
     this->setItem(y,x,newItem);
+}
+
+void DisplayTable::cellEnteredTriggered(int y, int x) {
+    cout << "Cell entered at x,y: " << hex << x << "," << y << endl;
+    QTableWidgetItem* curCell = this->itemAt(y,x);
+    if (curCell == nullptr) {
+        return;
+    }
 }

@@ -16,6 +16,8 @@ private:
     const static int CELL_SIZE_PX = 8;
     const static int CELL_COUNT = 0xff*4;
     YidsRom* yidsRom;
+
+    void cellEnteredTriggered(int row, int column);
 };
 
 #endif
