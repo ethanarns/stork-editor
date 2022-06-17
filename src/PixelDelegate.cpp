@@ -41,7 +41,15 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             palette.at(whichPalette*2),
             palette.at(whichPalette*2+1)
         );
-        this->drawPixel(painter, option.rect, i % 8, i / 8, qc);
+        int x = i % 8;
+        if (index.data(PixelDelegateData::FLIP_H).toBool() == true) {
+            x = (8 - x - 1);
+        }
+        int y = i / 8;
+        if (index.data(PixelDelegateData::FLIP_V).toBool() == true) {
+            y = (8 - y - 1);
+        }
+        this->drawPixel(painter, option.rect, x, y, qc);
     }
     
 }

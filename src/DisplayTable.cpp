@@ -60,6 +60,8 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
     newItem->setData(PixelDelegateData::PIXEL_ARRAY,loadedTile.tiles);
     newItem->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[pal]);
     newItem->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
+    newItem->setData(PixelDelegateData::FLIP_H,pren.flipH);
+    newItem->setData(PixelDelegateData::FLIP_V,pren.flipV);
     this->setItem(y,x,newItem);
 }
 
