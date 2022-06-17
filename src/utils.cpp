@@ -109,5 +109,6 @@ ChartilePreRenderData YUtils::getCharPreRender(uint16_t tileAttr) {
     res.flipH = ((tileAttr >> 10) % 2) == 1;
     res.paletteId = tileAttr >> 12;
     res.tileId = tileAttr & 0b1111111111;
+    res.tileAttr = tileAttr;
     return res;
 }

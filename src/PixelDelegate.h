@@ -6,7 +6,8 @@
 
 enum PixelDelegateData {
     PIXEL_ARRAY = 101,
-    PALETTE_ARRAY = 102
+    PALETTE_ARRAY = 102,
+    TILEATTR = 103,
 };
 
 class PixelDelegate : public QStyledItemDelegate {

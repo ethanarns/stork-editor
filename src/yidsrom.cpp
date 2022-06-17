@@ -598,6 +598,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 uint16_t firstByte = (uint16_t)uncompressedMpbz.at(trueOffset);
                 uint16_t secondByte = (uint16_t)uncompressedMpbz.at(trueOffset+1);
                 uint16_t curShort = (secondByte << 8) + firstByte;
+                curShort += 0x1000; // 0201c730
                 this->preRenderData.push_back(curShort);
             }
         } else {

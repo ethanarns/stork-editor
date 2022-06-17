@@ -43,6 +43,9 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         cerr << "Y value too high: " << hex << y << endl;
         return;
     }
+    if (pren.tileAttr == 0) {
+        return;
+    }
     int pal = (int)pren.paletteId; // int is more commonly used to access, so convert it early
     if (pal > 0xf) {
         cerr << "paletteId unusually high, got " << hex << pal << endl;
@@ -56,13 +59,16 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
     QTableWidgetItem *newItem = new QTableWidgetItem();
     newItem->setData(PixelDelegateData::PIXEL_ARRAY,loadedTile.tiles);
     newItem->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[pal]);
+    newItem->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
     this->setItem(y,x,newItem);
 }
 
 void DisplayTable::cellEnteredTriggered(int y, int x) {
     cout << "Cell entered at x,y: " << hex << x << "," << y << endl;
-    QTableWidgetItem* curCell = this->itemAt(y,x);
+    QTableWidgetItem* curCell = this->item(y,x);
     if (curCell == nullptr) {
         return;
+    } else {
+        cout << hex << curCell->data(PixelDelegateData::TILEATTR).toUInt() << endl;
     }
 }

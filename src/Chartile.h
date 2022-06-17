@@ -20,6 +20,7 @@ struct ChartilePreRenderData {
     uint8_t paletteId;
     bool flipH;
     bool flipV;
+    uint16_t tileAttr;
 };
 
 #endif
