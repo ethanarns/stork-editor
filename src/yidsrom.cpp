@@ -51,6 +51,7 @@ const uint32_t SCEN_MAGIC_NUM = 0x4e454353; // "SCEN"
 const uint32_t INFO_MAGIC_NUM = 0x4f464e49; // "INFO"
 const uint32_t PLTB_MAGIC_NUM = 0x42544c50; // "PLTB"
 const uint32_t MPBZ_MAGIC_NUM = 0x5a42504d; // "MPBZ" / 4D 50 42 5A
+const uint32_t COLZ_MAGIC_NUM = 0x5a4c4f43; // "COLZ" / 43 4F 4C 5A
 
 const int PALETTE_SIZE = 0x20;
 
@@ -567,7 +568,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             while (pltbReadIndex < indexPointer) {
                 QByteArray currentLoadingPalette;
                 currentLoadingPalette.resize(PALETTE_SIZE);
-                for (int curPaletteIndex = 0; curPaletteIndex < PALETTE_SIZE; curPaletteIndex++) {
+                for (uint32_t curPaletteIndex = 0; curPaletteIndex < PALETTE_SIZE; curPaletteIndex++) {
                     currentLoadingPalette[curPaletteIndex] = mpdzVec.at(pltbReadIndex + curPaletteIndex);
                     // cout << "Loc: " << hex << (pltbReadIndex + curPaletteIndex) << ", val: ";
                     // cout << hex << (int)mpdzVec.at(pltbReadIndex + curPaletteIndex) << ";" << endl;
@@ -593,7 +594,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             const uint32_t uncompressedMpbzTwoByteCount = uncompressedMpbz.size() / 2;
             //for (int mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
             this->preRenderData.reserve(0xff);
-            for (int mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
+            for (uint32_t mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
                 uint32_t trueOffset = mpbzIndex*2;
                 uint16_t firstByte = (uint16_t)uncompressedMpbz.at(trueOffset);
                 uint16_t secondByte = (uint16_t)uncompressedMpbz.at(trueOffset+1);
@@ -601,6 +602,21 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 curShort += 0x1000; // 0201c730
                 this->preRenderData.push_back(curShort);
             }
+        } else if (curSubInstruction == COLZ_MAGIC_NUM) {
+            uint32_t colzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First is 0x0b7c
+            // Slice out COLZ data
+            Address compressedDataStart = indexPointer + 8;
+            Address compressedDataEnd = compressedDataStart + colzLength;
+            auto colzCompressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
+            auto uncompressedColz = YCompression::lzssVectorDecomp(colzCompressedSubArray);
+            uint32_t colzUncompressedLength = uncompressedColz.size();
+            // for (uint32_t i = 0; i < colzUncompressedLength; i+=2) {
+            //     if (i % 520 == 0) {
+            //         cout << endl;
+            //     }
+            //     cout << hex << (int)(uncompressedColz.at(i) + (uncompressedColz.at(i+1) << 8)) << "";
+            // }
+            return;
         } else {
             cout << "Unknown instruction: " << hex << curSubInstruction << endl;
             return;

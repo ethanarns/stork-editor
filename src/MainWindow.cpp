@@ -213,7 +213,8 @@ void MainWindow::LoadRom() {
 
         // Main table //
         uint32_t preRenderSize = this->rom->preRenderData.size();
-        const uint32_t cutOff = 0x10*32.5;
+        //const uint32_t cutOff = 0x10*32.5;
+        const uint32_t cutOff = 520;
         for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSize; preRenderIndex++) {
             uint32_t y = preRenderIndex / cutOff;
             uint32_t x = preRenderIndex % cutOff;
