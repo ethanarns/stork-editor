@@ -10,7 +10,7 @@ enum PixelDelegateData {
     TILEATTR = 103,
     FLIP_H = 104,
     FLIP_V = 105,
-    COLLISIONTYPE = 106,
+    COLLISION_DRAW = 106,
     SHOW_COLLISION = 107
 };
 
@@ -23,6 +23,14 @@ enum CollisionType {
     DOWN_RIGHT_45 = 0x47,
     DOWN_RIGHT_STEEP = 0x46,
     STATIC_COIN = 0x1a
+};
+
+enum CollisionDraw {
+    CLEAR,
+    CORNER_TOP_RIGHT,
+    CORNER_TOP_LEFT,
+    CORNER_BOTTOM_LEFT,
+    CORNER_BOTTOM_RIGHT
 };
 
 class PixelDelegate : public QStyledItemDelegate {

@@ -16,7 +16,7 @@ const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
     QByteArray byteArray = index.data(PixelDelegateData::PIXEL_ARRAY).toByteArray();
-    CollisionType colType = static_cast<CollisionType>(index.data(PixelDelegateData::COLLISIONTYPE).toInt());
+    CollisionDraw colDrawType = static_cast<CollisionDraw>(index.data(PixelDelegateData::COLLISION_DRAW).toInt());
     QByteArray palette = index.data(PixelDelegateData::PALETTE_ARRAY).toByteArray();
     if (byteArray.size() == 0) {
         const char testArrayPrimitive[] = {
@@ -53,26 +53,151 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         this->drawPixel(painter, option.rect, x, y, qc);
     }
     if (index.data(PixelDelegateData::SHOW_COLLISION).toBool() == true) {
-        const int squareMax = PIXEL_TILE_DIVISIONS-1;
+
         QColor qcBlack("black");
-        qcBlack.setAlpha(150);
         QPen qpB(qcBlack);
+        qpB.setStyle(Qt::PenStyle::SolidLine);
 
         QColor qcWhite("white");
-        qcWhite.setAlpha(200);
         QPen qpW(qcWhite);
-        switch(colType) {
-            case CollisionType::NONE:
-                break;
-            case CollisionType::SQUARE:
-            default: {
+        qpW.setStyle(Qt::PenStyle::DotLine);
+
+        const int X_WIDTH = option.rect.width()-1;
+        const int Y_HEIGHT = option.rect.height()-1;
+        const int X_BASE = option.rect.x();
+        const int Y_BASE = option.rect.y();
+
+        switch(colDrawType) {
+            case CollisionDraw::CORNER_TOP_LEFT: {
                 painter->setPen(qpB);
-                painter->drawRect(option.rect.x(), option.rect.y(), squareMax, squareMax);
-                
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE,
+                    X_BASE+X_WIDTH,
+                    Y_BASE
+                );
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE,
+                    X_BASE,
+                    Y_BASE+Y_HEIGHT
+                );
                 painter->setPen(qpW);
-                painter->drawRect(option.rect.x()+1,option.rect.y()+1,squareMax-2,squareMax-2);
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE,
+                    X_BASE+X_WIDTH,
+                    Y_BASE
+                );
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE,
+                    X_BASE,
+                    Y_BASE+Y_HEIGHT
+                );
                 break;
             }
+            case CollisionDraw::CORNER_TOP_RIGHT: {
+                painter->setPen(qpB);
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE,
+                    X_BASE+X_WIDTH,
+                    Y_BASE
+                );
+                painter->drawLine(
+                    X_BASE+X_WIDTH,
+                    Y_BASE,
+                    X_BASE+X_WIDTH,
+                    Y_BASE+Y_HEIGHT
+                );
+                painter->setPen(qpW);
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE,
+                    X_BASE+X_WIDTH,
+                    Y_BASE
+                );
+                painter->drawLine(
+                    X_BASE+X_WIDTH,
+                    Y_BASE,
+                    X_BASE+X_WIDTH,
+                    Y_BASE+Y_HEIGHT
+                );
+                break;
+            }
+            case CollisionDraw::CORNER_BOTTOM_LEFT: {
+                painter->setPen(qpB);
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE,
+                    X_BASE,
+                    Y_BASE+Y_HEIGHT
+                );
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE+Y_HEIGHT,
+                    X_BASE+X_WIDTH,
+                    Y_BASE+Y_HEIGHT
+                );
+                painter->setPen(qpW);
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE+Y_HEIGHT,
+                    X_BASE+X_WIDTH,
+                    Y_BASE+Y_HEIGHT
+                );
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE,
+                    X_BASE,
+                    Y_BASE+Y_HEIGHT
+                );
+                break;
+            }
+            case CollisionDraw::CORNER_BOTTOM_RIGHT: {
+                painter->setPen(qpB);
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE+Y_HEIGHT,
+                    X_BASE+X_WIDTH,
+                    Y_BASE+Y_HEIGHT
+                );
+                painter->drawLine(
+                    X_BASE+X_WIDTH,
+                    Y_BASE+Y_HEIGHT,
+                    X_BASE+X_WIDTH,
+                    Y_BASE
+                );
+                painter->setPen(qpW);
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE+Y_HEIGHT,
+                    X_BASE+X_WIDTH,
+                    Y_BASE+Y_HEIGHT
+                );
+                painter->drawLine(
+                    X_BASE+X_WIDTH,
+                    Y_BASE+Y_HEIGHT,
+                    X_BASE+X_WIDTH,
+                    Y_BASE
+                );
+                break;
+            }
+            case CollisionDraw::CLEAR:
+            default:
+                break;
+            // case CollisionType::NONE:
+            //     break;
+            // case CollisionType::SQUARE:
+            // default: {
+            //     painter->setPen(qpB);
+            //     painter->drawRect(option.rect.x(),option.rect.y(),squareMax,squareMax);
+                
+            //     painter->setPen(qpW);
+            //     painter->drawRect(option.rect.x(),option.rect.y(),squareMax,squareMax);
+            //     break;
+            // }
         }
     }
 }

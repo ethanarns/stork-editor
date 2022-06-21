@@ -14,7 +14,7 @@ public:
     DisplayTable(QWidget *parent, YidsRom* rom);
     void putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren);
     void displayTableClicked(int row, int column);
-    void setCellCollision(int row, int column, CollisionType colType);
+    void setCellCollision(int row, int column, CollisionDraw colType);
     void initCellCollision();
     void toggleShowCollision();
 private:

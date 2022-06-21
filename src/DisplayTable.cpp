@@ -62,7 +62,7 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
     newItem->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
     newItem->setData(PixelDelegateData::FLIP_H,pren.flipH);
     newItem->setData(PixelDelegateData::FLIP_V,pren.flipV);
-    newItem->setData(PixelDelegateData::COLLISIONTYPE,CollisionType::NONE);
+    newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
     newItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
     this->setItem(y,x,newItem);
 }
@@ -84,30 +84,35 @@ void DisplayTable::displayTableClicked(int row, int column) {
         // Nothing has loaded yet, cancel
         return;
     }
-    cout << hex << curCell->data(PixelDelegateData::COLLISIONTYPE).toInt() << endl;
+    //cout << hex << curCell->data(PixelDelegateData::COLLISION_DRAW).toInt() << endl;
 }
 
-void DisplayTable::setCellCollision(int row, int column, CollisionType colType) {
+void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType) {
     QTableWidgetItem* curCell = this->item(row,column);
     if (curCell == nullptr) {
         // Nothing has loaded yet, cancel
         return;
     }
-    curCell->setData(PixelDelegateData::COLLISIONTYPE,colType);
+    curCell->setData(PixelDelegateData::COLLISION_DRAW,colType);
 }
 
 void DisplayTable::initCellCollision() {
     const uint32_t cutOff = 520/2;
-    const auto CELL_LIST_SIZE = this->yidsRom->collisionTileArray.size();
+    const int CELL_LIST_SIZE = this->yidsRom->collisionTileArray.size();
     for (int colIndex = 0; colIndex < CELL_LIST_SIZE; colIndex++) {
-        const auto curCol = &this->yidsRom->collisionTileArray.at(colIndex);
-        if (*curCol != 0) {
-            uint32_t y = (colIndex / cutOff)*2;
-            uint32_t x = (colIndex % cutOff)*2;
-            this->setCellCollision(y  ,  x,(CollisionType)(*curCol));
-            this->setCellCollision(y+1,x  ,(CollisionType)(*curCol));
-            this->setCellCollision(y  ,x+1,(CollisionType)(*curCol));
-            this->setCellCollision(y+1,x+1,(CollisionType)(*curCol));
+        const auto curCol = this->yidsRom->collisionTileArray.at(colIndex);
+        uint32_t y = (colIndex / cutOff)*2;
+        uint32_t x = (colIndex % cutOff)*2;
+        if (curCol == 1) {
+            this->setCellCollision(y  ,  x,CollisionDraw::CORNER_TOP_LEFT);
+            this->setCellCollision(y+1,x  ,CollisionDraw::CORNER_BOTTOM_LEFT);
+            this->setCellCollision(y  ,x+1,CollisionDraw::CORNER_TOP_RIGHT);
+            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);
+        } else if (curCol != 0) {
+            this->setCellCollision(y  ,  x,CollisionDraw::CORNER_TOP_LEFT);
+            //this->setCellCollision(y+1,x  ,CollisionDraw::CORNER_BOTTOM_LEFT);
+            //this->setCellCollision(y  ,x+1,CollisionDraw::CORNER_TOP_RIGHT);
+            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);
         } else {
             // It's zero, so nothing
         }
