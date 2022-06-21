@@ -9,7 +9,13 @@ enum PixelDelegateData {
     PALETTE_ARRAY = 102,
     TILEATTR = 103,
     FLIP_H = 104,
-    FLIP_V = 105
+    FLIP_V = 105,
+    COLLISIONTYPE = 106
+};
+
+enum CollisionType {
+    NONE,
+    SQUARE
 };
 
 class PixelDelegate : public QStyledItemDelegate {

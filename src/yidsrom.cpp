@@ -590,6 +590,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             // Decompress MPBZ data
             auto uncompressedMpbz = YCompression::lzssVectorDecomp(compressedSubArray);
             indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
+            cout << "mpbzuncomp len: " << dec << uncompressedMpbz.size() << endl;
             // Handle uncompressedMpbz data
             const uint32_t uncompressedMpbzTwoByteCount = uncompressedMpbz.size() / 2;
             //for (int mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
@@ -610,6 +611,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             auto colzCompressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
             auto uncompressedColz = YCompression::lzssVectorDecomp(colzCompressedSubArray);
             uint32_t colzUncompressedLength = uncompressedColz.size();
+            cout << "colzuncomp len: " << dec << colzUncompressedLength << endl;
             // for (uint32_t i = 0; i < colzUncompressedLength; i+=2) {
             //     if (i % 520 == 0) {
             //         cout << endl;
@@ -623,6 +625,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
         }
     }
 }
+
 const int CHARTILE_DATA_SIZE = 0x20;
 void YidsRom::handleImbz(std::string fileName_noext) {
     if (this->verbose) cout << "Handling IMBZ file: '" << fileName_noext << "'" << endl;

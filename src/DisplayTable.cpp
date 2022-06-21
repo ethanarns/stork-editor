@@ -26,6 +26,7 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     this->verticalHeader()->hide();
     this->setShowGrid(false);
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
+    this->setEditTriggers(QAbstractItemView::NoEditTriggers); // Disable text editing
 
     // Drag and Drop //
     this->setMouseTracking(true);
@@ -33,6 +34,7 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     setItemDelegate(new PixelDelegate);
 
     QTableWidget::connect(this, &QTableWidget::cellEntered, this, &DisplayTable::cellEnteredTriggered);
+    QTableWidget::connect(this, &QTableWidget::cellClicked, this, &DisplayTable::displayTableClicked);
 }
 
 void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) {
@@ -59,6 +61,7 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
     newItem->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
     newItem->setData(PixelDelegateData::FLIP_H,pren.flipH);
     newItem->setData(PixelDelegateData::FLIP_V,pren.flipV);
+    newItem->setData(PixelDelegateData::COLLISIONTYPE,CollisionType::NONE);
     this->setItem(y,x,newItem);
 }
 
@@ -70,4 +73,14 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
     } else {
         //cout << hex << curCell->data(PixelDelegateData::TILEATTR).toUInt() << endl;
     }
+}
+
+void DisplayTable::displayTableClicked(int row, int column) {
+    cout << hex << row << "," << hex << column << endl;
+    QTableWidgetItem* curCell = this->item(row,column);
+    if (curCell == nullptr) {
+        // Nothing has loaded yet, cancel
+        return;
+    }
+    curCell->setData(PixelDelegateData::COLLISIONTYPE,CollisionType::SQUARE);
 }

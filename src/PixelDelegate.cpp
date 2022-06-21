@@ -16,6 +16,10 @@ const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
     QByteArray byteArray = index.data(PixelDelegateData::PIXEL_ARRAY).toByteArray();
+    CollisionType colType = static_cast<CollisionType>(index.data(PixelDelegateData::COLLISIONTYPE).toInt());
+    if (colType == CollisionType::SQUARE) {
+        byteArray[0] = 0x1;
+    }
     QByteArray palette = index.data(PixelDelegateData::PALETTE_ARRAY).toByteArray();
     if (byteArray.size() == 0) {
         const char testArrayPrimitive[] = {
