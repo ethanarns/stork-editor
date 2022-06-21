@@ -121,6 +121,12 @@ MainWindow::MainWindow() {
     this->button_iconPalette->setDisabled(true);
     connect(this->button_iconPalette, &QAction::triggered, this, &MainWindow::toolbarClick_palette);
 
+    QPixmap iconCollisionShow("assets/icon_palette.png");
+    this->button_toggleCollision = toolbar->addAction(QIcon(iconCollisionShow), tr("Toggle collision visibility"));
+    this->button_toggleCollision->setObjectName("button_iconCollision");
+    this->button_toggleCollision->setDisabled(true);
+    connect(this->button_toggleCollision,&QAction::triggered, this, &MainWindow::toolbarClick_showCollision);
+
     /**************
      *** LAYOUT ***
      **************/
@@ -223,6 +229,7 @@ void MainWindow::LoadRom() {
         }
         // Collision
         this->grid->initCellCollision();
+        this->button_toggleCollision->setDisabled(false);
     }
 }
 
@@ -240,4 +247,8 @@ void MainWindow::toolbarClick_tiles() {
     } else {
         this->chartilesPopup->show();
     }
+}
+
+void MainWindow::toolbarClick_showCollision() {
+    this->grid->toggleShowCollision();
 }

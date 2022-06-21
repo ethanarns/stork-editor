@@ -12,6 +12,7 @@ using namespace std;
 
 DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     Q_UNUSED(parent);
+    this->shouldShowCollision = true;
 
     this->yidsRom = rom;
 
@@ -62,6 +63,7 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
     newItem->setData(PixelDelegateData::FLIP_H,pren.flipH);
     newItem->setData(PixelDelegateData::FLIP_V,pren.flipV);
     newItem->setData(PixelDelegateData::COLLISIONTYPE,CollisionType::NONE);
+    newItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
     this->setItem(y,x,newItem);
 }
 
@@ -82,7 +84,7 @@ void DisplayTable::displayTableClicked(int row, int column) {
         // Nothing has loaded yet, cancel
         return;
     }
-    curCell->setData(PixelDelegateData::COLLISIONTYPE,CollisionType::SQUARE);
+    cout << hex << curCell->data(PixelDelegateData::COLLISIONTYPE).toInt() << endl;
 }
 
 void DisplayTable::setCellCollision(int row, int column, CollisionType colType) {
@@ -102,7 +104,31 @@ void DisplayTable::initCellCollision() {
         if (*curCol != 0) {
             uint32_t y = (colIndex / cutOff)*2;
             uint32_t x = (colIndex % cutOff)*2;
-            this->setCellCollision(y,x,CollisionType::SQUARE);
+            this->setCellCollision(y  ,  x,(CollisionType)(*curCol));
+            this->setCellCollision(y+1,x  ,(CollisionType)(*curCol));
+            this->setCellCollision(y  ,x+1,(CollisionType)(*curCol));
+            this->setCellCollision(y+1,x+1,(CollisionType)(*curCol));
+        } else {
+            // It's zero, so nothing
+        }
+    }
+}
+
+void DisplayTable::toggleShowCollision() {
+    if (this->shouldShowCollision == true) {
+        this->shouldShowCollision = false;
+        auto allItems = this->items(nullptr);
+    } else {
+        this->shouldShowCollision = true;
+    }
+    const int ROW_COUNT = this->rowCount();
+    const int COLUMN_COUNT = this->columnCount();
+    for (int row = 0; row < ROW_COUNT; row++) {
+        for (int col = 0; col < COLUMN_COUNT; col++) {
+            auto potentialItem = this->item(row,col);
+            if (potentialItem != nullptr) {
+                potentialItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
+            }
         }
     }
 }

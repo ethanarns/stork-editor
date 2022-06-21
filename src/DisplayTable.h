@@ -16,10 +16,12 @@ public:
     void displayTableClicked(int row, int column);
     void setCellCollision(int row, int column, CollisionType colType);
     void initCellCollision();
+    void toggleShowCollision();
 private:
     const static int CELL_SIZE_PX = 8;
     const static int CELL_COUNT = 0xff*4;
     YidsRom* yidsRom;
+    bool shouldShowCollision;
 
     void cellEnteredTriggered(int row, int column);
 };

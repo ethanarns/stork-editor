@@ -52,22 +52,28 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         }
         this->drawPixel(painter, option.rect, x, y, qc);
     }
-    switch(colType) {
-        case CollisionType::SQUARE: {
-            QColor squareColor = QColor("black");
-            const int COL_SQUARE_LENGTH = PIXEL_TILE_TOTAL*2;
-            for (int colSquareIndex = 0; colSquareIndex < COL_SQUARE_LENGTH; colSquareIndex++) {
-                int colSquareX = colSquareIndex % 16;
-                int colSquareY = colSquareIndex / 16;
-                if (colSquareY == 0 || colSquareY == COL_SQUARE_LENGTH-1 || colSquareX == 0 || colSquareX == COL_SQUARE_LENGTH-1) {
-                    this->drawPixel(painter, option.rect, colSquareX, colSquareY, squareColor);
-                }
+    if (index.data(PixelDelegateData::SHOW_COLLISION).toBool() == true) {
+        const int squareMax = PIXEL_TILE_DIVISIONS-1;
+        QColor qcBlack("black");
+        qcBlack.setAlpha(150);
+        QPen qpB(qcBlack);
+
+        QColor qcWhite("white");
+        qcWhite.setAlpha(200);
+        QPen qpW(qcWhite);
+        switch(colType) {
+            case CollisionType::NONE:
+                break;
+            case CollisionType::SQUARE:
+            default: {
+                painter->setPen(qpB);
+                painter->drawRect(option.rect.x(), option.rect.y(), squareMax, squareMax);
+                
+                painter->setPen(qpW);
+                painter->drawRect(option.rect.x()+1,option.rect.y()+1,squareMax-2,squareMax-2);
+                break;
             }
-            break;
         }
-        case CollisionType::NONE:
-        default:
-            break;
     }
 }
 

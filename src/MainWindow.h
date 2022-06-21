@@ -32,9 +32,11 @@ private:
 
     QAction* button_iconPalette;
     QAction* button_iconTiles;
+    QAction* button_toggleCollision;
 
     void toolbarClick_palette();
     void toolbarClick_tiles();
+    void toolbarClick_showCollision();
 };
 
 #endif
