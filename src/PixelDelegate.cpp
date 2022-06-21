@@ -17,9 +17,6 @@ const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
     QByteArray byteArray = index.data(PixelDelegateData::PIXEL_ARRAY).toByteArray();
     CollisionType colType = static_cast<CollisionType>(index.data(PixelDelegateData::COLLISIONTYPE).toInt());
-    if (colType == CollisionType::SQUARE) {
-        byteArray[0] = 0x1;
-    }
     QByteArray palette = index.data(PixelDelegateData::PALETTE_ARRAY).toByteArray();
     if (byteArray.size() == 0) {
         const char testArrayPrimitive[] = {
@@ -55,7 +52,23 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         }
         this->drawPixel(painter, option.rect, x, y, qc);
     }
-    
+    switch(colType) {
+        case CollisionType::SQUARE: {
+            QColor squareColor = QColor("black");
+            const int COL_SQUARE_LENGTH = PIXEL_TILE_TOTAL*2;
+            for (int colSquareIndex = 0; colSquareIndex < COL_SQUARE_LENGTH; colSquareIndex++) {
+                int colSquareX = colSquareIndex % 16;
+                int colSquareY = colSquareIndex / 16;
+                if (colSquareY == 0 || colSquareY == COL_SQUARE_LENGTH-1 || colSquareX == 0 || colSquareX == COL_SQUARE_LENGTH-1) {
+                    this->drawPixel(painter, option.rect, colSquareX, colSquareY, squareColor);
+                }
+            }
+            break;
+        }
+        case CollisionType::NONE:
+        default:
+            break;
+    }
 }
 
 void PixelDelegate::drawPixel(QPainter *painter, const QRect &rect, int x, int y, QColor &color) const {

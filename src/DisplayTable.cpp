@@ -84,3 +84,25 @@ void DisplayTable::displayTableClicked(int row, int column) {
     }
     curCell->setData(PixelDelegateData::COLLISIONTYPE,CollisionType::SQUARE);
 }
+
+void DisplayTable::setCellCollision(int row, int column, CollisionType colType) {
+    QTableWidgetItem* curCell = this->item(row,column);
+    if (curCell == nullptr) {
+        // Nothing has loaded yet, cancel
+        return;
+    }
+    curCell->setData(PixelDelegateData::COLLISIONTYPE,colType);
+}
+
+void DisplayTable::initCellCollision() {
+    const uint32_t cutOff = 520/2;
+    const auto CELL_LIST_SIZE = this->yidsRom->collisionTileArray.size();
+    for (int colIndex = 0; colIndex < CELL_LIST_SIZE; colIndex++) {
+        const auto curCol = &this->yidsRom->collisionTileArray.at(colIndex);
+        if (*curCol != 0) {
+            uint32_t y = (colIndex / cutOff)*2;
+            uint32_t x = (colIndex % cutOff)*2;
+            this->setCellCollision(y,x,CollisionType::SQUARE);
+        }
+    }
+}

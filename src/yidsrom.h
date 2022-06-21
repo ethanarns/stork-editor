@@ -34,6 +34,7 @@ public:
     QByteArray currentPalettes[0x10]; // Will probably only use first 8
     std::vector<Chartile> pixelTiles;
     std::vector<uint16_t> preRenderData;
+    std::vector<uint8_t> collisionTileArray;
     bool verbose;
     YidsRom(bool verbose);
     void openRom(std::string fileName);

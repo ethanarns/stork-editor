@@ -221,6 +221,8 @@ void MainWindow::LoadRom() {
             ChartilePreRenderData curShort = YUtils::getCharPreRender(this->rom->preRenderData.at(preRenderIndex));
             this->grid->putTile(x,y,curShort);
         }
+        // Collision
+        this->grid->initCellCollision();
     }
 }
 

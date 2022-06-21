@@ -60,6 +60,8 @@ YidsRom::YidsRom(bool verbose) {
     this->filesLoaded = false;
     this->verbose = verbose;
     this->pixelTiles.reserve(1000); // Found 988 in 1-1's first IMBZ
+    this->preRenderData.reserve(180'000); // Found 189280 in 1-1's first IMBZ
+    this->collisionTileArray.reserve(79'000); // Found roughly 79000 in 1-1's first IMBZ
 }
 
 void YidsRom::openRom(std::string fileName) {
@@ -594,7 +596,6 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             // Handle uncompressedMpbz data
             const uint32_t uncompressedMpbzTwoByteCount = uncompressedMpbz.size() / 2;
             //for (int mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
-            this->preRenderData.reserve(0xff);
             for (uint32_t mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
                 uint32_t trueOffset = mpbzIndex*2;
                 uint16_t firstByte = (uint16_t)uncompressedMpbz.at(trueOffset);
@@ -610,14 +611,9 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             Address compressedDataEnd = compressedDataStart + colzLength;
             auto colzCompressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
             auto uncompressedColz = YCompression::lzssVectorDecomp(colzCompressedSubArray);
-            uint32_t colzUncompressedLength = uncompressedColz.size();
-            cout << "colzuncomp len: " << dec << colzUncompressedLength << endl;
-            // for (uint32_t i = 0; i < colzUncompressedLength; i+=2) {
-            //     if (i % 520 == 0) {
-            //         cout << endl;
-            //     }
-            //     cout << hex << (int)(uncompressedColz.at(i) + (uncompressedColz.at(i+1) << 8)) << "";
-            // }
+            for (auto it = uncompressedColz.begin(); it != uncompressedColz.end(); it++) {
+                this->collisionTileArray.push_back(*it);
+            }
             return;
         } else {
             cout << "Unknown instruction: " << hex << curSubInstruction << endl;
