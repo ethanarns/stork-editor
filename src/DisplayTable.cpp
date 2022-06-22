@@ -103,18 +103,27 @@ void DisplayTable::initCellCollision() {
         const auto curCol = this->yidsRom->collisionTileArray.at(colIndex);
         uint32_t y = (colIndex / cutOff)*2;
         uint32_t x = (colIndex % cutOff)*2;
-        if (curCol == 1) {
-            this->setCellCollision(y  ,  x,CollisionDraw::CORNER_TOP_LEFT);
-            this->setCellCollision(y+1,x  ,CollisionDraw::CORNER_BOTTOM_LEFT);
-            this->setCellCollision(y  ,x+1,CollisionDraw::CORNER_TOP_RIGHT);
+        if (curCol == CollisionType::SQUARE) {
+            this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT);
+            this->setCellCollision(y+1,x,  CollisionDraw::CORNER_BOTTOM_LEFT);
+            this->setCellCollision(y,  x+1,CollisionDraw::CORNER_TOP_RIGHT);
             this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);
-        } else if (curCol != 0) {
-            this->setCellCollision(y  ,  x,CollisionDraw::CORNER_TOP_LEFT);
-            //this->setCellCollision(y+1,x  ,CollisionDraw::CORNER_BOTTOM_LEFT);
-            //this->setCellCollision(y  ,x+1,CollisionDraw::CORNER_TOP_RIGHT);
+        } else if (curCol == CollisionType::PLATFORM_PASSABLE) {
+            this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT);
+            this->setCellCollision(y,  x+1,CollisionDraw::CORNER_TOP_RIGHT);
+            this->setCellCollision(y+1,x,  CollisionDraw::ZIG_ZAG);
+            this->setCellCollision(y+1,x+1,CollisionDraw::ZIG_ZAG);
+        } else if (curCol == CollisionType::DOWN_RIGHT_45) {
+            this->setCellCollision(y,  x,  CollisionDraw::DIAG_DOWN_RIGHT);
+            this->setCellCollision(y+1,x,  CollisionDraw::CORNER_BOTTOM_LEFT);
+            this->setCellCollision(y+1,x+1,CollisionDraw::DIAG_DOWN_RIGHT);
+        } else if (curCol == CollisionType::UP_RIGHT_45) {
             this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);
-        } else {
-            // It's zero, so nothing
+            this->setCellCollision(y+1,x,  CollisionDraw::DIAG_UP_RIGHT);
+            this->setCellCollision(y  ,x+1,CollisionDraw::DIAG_UP_RIGHT);
+        } else if (curCol != 0) { // Unknown, draw temp
+            this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT);
+            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);
         }
     }
 }

@@ -30,7 +30,10 @@ enum CollisionDraw {
     CORNER_TOP_RIGHT,
     CORNER_TOP_LEFT,
     CORNER_BOTTOM_LEFT,
-    CORNER_BOTTOM_RIGHT
+    CORNER_BOTTOM_RIGHT,
+    ZIG_ZAG,
+    DIAG_DOWN_RIGHT,
+    DIAG_UP_RIGHT
 };
 
 class PixelDelegate : public QStyledItemDelegate {

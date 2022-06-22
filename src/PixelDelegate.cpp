@@ -184,6 +184,61 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 );
                 break;
             }
+            case CollisionDraw::ZIG_ZAG: {
+                painter->setPen(qpB);
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE,
+                    X_BASE+X_WIDTH/2,
+                    Y_BASE+Y_HEIGHT
+                );
+                painter->drawLine(
+                    X_BASE+X_WIDTH/2,
+                    Y_BASE+Y_HEIGHT,
+                    X_BASE+X_WIDTH,
+                    Y_BASE
+                );
+                qpW.setColor("red");
+                painter->setPen(qpW);
+                painter->drawLine(
+                    X_BASE,
+                    Y_BASE,
+                    X_BASE+X_WIDTH/2,
+                    Y_BASE+Y_HEIGHT
+                );
+                painter->drawLine(
+                    X_BASE+X_WIDTH/2,
+                    Y_BASE+Y_HEIGHT,
+                    X_BASE+X_WIDTH,
+                    Y_BASE
+                );
+                break;
+            }
+            case CollisionDraw::DIAG_DOWN_RIGHT: {
+                painter->setPen(qpB);
+                painter->drawLine(
+                    X_BASE,Y_BASE,
+                    X_BASE+X_WIDTH,Y_BASE+Y_HEIGHT
+                );
+                painter->setPen(qpW);
+                painter->drawLine(
+                    X_BASE,Y_BASE,
+                    X_BASE+X_WIDTH,Y_BASE+Y_HEIGHT
+                );
+                break;
+            }
+            case CollisionDraw::DIAG_UP_RIGHT: {
+                painter->setPen(qpB);
+                painter->drawLine(
+                    X_BASE,Y_BASE+Y_HEIGHT,
+                    X_BASE+X_WIDTH,Y_BASE
+                );
+                painter->setPen(qpW);
+                painter->drawLine(
+                    X_BASE,Y_BASE+Y_HEIGHT,
+                    X_BASE+X_WIDTH,Y_BASE
+                );
+            }
             case CollisionDraw::CLEAR:
             default:
                 break;
