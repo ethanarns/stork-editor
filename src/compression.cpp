@@ -35,7 +35,7 @@ bool YCompression::blzDecompress(std::string filepath, bool verbose) {
     // Silence stdout
     if (!verbose) blzCmd.append(" 1> /dev/null");
     auto result = system(blzCmd.c_str());
-    cout << "System result: " << result << endl;
+    if (verbose) cout << "System result: " << result << endl;
     return true;
 }
 
@@ -50,14 +50,14 @@ bool YCompression::lzssDecomp(std::string filepath, bool verbose) {
     // Silence stdout?
     if (!verbose) lzssCmd.append(" 1> /dev/null");
     auto result = system(lzssCmd.c_str());
-    cout << "System result: " << result << endl;
+    if (verbose) cout << "System result: " << result << endl;
     return true;
 }
 
-std::vector<uint8_t> YCompression::lzssVectorDecomp(std::vector<uint8_t>& inputVec) {
+std::vector<uint8_t> YCompression::lzssVectorDecomp(std::vector<uint8_t>& inputVec, bool verbose) {
     const std::string tempName = "TEMP.lz10";
     YUtils::writeByteVectorToFile(inputVec,tempName);
-    bool decompResult = YCompression::lzssDecomp(tempName, true);
+    bool decompResult = YCompression::lzssDecomp(tempName, verbose);
     if (!decompResult) {
         cerr << "Failed to extract MPDZ file" << endl;
         exit(EXIT_FAILURE);

@@ -35,6 +35,8 @@ public:
     std::vector<Chartile> pixelTiles;
     std::vector<uint16_t> preRenderData;
     std::vector<uint8_t> collisionTileArray;
+    uint32_t canvasWidth = 0;
+    uint32_t canvasHeight = 0;
     bool verbose;
     YidsRom(bool verbose);
     void openRom(std::string fileName);

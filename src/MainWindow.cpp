@@ -219,8 +219,12 @@ void MainWindow::LoadRom() {
 
         // Main table //
         uint32_t preRenderSize = this->rom->preRenderData.size();
+        if (this->rom->canvasWidth == 0) {
+            cerr << "Canvas Width was never set!" << endl;
+            exit(EXIT_FAILURE);
+        }
         //const uint32_t cutOff = 0x10*32.5;
-        const uint32_t cutOff = 520;
+        const uint32_t cutOff = this->rom->canvasWidth;
         for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSize; preRenderIndex++) {
             uint32_t y = preRenderIndex / cutOff;
             uint32_t x = preRenderIndex % cutOff;

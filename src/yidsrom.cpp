@@ -52,6 +52,9 @@ const uint32_t INFO_MAGIC_NUM = 0x4f464e49; // "INFO"
 const uint32_t PLTB_MAGIC_NUM = 0x42544c50; // "PLTB"
 const uint32_t MPBZ_MAGIC_NUM = 0x5a42504d; // "MPBZ" / 4D 50 42 5A
 const uint32_t COLZ_MAGIC_NUM = 0x5a4c4f43; // "COLZ" / 43 4F 4C 5A
+const uint32_t IMGB_MAGIC_NUM = 0x42474d49; // "IMGB" / 49 4d 47 42
+const uint32_t ANMZ_MAGIC_NUM = 0x5a4d4e41; // "ANMZ" / 41 4E 4D 5A
+const uint32_t GRAD_MAGIC_NUM = 0x44415247; // "GRAD" / 47 52 41 44
 
 const int PALETTE_SIZE = 0x20;
 
@@ -515,10 +518,14 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
         uint32_t curInstruction = YUtils::getUint32FromVec(uncompVec,mpdzIndex);
         if (curInstruction == SCEN_MAGIC_NUM) {
             this->handleSCEN(uncompVec,mpdzIndex);
+            return;
+        } else if (curInstruction == GRAD_MAGIC_NUM) {
+            cout << "GRAD found, seems to end files besides SETD, so skip for now" << endl;
+            return;
         } else {
             cerr << "[WARN] Instruction besides SCEN used: " << hex << curInstruction << endl;
+            return;
         }
-        return; // Temp
     }
 }
 
@@ -534,37 +541,49 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
         cerr << "SCEN instruction did not find magic hex " << hex << SCEN_MAGIC_NUM << endl;
         return;
     }
+    cout << "*** Starting SCEN instruction parse ***" << endl;
     indexPointer += sizeof(uint32_t);
     uint32_t scenLength = YUtils::getUint32FromVec(mpdzVec, indexPointer);
     indexPointer += sizeof(uint32_t);
-    uint32_t lengthIndex = 0;
-    while (lengthIndex < scenLength) {
+    const uint32_t scenCutoff = indexPointer + scenLength;
+    while (indexPointer < scenCutoff) {
         uint32_t curSubInstruction = YUtils::getUint32FromVec(mpdzVec,indexPointer);
         if (curSubInstruction == INFO_MAGIC_NUM) {
+            cout << ">> Handling INFO instruction: ";
             uint32_t infoLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First time: 0x20
             
-            // TODO: What do these values do?
-            uint32_t unknownValue0 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 8); // 00b60208
+            uint32_t canvasDimensions = YUtils::getUint32FromVec(mpdzVec, indexPointer + 8); // 00b60208
+            this->canvasHeight = canvasDimensions >> 0x10;
+            this->canvasWidth = canvasDimensions % 0x10000;
+
+            // TODO: What are these values?
             uint32_t unknownValue1 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 12); // 00000000
+            cout << "unk1: " << hex << unknownValue1 << "; ";
             uint32_t unknownValue2 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 16); // 0x1000
+            cout << "unk2: " << hex << unknownValue2 << "; ";
             uint32_t unknownValue3 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 20); // 0x1000
+            cout << "unk3: " << hex << unknownValue3 << "; ";
             uint32_t unknownValue4 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 24); // 0x020202
+            cout << "unk4: " << hex << unknownValue4 << "; ";
             uint32_t unknownValue5 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 28); // 00000000
-            Q_UNUSED(unknownValue0);
+            cout << "unk5: " << hex << unknownValue5 << endl;
             Q_UNUSED(unknownValue1);
             Q_UNUSED(unknownValue2);
             Q_UNUSED(unknownValue3);
             Q_UNUSED(unknownValue4);
             Q_UNUSED(unknownValue5);
-            // Get charfile string
-            auto charFileNoExt = YUtils::getNullTermTextFromVec(mpdzVec, indexPointer + 32);
-            this->handleImbz(charFileNoExt);
+            if (infoLength > 0x18) {
+                // Get charfile string
+                auto charFileNoExt = YUtils::getNullTermTextFromVec(mpdzVec, indexPointer + 32);
+                this->handleImbz(charFileNoExt);
+            }
             // Increment based on earlier length, +8 is to skip instruction and length
             indexPointer += infoLength + 8;
         } else if (curSubInstruction == PLTB_MAGIC_NUM) {
-            uint32_t pltbLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First time: 0x1c0
+            cout << ">> Handling PLTB instruction" << endl;
+            uint32_t pltbLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
             Address pltbReadIndex = indexPointer + 8; // +8 is to skip instruction and length
-            indexPointer += pltbLength + 8; // Do this ahead of time in order to control the while loop
+            indexPointer += pltbLength + 8;
             // Cycle up to the index pointer
             int globalPaletteIndex = 1; // Start at 1 because universal
             while (pltbReadIndex < indexPointer) {
@@ -584,15 +603,15 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             //     YUtils::getColorFromBytes(this->currentPalettes[1].at(i),this->currentPalettes[1].at(i+1));
             // }
         } else if (curSubInstruction == MPBZ_MAGIC_NUM) {
+            cout << ">> Handling MPBZ instruction" << endl;
             uint32_t mpbzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
             // Slice out MPBZ data
             Address compressedDataStart = indexPointer + 8;
             Address compressedDataEnd = compressedDataStart + mpbzLength;
             auto compressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
             // Decompress MPBZ data
-            auto uncompressedMpbz = YCompression::lzssVectorDecomp(compressedSubArray);
+            auto uncompressedMpbz = YCompression::lzssVectorDecomp(compressedSubArray, false);
             indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
-            cout << "mpbzuncomp len: " << dec << uncompressedMpbz.size() << endl;
             // Handle uncompressedMpbz data
             const uint32_t uncompressedMpbzTwoByteCount = uncompressedMpbz.size() / 2;
             //for (int mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
@@ -605,15 +624,33 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 this->preRenderData.push_back(curShort);
             }
         } else if (curSubInstruction == COLZ_MAGIC_NUM) {
+            cout << ">> Handling COLZ instruction" << endl;
             uint32_t colzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First is 0x0b7c
             // Slice out COLZ data
             Address compressedDataStart = indexPointer + 8;
             Address compressedDataEnd = compressedDataStart + colzLength;
             auto colzCompressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
-            auto uncompressedColz = YCompression::lzssVectorDecomp(colzCompressedSubArray);
+            auto uncompressedColz = YCompression::lzssVectorDecomp(colzCompressedSubArray, false);
             for (auto it = uncompressedColz.begin(); it != uncompressedColz.end(); it++) {
                 this->collisionTileArray.push_back(*it);
             }
+            indexPointer += colzLength + 8;
+        } else if (curSubInstruction == ANMZ_MAGIC_NUM) {
+            cout << ">> Handling ANMZ instruction" << endl;
+            uint32_t anmzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // Should be 0x1080 first time
+            Address compressedDataStart = indexPointer + 8;
+            Address compressedDataEnd = compressedDataStart + anmzLength;
+            auto compressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
+            auto uncompressedAnmz = YCompression::lzssVectorDecomp(compressedSubArray, false);
+            // TODO: Do something with this data
+            indexPointer += anmzLength + 8; // Go to next
+        } else if (curSubInstruction == IMGB_MAGIC_NUM) {
+            cout << ">> Handling IMGB instruction" << endl;
+            uint32_t imgbLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
+            // TODO: Learn about this data
+            indexPointer += imgbLength + 8;
+        } else if (curSubInstruction == SCEN_MAGIC_NUM) {
+            cerr << "[ERROR] Found SCEN instruction, overflowed!" << endl;
             return;
         } else {
             cout << "Unknown instruction: " << hex << curSubInstruction << endl;
@@ -624,7 +661,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
 
 const int CHARTILE_DATA_SIZE = 0x20;
 void YidsRom::handleImbz(std::string fileName_noext) {
-    if (this->verbose) cout << "Handling IMBZ file: '" << fileName_noext << "'" << endl;
+    if (this->verbose) cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
     auto fileVector = this->getFileByteVector(fileName_noext.append(".imbz"));
     std::vector uncompressedImbz = YCompression::lzssVectorDecomp(fileVector);
     fileVector.clear();
