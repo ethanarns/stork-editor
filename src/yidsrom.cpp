@@ -477,29 +477,9 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     if (this->verbose) cout << "Loading MPDZ '" << fileName_noext << "'" << endl;
     std::string mpdzFileName = fileName_noext.append(MPDZ_EXTENSION);
     auto fileVector = this->getFileByteVector(mpdzFileName);
-    YUtils::writeByteVectorToFile(fileVector,mpdzFileName);
-    bool decompResult = YCompression::lzssDecomp(mpdzFileName, this->verbose);
-    if (!decompResult) {
-        cerr << "Failed to extract MPDZ file" << endl;
-        return;
-    }
-    fileVector.clear();
-
-    std::ifstream uncomped{mpdzFileName, ios::binary};
-    if (!uncomped) {
-        cerr << "Failed to load uncompressed file '" << mpdzFileName << "'" << endl;
-        return;
-    }
-
-    size_t uncomped_length = YUtils::getStreamLength(uncomped);
-    std::vector<uint8_t> uncompVec;
-    uncompVec.reserve(uncomped_length);
-    std::copy(
-        std::istreambuf_iterator<char>(uncomped),
-        std::istreambuf_iterator<char>(),
-        std::back_inserter(uncompVec)
-    );
-
+    // YUtils::writeByteVectorToFile(fileVector,mpdzFileName); // Uncomment to get uncompressed MPDZ
+    auto uncompVec = YCompression::lzssVectorDecomp(fileVector,false);
+    
     uint32_t magic = YUtils::getUint32FromVec(uncompVec,0);
     if (magic != MPDZ_MAGIC_NUM) {
         cerr << "MPDZ Magic number not found! Expected " << hex << MPDZ_MAGIC_NUM;
