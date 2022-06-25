@@ -492,7 +492,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     uint32_t mpdzFileLength = YUtils::getUint32FromVec(uncompVec, 4);
     // 8 in order to start it at the first instruction besides SET
     Address mpdzIndex = 8; // Pass this in as a pointer to functions
-    
+
     // Instruction loop
     while (mpdzIndex < mpdzFileLength) {
         uint32_t curInstruction = YUtils::getUint32FromVec(uncompVec,mpdzIndex);
@@ -537,7 +537,8 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             uint32_t infoLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First time: 0x20
             
             uint32_t canvasDimensions = YUtils::getUint32FromVec(mpdzVec, indexPointer + 8); // 00b60208
-            if (timesImbzLoaded == 0) {
+            // Only the first one matters for the primary height and width, since BG 2 decides everything
+            if (this->canvasWidth == 0) {
                 this->canvasHeight = canvasDimensions >> 0x10;
                 this->canvasWidth = canvasDimensions % 0x10000;
             }
@@ -595,7 +596,6 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             timesPaletteLoaded++;
         } else if (curSubInstruction == MPBZ_MAGIC_NUM) {
             cout << ">> Handling MPBZ instruction" << endl;
-            cout << (uint32_t)whichBgToWriteTo << endl;
             if (whichBgToWriteTo == 0) {
                 cerr << "[ERROR] Which BG to write to was not specified, MPBZ load failed" << endl;
                 return;
