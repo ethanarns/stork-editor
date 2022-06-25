@@ -498,7 +498,6 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
         uint32_t curInstruction = YUtils::getUint32FromVec(uncompVec,mpdzIndex);
         if (curInstruction == SCEN_MAGIC_NUM) {
             this->handleSCEN(uncompVec,mpdzIndex);
-            return;
         } else if (curInstruction == GRAD_MAGIC_NUM) {
             cout << "GRAD found, seems to end files besides SETD, so skip for now" << endl;
             return;
@@ -516,6 +515,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
  * @param indexPointer Reference to Address, pointing at the current SCEN instruction
  */
 void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
+    uint16_t whichBgToWriteTo;
     uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     if (instructionCheck != SCEN_MAGIC_NUM) {
         cerr << "SCEN instruction did not find magic hex " << hex << SCEN_MAGIC_NUM << endl;
@@ -543,14 +543,18 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             cout << "unk2: " << hex << unknownValue2 << "; ";
             uint32_t unknownValue3 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 20); // 0x1000
             cout << "unk3: " << hex << unknownValue3 << "; ";
-            uint32_t unknownValue4 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 24); // 0x020202
-            cout << "unk4: " << hex << unknownValue4 << "; ";
+            //uint32_t unknownValue4 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 24); // 0x00020202
+            whichBgToWriteTo = mpdzVec.at(indexPointer + 24 + 0);
+            cout << "whichBg: " << (int)whichBgToWriteTo << "; ";
+            // uint16_t charBaseBlockHardMaybe = mpdzVec.at(indexPointer + 24 + 1);
+            // uint16_t thirdByte = mpdzVec.at(indexPointer + 24 + 2);
+            // uint16_t screenBaseBlockMaybe = mpdzVec.at(indexPointer + 24 + 3);
+
             uint32_t unknownValue5 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 28); // 00000000
             cout << "unk5: " << hex << unknownValue5 << endl;
             Q_UNUSED(unknownValue1);
             Q_UNUSED(unknownValue2);
             Q_UNUSED(unknownValue3);
-            Q_UNUSED(unknownValue4);
             Q_UNUSED(unknownValue5);
             if (infoLength > 0x18) {
                 // Get charfile string
