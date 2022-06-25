@@ -498,7 +498,6 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
         uint32_t curInstruction = YUtils::getUint32FromVec(uncompVec,mpdzIndex);
         if (curInstruction == SCEN_MAGIC_NUM) {
             this->handleSCEN(uncompVec,mpdzIndex);
-            return;
         } else if (curInstruction == GRAD_MAGIC_NUM) {
             cout << "GRAD found, seems to end files besides SETD, so skip for now" << endl;
             return;
@@ -509,6 +508,10 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     }
 }
 
+uint32_t timesColzLoaded = 0;
+uint32_t timesPaletteLoaded = 0;
+uint32_t timesImbzLoaded = 0;
+
 /**
  * @brief Handles the SCEN instruction from MPDZ files
  * 
@@ -517,9 +520,6 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
  */
 void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
     uint16_t whichBgToWriteTo = 0;
-    uint32_t timesColzLoaded = 0;
-    uint32_t timesPaletteLoaded = 0;
-    uint32_t timesImbzLoaded = 0;
     uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     if (instructionCheck != SCEN_MAGIC_NUM) {
         cerr << "SCEN instruction did not find magic hex " << hex << SCEN_MAGIC_NUM << endl;
@@ -537,8 +537,10 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             uint32_t infoLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First time: 0x20
             
             uint32_t canvasDimensions = YUtils::getUint32FromVec(mpdzVec, indexPointer + 8); // 00b60208
-            this->canvasHeight = canvasDimensions >> 0x10;
-            this->canvasWidth = canvasDimensions % 0x10000;
+            if (timesImbzLoaded == 0) {
+                this->canvasHeight = canvasDimensions >> 0x10;
+                this->canvasWidth = canvasDimensions % 0x10000;
+            }
 
             // TODO: What are these values?
             uint32_t unknownValue1 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 12); // 00000000
@@ -590,10 +592,10 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 globalPaletteIndex++;
                 pltbReadIndex += PALETTE_SIZE; // 1 palette is 32 bytes, or 0x20
             }
-            cout << "A PALETTE WAS LOADED" << endl;
             timesPaletteLoaded++;
         } else if (curSubInstruction == MPBZ_MAGIC_NUM) {
             cout << ">> Handling MPBZ instruction" << endl;
+            cout << (uint32_t)whichBgToWriteTo << endl;
             if (whichBgToWriteTo == 0) {
                 cerr << "[ERROR] Which BG to write to was not specified, MPBZ load failed" << endl;
                 return;
@@ -630,8 +632,8 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
         } else if (curSubInstruction == COLZ_MAGIC_NUM) {
             cout << ">> Handling COLZ instruction" << endl;
             if (timesColzLoaded > 0) {
-                cout << "[WARN] Attempted to load a second COLZ, only one should ever be loaded" << endl;
-                continue;
+                cout << "[ERROR] Attempted to load a second COLZ, only one should ever be loaded" << endl;
+                exit(EXIT_FAILURE);
             }
             uint32_t colzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First is 0x0b7c
             // Slice out COLZ data
