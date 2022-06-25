@@ -218,7 +218,7 @@ void MainWindow::LoadRom() {
         this->paletteTable->refreshLoadedTiles();
 
         // Main table //
-        uint32_t preRenderSize = this->rom->preRenderData.size();
+        uint32_t preRenderSize = this->rom->preRenderDataBg2.size();
         if (this->rom->canvasWidth == 0) {
             cerr << "Canvas Width was never set!" << endl;
             exit(EXIT_FAILURE);
@@ -228,7 +228,7 @@ void MainWindow::LoadRom() {
         for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSize; preRenderIndex++) {
             uint32_t y = preRenderIndex / cutOff;
             uint32_t x = preRenderIndex % cutOff;
-            ChartilePreRenderData curShort = YUtils::getCharPreRender(this->rom->preRenderData.at(preRenderIndex));
+            ChartilePreRenderData curShort = YUtils::getCharPreRender(this->rom->preRenderDataBg2.at(preRenderIndex));
             this->grid->putTile(x,y,curShort);
         }
         // Collision

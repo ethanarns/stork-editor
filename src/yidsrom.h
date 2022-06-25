@@ -32,8 +32,24 @@ public:
     std::fstream romFile;
     RomMetadata metadata;
     QByteArray currentPalettes[0x10]; // Will probably only use first 8
+    /**
+     * @brief "Characters", or the pixel arrangement of tiles
+     */
     std::vector<Chartile> pixelTiles;
-    std::vector<uint16_t> preRenderData;
+    /**
+     * @brief BG 2's tile attr data, and the main source of level design. 
+     * Corresponds with collision the most
+     */
+    std::vector<uint16_t> preRenderDataBg2;
+    /**
+     * @brief BG 1's tile data. Animated foreground for the most part, 
+     * no collision (seen so far)
+     */
+    std::vector<uint16_t> preRenderDataBg1;
+    /**
+     * @brief Collision tiles, each taking up a full 16x16 tile. Also handles 
+     * static normal coins for some reason
+     */
     std::vector<uint8_t> collisionTileArray;
     uint32_t canvasWidth = 0;
     uint32_t canvasHeight = 0;
