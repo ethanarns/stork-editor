@@ -114,16 +114,27 @@ ChartilePreRenderData YUtils::getCharPreRender(uint16_t tileAttr) {
 }
 
 /**
- * @brief Given an uninitialized result vector, insert the two prior vectors into it
+ * @brief Given an uninitialized result vector, combine then insert the two prior vectors into it
  * 
  * @param firstVec 
  * @param secondVec 
  * @param resultVec An uninitialized vector to place concated data in
  */
-void YUtils::concatVectors(std::vector<uint8_t> &firstVec, std::vector<uint8_t> &secondVec, std::vector<uint8_t> &resultVec) {
+void YUtils::joinVectors(std::vector<uint8_t> &firstVec, std::vector<uint8_t> &secondVec, std::vector<uint8_t> &resultVec) {
     resultVec.reserve(firstVec.size() + secondVec.size());
     resultVec.insert(resultVec.end(),firstVec.begin(),firstVec.end());
     resultVec.insert(resultVec.end(),secondVec.begin(),secondVec.end());
+}
+
+/**
+ * @brief Appends the second vector to the end of the first one
+ * 
+ * @param baseVec 
+ * @param appendedVec 
+ */
+void YUtils::appendVector(std::vector<uint8_t> &baseVec, std::vector<uint8_t> &appendedVec) {
+    baseVec.reserve(baseVec.size() + appendedVec.size());
+    baseVec.insert(baseVec.end(),appendedVec.begin(),appendedVec.end());
 }
 
 std::vector<uint8_t> YUtils::createInstructionVector(std::vector<uint8_t> &instructionVector, std::vector<uint8_t> &data) {
@@ -147,4 +158,5 @@ void YUtils::printVector(std::vector<uint8_t> &vectorToPrint, int newlineBreak) 
         }
         index++;
     }
+    cout << endl;
 }
