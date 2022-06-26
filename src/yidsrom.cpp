@@ -508,7 +508,6 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     }
 }
 
-uint32_t timesColzLoaded = 0;
 uint32_t timesPaletteLoaded = 0;
 uint32_t timesImbzLoaded = 0;
 
@@ -535,7 +534,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
         if (curSubInstruction == INFO_MAGIC_NUM) {
             cout << ">> Handling INFO instruction: ";
             uint32_t infoLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First time: 0x20
-            
+
             uint32_t canvasDimensions = YUtils::getUint32FromVec(mpdzVec, indexPointer + 8); // 00b60208
             // Only the first one matters for the primary height and width, since BG 2 decides everything
             if (this->canvasWidth == 0) {
@@ -631,7 +630,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             }
         } else if (curSubInstruction == COLZ_MAGIC_NUM) {
             cout << ">> Handling COLZ instruction" << endl;
-            if (timesColzLoaded > 0) {
+            if (collisionTileArray.size() > 0) {
                 cout << "[ERROR] Attempted to load a second COLZ, only one should ever be loaded" << endl;
                 exit(EXIT_FAILURE);
             }
@@ -641,11 +640,8 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             Address compressedDataEnd = compressedDataStart + colzLength;
             auto colzCompressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
             auto uncompressedColz = YCompression::lzssVectorDecomp(colzCompressedSubArray, false);
-            for (auto it = uncompressedColz.begin(); it != uncompressedColz.end(); it++) {
-                this->collisionTileArray.push_back(*it);
-            }
+            YUtils::appendVector(this->collisionTileArray,uncompressedColz);
             indexPointer += colzLength + 8;
-            timesColzLoaded++;
         } else if (curSubInstruction == ANMZ_MAGIC_NUM) {
             cout << ">> Handling ANMZ instruction" << endl;
             uint32_t anmzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // Should be 0x1080 first time
