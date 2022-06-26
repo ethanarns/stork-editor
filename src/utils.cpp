@@ -112,3 +112,39 @@ ChartilePreRenderData YUtils::getCharPreRender(uint16_t tileAttr) {
     res.tileAttr = tileAttr;
     return res;
 }
+
+/**
+ * @brief Given an uninitialized result vector, insert the two prior vectors into it
+ * 
+ * @param firstVec 
+ * @param secondVec 
+ * @param resultVec An uninitialized vector to place concated data in
+ */
+void YUtils::concatVectors(std::vector<uint8_t> &firstVec, std::vector<uint8_t> &secondVec, std::vector<uint8_t> &resultVec) {
+    resultVec.reserve(firstVec.size() + secondVec.size());
+    resultVec.insert(resultVec.end(),firstVec.begin(),firstVec.end());
+    resultVec.insert(resultVec.end(),secondVec.begin(),secondVec.end());
+}
+
+std::vector<uint8_t> YUtils::createInstructionVector(std::vector<uint8_t> &instructionVector, std::vector<uint8_t> &data) {
+    if (instructionVector.size() != 4) {
+        cerr << "[ERROR] Instruction vector was not 4 bytes! Instead got " << hex << instructionVector.size() << endl;
+        exit(EXIT_FAILURE);
+    }
+    uint32_t sizeOfData = data.size();
+    std::vector<uint8_t> result;
+    // +8 accounts for 4 byte instruction header and 4 byte length header
+    result.reserve(sizeOfData + 8);
+    return result;
+}
+
+void YUtils::printVector(std::vector<uint8_t> &vectorToPrint, int newlineBreak) {
+    uint32_t index = 0;
+    for (auto it = vectorToPrint.begin(); it != vectorToPrint.end(); it++) {
+        cout << hex << setw(2) << (int)*it << " ";
+        if (newlineBreak != 0 && index != 0 && index % newlineBreak == 0) {
+            cout << endl;
+        }
+        index++;
+    }
+}
