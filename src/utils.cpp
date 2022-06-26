@@ -143,10 +143,27 @@ std::vector<uint8_t> YUtils::createInstructionVector(std::vector<uint8_t> &instr
         exit(EXIT_FAILURE);
     }
     uint32_t sizeOfData = data.size();
+    // Take sizeOfData, turn it into sizeVector
+    uint8_t firstByte = ((sizeOfData % 0x100) >> 0);
+    uint8_t secondByte = ((sizeOfData % 0x10000) >> 8);
+    uint8_t thirdByte = ((sizeOfData % 0x1000000) >> 16);
+    uint8_t fourthByte = ((sizeOfData % 0x100000000) >> 24);
+    std::vector<uint8_t> sizeVector = {firstByte,secondByte,thirdByte,fourthByte};
+
+    // Create, join, and return result
     std::vector<uint8_t> result;
-    // +8 accounts for 4 byte instruction header and 4 byte length header
-    result.reserve(sizeOfData + 8);
+    YUtils::joinVectors(instructionVector,sizeVector,result);
+    YUtils::appendVector(result,data);
     return result;
+}
+
+std::vector<uint8_t> YUtils::createInstVecFromNum(uint32_t instCode, std::vector<uint8_t> &data) {
+    uint8_t firstByte = ((instCode % 0x100) >> 0);
+    uint8_t secondByte = ((instCode % 0x10000) >> 8);
+    uint8_t thirdByte = ((instCode % 0x1000000) >> 16);
+    uint8_t fourthByte = ((instCode % 0x100000000) >> 24);
+    std::vector<uint8_t> instVec = {firstByte,secondByte,thirdByte,fourthByte};
+    return YUtils::createInstructionVector(instVec,data);
 }
 
 void YUtils::printVector(std::vector<uint8_t> &vectorToPrint, int newlineBreak) {
