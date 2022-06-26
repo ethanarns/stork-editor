@@ -199,3 +199,100 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
         }
     }
 }
+
+void YidsRom::loadCrsb(std::string fileName_noext) {
+    fileName_noext = YUtils::getLowercase(fileName_noext);
+    auto fileName = fileName_noext.append(".crsb");
+    auto fileId = this->fileIdMap[fileName];
+    if (fileId == 0) {
+        cerr << "Failed to load level: " << fileName << endl;
+        return;
+    }
+    // x8 because each record of ranges is 8 bytes. 4 + 4
+    Address rangesAddr = this->metadata.fatOffsets + fileId * 8;
+    Address startAddr = this->getNumberAt<uint32_t>(rangesAddr + 0);
+    Address endAddr = this->getNumberAt<uint32_t>(rangesAddr + 4);
+    uint32_t length = endAddr - startAddr;
+    // 0x08 is from device capacity. Understand this better
+    uint32_t MAX_SIZE = 1U << (17 + 0x08);
+    if (length > MAX_SIZE) {
+        cerr << "File is too big! File size: " << dec << length << ", max size: " << dec << MAX_SIZE << endl;
+        return;
+    }
+    
+    std::string magicText = this->getTextAt(startAddr + 0,4);
+    if (magicText.compare(Constants::CRSB_MAGIC) != 0) {
+        cerr << "Magic header text " << Constants::CRSB_MAGIC << " not found! Found '" << magicText << "' instead." << endl;
+        return;
+    }
+    // Important is MPDZ, which are marked by SCEN, and is the actual data for
+    //   each level and sublevel inside a world level. 1-1 has 4, one for each
+    //   area, and no more
+
+    // Number of CSCN records, aka maps in level!
+    auto mapFileCount = this->getNumberAt<uint32_t>(startAddr + 8);
+    if (this->verbose) cout << "Map count: " << mapFileCount << endl;
+
+    const uint32_t OFFSET_TO_FIRST_CSCN = 0xC; // 12
+
+    uint32_t curCscnReadOffset = 0; // In bytes
+    for (uint32_t cscnIndex = 0; cscnIndex < mapFileCount; cscnIndex++) {
+        // Points to the current magic number text, CSCN
+        Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN + curCscnReadOffset;
+        // Check that the magic text is there, at index 0
+        std::string magicTextCscn = this->getTextAt(baseAddrCscn + 0, 4);
+        if (magicTextCscn.compare(Constants::CSCN_MAGIC) != 0) {
+            cerr << "Magic header text " << Constants::CSCN_MAGIC << " not found! Found '" << magicTextCscn << "' instead." << endl;
+            return;
+        }
+        // Next, get the filename
+        auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
+        this->loadMpdz(mpdzFilename_noext);
+
+        // +0x4 is because the magic number is 4 long, and the next is the length
+        // +0x8 is because that length is added to the current read position in the file
+        //   That recreates it as a non-relative offset number (it started from the
+        //   maybeExits at +0x8)
+        uint32_t cscnLength = this->getNumberAt<uint32_t>(baseAddrCscn + 0x4) + 0x8;
+        
+        curCscnReadOffset += cscnLength;
+        return;
+    }
+
+    if (this->verbose) cout << "All MPDZ files loaded" << endl;
+}
+
+void YidsRom::loadMpdz(std::string fileName_noext) {
+    if (this->verbose) cout << "Loading MPDZ '" << fileName_noext << "'" << endl;
+    std::string mpdzFileName = fileName_noext.append(Constants::MPDZ_EXTENSION);
+    auto fileVector = this->getFileByteVector(mpdzFileName);
+    // YUtils::writeByteVectorToFile(fileVector,mpdzFileName); // Uncomment to get uncompressed MPDZ
+    auto uncompVec = YCompression::lzssVectorDecomp(fileVector,false);
+    
+    uint32_t magic = YUtils::getUint32FromVec(uncompVec,0);
+    if (magic != Constants::MPDZ_MAGIC_NUM) {
+        cerr << "MPDZ Magic number not found! Expected " << hex << Constants::MPDZ_MAGIC_NUM;
+        cerr << ", got " << hex << magic << " instead." << endl;
+        return;
+    } else {
+        if (this->verbose) cout << "[SUCCESS] MPDZ Magic number found" << endl;
+    }
+    // 4 because the file length is written at bytes 4-7
+    uint32_t mpdzFileLength = YUtils::getUint32FromVec(uncompVec, 4);
+    // 8 in order to start it at the first instruction besides SET
+    Address mpdzIndex = 8; // Pass this in as a pointer to functions
+
+    // Instruction loop
+    while (mpdzIndex < mpdzFileLength) {
+        uint32_t curInstruction = YUtils::getUint32FromVec(uncompVec,mpdzIndex);
+        if (curInstruction == Constants::SCEN_MAGIC_NUM) {
+            this->handleSCEN(uncompVec,mpdzIndex);
+        } else if (curInstruction == Constants::GRAD_MAGIC_NUM) {
+            cout << "GRAD found, seems to end files besides SETD, so skip for now" << endl;
+            return;
+        } else {
+            cerr << "[WARN] Instruction besides SCEN used: " << hex << curInstruction << endl;
+            return;
+        }
+    }
+}

@@ -11,6 +11,7 @@
 #include <map>
 
 #include "Chartile.h"
+#include "constants.h"
 
 #include <QByteArray>
 
@@ -61,12 +62,12 @@ public:
 
     std::string getTextAt(uint32_t position, uint32_t length);
     std::string getTextNullTermAt(uint32_t position_file);
-    uint32_t getAddrFromAddrPtr(uint32_t fileAddress);
+    Address getAddrFromAddrPtr(Address pointerAddress_file);
 
     std::vector<uint8_t> getFileByteVector(std::string fileName);
 
     template<typename T>
-    T getNumberAt(uint32_t addr);
+    T getNumberAt(Address addr);
 
     ~YidsRom();
 private:
