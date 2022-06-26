@@ -32,4 +32,9 @@ namespace Constants {
     inline constexpr int PALETTE_SIZE{0x20};
     inline constexpr int CHARTILE_DATA_SIZE{0x20};
 }
+
+// Value pertaining to file-relative address (Starts at 0x0)
+typedef uint32_t Address;
+// Value pertaining to executable memory (0x02xxxxxx)
+typedef uint32_t AddressMemory;
 #endif

@@ -264,7 +264,7 @@ void YidsRom::initArm9RomData(std::string fileName) {
 
     // Write universal palette
     this->currentPalettes[0].resize(Constants::PALETTE_SIZE);
-    Address universalPalette0base = this->conv2xAddrToFileAddr(Constants::UNIVERSAL_PALETTE_0_ADDR);
+    Address universalPalette0base = YUtils::conv2xAddrToFileAddr(Constants::UNIVERSAL_PALETTE_0_ADDR);
     for (int univPalIndex = 0; univPalIndex < Constants::PALETTE_SIZE; univPalIndex++) {
         this->romFile.seekg(universalPalette0base + univPalIndex);
         uint8_t container;
@@ -292,17 +292,6 @@ void YidsRom::writeUncompressedARM9(Address arm9start_rom, uint32_t arm9length) 
     YUtils::writeByteVectorToFile(outvec,Constants::NEW_BIN_FILE);
 
     if (this->verbose) cout << "[SUCCESS] Wrote file" << endl;
-}
-
-/**
- * @brief Takes in the addresses seen in Ghidra or
- * No$GBA and outputs uncomped ROM-relative address
- * 
- * @param x2address 0x02xxxxxx
- * @return File-relative address
- */
-Address YidsRom::conv2xAddrToFileAddr(AddressMemory x2address) {
-    return x2address - Constants::MAIN_MEM_OFFSET + Constants::ARM9_ROM_OFFSET + 0x4000;
 }
 
 /**
@@ -364,7 +353,7 @@ std::string YidsRom::getLevelFileNameFromMapIndex(uint32_t worldIndex, uint32_t 
     if (levelId > 99) {
         return ">99 unknown multi";
     } else {
-        const Address LEVEL_FILENAMES_SUB100_ARRAY = this->conv2xAddrToFileAddr(0x020d8e58);
+        const Address LEVEL_FILENAMES_SUB100_ARRAY = YUtils::conv2xAddrToFileAddr(0x020d8e58);
         const uint32_t offset = (levelId - 1) * sizeof(uint32_t);
         Address textPtrAddress = LEVEL_FILENAMES_SUB100_ARRAY + offset;
         Address textAddress = this->getAddrFromAddrPtr(textPtrAddress);
@@ -377,7 +366,7 @@ Address YidsRom::getAddrFromAddrPtr(Address pointerAddress_file) {
     this->romFile.seekg(pointerAddress_file);
     uint32_t addr0x2;
     this->romFile.read(reinterpret_cast<char *>(&addr0x2),sizeof(addr0x2));
-    return this->conv2xAddrToFileAddr(addr0x2);
+    return YUtils::conv2xAddrToFileAddr(addr0x2);
 }
 
 void YidsRom::loadCrsb(std::string fileName_noext) {

@@ -2,6 +2,7 @@
 #define YUTILS_H
 
 #include "Chartile.h"
+#include "constants.h"
 
 #include <string>
 #include <filesystem>
@@ -17,6 +18,7 @@ class YUtils {
 public:
     static void printSurroundingFiles(std::string path);
     static std::string getLowercase(std::string input);
+    static Address conv2xAddrToFileAddr(AddressMemory x2address);
     static bool writeByteVectorToFile(std::vector<uint8_t> &bytes, std::string filename);
 
     static size_t getStreamLength(std::ifstream& buffer);

@@ -14,11 +14,6 @@
 
 #include <QByteArray>
 
-// Value pertaining to file-relative address (Starts at 0x0)
-typedef uint32_t Address;
-// Value pertaining to executable memory (0x02xxxxxx)
-typedef uint32_t AddressMemory;
-
 // Variable sizes and explanations: http://problemkaputt.de/gbatek.htm#dscartridgeheader
 /**
  * @brief The YIDS ROM's Metadata. Mainly from the header.
@@ -66,7 +61,6 @@ public:
 
     std::string getTextAt(uint32_t position, uint32_t length);
     std::string getTextNullTermAt(uint32_t position_file);
-    uint32_t conv2xAddrToFileAddr(uint32_t x2address);
     uint32_t getAddrFromAddrPtr(uint32_t fileAddress);
 
     std::vector<uint8_t> getFileByteVector(std::string fileName);

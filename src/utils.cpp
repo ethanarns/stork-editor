@@ -1,5 +1,5 @@
 #include "utils.h"
-
+#include "constants.h"
 #include "Chartile.h"
 
 // std::cerr, std::endl, std::ios
@@ -187,4 +187,15 @@ void YUtils::writeVectorToFile(std::vector<uint8_t> &dataToWrite,std::string fil
     readWriteFile.seekp(addressOffset);
     readWriteFile.write(reinterpret_cast<char *>(dataToWrite.data()),dataToWrite.size());
     readWriteFile.close();
+}
+
+/**
+ * @brief Takes in the addresses seen in Ghidra or
+ * No$GBA and outputs uncomped ROM-relative address
+ * 
+ * @param x2address 0x02xxxxxx
+ * @return File-relative address
+ */
+Address YUtils::conv2xAddrToFileAddr(AddressMemory x2address) {
+    return x2address - Constants::MAIN_MEM_OFFSET + Constants::ARM9_ROM_OFFSET + 0x4000;
 }
