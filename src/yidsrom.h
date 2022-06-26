@@ -14,6 +14,11 @@
 
 #include <QByteArray>
 
+// Value pertaining to file-relative address (Starts at 0x0)
+typedef uint32_t Address;
+// Value pertaining to executable memory (0x02xxxxxx)
+typedef uint32_t AddressMemory;
+
 // Variable sizes and explanations: http://problemkaputt.de/gbatek.htm#dscartridgeheader
 /**
  * @brief The YIDS ROM's Metadata. Mainly from the header.
