@@ -673,9 +673,9 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
 const int CHARTILE_DATA_SIZE = 0x20;
 void YidsRom::handleImbz(std::string fileName_noext) {
     if (this->verbose) cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
-    auto fileVector = this->getFileByteVector(fileName_noext.append(".imbz"));
-    std::vector uncompressedImbz = YCompression::lzssVectorDecomp(fileVector);
-    fileVector.clear();
+    auto uncompressedFileVector = this->getFileByteVector(fileName_noext.append(".imbz"));
+    std::vector uncompressedImbz = YCompression::lzssVectorDecomp(uncompressedFileVector,true);
+    uncompressedFileVector.clear();
 
     // Use ints since they're natural and not stored excessively anyway
     int currentTileIndex = 0; // The index of the tile within list of tiles. Start at -1 due to first time ++

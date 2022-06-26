@@ -54,12 +54,27 @@ bool YCompression::lzssDecomp(std::string filepath, bool verbose) {
     return true;
 }
 
+bool YCompression::lzssRecomp(std::string filepath, bool verbose) {
+    if (filepath.size() == 0 || filepath.compare("/") == 0) {
+        cerr << "Invalid filepath: " << filepath << endl;
+        return false;
+    }
+    std::string lzssPath = LZSS_PATH;
+    std::string lzssCmdRecomp = lzssPath.append(" -evn ").append(filepath);
+    if (verbose) cout << "> " << lzssCmdRecomp << endl;
+    // Silence stdout?
+    if (!verbose) lzssCmdRecomp.append(" 1> /dev/null");
+    auto result = system(lzssCmdRecomp.c_str());
+    if (verbose) cout << "System result: " << result << endl;
+    return true;
+}
+
 std::vector<uint8_t> YCompression::lzssVectorDecomp(std::vector<uint8_t>& inputVec, bool verbose) {
     const std::string tempName = "TEMP.lz10";
     YUtils::writeByteVectorToFile(inputVec,tempName);
     bool decompResult = YCompression::lzssDecomp(tempName, verbose);
     if (!decompResult) {
-        cerr << "Failed to extract MPDZ file" << endl;
+        cerr << "Failed to extract LZ77 file" << endl;
         exit(EXIT_FAILURE);
     }
 
@@ -81,4 +96,33 @@ std::vector<uint8_t> YCompression::lzssVectorDecomp(std::vector<uint8_t>& inputV
     uncomped.close();
     std::filesystem::remove(tempName);
     return uncompVec;
+}
+
+std::vector<uint8_t> YCompression::lzssVectorRecomp(std::vector<uint8_t>& uncompressedVec, bool verbose) {
+    const std::string tempName = "TEMP_RECOMP.lz10";
+    YUtils::writeByteVectorToFile(uncompressedVec,tempName);
+    bool recompResult = YCompression::lzssRecomp(tempName, verbose);
+    if (!recompResult) {
+        cerr << "Failed to recompress to LZ77 file" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    std::ifstream recomped{tempName, ios::binary};
+    if (!recomped) {
+        cerr << "Failed to load recompressed file '" << tempName << "'" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    size_t recomped_length = YUtils::getStreamLength(recomped);
+    std::vector<uint8_t> recompVec;
+    recompVec.reserve(recomped_length);
+    std::copy(
+        std::istreambuf_iterator<char>(recomped),
+        std::istreambuf_iterator<char>(),
+        std::back_inserter(recompVec)
+    );
+    // Cleanup
+    recomped.close();
+    std::filesystem::remove(tempName);
+    return recompVec;
 }
