@@ -97,7 +97,7 @@ void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType) 
 }
 
 void DisplayTable::initCellCollision() {
-    const uint32_t cutOff = 520/2;
+    const uint32_t cutOff = this->yidsRom->canvasWidth/2;
     const int CELL_LIST_SIZE = this->yidsRom->collisionTileArray.size();
     for (int colIndex = 0; colIndex < CELL_LIST_SIZE; colIndex++) {
         const auto curCol = this->yidsRom->collisionTileArray.at(colIndex);

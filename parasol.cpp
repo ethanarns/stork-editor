@@ -1,7 +1,7 @@
 /**
  * @file parasol.cpp
  * @author your name (you@domain.com)
- * @brief 
+ * @brief The main file for Parasol Editor
  * @version 0.1
  * @date 2022-06-24
  * 
