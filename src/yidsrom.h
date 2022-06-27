@@ -12,6 +12,7 @@
 
 #include "Chartile.h"
 #include "constants.h"
+#include "LevelObject.h"
 
 #include <QByteArray>
 
@@ -52,6 +53,8 @@ public:
      * static normal coins for some reason
      */
     std::vector<uint8_t> collisionTileArray;
+
+    std::vector<LevelObject> loadedLevelObjects;
     uint32_t canvasWidth = 0;
     uint32_t canvasHeight = 0;
     bool verbose;

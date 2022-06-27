@@ -3,6 +3,7 @@
 
 #include "Chartile.h"
 #include "constants.h"
+#include "LevelObject.h"
 
 #include <string>
 #include <filesystem>
@@ -27,6 +28,7 @@ public:
     static std::string getNullTermTextFromVec(std::vector<uint8_t> &bytes, uint32_t location);
     static QColor getColorFromBytes(uint8_t firstByte, uint8_t secondByte);
     static ChartilePreRenderData getCharPreRender(uint16_t tileAttr);
+    static void printLevelObject(LevelObject lo);
 
     static std::vector<uint8_t> subVector(std::vector<uint8_t> &inVec, uint32_t startOffset, uint32_t endOffset);
     static void joinVectors(std::vector<uint8_t> &firstVec, std::vector<uint8_t> &secondVec, std::vector<uint8_t> &resultVec);

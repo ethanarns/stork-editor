@@ -203,3 +203,9 @@ void YUtils::writeVectorToFile(std::vector<uint8_t> &dataToWrite,std::string fil
 Address YUtils::conv2xAddrToFileAddr(AddressMemory x2address) {
     return x2address - Constants::MAIN_MEM_OFFSET + Constants::ARM9_ROM_OFFSET + 0x4000;
 }
+
+void YUtils::printLevelObject(LevelObject lo) {
+    cout << "{ id: " << hex << setw(3) << lo.objectId << ", len: " << hex << setw(2) <<
+        lo.settingsLength << ", x: " << hex << setw(3) << lo.xPosition <<
+        ", y: " << hex << setw(3) << lo.yPosition << " }" << endl;
+}

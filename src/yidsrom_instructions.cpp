@@ -3,6 +3,7 @@
 #include "Chartile.h"
 #include "utils.h"
 #include "constants.h"
+#include "LevelObject.h"
 
 #include <iostream>
 #include <vector>
@@ -331,19 +332,23 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
     indexPointer += 4;
     const uint32_t indexEnd = indexPointer + setdLength;
     while (indexPointer < indexEnd) {
-        auto obid = YUtils::getUint16FromVec(mpdzVec, indexPointer + 0);
-        auto leng = YUtils::getUint16FromVec(mpdzVec, indexPointer + 2);
-        uint16_t lenCopy = leng;
-        auto xPos = YUtils::getUint16FromVec(mpdzVec, indexPointer + 4);
-        auto yPos = YUtils::getUint16FromVec(mpdzVec, indexPointer + 6);
+        LevelObject lo;
+        lo.objectId = YUtils::getUint16FromVec(mpdzVec, indexPointer + 0);
+        lo.settingsLength = YUtils::getUint16FromVec(mpdzVec, indexPointer + 2);
+        uint16_t len = lo.settingsLength;
+        lo.xPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 4);
+        lo.yPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 6);
+        
         indexPointer += 8; // This skips to either the settings, or the next object
-        if (leng > 0) {
-            while (leng > 0) {
+        if (len > 0) {
+            while (len > 0) {
                 auto curSetting = YUtils::getUint16FromVec(mpdzVec, indexPointer);
                 indexPointer += 2;
-                leng -= 2;
+                len -= 2;
             }
         }
-        cout << hex << setw(2) << obid << " " << lenCopy << " " << xPos << " " << yPos << endl;
+        YUtils::printLevelObject(lo);
+        this->loadedLevelObjects.push_back(lo);
     }
+    cout << "Loaded " << dec << this->loadedLevelObjects.size() << " level objects" << endl;
 }
