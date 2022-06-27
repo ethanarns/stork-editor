@@ -336,6 +336,9 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
         lo.objectId = YUtils::getUint16FromVec(mpdzVec, indexPointer + 0);
         lo.settingsLength = YUtils::getUint16FromVec(mpdzVec, indexPointer + 2);
         uint16_t len = lo.settingsLength;
+        if (len > 10) {
+            cout << "[WARN] Unusually high object settings length: " << hex << len << endl;
+        }
         lo.xPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 4);
         lo.yPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 6);
         

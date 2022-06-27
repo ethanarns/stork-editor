@@ -14,6 +14,6 @@ src/PaletteTable.cpp src/yidsrom_instructions.cpp
 HEADERS += src/Chartile.h \
 src/yidsrom.h src/utils.h src/compression.h src/MainWindow.h \
 src/DisplayTable.h src/ChartilesTable.h src/PixelDelegate.h \
-src/PaletteTable.h src/LevelObject.h
+src/PaletteTable.h src/LevelObject.h src/SettingsEnum.h
 
 QT += core gui widgets

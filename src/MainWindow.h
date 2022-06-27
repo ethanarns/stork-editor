@@ -12,12 +12,14 @@
 #include "DisplayTable.h"
 #include "ChartilesTable.h"
 #include "PaletteTable.h"
+#include "SettingsEnum.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
     YidsRom* rom = new YidsRom(true);
     bool verbose = true;
+    WindowEditMode windowEditMode = WindowEditMode::OBJECTS;
 
     MainWindow();
     void LoadRom();
