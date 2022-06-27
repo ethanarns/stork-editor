@@ -22,8 +22,8 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     this->horizontalHeader()->setDefaultSectionSize(DisplayTable::CELL_SIZE_PX);
     this->verticalHeader()->setMinimumSectionSize(0);
     this->verticalHeader()->setDefaultSectionSize(DisplayTable::CELL_SIZE_PX);
-    this->setRowCount(DisplayTable::CELL_COUNT);
-    this->setColumnCount(DisplayTable::CELL_COUNT);
+    this->setRowCount(DisplayTable::CELL_COUNT_H);
+    this->setColumnCount(DisplayTable::CELL_COUNT_W);
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
     this->setShowGrid(false);
@@ -40,11 +40,11 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
 }
 
 void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) {
-    if (x > DisplayTable::CELL_COUNT) {
+    if (x > DisplayTable::CELL_COUNT_W) {
         cerr << "X value too high: " << hex << x << endl;
         return;
     }
-    if (y > DisplayTable::CELL_COUNT) {
+    if (y > DisplayTable::CELL_COUNT_H) {
         cerr << "Y value too high: " << hex << y << endl;
         return;
     }
