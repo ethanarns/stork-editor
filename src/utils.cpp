@@ -56,6 +56,10 @@ uint32_t YUtils::getUint32FromVec(std::vector<uint8_t> &bytes, uint32_t location
     return (uint32_t)(bytes.at(location+3) << 24) + (uint32_t)(bytes.at(location+2) << 16) + (uint32_t)(bytes.at(location+1) << 8) + (uint32_t)bytes.at(location);
 }
 
+uint16_t YUtils::getUint16FromVec(std::vector<uint8_t> &bytes, uint32_t location) {
+    return (uint16_t)(bytes.at(location+1) << 8) + (uint16_t)bytes.at(location);
+}
+
 size_t YUtils::getStreamLength(std::ifstream& buffer) {
     uint32_t priorPos = buffer.tellg();
     buffer.seekg(0, ios_base::end);
@@ -98,7 +102,7 @@ QColor YUtils::getColorFromBytes(uint8_t firstByte, uint8_t secondByte) {
     return colRes;
 }
 
-std::vector<uint8_t> YUtils::subVector(std::vector<uint8_t> inVec, uint32_t startOffset, uint32_t endOffset) {
+std::vector<uint8_t> YUtils::subVector(std::vector<uint8_t> &inVec, uint32_t startOffset, uint32_t endOffset) {
     std::vector<uint8_t> newVec(inVec.begin() + startOffset,inVec.begin() + endOffset);
     return newVec;
 }

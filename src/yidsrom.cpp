@@ -110,7 +110,7 @@ void YidsRom::openRom(std::string fileName) {
         curFileId++;
     }
 
-    std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,1);
+    std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,0);
     this->loadCrsb(crsbFileName);
 }
 
