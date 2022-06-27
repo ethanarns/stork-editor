@@ -79,6 +79,8 @@ private:
     void loadMpdz(std::string fileName_noext);
     void handleSCEN(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     void handleImbz(std::string fileName_noext);
+    void handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
+    void handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
 };
 
 #endif

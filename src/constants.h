@@ -28,6 +28,7 @@ namespace Constants {
     inline constexpr uint32_t IMGB_MAGIC_NUM{0x42474d49}; // "IMGB" / 49 4d 47 42
     inline constexpr uint32_t ANMZ_MAGIC_NUM{0x5a4d4e41}; // "ANMZ" / 41 4E 4D 5A
     inline constexpr uint32_t GRAD_MAGIC_NUM{0x44415247}; // "GRAD" / 47 52 41 44
+    inline constexpr uint32_t SETD_MAGIC_NUM{0x44544553}; // "SETD"
 
     inline constexpr int PALETTE_SIZE{0x20};
     inline constexpr int CHARTILE_DATA_SIZE{0x20};

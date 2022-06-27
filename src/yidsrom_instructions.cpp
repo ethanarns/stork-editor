@@ -44,31 +44,36 @@ void YidsRom::loadCrsb(std::string fileName_noext) {
 
     const uint32_t OFFSET_TO_FIRST_CSCN = 0xC; // 12
 
-    uint32_t curCscnReadOffset = 0; // In bytes
-    for (uint32_t cscnIndex = 0; cscnIndex < mapFileCount; cscnIndex++) {
-        // Points to the current magic number text, CSCN
-        Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN + curCscnReadOffset;
-        // Check that the magic text is there, at index 0
-        std::string magicTextCscn = this->getTextAt(baseAddrCscn + 0, 4);
-        if (magicTextCscn.compare(Constants::CSCN_MAGIC) != 0) {
-            cerr << "Magic header text " << Constants::CSCN_MAGIC << " not found! Found '" << magicTextCscn << "' instead." << endl;
-            return;
-        }
-        // Next, get the filename
-        auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
-        this->loadMpdz(mpdzFilename_noext);
+    // This only gets the first one. The block after this gets them all
+    Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN;
+    auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
+    this->loadMpdz(mpdzFilename_noext);
 
-        // +0x4 is because the magic number is 4 long, and the next is the length
-        // +0x8 is because that length is added to the current read position in the file
-        //   That recreates it as a non-relative offset number (it started from the
-        //   maybeExits at +0x8)
-        uint32_t cscnLength = this->getNumberAt<uint32_t>(baseAddrCscn + 0x4) + 0x8;
+    // uint32_t curCscnReadOffset = 0; // In bytes
+    // for (uint32_t cscnIndex = 0; cscnIndex < mapFileCount; cscnIndex++) {
+    //     // Points to the current magic number text, CSCN
+    //     Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN + curCscnReadOffset;
+    //     // Check that the magic text is there, at index 0
+    //     std::string magicTextCscn = this->getTextAt(baseAddrCscn + 0, 4);
+    //     if (magicTextCscn.compare(Constants::CSCN_MAGIC) != 0) {
+    //         cerr << "Magic header text " << Constants::CSCN_MAGIC << " not found! Found '" << magicTextCscn << "' instead." << endl;
+    //         return;
+    //     }
+    //     // Next, get the filename
+    //     auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
+    //     this->loadMpdz(mpdzFilename_noext);
+
+    //     // +0x4 is because the magic number is 4 long, and the next is the length
+    //     // +0x8 is because that length is added to the current read position in the file
+    //     //   That recreates it as a non-relative offset number (it started from the
+    //     //   maybeExits at +0x8)
+    //     uint32_t cscnLength = this->getNumberAt<uint32_t>(baseAddrCscn + 0x4) + 0x8;
         
-        curCscnReadOffset += cscnLength;
-        return;
-    }
+    //     curCscnReadOffset += cscnLength;
+    //     return;
+    // }
 
-    if (this->verbose) cout << "All MPDZ files loaded" << endl;
+    if (this->verbose) cout << "MPDZ files loaded" << endl;
 }
 
 void YidsRom::loadMpdz(std::string fileName_noext) {
@@ -97,13 +102,15 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
         if (curInstruction == Constants::SCEN_MAGIC_NUM) {
             this->handleSCEN(uncompVec,mpdzIndex);
         } else if (curInstruction == Constants::GRAD_MAGIC_NUM) {
-            cout << "GRAD found, seems to end files besides SETD, so skip for now" << endl;
-            return;
+            this->handleGrad(uncompVec,mpdzIndex);
+        } else if (curInstruction == Constants::SETD_MAGIC_NUM) {
+            this->handleSETD(uncompVec,mpdzIndex);
         } else {
             cerr << "[WARN] Instruction besides SCEN used: " << hex << curInstruction << endl;
             return;
         }
     }
+    cout << "All instructions for '" << mpdzFileName << "' completed" << endl;
 }
 
 uint32_t timesPaletteLoaded = 0;
@@ -122,7 +129,6 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
         cerr << "SCEN instruction did not find magic hex " << hex << Constants::SCEN_MAGIC_NUM << endl;
         return;
     }
-    cout << "*** Starting SCEN instruction parse ***" << endl;
     indexPointer += sizeof(uint32_t);
     uint32_t scenLength = YUtils::getUint32FromVec(mpdzVec, indexPointer);
     indexPointer += sizeof(uint32_t);
@@ -294,4 +300,37 @@ void YidsRom::handleImbz(std::string fileName_noext) {
         imbzIndex += Constants::CHARTILE_DATA_SIZE;
         currentTileIndex++;
     }
+}
+
+void YidsRom::handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
+    uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    if (instructionCheck != Constants::GRAD_MAGIC_NUM) {
+        cerr << "GRAD instruction did not find magic hex " << hex << Constants::GRAD_MAGIC_NUM << endl;
+        return;
+    }
+    cout << "*** Starting GRAD instruction parse ***" << endl;
+    indexPointer += 4; // Go to length
+    auto gradLength = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    indexPointer += 4; // Now at start of actual data
+
+    // Do stuff here
+    // For now, skip
+    indexPointer += gradLength;
+}
+
+void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
+    uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    if (instructionCheck != Constants::SETD_MAGIC_NUM) {
+        cerr << "SETD instruction did not find magic hex " << hex << Constants::SETD_MAGIC_NUM << endl;
+        return;
+    }
+    cout << "*** Starting SETD instruction parse ***" << endl;
+    indexPointer += 4; // Go to length
+    auto setdLength = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    // Now at start of actual data
+    indexPointer += 4;
+
+    // Do stuff here
+    // For now, skip
+    indexPointer += setdLength;
 }
