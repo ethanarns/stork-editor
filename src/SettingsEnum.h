@@ -4,8 +4,7 @@
 enum WindowEditMode {
     OBJECTS,
     TILES,
-    COLLISION,
-    NONE
+    COLLISION
 };
 
 #endif

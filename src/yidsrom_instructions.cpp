@@ -345,7 +345,7 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
         indexPointer += 8; // This skips to either the settings, or the next object
         if (len > 0) {
             while (len > 0) {
-                auto curSetting = YUtils::getUint16FromVec(mpdzVec, indexPointer);
+                //auto curSetting = YUtils::getUint16FromVec(mpdzVec, indexPointer);
                 indexPointer += 2;
                 len -= 2;
             }
