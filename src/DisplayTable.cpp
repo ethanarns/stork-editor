@@ -1,6 +1,7 @@
 #include "DisplayTable.h"
 #include "PixelDelegate.h"
 #include "yidsrom.h"
+#include "utils.h"
 
 #include <QtCore>
 #include <QTableWidget>
@@ -56,15 +57,28 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         pal = 0;
     }
     auto loadedTile = this->yidsRom->pixelTiles.at(pren.tileId);
-    QTableWidgetItem *newItem = new QTableWidgetItem();
-    newItem->setData(PixelDelegateData::PIXEL_ARRAY,loadedTile.tiles);
-    newItem->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[pal]);
-    newItem->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
-    newItem->setData(PixelDelegateData::FLIP_H,pren.flipH);
-    newItem->setData(PixelDelegateData::FLIP_V,pren.flipV);
-    newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
-    newItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
-    this->setItem(y,x,newItem);
+    auto potentialExisting = this->item(y,x);
+    if (potentialExisting == nullptr) {
+        // Nothing is here, so lets set it!
+        QTableWidgetItem *newItem = new QTableWidgetItem();
+        newItem->setData(PixelDelegateData::PIXEL_ARRAY,loadedTile.tiles);
+        newItem->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[pal]);
+        newItem->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
+        newItem->setData(PixelDelegateData::FLIP_H,pren.flipH);
+        newItem->setData(PixelDelegateData::FLIP_V,pren.flipV);
+        newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
+        newItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
+        this->setItem(y,x,newItem);
+    } else {
+        // There is already an item here, lets just update it
+        potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY,loadedTile.tiles);
+        potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[pal]);
+        potentialExisting->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
+        potentialExisting->setData(PixelDelegateData::FLIP_H,pren.flipH);
+        potentialExisting->setData(PixelDelegateData::FLIP_V,pren.flipV);
+        potentialExisting->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
+        potentialExisting->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
+    }
 }
 
 void DisplayTable::cellEnteredTriggered(int y, int x) {
@@ -144,5 +158,21 @@ void DisplayTable::toggleShowCollision() {
                 potentialItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
             }
         }
+    }
+}
+
+void DisplayTable::updateBg2() {
+    uint32_t preRenderSize = this->yidsRom->preRenderDataBg2.size();
+    if (this->yidsRom->canvasWidth == 0) {
+        cerr << "Canvas Width was never set!" << endl;
+        exit(EXIT_FAILURE);
+    }
+    //const uint32_t cutOff = 0x10*32.5;
+    const uint32_t cutOff = this->yidsRom->canvasWidth;
+    for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSize; preRenderIndex++) {
+        uint32_t y = preRenderIndex / cutOff;
+        uint32_t x = preRenderIndex % cutOff;
+        ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex));
+        this->putTile(x,y,curShort);
     }
 }

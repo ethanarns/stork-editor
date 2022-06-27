@@ -1,6 +1,6 @@
 /**
  * @file MainWindow.cpp
- * @author Ethan Arns (<email hidden>)
+ * @author Ethan Messinger-Arns (<email hidden>)
  * @brief This class is not only the base window, but also contains the connections to the ROM itself. It's the true main.
  * @version 0.1
  * @date 2022-06-12
@@ -11,7 +11,6 @@
 #include "MainWindow.h"
 #include "ChartilesTable.h"
 #include "PaletteTable.h"
-#include "Chartile.h"
 #include "utils.h"
 #include "DisplayTable.h"
 
@@ -218,20 +217,7 @@ void MainWindow::LoadRom() {
         this->paletteTable->refreshLoadedTiles();
 
         // Main table //
-        uint32_t preRenderSize = this->rom->preRenderDataBg2.size();
-        if (this->rom->canvasWidth == 0) {
-            cerr << "Canvas Width was never set!" << endl;
-            exit(EXIT_FAILURE);
-        }
-        //const uint32_t cutOff = 0x10*32.5;
-        const uint32_t cutOff = this->rom->canvasWidth;
-        for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSize; preRenderIndex++) {
-            uint32_t y = preRenderIndex / cutOff;
-            uint32_t x = preRenderIndex % cutOff;
-            ChartilePreRenderData curShort = YUtils::getCharPreRender(this->rom->preRenderDataBg2.at(preRenderIndex));
-            this->grid->putTile(x,y,curShort);
-        }
-        // Collision
+        this->grid->updateBg2();
         this->grid->initCellCollision();
         this->button_toggleCollision->setDisabled(false);
     }
