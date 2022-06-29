@@ -15,9 +15,12 @@ const int PIXEL_TILE_DIVISIONS = 8;
 const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
+
+    /***************************
+     *** PRIMARY TILE PIXELS ***
+     ***************************/
     QByteArray byteArray = index.data(PixelDelegateData::PIXEL_ARRAY).toByteArray();
-    CollisionDraw colDrawType = static_cast<CollisionDraw>(index.data(PixelDelegateData::COLLISION_DRAW).toInt());
-    QByteArray palette = index.data(PixelDelegateData::PALETTE_ARRAY).toByteArray();
+    // Check the byte array size
     if (byteArray.size() == 0) {
         const char testArrayPrimitive[] = {
             0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1,
@@ -35,7 +38,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         cerr << " pixels! Found " << byteArray.size() << " pixels instead.";
         return;
     }
-    
+    QByteArray palette = index.data(PixelDelegateData::PALETTE_ARRAY).toByteArray();
     for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
         char whichPalette = byteArray.at(i);
         auto qc = YUtils::getColorFromBytes(
@@ -52,6 +55,11 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         }
         this->drawPixel(painter, option.rect, x, y, qc);
     }
+
+    /*****************
+     *** COLLISION ***
+     *****************/
+    CollisionDraw colDrawType = static_cast<CollisionDraw>(index.data(PixelDelegateData::COLLISION_DRAW).toInt());
     if (index.data(PixelDelegateData::SHOW_COLLISION).toBool() == true) {
 
         QColor qcBlack("black");
@@ -242,17 +250,6 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             case CollisionDraw::CLEAR:
             default:
                 break;
-            // case CollisionType::NONE:
-            //     break;
-            // case CollisionType::SQUARE:
-            // default: {
-            //     painter->setPen(qpB);
-            //     painter->drawRect(option.rect.x(),option.rect.y(),squareMax,squareMax);
-                
-            //     painter->setPen(qpW);
-            //     painter->drawRect(option.rect.x(),option.rect.y(),squareMax,squareMax);
-            //     break;
-            // }
         }
     }
 }

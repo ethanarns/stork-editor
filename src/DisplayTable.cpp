@@ -176,3 +176,23 @@ void DisplayTable::updateBg2() {
         this->putTile(x,y,curShort);
     }
 }
+
+void DisplayTable::updateObjects() {
+    if (this->yidsRom->loadedLevelObjects.size() == 0) {
+        cout << "[WARN] No objects loaded" << endl;
+        return;
+    }
+    for (auto it = this->yidsRom->loadedLevelObjects.cbegin(); it != this->yidsRom->loadedLevelObjects.cend(); it++) {
+        auto x = it->xPosition;
+        auto y = it->yPosition;
+        auto potentialExisting = this->item(y,x);
+        if (potentialExisting == nullptr) {
+
+        } else {
+            this->setCellCollision(y,  x,  CollisionDraw::CORNER_BOTTOM_RIGHT);
+            this->setCellCollision(y+1,x,  CollisionDraw::CORNER_TOP_RIGHT);
+            this->setCellCollision(y,  x+1,CollisionDraw::CORNER_BOTTOM_LEFT);
+            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_TOP_LEFT);
+        }
+    }
+}

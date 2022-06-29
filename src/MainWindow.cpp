@@ -224,6 +224,9 @@ void MainWindow::LoadRom() {
         this->grid->updateBg2();
         this->grid->initCellCollision();
         this->button_toggleCollision->setDisabled(false);
+
+        // Objects //
+        this->grid->updateObjects();
     }
 }
 

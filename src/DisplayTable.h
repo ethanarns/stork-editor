@@ -18,6 +18,7 @@ public:
     void updateBg2();
     void initCellCollision();
     void toggleShowCollision();
+    void updateObjects();
 private:
     const static int CELL_SIZE_PX = 8;
     const static int CELL_COUNT_W = 0xff*4;
