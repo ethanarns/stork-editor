@@ -11,6 +11,7 @@ class LevelSelect : public QListWidget {
 public:
     LevelSelect(QWidget *parent, YidsRom* rom);
     void updateList();
+    int wipeList();
 private:
     YidsRom* yidsRom;
 

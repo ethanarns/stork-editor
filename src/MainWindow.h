@@ -45,6 +45,9 @@ private:
     void toolbarClick_showCollision();
 
     void menuClick_levelSelect();
+
+    void buttonClick_levelSelect_cancel();
+    void buttonClick_levelSelect_load();
 };
 
 #endif

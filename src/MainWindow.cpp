@@ -207,11 +207,26 @@ MainWindow::MainWindow() {
     /********************
      *** LEVEL SELECT ***
      ********************/
+    // Initial setup //
     this->levelSelectPopup = new QWidget;
     QVBoxLayout* levelSelectLayout = new QVBoxLayout(this);
     this->levelSelect = new LevelSelect(this,this->rom);
     levelSelectLayout->addWidget(this->levelSelect);
     this->levelSelectPopup->setLayout(levelSelectLayout);
+    // Load and Cancel buttons //
+    QHBoxLayout* levelSelectButtonsLayout = new QHBoxLayout(this);
+    levelSelectLayout->addLayout(levelSelectButtonsLayout);
+    // Load/Okay
+    QPushButton* levelSelectButton_okay = new QPushButton("&Load",this);
+    levelSelectButtonsLayout->addWidget(levelSelectButton_okay);
+    connect(levelSelectButton_okay,&QPushButton::released, this, &MainWindow::buttonClick_levelSelect_load);
+    // Cancel
+    QPushButton* levelSelectButton_cancel = new QPushButton("&Cancel", this);
+    levelSelectButtonsLayout->addWidget(levelSelectButton_cancel);
+    connect(levelSelectButton_cancel,&QPushButton::released, this, &MainWindow::buttonClick_levelSelect_cancel);
+    
+    // Remaining qualities //
+    this->levelSelectPopup->setWindowTitle("Select a level");
 }
 
 void MainWindow::LoadRom() {
@@ -238,7 +253,6 @@ void MainWindow::LoadRom() {
         this->paletteTable->refreshLoadedTiles();
 
         // Level Select popup //
-        this->levelSelectPopup->setWindowTitle("Select a level");
         this->menu_levelSelect->setDisabled(false);
 
         // Main table //
@@ -250,6 +264,10 @@ void MainWindow::LoadRom() {
         this->grid->updateObjects();
     }
 }
+
+/**********************
+ *** TOOLBAR CLICKS ***
+ **********************/
 
 void MainWindow::toolbarClick_palette() {
     if (this->palettePopup->isVisible()) {
@@ -271,6 +289,10 @@ void MainWindow::toolbarClick_showCollision() {
     this->grid->toggleShowCollision();
 }
 
+/*******************
+ *** MENU CLICKS ***
+ *******************/
+
 void MainWindow::menuClick_levelSelect() {
     //cout << "Level Select Clicked" << endl;
     if (this->levelSelectPopup->isVisible()) {
@@ -279,4 +301,18 @@ void MainWindow::menuClick_levelSelect() {
         return;
     }
     this->levelSelectPopup->show();
+}
+
+/****************************
+ *** WINDOW BUTTON CLICKS ***
+ ****************************/
+
+void MainWindow::buttonClick_levelSelect_load() {
+    cout << "Load clicked" << endl;
+    this->levelSelectPopup->close();
+}
+
+void MainWindow::buttonClick_levelSelect_cancel() {
+    cout << "Cancel clicked" << endl;
+    this->levelSelectPopup->close();
 }

@@ -9,6 +9,7 @@
 #include <iostream>
 
 LevelSelect::LevelSelect(QWidget *parent, YidsRom* rom) {
+    std::cout << "INIT" << std::endl;
     Q_UNUSED(parent);
     this->yidsRom = rom;
 
@@ -30,4 +31,16 @@ void LevelSelect::updateList() {
         delete item;
         this->removeItemWidget(item);
     }
+}
+
+int LevelSelect::wipeList() {
+    int deletedCount = 0;
+    auto len = this->count();
+    for (int i = 0; i < len; i++) {
+        auto curItem = this->item(i);
+        delete curItem;
+        this->removeItemWidget(curItem);
+        deletedCount++;
+    }
+    return deletedCount;
 }
