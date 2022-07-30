@@ -186,6 +186,7 @@ void DisplayTable::updateObjects() {
         auto x = it->xPosition;
         auto y = it->yPosition;
         auto potentialExisting = this->item(y,x);
+        // Very basic pointing to position
         if (potentialExisting == nullptr) {
 
         } else {

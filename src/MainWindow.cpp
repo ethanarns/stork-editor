@@ -59,6 +59,14 @@ MainWindow::MainWindow() {
 
     menu_file->addSeparator();
 
+    this->menu_levelSelect = new QAction("&Select Level...",this);
+    this->menu_levelSelect->setShortcut(tr("CTRL+U"));
+    menu_file->addAction(this->menu_levelSelect);
+    this->menu_levelSelect->setDisabled(true);
+    connect(this->menu_levelSelect, &QAction::triggered, this, &MainWindow::menuClick_levelSelect);
+
+    menu_file->addSeparator();
+
     QAction* action_quit = new QAction("&Quit",this);
     action_quit->setShortcut(tr("CTRL+Q"));
     menu_file->addAction(action_quit);
@@ -195,6 +203,15 @@ MainWindow::MainWindow() {
     this->paletteTable = new PaletteTable(this,this->rom);
     paletteLayout->addWidget(this->paletteTable);
     this->palettePopup->setLayout(paletteLayout);
+
+    /********************
+     *** LEVEL SELECT ***
+     ********************/
+    this->levelSelectPopup = new QWidget;
+    QVBoxLayout* levelSelectLayout = new QVBoxLayout(this);
+    this->levelSelect = new LevelSelect(this,this->rom);
+    levelSelectLayout->addWidget(this->levelSelect);
+    this->levelSelectPopup->setLayout(levelSelectLayout);
 }
 
 void MainWindow::LoadRom() {
@@ -219,6 +236,10 @@ void MainWindow::LoadRom() {
         this->palettePopup->setWindowTitle("Palette Viewer");
         this->button_iconPalette->setDisabled(false);
         this->paletteTable->refreshLoadedTiles();
+
+        // Level Select popup //
+        this->levelSelectPopup->setWindowTitle("Select a level");
+        this->menu_levelSelect->setDisabled(false);
 
         // Main table //
         this->grid->updateBg2();
@@ -248,4 +269,14 @@ void MainWindow::toolbarClick_tiles() {
 
 void MainWindow::toolbarClick_showCollision() {
     this->grid->toggleShowCollision();
+}
+
+void MainWindow::menuClick_levelSelect() {
+    //cout << "Level Select Clicked" << endl;
+    if (this->levelSelectPopup->isVisible()) {
+        this->levelSelectPopup->activateWindow();
+        this->levelSelectPopup->raise();
+        return;
+    }
+    this->levelSelectPopup->show();
 }

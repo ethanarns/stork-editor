@@ -13,6 +13,7 @@
 #include "ChartilesTable.h"
 #include "PaletteTable.h"
 #include "SettingsEnum.h"
+#include "LevelSelect.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -31,14 +32,19 @@ private:
     ChartilesTable* chartilesTable;
     QWidget* palettePopup;
     PaletteTable* paletteTable;
+    QWidget* levelSelectPopup;
+    LevelSelect* levelSelect;
 
     QAction* button_iconPalette;
     QAction* button_iconTiles;
     QAction* button_toggleCollision;
+    QAction* menu_levelSelect;
 
     void toolbarClick_palette();
     void toolbarClick_tiles();
     void toolbarClick_showCollision();
+
+    void menuClick_levelSelect();
 };
 
 #endif
