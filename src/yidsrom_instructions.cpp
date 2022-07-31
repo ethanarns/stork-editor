@@ -244,7 +244,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                     // Do nothing
                 }
             }
-            std::cout << "Finished writing to preRenderDataBg2, length is " << this->preRenderDataBg2.size() << std::endl;
+            //std::cout << "Finished writing to preRenderDataBg2, length is " << this->preRenderDataBg2.size() << std::endl;
         } else if (curSubInstruction == Constants::COLZ_MAGIC_NUM) {
             cout << ">> Handling COLZ instruction" << endl;
             if (collisionTileArray.size() > 0) {

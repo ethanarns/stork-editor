@@ -51,9 +51,15 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
     if (pren.tileAttr == 0) {
         return;
     }
-    if (this->yidsRom->pixelTiles.size() < 1) {
+    const uint32_t pixelTileSize = this->yidsRom->pixelTiles.size();
+    if (pixelTileSize < 1) {
         std::cerr << "[ERROR] pixelTiles is empty, cannot place tile" << std::endl;
         exit(EXIT_FAILURE);
+    }
+    if (pren.tileId >= pixelTileSize) {
+        std::cerr << "[ERROR] Tile ID '" << hex << pren.tileId;
+        std::cerr << "' is greater than pixelTiles count " << hex << pixelTileSize << std::endl;
+        return;
     }
     int pal = (int)pren.paletteId; // int is more commonly used to access, so convert it early
     if (pal > 0xf) {
