@@ -65,6 +65,7 @@ public:
     std::string getLevelFileNameFromMapIndex(uint32_t worldIndex, uint32_t levelIndex);
     void loadCrsb(std::string fileName_noext);
     void wipeCrsbData();
+    void getGameLevelsMetaData();
 
     std::string getTextAt(uint32_t position, uint32_t length);
     std::string getTextNullTermAt(uint32_t position_file);

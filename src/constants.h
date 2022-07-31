@@ -29,6 +29,14 @@ namespace Constants {
     inline constexpr uint32_t ANMZ_MAGIC_NUM{0x5a4d4e41}; // "ANMZ" / 41 4E 4D 5A
     inline constexpr uint32_t GRAD_MAGIC_NUM{0x44415247}; // "GRAD" / 47 52 41 44
     inline constexpr uint32_t SETD_MAGIC_NUM{0x44544553}; // "SETD"
+    inline constexpr uint32_t ALPH_MAGIC_NUM{0x48504c41}; // "ALPH"
+    inline constexpr uint32_t AREA_MAGIC_NUM{0x41455241}; // "AREA"
+    inline constexpr uint32_t PATH_MAGIC_NUM{0x48544150}; // "PATH"
+    inline constexpr uint32_t BLKZ_MAGIC_NUM{0x5a4b4c42}; // "BLKZ"
+    inline constexpr uint32_t BRAK_MAGIC_NUM{0x4b415242}; // "BRAK"
+    inline constexpr uint32_t PLAN_MAGIC_NUM{0x4e414c50}; // "PLAN"
+    inline constexpr uint32_t IMBZ_MAGIC_NUM{0x5a424d49}; // "IMBZ"
+    inline constexpr uint32_t SCRL_MAGIC_NUM{0x4c524353}; // "SCRL"
 
     inline constexpr int PALETTE_SIZE{0x20};
     inline constexpr int CHARTILE_DATA_SIZE{0x20};
