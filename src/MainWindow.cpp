@@ -309,10 +309,10 @@ void MainWindow::menuClick_levelSelect() {
 
 void MainWindow::buttonClick_levelSelect_load() {
     cout << "Load clicked" << endl;
+    this->grid->wipeTable();
     this->levelSelectPopup->close();
 }
 
 void MainWindow::buttonClick_levelSelect_cancel() {
-    cout << "Cancel clicked" << endl;
     this->levelSelectPopup->close();
 }

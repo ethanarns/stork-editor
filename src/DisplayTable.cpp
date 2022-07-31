@@ -188,7 +188,7 @@ void DisplayTable::updateObjects() {
         auto potentialExisting = this->item(y,x);
         // Very basic pointing to position
         if (potentialExisting == nullptr) {
-
+            // Do nothing, not there
         } else {
             this->setCellCollision(y,  x,  CollisionDraw::CORNER_BOTTOM_RIGHT);
             this->setCellCollision(y+1,x,  CollisionDraw::CORNER_TOP_RIGHT);
@@ -196,4 +196,20 @@ void DisplayTable::updateObjects() {
             this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_TOP_LEFT);
         }
     }
+}
+
+int DisplayTable::wipeTable() {
+    std::cout << "wipeTable()" << std::endl;
+    uint32_t xWidth = this->columnCount();
+    uint32_t yHeight = this->rowCount();
+    for (uint32_t col = 0; col < xWidth; col++) {
+        for (uint32_t row = 0; row < yHeight; row++) {
+            auto currentItem = this->item(row,col);
+            if (currentItem != nullptr) {
+                this->takeItem(row,col);
+                delete currentItem;
+            }
+        }
+    }
+    return 0;
 }
