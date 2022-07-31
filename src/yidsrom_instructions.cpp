@@ -257,7 +257,8 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             Address compressedDataEnd = compressedDataStart + colzLength;
             auto colzCompressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
             auto uncompressedColz = YCompression::lzssVectorDecomp(colzCompressedSubArray, false);
-            YUtils::appendVector(this->collisionTileArray,uncompressedColz);
+            this->collisionTileArray = uncompressedColz;
+            //YUtils::appendVector(this->collisionTileArray,uncompressedColz);
             indexPointer += colzLength + 8;
         } else if (curSubInstruction == Constants::ANMZ_MAGIC_NUM) {
             cout << ">> Handling ANMZ instruction" << endl;

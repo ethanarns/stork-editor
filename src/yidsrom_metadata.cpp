@@ -14,9 +14,9 @@ void YidsRom::getGameLevelsMetaData() {
     cout << "*** BEGIN METADATA DEBUG ***" << endl;
     for (int worldIndex = 0; worldIndex < 5; worldIndex++) {
         for (int levelIndex = 0; levelIndex < 10; levelIndex++) {
-            cout << "Loading world index " << worldIndex << ", level index " << levelIndex << endl;
+            cout << "Loading world index " << worldIndex << ", level index " << levelIndex << ", CRSB '";
             auto curLevelCrsbName = this->getLevelFileNameFromMapIndex(worldIndex,levelIndex);
-            cout << "CRSB name: " << curLevelCrsbName << endl;
+            cout << curLevelCrsbName << "', map count ";
             /**
              * CRSB LOADING
              */
@@ -50,7 +50,7 @@ void YidsRom::getGameLevelsMetaData() {
 
             // Number of CSCN records, aka maps in level!
             auto mapFileCount = this->getNumberAt<uint32_t>(startAddr + 8);
-            cout << "Map count: " << mapFileCount << endl;
+            cout << mapFileCount << endl;
 
             const uint32_t OFFSET_TO_FIRST_CSCN = 0xC; // 12
 
@@ -115,6 +115,49 @@ void YidsRom::getGameLevelsMetaData() {
                                 }
                                 case Constants::INFO_MAGIC_NUM: {
                                     cout << "INFO" << endl;
+                                    /**
+                                     * INFO
+                                     */
+                                    cout << "        ";
+                                    uint32_t canvasDimensions = YUtils::getUint32FromVec(uncompVec, mpdzIndex + 8); // 00b60208
+                                    // Only the first one matters for the primary height and width, since BG 2 decides everything
+                                    cout << "canvasHeight: " << (canvasDimensions >> 0x10);
+                                    cout << "; canvasWidth: " << canvasDimensions % 0x10000 << endl;
+
+                                    // TODO: What are these values?
+                                    uint32_t unknownValue1 = YUtils::getUint32FromVec(uncompVec, mpdzIndex + 12); // 00000000
+                                    cout << "        unk1: " << hex << unknownValue1 << "; ";
+                                    uint32_t unknownValue2 = YUtils::getUint32FromVec(uncompVec, mpdzIndex + 16); // 0x1000
+                                    cout << "unk2: " << hex << unknownValue2 << endl;
+                                    uint32_t unknownValue3 = YUtils::getUint32FromVec(uncompVec, mpdzIndex + 20); // 0x1000
+                                    cout << "        unk3: " << hex << unknownValue3 << "; ";
+                                    //uint32_t unknownValue4 = YUtils::getUint32FromVec(uncompVec, mpdzIndex + 24); // 0x00020202
+                                    auto whichBgToWriteTo = uncompVec.at(mpdzIndex + 24 + 0);
+                                    cout << "whichBg: " << (int)whichBgToWriteTo << endl;
+                                    uint16_t charBaseBlockHardMaybe = uncompVec.at(mpdzIndex + 24 + 1);
+                                    cout << "        charBaseBlockHardMaybe: " << (int)charBaseBlockHardMaybe << "; ";
+                                    uint16_t thirdByte = uncompVec.at(mpdzIndex + 24 + 2);
+                                    cout << "thirdByte: " << (int)thirdByte << "; ";
+                                    uint16_t screenBaseBlockMaybe = uncompVec.at(mpdzIndex + 24 + 3);
+                                    cout << "screenBaseBlockMaybe: " << (int)screenBaseBlockMaybe << endl;
+
+                                    uint32_t unknownValue5 = YUtils::getUint32FromVec(uncompVec, mpdzIndex + 28); // 00000000
+                                    cout << "        unk5: " << hex << unknownValue5 << endl;
+                                    Q_UNUSED(canvasDimensions);
+                                    Q_UNUSED(unknownValue1);
+                                    Q_UNUSED(unknownValue2);
+                                    Q_UNUSED(unknownValue3);
+                                    Q_UNUSED(unknownValue5);
+                                    Q_UNUSED(whichBgToWriteTo);
+                                    Q_UNUSED(charBaseBlockHardMaybe);
+                                    Q_UNUSED(thirdByte);
+                                    Q_UNUSED(screenBaseBlockMaybe);
+                                    uint32_t infoLength = YUtils::getUint32FromVec(uncompVec, mpdzIndex + 4); // First time: 0x20
+                                    if (infoLength > 0x18) {
+                                        // Get charfile string
+                                        auto charFileNoExt = YUtils::getNullTermTextFromVec(uncompVec, mpdzIndex + 32);
+                                        cout << "        IMBZ: " << charFileNoExt << endl;
+                                    }
                                     break;
                                 }
                                 case Constants::PLTB_MAGIC_NUM: {
@@ -131,6 +174,10 @@ void YidsRom::getGameLevelsMetaData() {
                                 }
                                 case Constants::PLAN_MAGIC_NUM: {
                                     cout << "PLAN" << endl;
+                                    break;
+                                }
+                                case Constants::RAST_MAGIC_NUM: {
+                                    cout << "RAST"<< endl;
                                     break;
                                 }
                                 case Constants::IMBZ_MAGIC_NUM: {
