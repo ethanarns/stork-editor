@@ -9,27 +9,26 @@
 #include <iostream>
 
 LevelSelect::LevelSelect(QWidget *parent, YidsRom* rom) {
-    std::cout << "INIT" << std::endl;
     Q_UNUSED(parent);
     this->yidsRom = rom;
 
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
-
-    this->updateList();
 }
 
 void LevelSelect::updateList() {
-    QListWidgetItem* item = new QListWidgetItem(tr("Item 1"));
-    item->setData(LevelSelect::ITEM_DATA_ID,69);
-    std::cout << item->data(LevelSelect::ITEM_DATA_ID).toInt() << std::endl;
-    this->addItem(item);
-
-    auto len = this->count();
-    for (int i = 0; i < len; i++) {
-        auto curItem = this->item(i);
-        std::cout << curItem->text().toStdString() << std::endl;
-        delete item;
-        this->removeItemWidget(item);
+    if (!this->yidsRom->filesLoaded) {
+        std::cerr << "[ERROR] Could not update LevelSelect before ROM is loaded" << std::endl;
+        return;
+    }
+    for (int worldIndex = 0; worldIndex < 5; worldIndex++) {
+        for (int levelIndex = 0; levelIndex < 10; levelIndex++) {
+            auto curLevelCrsbName = this->yidsRom->getLevelFileNameFromMapIndex(worldIndex,levelIndex);
+            QListWidgetItem* item = new QListWidgetItem(tr(curLevelCrsbName.c_str()));
+            item->setData(LevelSelect::ITEM_DATA_ID_CRSB,tr(curLevelCrsbName.c_str()));
+            item->setData(LevelSelect::ITEM_DATA_ID_LEVEL,levelIndex);
+            item->setData(LevelSelect::ITEM_DATA_ID_WORLD,worldIndex);
+            this->addItem(item);
+        }
     }
 }
 

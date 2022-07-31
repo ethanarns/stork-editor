@@ -58,10 +58,11 @@ public:
     uint32_t canvasWidth = 0;
     uint32_t canvasHeight = 0;
     bool verbose;
+    bool filesLoaded = false;
     YidsRom(bool verbose);
     void openRom(std::string fileName);
 
-    std::string getLevelFileNameFromMapIndex(uint32_t levelIndex, uint32_t worldIndex);
+    std::string getLevelFileNameFromMapIndex(uint32_t worldIndex, uint32_t levelIndex);
 
     std::string getTextAt(uint32_t position, uint32_t length);
     std::string getTextNullTermAt(uint32_t position_file);
@@ -74,7 +75,6 @@ public:
 
     ~YidsRom();
 private:
-    bool filesLoaded = false;
 
     void initArm9RomData(std::string fileName);
     void writeUncompressedARM9(uint32_t arm9start_rom, uint32_t arm9length);

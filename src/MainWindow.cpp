@@ -296,11 +296,13 @@ void MainWindow::toolbarClick_showCollision() {
 void MainWindow::menuClick_levelSelect() {
     //cout << "Level Select Clicked" << endl;
     if (this->levelSelectPopup->isVisible()) {
+        // It's still open, so just bring it to the front
         this->levelSelectPopup->activateWindow();
         this->levelSelectPopup->raise();
         return;
     }
     this->levelSelectPopup->show();
+    this->levelSelect->updateList();
 }
 
 /****************************

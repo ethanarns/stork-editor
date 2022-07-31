@@ -16,7 +16,9 @@ private:
     YidsRom* yidsRom;
 
     const static int CELL_SIZE_HEIGHT_PX = 20;
-    const static int ITEM_DATA_ID = 101;
+    const static int ITEM_DATA_ID_CRSB = 101;
+    const static int ITEM_DATA_ID_WORLD = 102;
+    const static int ITEM_DATA_ID_LEVEL = 103;
 };
 
 #endif
