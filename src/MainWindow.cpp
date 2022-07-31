@@ -311,8 +311,25 @@ void MainWindow::menuClick_levelSelect() {
 
 void MainWindow::buttonClick_levelSelect_load() {
     cout << "Load clicked" << endl;
+    auto potentialCurrentItem = this->levelSelect->currentItem();
+    if (potentialCurrentItem == nullptr) {
+        return;
+    }
+    auto potentialItemCrsb = potentialCurrentItem->data(LevelSelect::ITEM_DATA_ID_CRSB);
+    if (potentialCurrentItem == NULL || potentialCurrentItem == nullptr) {
+        std::cerr << "Invalid CRSB data attached to item" << std::endl;
+        return;
+    }
     this->grid->wipeTable();
+    this->rom->wipeCrsbData();
+    auto loadingCrsb = potentialItemCrsb.toString().toStdString();
+    std::cout << "Loading: " << loadingCrsb << std::endl;
+    this->rom->loadCrsb(loadingCrsb);
     this->levelSelectPopup->close();
+    // Visual updates
+    this->grid->updateBg2();
+    this->grid->initCellCollision();
+    this->grid->updateObjects();
 }
 
 void MainWindow::buttonClick_levelSelect_cancel() {

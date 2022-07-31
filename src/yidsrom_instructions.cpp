@@ -77,6 +77,10 @@ void YidsRom::loadCrsb(std::string fileName_noext) {
     if (this->verbose) cout << "MPDZ files loaded" << endl;
 }
 
+// TODO: Get rid of this hacky crap
+uint32_t timesPaletteLoaded = 0;
+uint32_t timesImbzLoaded = 0;
+
 void YidsRom::loadMpdz(std::string fileName_noext) {
     if (this->verbose) cout << "Loading MPDZ '" << fileName_noext << "'" << endl;
     std::string mpdzFileName = fileName_noext.append(Constants::MPDZ_EXTENSION);
@@ -97,6 +101,10 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     // 8 in order to start it at the first instruction besides SET
     Address mpdzIndex = 8; // Pass this in as a pointer to functions
 
+    // TODO: Get rid of this hacky crap
+    timesPaletteLoaded = 0;
+    timesImbzLoaded = 0;
+
     // Instruction loop
     while (mpdzIndex < mpdzFileLength) {
         uint32_t curInstruction = YUtils::getUint32FromVec(uncompVec,mpdzIndex);
@@ -114,8 +122,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     cout << "All instructions for '" << mpdzFileName << "' completed" << endl;
 }
 
-uint32_t timesPaletteLoaded = 0;
-uint32_t timesImbzLoaded = 0;
+
 
 /**
  * @brief Handles the SCEN instruction from MPDZ files
@@ -217,9 +224,11 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 cout << "[WARN] MPBZ tiles other than BG 2 not implemented, skipping" << endl;
                 continue;
             }
-
             // Handle uncompressedMpbz data
             const uint32_t uncompressedMpbzTwoByteCount = uncompressedMpbz.size() / 2;
+            if (uncompressedMpbzTwoByteCount < 1) {
+                std::cerr << "[ERROR] uncompressedMpbzTwoByteCount was 0" << std::endl;
+            }
             //for (int mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
             for (uint32_t mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
                 uint32_t trueOffset = mpbzIndex*2;
@@ -230,9 +239,12 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 if (whichBgToWriteTo == 2) {
                     this->preRenderDataBg2.push_back(curShort);
                 } else {
+                    std::cout << "[WARN] Writing to unhangled BG " << whichBgToWriteTo << std::endl;
+                    break;
                     // Do nothing
                 }
             }
+            std::cout << "Finished writing to preRenderDataBg2, length is " << this->preRenderDataBg2.size() << std::endl;
         } else if (curSubInstruction == Constants::COLZ_MAGIC_NUM) {
             cout << ">> Handling COLZ instruction" << endl;
             if (collisionTileArray.size() > 0) {
@@ -281,6 +293,10 @@ void YidsRom::handleImbz(std::string fileName_noext) {
     int currentTileIndex = 0; // The index of the tile within list of tiles. Start at -1 due to first time ++
     int imbzIndex = 0; // Goes up by 0x20 each time, offset it
     const int imbzLength = uncompressedImbz.size();
+    if (imbzLength < 1) {
+        std::cerr << "[ERROR] imbzLength is 0!" << std::endl;
+        return;
+    }
     // Do it 0x20 by 0x20
     while (imbzIndex < imbzLength) { // Kill when equal to length, meaning it's outside
         Chartile curTile;
@@ -325,7 +341,7 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
         cerr << "SETD instruction did not find magic hex " << hex << Constants::SETD_MAGIC_NUM << endl;
         return;
     }
-    cout << "*** Starting SETD instruction parse ***" << endl;
+    //std::cout << "*** Starting SETD instruction parse ***" << std::endl;
     indexPointer += 4; // Go to length
     auto setdLength = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     // Now at start of actual data
@@ -337,7 +353,7 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
         lo.settingsLength = YUtils::getUint16FromVec(mpdzVec, indexPointer + 2);
         uint16_t len = lo.settingsLength;
         if (len > 10) {
-            cout << "[WARN] Unusually high object settings length: " << hex << len << endl;
+            cout << "[WARN] Unusually high object settings length for " << hex << lo.objectId << ": " << hex << len << endl;
         }
         lo.xPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 4);
         lo.yPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 6);
@@ -350,7 +366,7 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
                 len -= 2;
             }
         }
-        YUtils::printLevelObject(lo);
+        //YUtils::printLevelObject(lo);
         this->loadedLevelObjects.push_back(lo);
     }
     cout << "Loaded " << dec << this->loadedLevelObjects.size() << " level objects" << endl;

@@ -393,3 +393,13 @@ std::vector<uint8_t> YidsRom::getFileByteVector(std::string fileName) {
     }
     return outVec;
 }
+
+void YidsRom::wipeCrsbData() {
+    this->collisionTileArray.clear();
+    this->loadedLevelObjects.clear();
+    this->canvasHeight = 0;
+    this->canvasWidth = 0;
+    this->preRenderDataBg1.clear();
+    this->preRenderDataBg2.clear();
+    this->pixelTiles.clear();
+}

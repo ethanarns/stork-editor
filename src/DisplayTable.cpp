@@ -40,16 +40,20 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
 }
 
 void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) {
-    if (x > DisplayTable::CELL_COUNT_W) {
-        cerr << "X value too high: " << hex << x << endl;
+    if (x > (uint32_t)this->columnCount()) {
+        std::cerr << "[ERROR] X value too high: " << hex << x << std::endl;
         return;
     }
-    if (y > DisplayTable::CELL_COUNT_H) {
-        cerr << "Y value too high: " << hex << y << endl;
+    if (y > (uint32_t)this->rowCount()) {
+        std::cerr << "[ERROR] Y value too high: " << hex << y << std::endl;
         return;
     }
     if (pren.tileAttr == 0) {
         return;
+    }
+    if (this->yidsRom->pixelTiles.size() < 1) {
+        std::cerr << "[ERROR] pixelTiles is empty, cannot place tile" << std::endl;
+        exit(EXIT_FAILURE);
     }
     int pal = (int)pren.paletteId; // int is more commonly used to access, so convert it early
     if (pal > 0xf) {
@@ -163,9 +167,17 @@ void DisplayTable::toggleShowCollision() {
 
 void DisplayTable::updateBg2() {
     uint32_t preRenderSize = this->yidsRom->preRenderDataBg2.size();
+    if (preRenderSize == 0) {
+        std::cerr << "[WARN] preRenderDataBg2 is empty" << std::endl;
+        return;
+    }
     if (this->yidsRom->canvasWidth == 0) {
-        cerr << "Canvas Width was never set!" << endl;
-        exit(EXIT_FAILURE);
+        std::cerr << "[ERROR] Canvas Width was never set!" << std::endl;
+        return;
+    }
+    if (this->yidsRom->pixelTiles.size() < 1) {
+        std::cerr << "[ERROR] Cannot updated BG2, missing pixelTiles" << std::endl;
+        return;
     }
     //const uint32_t cutOff = 0x10*32.5;
     const uint32_t cutOff = this->yidsRom->canvasWidth;
