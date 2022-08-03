@@ -15,7 +15,7 @@ public:
     void putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren);
     void displayTableClicked(int row, int column);
     void setCellCollision(int row, int column, CollisionDraw colType);
-    void updateBg2();
+    void updateBgs();
     void initCellCollision();
     void toggleShowCollision();
     void updateObjects();

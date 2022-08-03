@@ -87,7 +87,7 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
         newItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
         newItem->setData(PixelDelegateData::DEBUG,loadedTile.index);
-        cout << "x: " << hex << x << ", y: " << hex << y << endl;
+        //cout << "x: " << hex << x << ", y: " << hex << y << endl;
         this->setItem(y,x,newItem);
     } else {
         // There is already an item here, lets just update it
@@ -99,7 +99,6 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         potentialExisting->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
         potentialExisting->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
         potentialExisting->setData(PixelDelegateData::DEBUG,loadedTile.index);
-        cout << "OVERWRITING, THIS IS BAD" << endl;
     }
 }
 
@@ -192,7 +191,7 @@ void DisplayTable::toggleShowCollision() {
     }
 }
 
-void DisplayTable::updateBg2() {
+void DisplayTable::updateBgs() {
     uint32_t preRenderSize = this->yidsRom->preRenderDataBg2.size();
     if (preRenderSize == 0) {
         std::cerr << "[WARN] preRenderDataBg2 is empty" << std::endl;
@@ -212,7 +211,7 @@ void DisplayTable::updateBg2() {
         uint32_t y = preRenderIndex / cutOff;
         uint32_t x = preRenderIndex % cutOff;
         ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex));
-        cout << "x: " << hex << x << ", y: " << hex << y << endl;
+        //cout << "x: " << hex << x << ", y: " << hex << y << endl;
         this->putTile(x,y,curShort);
     }
 }
