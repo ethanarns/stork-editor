@@ -239,7 +239,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 if (whichBgToWriteTo == 2) {
                     this->preRenderDataBg2.push_back(curShort);
                 } else {
-                    std::cout << "[WARN] Writing to unhangled BG " << whichBgToWriteTo << std::endl;
+                    std::cout << "[WARN] Writing to unhandled BG " << whichBgToWriteTo << std::endl;
                     break;
                     // Do nothing
                 }
@@ -291,14 +291,14 @@ void YidsRom::handleImbz(std::string fileName_noext) {
     uncompressedFileVector.clear();
 
     // Use ints since they're natural and not stored excessively anyway
-    int currentTileIndex = 0; // The index of the tile within list of tiles. Start at -1 due to first time ++
-    int imbzIndex = 0; // Goes up by 0x20 each time, offset it
+    int currentTileIndex = 0; // The index of the tile within list of tiles
+    int imbzIndex = 0; // Goes up by 0x20/32 each time, offset it
     const int imbzLength = uncompressedImbz.size();
     if (imbzLength < 1) {
         std::cerr << "[ERROR] imbzLength is 0!" << std::endl;
         return;
     }
-    // Do it 0x20 by 0x20
+    // Do it 0x20 by 0x20 (32)
     while (imbzIndex < imbzLength) { // Kill when equal to length, meaning it's outside
         Chartile curTile;
         curTile.engine = ScreenEngine::A;

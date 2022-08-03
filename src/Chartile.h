@@ -5,8 +5,8 @@
 #include <QByteArray>
 
 enum ScreenEngine {
-    A,// Top screen
-    B // Bottom screen
+    A, // Top screen
+    B  // Bottom screen
 };
 
 struct Chartile {
