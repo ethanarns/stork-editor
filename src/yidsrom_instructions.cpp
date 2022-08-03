@@ -207,6 +207,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             timesPaletteLoaded++;
         } else if (curSubInstruction == Constants::MPBZ_MAGIC_NUM) {
             cout << ">> Handling MPBZ instruction" << endl;
+            // Most of this tile placing logic is here: 0201c6dc
             if (whichBgToWriteTo == 0) {
                 cerr << "[ERROR] Which BG to write to was not specified, MPBZ load failed" << endl;
                 return;
@@ -229,8 +230,34 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             if (uncompressedMpbzTwoByteCount < 1) {
                 std::cerr << "[ERROR] uncompressedMpbzTwoByteCount was 0" << std::endl;
             }
+
+            uint32_t mpbzIndex = 0;
+
+            // 0x0201c700
+            if (uncompressedMpbz.at(0) == 0xFF && uncompressedMpbz.at(1) == 0xFF) {
+                // NOTE: It is not unlikely that there's a third byte for X offset, but
+                //   currently it just seems like Y is only what's used. If you see further
+                //   sliding, come back and look at this again
+
+                // Get the next WORD, which should be the Y offset/lines skipped
+                uint16_t firstOffsetByte = (uint16_t)uncompressedMpbz.at(2);
+                uint16_t secondOffsetByte = (uint16_t)uncompressedMpbz.at(3);
+                uint16_t offset = (secondOffsetByte << 8) + firstOffsetByte;
+                // Skip drawing the number of lines specified in offset
+                offset = offset * this->canvasWidth;
+                if (whichBgToWriteTo == 2) {
+                    for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
+                        this->preRenderDataBg2.push_back(0x0000);
+                    } 
+                    mpbzIndex += 3; // 0x0201c714
+                } else {
+                    std::cout << "[WARN] Writing to unhandled BG " << whichBgToWriteTo << std::endl;
+                    break;
+                    // Do nothing
+                }
+            }
             //for (int mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
-            for (uint32_t mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
+            while (mpbzIndex < uncompressedMpbzTwoByteCount) {
                 uint32_t trueOffset = mpbzIndex*2;
                 uint16_t firstByte = (uint16_t)uncompressedMpbz.at(trueOffset);
                 uint16_t secondByte = (uint16_t)uncompressedMpbz.at(trueOffset+1);
@@ -243,6 +270,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                     break;
                     // Do nothing
                 }
+                mpbzIndex++;
             }
             //std::cout << "Finished writing to preRenderDataBg2, length is " << this->preRenderDataBg2.size() << std::endl;
         } else if (curSubInstruction == Constants::COLZ_MAGIC_NUM) {

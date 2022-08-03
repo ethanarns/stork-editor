@@ -78,6 +78,7 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         newItem->setData(PixelDelegateData::FLIP_V,pren.flipV);
         newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
         newItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
+        newItem->setData(PixelDelegateData::DEBUG,loadedTile.index);
         this->setItem(y,x,newItem);
     } else {
         // There is already an item here, lets just update it
@@ -88,6 +89,7 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         potentialExisting->setData(PixelDelegateData::FLIP_V,pren.flipV);
         potentialExisting->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
         potentialExisting->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
+        potentialExisting->setData(PixelDelegateData::DEBUG,loadedTile.index);
     }
 }
 
@@ -108,6 +110,7 @@ void DisplayTable::displayTableClicked(int row, int column) {
         // Nothing has loaded yet, cancel
         return;
     }
+    cout << dec << curCell->data(PixelDelegateData::DEBUG).toInt() << endl;
     //cout << hex << curCell->data(PixelDelegateData::COLLISION_DRAW).toInt() << endl;
 }
 

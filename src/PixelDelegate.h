@@ -11,7 +11,8 @@ enum PixelDelegateData {
     FLIP_H = 104,
     FLIP_V = 105,
     COLLISION_DRAW = 106,
-    SHOW_COLLISION = 107
+    SHOW_COLLISION = 107,
+    DEBUG = 108
 };
 
 enum CollisionType {
