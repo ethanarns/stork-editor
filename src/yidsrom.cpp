@@ -110,7 +110,7 @@ void YidsRom::openRom(std::string fileName) {
         curFileId++;
     }
 
-    std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,0);
+    std::string crsbFileName = this->getLevelFileNameFromMapIndex(1,3);
     this->loadCrsb(crsbFileName);
 }
 
@@ -397,8 +397,16 @@ std::vector<uint8_t> YidsRom::getFileByteVector(std::string fileName) {
 void YidsRom::wipeCrsbData() {
     this->collisionTileArray.clear();
     this->loadedLevelObjects.clear();
-    this->canvasHeight = 0;
-    this->canvasWidth = 0;
+
+    this->canvasHeightBg2 = 0;
+    this->canvasWidthBg2 = 0;
+
+    this->canvasHeightBg1;
+    this->canvasWidthBg1 = 0;
+
+    this->canvasWidthCol = 0;
+    this->canvasHeightCol = 0;
+
     this->preRenderDataBg1.clear();
     this->preRenderDataBg2.clear();
     this->pixelTiles.clear();

@@ -148,11 +148,6 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             uint32_t infoLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First time: 0x20
 
             uint32_t canvasDimensions = YUtils::getUint32FromVec(mpdzVec, indexPointer + 8); // 00b60208
-            // Only the first one matters for the primary height and width, since BG 2 decides everything
-            if (this->canvasWidth == 0) {
-                this->canvasHeight = canvasDimensions >> 0x10;
-                this->canvasWidth = canvasDimensions % 0x10000;
-            }
 
             // TODO: What are these values?
             uint32_t unknownValue1 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 12); // 00000000
@@ -174,6 +169,16 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             Q_UNUSED(unknownValue2);
             Q_UNUSED(unknownValue3);
             Q_UNUSED(unknownValue5);
+
+            // Only the first one matters for the primary height and width, since BG 2 decides everything
+            if (whichBgToWriteTo == 2) {
+                this->canvasHeightBg2 = canvasDimensions >> 0x10;
+                this->canvasWidthBg2 = canvasDimensions % 0x10000;
+            } else if (whichBgToWriteTo == 1) {
+                this->canvasHeightBg1 = canvasDimensions >> 0x10;
+                this->canvasWidthBg1 = canvasDimensions % 0x10000;
+            }
+
             if (infoLength > 0x18) {
                 // Get charfile string
                 auto charFileNoExt = YUtils::getNullTermTextFromVec(mpdzVec, indexPointer + 32);
@@ -219,10 +224,16 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             auto compressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
             // Decompress MPBZ data
             auto uncompressedMpbz = YCompression::lzssVectorDecomp(compressedSubArray, false);
+
+
+            YUtils::writeByteVectorToFile(compressedSubArray,"2-4-test.mpbz");
+            YCompression::lzssDecomp("2-4-test.mpbz", true);
+
+
             indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
 
-            if (whichBgToWriteTo == 1 || whichBgToWriteTo == 3) {
-                cout << "[WARN] MPBZ tiles other than BG 2 not implemented, skipping" << endl;
+            if (whichBgToWriteTo == 3 || whichBgToWriteTo == 0) {
+                cout << "[WARN] MPBZ tiles other than BG 1 and 2 not implemented, skipping" << endl;
                 continue;
             }
             // Handle uncompressedMpbz data
@@ -244,10 +255,21 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 uint16_t secondOffsetByte = (uint16_t)uncompressedMpbz.at(3);
                 uint16_t offset = (secondOffsetByte << 8) + firstOffsetByte;
                 // Skip drawing the number of lines specified in offset
-                offset = offset * this->canvasWidth;
+                if (whichBgToWriteTo == 2) {
+                    offset = offset * this->canvasWidthBg2;
+                } else if (whichBgToWriteTo == 1) {
+                    offset = offset * this->canvasWidthBg1;
+                }
+                
                 if (whichBgToWriteTo == 2) {
                     for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
                         this->preRenderDataBg2.push_back(0x0000);
+                    } 
+                    mpbzIndex += 3; // 0x0201c714
+                } else if (whichBgToWriteTo == 1) {
+                    // Potentially collapse me later, could probably be merged into above
+                    for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
+                        this->preRenderDataBg1.push_back(0x0000);
                     } 
                     mpbzIndex += 3; // 0x0201c714
                 } else {
@@ -256,7 +278,6 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                     // Do nothing
                 }
             }
-            //for (int mpbzIndex = 0; mpbzIndex < uncompressedMpbzTwoByteCount; mpbzIndex++) {
             while (mpbzIndex < uncompressedMpbzTwoByteCount) {
                 uint32_t trueOffset = mpbzIndex*2;
                 uint16_t firstByte = (uint16_t)uncompressedMpbz.at(trueOffset);
@@ -265,6 +286,8 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 curShort += 0x1000; // 0201c730
                 if (whichBgToWriteTo == 2) {
                     this->preRenderDataBg2.push_back(curShort);
+                } else if (whichBgToWriteTo == 1) {
+                    this->preRenderDataBg1.push_back(curShort);
                 } else {
                     std::cout << "[WARN] Writing to unhandled BG " << whichBgToWriteTo << std::endl;
                     break;
@@ -285,8 +308,17 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             Address compressedDataEnd = compressedDataStart + colzLength;
             auto colzCompressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
             auto uncompressedColz = YCompression::lzssVectorDecomp(colzCompressedSubArray, false);
-            this->collisionTileArray = uncompressedColz;
+            this->collisionTileArray = uncompressedColz; // Copy directly
             //YUtils::appendVector(this->collisionTileArray,uncompressedColz);
+            if (whichBgToWriteTo == 2) {
+                this->canvasWidthCol = this->canvasWidthBg2;
+                this->canvasHeightCol = this->canvasHeightBg2;
+            } else if (whichBgToWriteTo == 1) {
+                this->canvasWidthCol = this->canvasWidthBg1;
+                this->canvasHeightCol = this->canvasHeightBg1;
+            } else {
+                cout << "[WARN] Using collision on unsupported BG: " << hex << whichBgToWriteTo << endl;
+            }
             indexPointer += colzLength + 8;
         } else if (curSubInstruction == Constants::ANMZ_MAGIC_NUM) {
             cout << ">> Handling ANMZ instruction" << endl;

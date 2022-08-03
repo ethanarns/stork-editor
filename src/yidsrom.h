@@ -55,8 +55,12 @@ public:
     std::vector<uint8_t> collisionTileArray;
 
     std::vector<LevelObject> loadedLevelObjects;
-    uint32_t canvasWidth = 0;
-    uint32_t canvasHeight = 0;
+    uint32_t canvasWidthBg2 = 0;
+    uint32_t canvasHeightBg2 = 0;
+    uint32_t canvasWidthBg1 = 0;
+    uint32_t canvasHeightBg1 = 0;
+    uint32_t canvasWidthCol = 0;
+    uint32_t canvasHeightCol = 0;
     bool verbose;
     bool filesLoaded = false;
     YidsRom(bool verbose);

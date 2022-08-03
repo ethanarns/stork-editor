@@ -39,6 +39,14 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     QTableWidget::connect(this, &QTableWidget::cellClicked, this, &DisplayTable::displayTableClicked);
 }
 
+/**
+ * @brief Places a tile on the DisplayTable. Creates if it doesn't exist, updates
+ * if it already exists.
+ * 
+ * @param x X Position of tile
+ * @param y Y Position of tile
+ * @param pren ChartilePreRenderData
+ */
 void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) {
     if (x > (uint32_t)this->columnCount()) {
         std::cerr << "[ERROR] X value too high: " << hex << x << std::endl;
@@ -48,9 +56,9 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         std::cerr << "[ERROR] Y value too high: " << hex << y << std::endl;
         return;
     }
-    if (pren.tileAttr == 0) {
-        return;
-    }
+    // if (pren.tileAttr == 0) {
+    //     return;
+    // }
     const uint32_t pixelTileSize = this->yidsRom->pixelTiles.size();
     if (pixelTileSize < 1) {
         std::cerr << "[ERROR] pixelTiles is empty, cannot place tile" << std::endl;
@@ -79,6 +87,7 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
         newItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
         newItem->setData(PixelDelegateData::DEBUG,loadedTile.index);
+        cout << "x: " << hex << x << ", y: " << hex << y << endl;
         this->setItem(y,x,newItem);
     } else {
         // There is already an item here, lets just update it
@@ -90,6 +99,7 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         potentialExisting->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
         potentialExisting->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
         potentialExisting->setData(PixelDelegateData::DEBUG,loadedTile.index);
+        cout << "OVERWRITING, THIS IS BAD" << endl;
     }
 }
 
@@ -124,8 +134,16 @@ void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType) 
 }
 
 void DisplayTable::initCellCollision() {
-    const uint32_t cutOff = this->yidsRom->canvasWidth/2;
+    if (this->yidsRom->canvasWidthCol < 1) {
+        cerr << "[ERROR] Canvas Width for Collision is invalid! " << endl;
+        return;
+    }
+    const uint32_t cutOff = this->yidsRom->canvasWidthCol/2;
     const int CELL_LIST_SIZE = this->yidsRom->collisionTileArray.size();
+    if (CELL_LIST_SIZE < 1) {
+        cerr << "[ERROR] Collision Tile Array is empty!" << endl;
+        return;
+    }
     for (int colIndex = 0; colIndex < CELL_LIST_SIZE; colIndex++) {
         const auto curCol = this->yidsRom->collisionTileArray.at(colIndex);
         uint32_t y = (colIndex / cutOff)*2;
@@ -180,7 +198,7 @@ void DisplayTable::updateBg2() {
         std::cerr << "[WARN] preRenderDataBg2 is empty" << std::endl;
         return;
     }
-    if (this->yidsRom->canvasWidth == 0) {
+    if (this->yidsRom->canvasWidthBg2 == 0) {
         std::cerr << "[ERROR] Canvas Width was never set!" << std::endl;
         return;
     }
@@ -189,11 +207,12 @@ void DisplayTable::updateBg2() {
         return;
     }
     //const uint32_t cutOff = 0x10*32.5;
-    const uint32_t cutOff = this->yidsRom->canvasWidth;
+    const uint32_t cutOff = this->yidsRom->canvasWidthBg2;
     for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSize; preRenderIndex++) {
         uint32_t y = preRenderIndex / cutOff;
         uint32_t x = preRenderIndex % cutOff;
         ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex));
+        cout << "x: " << hex << x << ", y: " << hex << y << endl;
         this->putTile(x,y,curShort);
     }
 }

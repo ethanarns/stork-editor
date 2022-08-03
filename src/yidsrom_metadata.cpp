@@ -121,8 +121,8 @@ void YidsRom::getGameLevelsMetaData() {
                                     cout << "        ";
                                     uint32_t canvasDimensions = YUtils::getUint32FromVec(uncompVec, mpdzIndex + 8); // 00b60208
                                     // Only the first one matters for the primary height and width, since BG 2 decides everything
-                                    cout << "canvasHeight: " << (canvasDimensions >> 0x10);
-                                    cout << "; canvasWidth: " << canvasDimensions % 0x10000 << endl;
+                                    cout << "canvasHeightBg2: " << (canvasDimensions >> 0x10);
+                                    cout << "; canvasWidthBg2: " << canvasDimensions % 0x10000 << endl;
 
                                     // TODO: What are these values?
                                     uint32_t unknownValue1 = YUtils::getUint32FromVec(uncompVec, mpdzIndex + 12); // 00000000
