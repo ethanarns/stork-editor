@@ -11,6 +11,7 @@ class ChartilesTable : public QTableWidget {
 public:
     ChartilesTable(QWidget *parent, YidsRom* rom);
     void refreshLoadedTiles();
+    void chartilesTableClicked(int row, int column);
 private:
     const static int CELL_SIZE_PX = 16;
     const static int CHARTILES_TABLE_WIDTH = 0x10;
