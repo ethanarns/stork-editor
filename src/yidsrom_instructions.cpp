@@ -352,9 +352,9 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                     curTile.tiles[innerPosition+0] = lowBit;
                 }
                 if (whichBgToWriteTo == 2) {
-                    this->pixelTilesBg2.push_back(curTile);
+                    //this->pixelTilesBg2.push_back(curTile);
                 } else if (whichBgToWriteTo == 1) {
-                    this->pixelTilesBg1.push_back(curTile);
+                    //this->pixelTilesBg1.push_back(curTile);
                 } else {
                     cout << "[WARN] Writing ANMZ to unhandled BG: " << whichBgToWriteTo << endl;
                 }
