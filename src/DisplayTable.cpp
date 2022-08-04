@@ -53,6 +53,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         cerr << "[ERROR] Invalid BG put index " << whichBg << endl;
         exit(EXIT_FAILURE);
     }
+    // NOTE: Remove me once BG3 is supported
     if (whichBg == 3) {
         cout << "[WARN] BG 3 is not yet supported" << endl;
         return;
@@ -101,26 +102,42 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     if (potentialExisting == nullptr) {
         // Nothing is here, so lets make a new one and set it!
         QTableWidgetItem *newItem = new QTableWidgetItem();
-        newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
-        newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
-        newItem->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
-        newItem->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
+        if (whichBg == 2) {
+            newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
+            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
+            newItem->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
+            newItem->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
+            newItem->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
+        } else if (whichBg == 1) {
+            newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
+            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[pal]);
+            newItem->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
+            newItem->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
+            newItem->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
+        }
+
         // Only doing collision here because there's no data for it, so create it
         newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
         newItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
         // Debug stuff
-        newItem->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
         newItem->setData(PixelDelegateData::DEBUG,loadedTile.index);
-        //cout << "x: " << hex << x << ", y: " << hex << y << endl;
         this->setItem(y,x,newItem);
     } else {
         // There is already an item here, lets just update it
-        potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
-        potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
-        potentialExisting->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
-        potentialExisting->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
+        if (whichBg == 2) {
+            potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
+            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
+            potentialExisting->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
+            potentialExisting->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
+            potentialExisting->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
+        } else if (whichBg == 1) {
+            potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
+            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[pal]);
+            potentialExisting->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
+            potentialExisting->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
+            potentialExisting->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
+        }
         // Debug
-        potentialExisting->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
         potentialExisting->setData(PixelDelegateData::DEBUG,loadedTile.index);
     }
 }
@@ -214,29 +231,55 @@ void DisplayTable::toggleShowCollision() {
     }
 }
 
-void DisplayTable::updateBg2() {
+void DisplayTable::updateBg() {
+    /******************
+     ** BACKGROUND 2 **
+     ******************/
     uint32_t preRenderSizeBg2 = this->yidsRom->preRenderDataBg2.size();
     if (preRenderSizeBg2 == 0) {
         std::cerr << "[WARN] preRenderDataBg2 is empty" << std::endl;
         return;
     }
     if (this->yidsRom->canvasWidthBg2 == 0) {
-        std::cerr << "[ERROR] Canvas Width was never set!" << std::endl;
+        std::cerr << "[ERROR] Canvas Width for BG2 was never set!" << std::endl;
         return;
     }
     if (this->yidsRom->pixelTilesBg2.size() < 1) {
         std::cerr << "[ERROR] Cannot updated BG2, missing pixelTilesBg2" << std::endl;
         return;
     }
-    //const uint32_t cutOff = 0x10*32.5;
-    const uint32_t cutOff = this->yidsRom->canvasWidthBg2;
+    //const uint32_t cutOffBg2 = 0x10*32.5;
+    const uint32_t cutOffBg2 = this->yidsRom->canvasWidthBg2;
     for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSizeBg2; preRenderIndex++) {
-        uint32_t y = preRenderIndex / cutOff;
-        uint32_t x = preRenderIndex % cutOff;
+        uint32_t y = preRenderIndex / cutOffBg2;
+        uint32_t x = preRenderIndex % cutOffBg2;
         ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex));
         //cout << "x: " << hex << x << ", y: " << hex << y << endl;
         this->putTileBg(x,y,curShort,2);
     }
+    /******************
+     ** BACKGROUND 1 **
+     ******************/
+    // uint32_t preRenderSizeBg1 = this->yidsRom->preRenderDataBg1.size();
+    // if (preRenderSizeBg1 == 0) {
+    //     std::cerr << "[WARN] preRenderDataBg1 is empty" << std::endl;
+    //     return;
+    // }
+    // if (this->yidsRom->canvasWidthBg1 == 0) {
+    //     std::cerr << "[ERROR] Canvas Width for BG1 was never set!" << std::endl;
+    //     return;
+    // }
+    // if (this->yidsRom->pixelTilesBg1.size() < 1) {
+    //     std::cerr << "[ERROR] Cannot updated BG1, missing pixelTilesBg1" << std::endl;
+    //     return;
+    // }
+    // const uint32_t cutOffBg1 = this->yidsRom->canvasWidthBg1;
+    // for (uint32_t preRenderIndex1 = 0; preRenderIndex1 < preRenderSizeBg1; preRenderIndex1++) {
+    //     uint32_t y = preRenderIndex1 / cutOffBg1;
+    //     uint32_t x = preRenderIndex1 % cutOffBg1;
+    //     ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg1.at(preRenderIndex1));
+    //     this->putTileBg(x,y,curShort,1);
+    // }
 }
 
 void DisplayTable::updateObjects() {

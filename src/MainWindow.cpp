@@ -273,7 +273,7 @@ void MainWindow::LoadRom() {
         this->menu_levelSelect->setDisabled(false);
 
         // Main table //
-        this->grid->updateBg2();
+        this->grid->updateBg();
         this->grid->initCellCollision();
         this->button_toggleCollision->setDisabled(false);
 
@@ -369,7 +369,7 @@ void MainWindow::buttonClick_levelSelect_load() {
     this->rom->loadCrsb(loadingCrsb);
     this->levelSelectPopup->close();
     // Visual updates
-    this->grid->updateBg2();
+    this->grid->updateBg();
     this->grid->initCellCollision();
     this->grid->updateObjects();
 }
