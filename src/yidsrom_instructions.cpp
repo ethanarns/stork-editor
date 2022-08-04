@@ -79,7 +79,6 @@ void YidsRom::loadCrsb(std::string fileName_noext) {
 
 // TODO: Get rid of this hacky crap
 uint32_t timesPaletteLoaded = 0;
-uint32_t timesImbzLoaded = 0;
 
 void YidsRom::loadMpdz(std::string fileName_noext) {
     if (this->verbose) cout << "Loading MPDZ '" << fileName_noext << "'" << endl;
@@ -103,7 +102,6 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
 
     // TODO: Get rid of this hacky crap
     timesPaletteLoaded = 0;
-    timesImbzLoaded = 0;
 
     // Instruction loop
     while (mpdzIndex < mpdzFileLength) {
@@ -182,8 +180,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             if (infoLength > 0x18) {
                 // Get charfile string
                 auto charFileNoExt = YUtils::getNullTermTextFromVec(mpdzVec, indexPointer + 32);
-                if (timesImbzLoaded == 0) this->handleImbz(charFileNoExt);
-                timesImbzLoaded++;
+                this->handleImbz(charFileNoExt, whichBgToWriteTo);
             }
             // Increment based on earlier length, +8 is to skip instruction and length
             indexPointer += infoLength + 8;
@@ -344,8 +341,23 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
     }
 }
 
-void YidsRom::handleImbz(std::string fileName_noext) {
+void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
     if (this->verbose) cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
+    if (whichBg == 2) {
+        if (this->pixelTilesBg2.size() > 0) {
+            cerr << "[ERROR] No overwriting existing pixel tile data for BG 2!" << endl;
+            return;
+        }
+    } else if (whichBg == 1) {
+        if (this->pixelTilesBg1.size() > 0) {
+            cerr << "[ERROR] No overwriting existing pixel tile data for BG 1!" << endl;
+            return;
+        }
+    } else {
+        cerr << "[WARN] Attempting to write to unhandled pixel tiles for BG " << whichBg << endl;
+        return;
+    }
+
     auto uncompressedFileVector = this->getFileByteVector(fileName_noext.append(".imbz"));
     std::vector uncompressedImbz = YCompression::lzssVectorDecomp(uncompressedFileVector,true);
     uncompressedFileVector.clear();
@@ -373,7 +385,12 @@ void YidsRom::handleImbz(std::string fileName_noext) {
             curTile.tiles[innerPosition+1] = highBit;
             curTile.tiles[innerPosition+0] = lowBit;
         }
-        this->pixelTiles.push_back(curTile);
+        if (whichBg == 2) {
+            this->pixelTilesBg2.push_back(curTile);
+        } else if (whichBg == 1) {
+            this->pixelTilesBg1.push_back(curTile);
+        }
+        
         // Skip ahead by 0x20
         imbzIndex += Constants::CHARTILE_DATA_SIZE;
         currentTileIndex++;

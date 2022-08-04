@@ -31,7 +31,7 @@ YidsRom::YidsRom(bool verbose) {
     cout << "YidsRom constructed" << endl;
     this->filesLoaded = false;
     this->verbose = verbose;
-    this->pixelTiles.reserve(1000); // Found 988 in 1-1's first IMBZ
+    this->pixelTilesBg2.reserve(1000); // Found 988 in 1-1's first IMBZ
     this->preRenderDataBg2.reserve(180'000); // Found 189280 in 1-1's first IMBZ
     this->collisionTileArray.reserve(79'000); // Found roughly 79000 in 1-1's first IMBZ
 }
@@ -110,7 +110,7 @@ void YidsRom::openRom(std::string fileName) {
         curFileId++;
     }
 
-    std::string crsbFileName = this->getLevelFileNameFromMapIndex(1,3);
+    std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,0);
     this->loadCrsb(crsbFileName);
 }
 
@@ -401,7 +401,7 @@ void YidsRom::wipeCrsbData() {
     this->canvasHeightBg2 = 0;
     this->canvasWidthBg2 = 0;
 
-    this->canvasHeightBg1;
+    this->canvasHeightBg1 = 0;
     this->canvasWidthBg1 = 0;
 
     this->canvasWidthCol = 0;
@@ -409,5 +409,5 @@ void YidsRom::wipeCrsbData() {
 
     this->preRenderDataBg1.clear();
     this->preRenderDataBg2.clear();
-    this->pixelTiles.clear();
+    this->pixelTilesBg2.clear();
 }

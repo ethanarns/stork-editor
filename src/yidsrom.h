@@ -35,9 +35,13 @@ public:
     RomMetadata metadata;
     QByteArray currentPalettes[0x10]; // Will probably only use first 8
     /**
-     * @brief "Characters", or the pixel arrangement of tiles
+     * @brief "Characters", or the pixel arrangement of tiles. From IMBZ data, for BG2
      */
-    std::vector<Chartile> pixelTiles;
+    std::vector<Chartile> pixelTilesBg2;
+    /**
+     * @brief "Characters", or the pixel arrangement of tiles. From IMBZ data, for BG1
+     */
+    std::vector<Chartile> pixelTilesBg1;
     /**
      * @brief BG 2's tile attr data, and the main source of level design. 
      * Corresponds with collision the most
@@ -87,7 +91,7 @@ private:
     void writeUncompressedARM9(uint32_t arm9start_rom, uint32_t arm9length);
     void loadMpdz(std::string fileName_noext);
     void handleSCEN(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
-    void handleImbz(std::string fileName_noext);
+    void handleImbz(std::string fileName_noext, uint16_t whichBg);
     void handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     void handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
 };

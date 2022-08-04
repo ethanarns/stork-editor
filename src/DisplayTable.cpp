@@ -47,7 +47,7 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
  * @param y Y Position of tile
  * @param pren ChartilePreRenderData
  */
-void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) {
+void DisplayTable::putTileBg2(uint32_t x, uint32_t y, ChartilePreRenderData &pren) {
     if (x > (uint32_t)this->columnCount()) {
         std::cerr << "[ERROR] X value too high: " << hex << x << std::endl;
         return;
@@ -59,14 +59,14 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
     // if (pren.tileAttr == 0) {
     //     return;
     // }
-    const uint32_t pixelTileSize = this->yidsRom->pixelTiles.size();
+    const uint32_t pixelTileSize = this->yidsRom->pixelTilesBg2.size();
     if (pixelTileSize < 1) {
-        std::cerr << "[ERROR] pixelTiles is empty, cannot place tile" << std::endl;
+        std::cerr << "[ERROR] pixelTilesBg2 is empty, cannot place tile" << std::endl;
         exit(EXIT_FAILURE);
     }
     if (pren.tileId >= pixelTileSize) {
         std::cerr << "[ERROR] Tile ID '" << hex << pren.tileId;
-        std::cerr << "' is greater than pixelTiles count " << hex << pixelTileSize << std::endl;
+        std::cerr << "' is greater than pixelTilesBg2 count " << hex << pixelTileSize << std::endl;
         return;
     }
     int pal = (int)pren.paletteId; // int is more commonly used to access, so convert it early
@@ -74,18 +74,20 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         cerr << "paletteId unusually high, got " << hex << pal << endl;
         pal = 0;
     }
-    auto loadedTile = this->yidsRom->pixelTiles.at(pren.tileId);
+    auto loadedTile = this->yidsRom->pixelTilesBg2.at(pren.tileId);
     auto potentialExisting = this->item(y,x);
     if (potentialExisting == nullptr) {
-        // Nothing is here, so lets set it!
+        // Nothing is here, so lets make a new one and set it!
         QTableWidgetItem *newItem = new QTableWidgetItem();
         newItem->setData(PixelDelegateData::PIXEL_ARRAY,loadedTile.tiles);
         newItem->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[pal]);
-        newItem->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
         newItem->setData(PixelDelegateData::FLIP_H,pren.flipH);
         newItem->setData(PixelDelegateData::FLIP_V,pren.flipV);
+        // Only doing collision here because there's no data for it, so create it
         newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
         newItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
+        // Debug stuff
+        newItem->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
         newItem->setData(PixelDelegateData::DEBUG,loadedTile.index);
         //cout << "x: " << hex << x << ", y: " << hex << y << endl;
         this->setItem(y,x,newItem);
@@ -93,11 +95,10 @@ void DisplayTable::putTile(uint32_t x, uint32_t y, ChartilePreRenderData &pren) 
         // There is already an item here, lets just update it
         potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY,loadedTile.tiles);
         potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[pal]);
-        potentialExisting->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
         potentialExisting->setData(PixelDelegateData::FLIP_H,pren.flipH);
         potentialExisting->setData(PixelDelegateData::FLIP_V,pren.flipV);
-        potentialExisting->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
-        potentialExisting->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
+        // Debug
+        potentialExisting->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
         potentialExisting->setData(PixelDelegateData::DEBUG,loadedTile.index);
     }
 }
@@ -191,9 +192,9 @@ void DisplayTable::toggleShowCollision() {
     }
 }
 
-void DisplayTable::updateBgs() {
-    uint32_t preRenderSize = this->yidsRom->preRenderDataBg2.size();
-    if (preRenderSize == 0) {
+void DisplayTable::updateBg2() {
+    uint32_t preRenderSizeBg2 = this->yidsRom->preRenderDataBg2.size();
+    if (preRenderSizeBg2 == 0) {
         std::cerr << "[WARN] preRenderDataBg2 is empty" << std::endl;
         return;
     }
@@ -201,18 +202,18 @@ void DisplayTable::updateBgs() {
         std::cerr << "[ERROR] Canvas Width was never set!" << std::endl;
         return;
     }
-    if (this->yidsRom->pixelTiles.size() < 1) {
-        std::cerr << "[ERROR] Cannot updated BG2, missing pixelTiles" << std::endl;
+    if (this->yidsRom->pixelTilesBg2.size() < 1) {
+        std::cerr << "[ERROR] Cannot updated BG2, missing pixelTilesBg2" << std::endl;
         return;
     }
     //const uint32_t cutOff = 0x10*32.5;
     const uint32_t cutOff = this->yidsRom->canvasWidthBg2;
-    for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSize; preRenderIndex++) {
+    for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSizeBg2; preRenderIndex++) {
         uint32_t y = preRenderIndex / cutOff;
         uint32_t x = preRenderIndex % cutOff;
         ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex));
         //cout << "x: " << hex << x << ", y: " << hex << y << endl;
-        this->putTile(x,y,curShort);
+        this->putTileBg2(x,y,curShort);
     }
 }
 
