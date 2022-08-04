@@ -319,55 +319,55 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             // TODO: Figure out how this knows where to write. Take a break, so far you have most tiles loading
             cout << ">> Handling ANMZ instruction" << endl;
             uint32_t anmzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // Should be 0x1080 first time
-            Address compressedDataStart = indexPointer + 8;
-            Address compressedDataEnd = compressedDataStart + anmzLength;
-            auto compressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
-            auto uncompressedAnmz = YCompression::lzssVectorDecomp(compressedSubArray, false);
+            // Address compressedDataStart = indexPointer + 8;
+            // Address compressedDataEnd = compressedDataStart + anmzLength;
+            // auto compressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
+            // auto uncompressedAnmz = YCompression::lzssVectorDecomp(compressedSubArray, false);
 
-            // Uncomment to get decompressed ANMZ
-            // YUtils::writeByteVectorToFile(uncompressedAnmz,"test.anmz");
-            // bool decompResult = YCompression::lzssDecomp("test.anmz", verbose);
+            // // Uncomment to get decompressed ANMZ
+            // // YUtils::writeByteVectorToFile(uncompressedAnmz,"test.anmz");
+            // // bool decompResult = YCompression::lzssDecomp("test.anmz", verbose);
 
-            // TODO: Do something with this data
-            const uint32_t ANMZ_INCREMENT = 0x20;
-            const uint32_t ANMZ_HEADER_BASE_LENGTH = 0x8;
-            auto animationFrameCount = uncompressedAnmz.at(0);
-            //cout << "Animation Frame Count: " << dec << (int)animationFrameCount << endl;
-            uint32_t anmzFileIndex = ANMZ_HEADER_BASE_LENGTH + animationFrameCount;
-            uint32_t anmzDataLength = ANMZ_INCREMENT * 0x20; // Pull first 32 for example
-            uint32_t anmzDataIndexEnd = anmzFileIndex + anmzDataLength;
-            uint32_t currentTileIndex = this->pixelTilesBg2.size(); // Size is last index + 1 already
-            while(anmzFileIndex < anmzDataIndexEnd) {
-                Chartile curTile;
-                curTile.engine = ScreenEngine::A;
-                curTile.index = currentTileIndex;
-                curTile.tiles.resize(64);
-                // Go up by 2 since you split the bytes
-                for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
-                    uint8_t curByte = uncompressedAnmz.at(anmzFileIndex + currentTileBuildIndex);
-                    uint8_t highBit = curByte >> 4;
-                    uint8_t lowBit = curByte % 0x10;
-                    int innerPosition = currentTileBuildIndex*2;
-                    curTile.tiles[innerPosition+1] = highBit;
-                    curTile.tiles[innerPosition+0] = lowBit;
-                }
-                if (whichBgToWriteTo == 2) {
-                    //this->pixelTilesBg2.push_back(curTile);
-                } else if (whichBgToWriteTo == 1) {
-                    //this->pixelTilesBg1.push_back(curTile);
-                } else {
-                    cout << "[WARN] Writing ANMZ to unhandled BG: " << whichBgToWriteTo << endl;
-                }
-                // for (int i = 0; i < 64; i++) {
-                //     cout << hex << (int)curTile.tiles[i] << ",";
-                // }
-                // cout << endl;
+            // // TODO: Do something with this data
+            // const uint32_t ANMZ_INCREMENT = 0x20;
+            // const uint32_t ANMZ_HEADER_BASE_LENGTH = 0x8;
+            // auto animationFrameCount = uncompressedAnmz.at(0);
+            // //cout << "Animation Frame Count: " << dec << (int)animationFrameCount << endl;
+            // uint32_t anmzFileIndex = ANMZ_HEADER_BASE_LENGTH + animationFrameCount;
+            // uint32_t anmzDataLength = ANMZ_INCREMENT * 0x20; // Pull first 32 for example
+            // uint32_t anmzDataIndexEnd = anmzFileIndex + anmzDataLength;
+            // uint32_t currentTileIndex = this->pixelTilesBg2.size(); // Size is last index + 1 already
+            // while(anmzFileIndex < anmzDataIndexEnd) {
+            //     Chartile curTile;
+            //     curTile.engine = ScreenEngine::A;
+            //     curTile.index = currentTileIndex;
+            //     curTile.tiles.resize(64);
+            //     // Go up by 2 since you split the bytes
+            //     for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
+            //         uint8_t curByte = uncompressedAnmz.at(anmzFileIndex + currentTileBuildIndex);
+            //         uint8_t highBit = curByte >> 4;
+            //         uint8_t lowBit = curByte % 0x10;
+            //         int innerPosition = currentTileBuildIndex*2;
+            //         curTile.tiles[innerPosition+1] = highBit;
+            //         curTile.tiles[innerPosition+0] = lowBit;
+            //     }
+            //     if (whichBgToWriteTo == 2) {
+            //         this->pixelTilesBg2.push_back(curTile);
+            //     } else if (whichBgToWriteTo == 1) {
+            //         this->pixelTilesBg1.push_back(curTile);
+            //     } else {
+            //         cout << "[WARN] Writing ANMZ to unhandled BG: " << whichBgToWriteTo << endl;
+            //     }
+            //     // for (int i = 0; i < 64; i++) {
+            //     //     cout << hex << (int)curTile.tiles[i] << ",";
+            //     // }
+            //     // cout << endl;
                 
-                // Skip ahead by 0x20
-                anmzFileIndex += Constants::CHARTILE_DATA_SIZE;
-                currentTileIndex++;
-            }
-            cout << "Wrote ANMZ to bg: " << whichBgToWriteTo << endl;
+            //     // Skip ahead by 0x20
+            //     anmzFileIndex += Constants::CHARTILE_DATA_SIZE;
+            //     currentTileIndex++;
+            // }
+            // cout << "Wrote ANMZ to bg: " << whichBgToWriteTo << endl;
 
             indexPointer += anmzLength + 8; // Go to next
         } else if (curSubInstruction == Constants::IMGB_MAGIC_NUM) {

@@ -242,7 +242,7 @@ void DisplayTable::updateBg() {
         return;
     }
     if (this->yidsRom->pixelTilesBg2.size() < 1) {
-        std::cerr << "[ERROR] Cannot updated BG2, missing pixelTilesBg2" << std::endl;
+        std::cerr << "[WARN] Cannot update BG2, missing pixelTilesBg2" << std::endl;
         return;
     }
     //const uint32_t cutOffBg2 = 0x10*32.5;
@@ -267,7 +267,7 @@ void DisplayTable::updateBg() {
         return;
     }
     if (this->yidsRom->pixelTilesBg1.size() < 1) {
-        std::cerr << "[ERROR] Cannot updated BG1, missing pixelTilesBg1" << std::endl;
+        std::cerr << "[WARN] Cannot update BG1, missing pixelTilesBg1" << std::endl;
         return;
     }
     const uint32_t cutOffBg1 = this->yidsRom->canvasWidthBg1;
@@ -290,6 +290,7 @@ void DisplayTable::updateObjects() {
         auto potentialExisting = this->item(y,x);
         // Very basic pointing to position
         if (potentialExisting == nullptr) {
+            cout << "[WARN] No tile to place object on at x: " << hex << x << ", y: " << hex << y << endl; 
             // Do nothing, not there
         } else {
             this->setCellCollision(y,  x,  CollisionDraw::CORNER_BOTTOM_RIGHT);

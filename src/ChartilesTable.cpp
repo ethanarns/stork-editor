@@ -68,7 +68,8 @@ void ChartilesTable::refreshLoadedTiles() {
         this->setItem(y,x,newItem);
         _loadedTilesCount++;
     }
-    std::cout << "Loaded tiles via refreshLoadedtiles: " << _loadedTilesCount << std::endl;
+    Q_UNUSED(_loadedTilesCount); // Do something with this eventually
+    //std::cout << "Loaded tiles via refreshLoadedtiles: " << _loadedTilesCount << std::endl;
 }
 
 void ChartilesTable::chartilesTableClicked(int row, int column) {
