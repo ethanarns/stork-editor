@@ -33,8 +33,8 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
 void ChartilesTable::refreshLoadedTiles() {
     for (auto it = this->yidsRom->pixelTilesBg2.begin(); it != this->yidsRom->pixelTilesBg2.end(); it++) {
         QTableWidgetItem *newItem = new QTableWidgetItem();
-        newItem->setData(PixelDelegateData::PIXEL_ARRAY,it->tiles);
-        newItem->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[0]);
+        newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,it->tiles);
+        newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[0]);
         if (it->tiles.size() != 64) {
             cerr << "Wanted 64 pixels, got " << dec << it->tiles.size() << endl;
             continue;

@@ -19,7 +19,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     /***************************
      *** PRIMARY TILE PIXELS ***
      ***************************/
-    QByteArray byteArray = index.data(PixelDelegateData::PIXEL_ARRAY).toByteArray();
+    QByteArray byteArray = index.data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
     // Check the byte array size
     if (byteArray.size() == 0) {
         const char testArrayPrimitive[] = {
@@ -38,7 +38,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         cerr << " pixels! Found " << byteArray.size() << " pixels instead.";
         return;
     }
-    QByteArray palette = index.data(PixelDelegateData::PALETTE_ARRAY).toByteArray();
+    QByteArray palette = index.data(PixelDelegateData::PALETTE_ARRAY_BG2).toByteArray();
     for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
         char whichPalette = byteArray.at(i);
         if (whichPalette == 0) {
@@ -51,11 +51,11 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             palette.at(whichPalette*2+1)
         );
         int x = i % 8;
-        if (index.data(PixelDelegateData::FLIP_H).toBool() == true) {
+        if (index.data(PixelDelegateData::FLIP_H_BG2).toBool() == true) {
             x = (8 - x - 1);
         }
         int y = i / 8;
-        if (index.data(PixelDelegateData::FLIP_V).toBool() == true) {
+        if (index.data(PixelDelegateData::FLIP_V_BG2).toBool() == true) {
             y = (8 - y - 1);
         }
         this->drawPixel(painter, option.rect, x, y, qc);

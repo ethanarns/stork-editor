@@ -79,26 +79,26 @@ void DisplayTable::putTileBg2(uint32_t x, uint32_t y, ChartilePreRenderData &pre
     if (potentialExisting == nullptr) {
         // Nothing is here, so lets make a new one and set it!
         QTableWidgetItem *newItem = new QTableWidgetItem();
-        newItem->setData(PixelDelegateData::PIXEL_ARRAY,loadedTile.tiles);
-        newItem->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[pal]);
-        newItem->setData(PixelDelegateData::FLIP_H,pren.flipH);
-        newItem->setData(PixelDelegateData::FLIP_V,pren.flipV);
+        newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
+        newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
+        newItem->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
+        newItem->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
         // Only doing collision here because there's no data for it, so create it
         newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
         newItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
         // Debug stuff
-        newItem->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
+        newItem->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
         newItem->setData(PixelDelegateData::DEBUG,loadedTile.index);
         //cout << "x: " << hex << x << ", y: " << hex << y << endl;
         this->setItem(y,x,newItem);
     } else {
         // There is already an item here, lets just update it
-        potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY,loadedTile.tiles);
-        potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY,this->yidsRom->currentPalettes[pal]);
-        potentialExisting->setData(PixelDelegateData::FLIP_H,pren.flipH);
-        potentialExisting->setData(PixelDelegateData::FLIP_V,pren.flipV);
+        potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
+        potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
+        potentialExisting->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
+        potentialExisting->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
         // Debug
-        potentialExisting->setData(PixelDelegateData::TILEATTR,(uint)pren.tileAttr);
+        potentialExisting->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
         potentialExisting->setData(PixelDelegateData::DEBUG,loadedTile.index);
     }
 }
@@ -109,7 +109,7 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
     if (curCell == nullptr) {
         return;
     } else {
-        //cout << hex << curCell->data(PixelDelegateData::TILEATTR).toUInt() << endl;
+        //cout << hex << curCell->data(PixelDelegateData::TILEATTR_BG2).toUInt() << endl;
     }
 }
 

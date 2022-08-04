@@ -5,11 +5,11 @@
 #include <QStyledItemDelegate>
 
 enum PixelDelegateData {
-    PIXEL_ARRAY = 101,
-    PALETTE_ARRAY = 102,
-    TILEATTR = 103,
-    FLIP_H = 104,
-    FLIP_V = 105,
+    PIXEL_ARRAY_BG2 = 101,
+    PALETTE_ARRAY_BG2 = 102,
+    TILEATTR_BG2 = 103,
+    FLIP_H_BG2 = 104,
+    FLIP_V_BG2 = 105,
     COLLISION_DRAW = 106,
     SHOW_COLLISION = 107,
     DEBUG = 108

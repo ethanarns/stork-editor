@@ -45,8 +45,8 @@ void PaletteTable::refreshLoadedTiles() {
             for (int i = 0; i < 64; i++) {
                 fill[i] = colorIndex;
             }
-            newItem->setData(PixelDelegateData::PIXEL_ARRAY,fill);
-            newItem->setData(PixelDelegateData::PALETTE_ARRAY,curPalette);
+            newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,fill);
+            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,curPalette);
             //cout << "Placing " << hex << colorIndex << " at (" << colorIndex << "," << paletteIndex << ")" << endl;
             this->setItem(paletteIndex,colorIndex,newItem);
         }
