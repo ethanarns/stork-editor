@@ -342,7 +342,6 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
 }
 
 void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
-    cout << "***************** " << whichBg << endl;
     if (this->verbose) cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
     if (whichBg == 2) {
         if (this->pixelTilesBg2.size() > 0) {
@@ -360,7 +359,7 @@ void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
     }
 
     auto uncompressedFileVector = this->getFileByteVector(fileName_noext.append(".imbz"));
-    std::vector uncompressedImbz = YCompression::lzssVectorDecomp(uncompressedFileVector,true);
+    std::vector uncompressedImbz = YCompression::lzssVectorDecomp(uncompressedFileVector,false);
     uncompressedFileVector.clear();
 
     // Use ints since they're natural and not stored excessively anyway
