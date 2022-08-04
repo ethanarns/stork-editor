@@ -16,12 +16,12 @@ const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
 
-    /***************************
-     *** PRIMARY TILE PIXELS ***
-     ***************************/
-    QByteArray byteArray = index.data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
+    /*********************************
+     *** PRIMARY (BG2) TILE PIXELS ***
+     *********************************/
+    QByteArray byteArrayBg2 = index.data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
     // Check the byte array size
-    if (byteArray.size() == 0) {
+    if (byteArrayBg2.size() == 0) {
         const char testArrayPrimitive[] = {
             0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
             0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
@@ -32,23 +32,23 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0,
             0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1,
         };
-        byteArray = QByteArray::fromRawData(testArrayPrimitive, 64);
-    } else if (byteArray.size() != PIXEL_TILE_TOTAL) {
+        byteArrayBg2 = QByteArray::fromRawData(testArrayPrimitive, 64);
+    } else if (byteArrayBg2.size() != PIXEL_TILE_TOTAL) {
         cerr << "Attempting to paint without " << PIXEL_TILE_TOTAL;
-        cerr << " pixels! Found " << byteArray.size() << " pixels instead.";
+        cerr << " pixels! Found " << byteArrayBg2.size() << " pixels instead.";
         return;
     }
-    QByteArray palette = index.data(PixelDelegateData::PALETTE_ARRAY_BG2).toByteArray();
+    QByteArray paletteBg2 = index.data(PixelDelegateData::PALETTE_ARRAY_BG2).toByteArray();
     for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
-        char whichPalette = byteArray.at(i);
+        char whichPalette = byteArrayBg2.at(i);
         if (whichPalette == 0) {
             // NOTE: Palette index 0 seems to almost always be the transparent
             //   value. This may not be true, keep this in mind for future bugs
             continue;
         }
         auto qc = YUtils::getColorFromBytes(
-            palette.at(whichPalette*2),
-            palette.at(whichPalette*2+1)
+            paletteBg2.at(whichPalette*2),
+            paletteBg2.at(whichPalette*2+1)
         );
         int x = i % 8;
         if (index.data(PixelDelegateData::FLIP_H_BG2).toBool() == true) {
