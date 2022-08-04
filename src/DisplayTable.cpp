@@ -260,26 +260,26 @@ void DisplayTable::updateBg() {
     /******************
      ** BACKGROUND 1 **
      ******************/
-    // uint32_t preRenderSizeBg1 = this->yidsRom->preRenderDataBg1.size();
-    // if (preRenderSizeBg1 == 0) {
-    //     std::cerr << "[WARN] preRenderDataBg1 is empty" << std::endl;
-    //     return;
-    // }
-    // if (this->yidsRom->canvasWidthBg1 == 0) {
-    //     std::cerr << "[ERROR] Canvas Width for BG1 was never set!" << std::endl;
-    //     return;
-    // }
-    // if (this->yidsRom->pixelTilesBg1.size() < 1) {
-    //     std::cerr << "[ERROR] Cannot updated BG1, missing pixelTilesBg1" << std::endl;
-    //     return;
-    // }
-    // const uint32_t cutOffBg1 = this->yidsRom->canvasWidthBg1;
-    // for (uint32_t preRenderIndex1 = 0; preRenderIndex1 < preRenderSizeBg1; preRenderIndex1++) {
-    //     uint32_t y = preRenderIndex1 / cutOffBg1;
-    //     uint32_t x = preRenderIndex1 % cutOffBg1;
-    //     ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg1.at(preRenderIndex1));
-    //     this->putTileBg(x,y,curShort,1);
-    // }
+    uint32_t preRenderSizeBg1 = this->yidsRom->preRenderDataBg1.size();
+    if (preRenderSizeBg1 == 0) {
+        std::cerr << "[WARN] preRenderDataBg1 is empty" << std::endl;
+        return;
+    }
+    if (this->yidsRom->canvasWidthBg1 == 0) {
+        std::cerr << "[ERROR] Canvas Width for BG1 was never set!" << std::endl;
+        return;
+    }
+    if (this->yidsRom->pixelTilesBg1.size() < 1) {
+        std::cerr << "[ERROR] Cannot updated BG1, missing pixelTilesBg1" << std::endl;
+        return;
+    }
+    const uint32_t cutOffBg1 = this->yidsRom->canvasWidthBg1;
+    for (uint32_t preRenderIndex1 = 0; preRenderIndex1 < preRenderSizeBg1; preRenderIndex1++) {
+        uint32_t y = preRenderIndex1 / cutOffBg1;
+        uint32_t x = preRenderIndex1 % cutOffBg1;
+        ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg1.at(preRenderIndex1));
+        this->putTileBg(x,y,curShort,1);
+    }
 }
 
 void DisplayTable::updateObjects() {
