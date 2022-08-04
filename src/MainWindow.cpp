@@ -372,6 +372,7 @@ void MainWindow::buttonClick_levelSelect_load() {
     this->grid->updateBg();
     this->grid->initCellCollision();
     this->grid->updateObjects();
+    this->chartilesTable->refreshLoadedTiles();
 }
 
 void MainWindow::buttonClick_levelSelect_cancel() {

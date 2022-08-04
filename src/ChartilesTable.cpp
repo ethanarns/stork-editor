@@ -31,7 +31,9 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
 }
 
 void ChartilesTable::refreshLoadedTiles() {
-    for (auto it = this->yidsRom->pixelTilesBg2.begin(); it != this->yidsRom->pixelTilesBg2.end(); it++) {
+    std::vector<Chartile>* chartiles;
+    chartiles = &this->yidsRom->pixelTilesBg2;
+    for (auto it = chartiles->begin(); it != chartiles->end(); it++) {
         QTableWidgetItem *newItem = new QTableWidgetItem();
         newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,it->tiles);
         newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[0]);
@@ -42,6 +44,9 @@ void ChartilesTable::refreshLoadedTiles() {
         newItem->setText(tr(""));
         int y = it->index / 0x10;
         int x = it->index % 0x10;
+        if (this->item(y,x) != nullptr) {
+            delete this->item(y,x);
+        }
         this->setItem(y,x,newItem);
     }
 }

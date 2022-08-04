@@ -66,9 +66,6 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         std::cerr << "[ERROR] Y value too high: " << hex << y << std::endl;
         return;
     }
-    // if (pren.tileAttr == 0) {
-    //     return;
-    // }
     uint32_t pixelTileSize = 0;
     if (whichBg == 2) {
         pixelTileSize = this->yidsRom->pixelTilesBg2.size();
