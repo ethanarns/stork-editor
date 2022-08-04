@@ -74,7 +74,7 @@ void YidsRom::loadCrsb(std::string fileName_noext) {
     //     return;
     // }
 
-    if (this->verbose) cout << "MPDZ files loaded" << endl;
+    //if (this->verbose) cout << "MPDZ files loaded" << endl;
 }
 
 // TODO: Get rid of this hacky crap
@@ -117,7 +117,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
             return;
         }
     }
-    cout << "All instructions for '" << mpdzFileName << "' completed" << endl;
+    // cout << "All instructions for '" << mpdzFileName << "' completed" << endl;
 }
 
 
@@ -223,8 +223,8 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             auto uncompressedMpbz = YCompression::lzssVectorDecomp(compressedSubArray, false);
 
 
-            YUtils::writeByteVectorToFile(compressedSubArray,"2-4-test.mpbz");
-            YCompression::lzssDecomp("2-4-test.mpbz", true);
+            // YUtils::writeByteVectorToFile(compressedSubArray,"2-4-test.mpbz");
+            // YCompression::lzssDecomp("2-4-test.mpbz", true);
 
 
             indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
@@ -447,5 +447,5 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
         //YUtils::printLevelObject(lo);
         this->loadedLevelObjects.push_back(lo);
     }
-    cout << "Loaded " << dec << this->loadedLevelObjects.size() << " level objects" << endl;
+    //cout << "Loaded " << dec << this->loadedLevelObjects.size() << " level objects" << endl;
 }

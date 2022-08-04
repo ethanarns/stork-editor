@@ -38,13 +38,17 @@ private:
     QAction* button_iconPalette;
     QAction* button_iconTiles;
     QAction* button_toggleCollision;
+
     QAction* menu_levelSelect;
+    QAction* action_about;
+    QAction* action_memory;
 
     void toolbarClick_palette();
     void toolbarClick_tiles();
     void toolbarClick_showCollision();
 
     void menuClick_levelSelect();
+    void menuClick_memory();
 
     void buttonClick_levelSelect_cancel();
     void buttonClick_levelSelect_load();

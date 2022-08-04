@@ -12,7 +12,7 @@ class DisplayTable : public QTableWidget {
     Q_OBJECT
 public:
     DisplayTable(QWidget *parent, YidsRom* rom);
-    void putTileBg2(uint32_t x, uint32_t y, ChartilePreRenderData &pren);
+    void putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren, uint16_t whichBg);
     void displayTableClicked(int row, int column);
     void setCellCollision(int row, int column, CollisionDraw colType);
     void updateBg2();

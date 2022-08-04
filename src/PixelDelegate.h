@@ -10,9 +10,16 @@ enum PixelDelegateData {
     TILEATTR_BG2 = 103,
     FLIP_H_BG2 = 104,
     FLIP_V_BG2 = 105,
+
     COLLISION_DRAW = 106,
     SHOW_COLLISION = 107,
-    DEBUG = 108
+    DEBUG = 108,
+
+    PIXEL_ARRAY_BG1 = 109,
+    PALETTE_ARRAY_BG1 = 110,
+    TILEATTR_BG1 = 111,
+    FLIP_H_BG1 = 112,
+    FLIP_V_BG1 = 113
 };
 
 enum CollisionType {

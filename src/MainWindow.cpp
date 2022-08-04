@@ -107,6 +107,23 @@ MainWindow::MainWindow() {
     menu_edit->addAction(action_paste);
     action_paste->setDisabled(true);
     // Add connect() once implemented
+
+    // Tools menu //
+    QMenu* menu_tools = menuBar()->addMenu("&Tools");
+
+    this->action_memory = new QAction("&Memory Info",this);
+    this->action_memory->setShortcut(tr("CTRL+M"));
+    menu_tools->addAction(this->action_memory);
+    this->action_memory->setDisabled(true);
+    connect(this->action_memory, &QAction::triggered, this, &MainWindow::menuClick_memory);
+
+    QMenu* menu_help = menuBar()->addMenu("&Help");
+
+    this->action_about = new QAction("&About",this);
+    //this->action_about->setShortcut(tr("CTRL+M"));
+    menu_help->addAction(this->action_about);
+    this->action_about->setDisabled(true);
+    // Add connect() once implemented
     
     /***************
      *** TOOLBAR ***
@@ -262,6 +279,9 @@ void MainWindow::LoadRom() {
 
         // Objects //
         this->grid->updateObjects();
+
+        // Misc menu items //
+        this->action_memory->setDisabled(false);
     }
 }
 
@@ -303,6 +323,28 @@ void MainWindow::menuClick_levelSelect() {
     }
     this->levelSelectPopup->show();
     this->levelSelect->updateList();
+}
+
+void MainWindow::menuClick_memory() {
+    std::cout << "----  Memory Report  ----" << std::endl;
+
+    auto pixelTilesBg1size = this->rom->pixelTilesBg1.size();
+    auto pixelTilesBg2size = this->rom->pixelTilesBg2.size();
+    auto collisionArraySize = this->rom->collisionTileArray.size();
+    auto preRenderDataBg1 = this->rom->preRenderDataBg1.size();
+    auto preRenderDataBg2 = this->rom->preRenderDataBg2.size();
+    auto levelObjectCount = this->rom->loadedLevelObjects.size();
+
+    std::cout << "pixelTilesBg1 size (count): " << dec << pixelTilesBg1size << std::endl;
+    std::cout << "pixelTilesBg2 size (count): " << dec << pixelTilesBg2size << std::endl;
+    std::cout << "collisionTileArray size (bytes): " << dec << collisionArraySize << std::endl;
+    std::cout << "preRenderDataBg1 size (count): " << dec << preRenderDataBg1 << std::endl;
+    std::cout << "preRenderDataBg1 size (bytes): " << dec << preRenderDataBg1*2 << std::endl;
+    std::cout << "preRenderDataBg2 size (count): " << dec << preRenderDataBg2 << std::endl;
+    std::cout << "preRenderDataBg2 size (bytes): " << dec << preRenderDataBg2*2 << std::endl;
+    std::cout << "loadedLevelObjects size (count): " << dec << levelObjectCount << std::endl;
+
+    std::cout << "--- End Memory Report ---" << std::endl;
 }
 
 /****************************

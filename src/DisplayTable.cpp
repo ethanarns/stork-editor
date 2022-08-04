@@ -46,8 +46,17 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
  * @param x X Position of tile
  * @param y Y Position of tile
  * @param pren ChartilePreRenderData
+ * @param whichBg which background to draw to
  */
-void DisplayTable::putTileBg2(uint32_t x, uint32_t y, ChartilePreRenderData &pren) {
+void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren, uint16_t whichBg) {
+    if (whichBg == 0 || whichBg > 3) {
+        cerr << "[ERROR] Invalid BG put index " << whichBg << endl;
+        exit(EXIT_FAILURE);
+    }
+    if (whichBg == 3) {
+        cout << "[WARN] BG 3 is not yet supported" << endl;
+        return;
+    }
     if (x > (uint32_t)this->columnCount()) {
         std::cerr << "[ERROR] X value too high: " << hex << x << std::endl;
         return;
@@ -59,14 +68,19 @@ void DisplayTable::putTileBg2(uint32_t x, uint32_t y, ChartilePreRenderData &pre
     // if (pren.tileAttr == 0) {
     //     return;
     // }
-    const uint32_t pixelTileSize = this->yidsRom->pixelTilesBg2.size();
+    uint32_t pixelTileSize = 0;
+    if (whichBg == 2) {
+        pixelTileSize = this->yidsRom->pixelTilesBg2.size();
+    } else if (whichBg == 1) {
+        pixelTileSize = this->yidsRom->pixelTilesBg1.size();
+    }
     if (pixelTileSize < 1) {
-        std::cerr << "[ERROR] pixelTilesBg2 is empty, cannot place tile" << std::endl;
+        std::cerr << "[ERROR] pixelTiles are empty, cannot place tile" << std::endl;
         exit(EXIT_FAILURE);
     }
     if (pren.tileId >= pixelTileSize) {
         std::cerr << "[ERROR] Tile ID '" << hex << pren.tileId;
-        std::cerr << "' is greater than pixelTilesBg2 count " << hex << pixelTileSize << std::endl;
+        std::cerr << "' is greater than pixelTiles count " << hex << pixelTileSize << std::endl;
         return;
     }
     int pal = (int)pren.paletteId; // int is more commonly used to access, so convert it early
@@ -74,7 +88,15 @@ void DisplayTable::putTileBg2(uint32_t x, uint32_t y, ChartilePreRenderData &pre
         cerr << "paletteId unusually high, got " << hex << pal << endl;
         pal = 0;
     }
-    auto loadedTile = this->yidsRom->pixelTilesBg2.at(pren.tileId);
+    Chartile loadedTile;
+    if (whichBg == 2) {
+        loadedTile = this->yidsRom->pixelTilesBg2.at(pren.tileId);
+    } else if (whichBg == 1) {
+        loadedTile = this->yidsRom->pixelTilesBg1.at(pren.tileId);
+    } else {
+        cerr << "[ERROR] Unsupported BG: " << whichBg << endl;
+        return;
+    }
     auto potentialExisting = this->item(y,x);
     if (potentialExisting == nullptr) {
         // Nothing is here, so lets make a new one and set it!
@@ -213,7 +235,7 @@ void DisplayTable::updateBg2() {
         uint32_t x = preRenderIndex % cutOff;
         ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex));
         //cout << "x: " << hex << x << ", y: " << hex << y << endl;
-        this->putTileBg2(x,y,curShort);
+        this->putTileBg(x,y,curShort,2);
     }
 }
 
