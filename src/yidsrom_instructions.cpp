@@ -493,3 +493,42 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
     }
     //cout << "Loaded " << dec << this->loadedLevelObjects.size() << " level objects" << endl;
 }
+
+void YidsRom::handleOBJSET() {
+    cout << "handleOBJSET" << endl;
+    const std::string objset_filename = "objset.arcz";
+    std::vector<uint8_t> fileVectorObjset = this->getFileByteVector(objset_filename);
+    std::vector<uint8_t> objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
+
+    auto potentialMagicNumber = YUtils::getUint32FromVec(objsetUncompressedVec,0);
+    if (potentialMagicNumber != Constants::OBAR_MAGIC_NUM) {
+        cerr << "[ERROR] OBAR magic number not found in file objset.arcz! Found instead: " << hex << potentialMagicNumber << endl;
+        exit(EXIT_FAILURE);
+    }
+    auto fullObjsetLength = YUtils::getUint32FromVec(objsetUncompressedVec,4);
+    cout << "Full length: " << hex << fullObjsetLength << endl;
+    uint32_t indexObjset = 8; // magic number (4) + length uint32 (4)
+    cout << "First index instruction: " << hex << (int)objsetUncompressedVec.at(indexObjset) << endl;
+    const uint32_t objsetEndIndex = fullObjsetLength + 8; // Exclusive, but shouldn't matter
+    cout << "End index: " << hex << objsetEndIndex << endl;
+    while (indexObjset < objsetEndIndex) {
+        auto instructionCheck = YUtils::getUint32FromVec(objsetUncompressedVec,indexObjset);
+        cout << "instructionCheck: " << hex << instructionCheck << endl;
+        indexObjset += 4; // Skip instruction, go to length
+        auto currentInstructionLength = YUtils::getUint32FromVec(objsetUncompressedVec,indexObjset);
+        indexObjset += 4; // Skip length, go to first
+        cout << "Found sublength: " << hex << currentInstructionLength << endl;
+        auto subsection = YUtils::subVector(objsetUncompressedVec,indexObjset,indexObjset + currentInstructionLength);
+        if (instructionCheck == Constants::OBJB_MAGIC_NUM) {
+            cout << "OBJB" << endl;
+            YUtils::printVector(subsection);
+        } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
+            cout << "PLTB" << endl;
+        } else {
+            std::cerr << "[ERROR] Known objset magic number not found! Instead found ";
+            std::cerr << hex << instructionCheck << " at " << hex << (indexObjset - 4) << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        indexObjset += currentInstructionLength;
+    }
+}

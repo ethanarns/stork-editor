@@ -38,6 +38,8 @@ namespace Constants {
     inline constexpr uint32_t IMBZ_MAGIC_NUM{0x5a424d49}; // "IMBZ"
     inline constexpr uint32_t SCRL_MAGIC_NUM{0x4c524353}; // "SCRL"
     inline constexpr uint32_t RAST_MAGIC_NUM{0x54534152}; // "RAST"
+    inline constexpr uint32_t OBAR_MAGIC_NUM{0x5241424f}; // "OBAR" / 4F 42 41 52
+    inline constexpr uint32_t OBJB_MAGIC_NUM{0x424A424F}; // "OBJB" / 4F 42 4A 42
 
     inline constexpr int PALETTE_SIZE{0x20};
     inline constexpr int CHARTILE_DATA_SIZE{0x20};

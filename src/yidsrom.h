@@ -94,6 +94,7 @@ private:
     void handleImbz(std::string fileName_noext, uint16_t whichBg);
     void handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     void handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
+    void handleOBJSET();
 };
 
 #endif
