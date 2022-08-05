@@ -163,8 +163,8 @@ void DisplayTable::displayTableClicked(int row, int column) {
 void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType) {
     QTableWidgetItem* curCell = this->item(row,column);
     if (curCell == nullptr) {
-        // Nothing has loaded yet, cancel
-        return;
+        // Make a new one
+        curCell = new QTableWidgetItem();
     }
     curCell->setData(PixelDelegateData::COLLISION_DRAW,colType);
 }
@@ -291,13 +291,9 @@ void DisplayTable::updateObjects() {
         // Very basic pointing to position
         if (potentialExisting == nullptr) {
             cout << "[WARN] No tile to place object on at x: " << hex << x << ", y: " << hex << y << endl; 
-            // Do nothing, not there
-        } else {
-            this->setCellCollision(y,  x,  CollisionDraw::CORNER_BOTTOM_RIGHT);
-            this->setCellCollision(y+1,x,  CollisionDraw::CORNER_TOP_RIGHT);
-            this->setCellCollision(y,  x+1,CollisionDraw::CORNER_BOTTOM_LEFT);
-            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_TOP_LEFT);
+            potentialExisting = new QTableWidgetItem(); // Make it NOT null lmao
         }
+        potentialExisting->setData(PixelDelegateData::OBJECT_ID,(int)it->objectId);
     }
 }
 

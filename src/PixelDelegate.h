@@ -19,7 +19,13 @@ enum PixelDelegateData {
     PALETTE_ARRAY_BG1 = 110,
     TILEATTR_BG1 = 111,
     FLIP_H_BG1 = 112,
-    FLIP_V_BG1 = 113
+    FLIP_V_BG1 = 113,
+
+    /**
+     * Type: int
+     * Purpose: Object ID to print out
+     */
+    OBJECT_ID = 114
 };
 
 enum CollisionType {

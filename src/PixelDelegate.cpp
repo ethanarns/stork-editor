@@ -6,7 +6,9 @@
 
 #include <iostream>
 
+#include <QtCore>
 #include <QtWidgets>
+#include <QStaticText>
 
 using namespace std;
 
@@ -111,7 +113,6 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
      *****************/
     CollisionDraw colDrawType = static_cast<CollisionDraw>(index.data(PixelDelegateData::COLLISION_DRAW).toInt());
     if (index.data(PixelDelegateData::SHOW_COLLISION).toBool() == true) {
-
         QColor qcBlack("black");
         QPen qpB(qcBlack);
         qpB.setStyle(Qt::PenStyle::SolidLine);
@@ -301,6 +302,26 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             default:
                 break;
         }
+    }
+
+    /***************
+     *** OBJECTS ***
+     ***************/
+    int objectId = index.data(PixelDelegateData::OBJECT_ID).toInt();
+    if (!index.data(PixelDelegateData::OBJECT_ID).isNull()) {
+        // QStaticText objectText("123");
+        // QFont objectFont(tr(""),12,2,false);
+        // painter->setFont(objectFont);
+        // QPoint start = option.rect.topLeft();
+        // start.setY(start.y()-(option.rect.height()/2));
+        // painter->drawStaticText(start,objectText);
+        QPen qcWhiteRect("white");
+        painter->setPen(qcWhiteRect);
+        auto rectCopy = option.rect;
+        rectCopy.setHeight(option.rect.height()-1);
+        rectCopy.setWidth(option.rect.width()-1);
+        painter->fillRect(rectCopy,"purple");
+        painter->drawRect(rectCopy);
     }
 }
 
