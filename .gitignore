@@ -7,8 +7,11 @@ parasol
 blz
 lzss
 *.bin
-*.mpdz
 *.nds
 moc_*
+
+# test extracted files
 *.arcz
 *.mpbz
+*.anmz
+*.mpdz
