@@ -511,6 +511,7 @@ void YidsRom::handleOBJSET() {
     cout << "First index instruction: " << hex << (int)objsetUncompressedVec.at(indexObjset) << endl;
     const uint32_t objsetEndIndex = fullObjsetLength + 8; // Exclusive, but shouldn't matter
     cout << "End index: " << hex << objsetEndIndex << endl;
+    uint32_t currentTileIndex = 0;
     while (indexObjset < objsetEndIndex) {
         auto instructionCheck = YUtils::getUint32FromVec(objsetUncompressedVec,indexObjset);
         cout << "instructionCheck: " << hex << instructionCheck << endl;
@@ -522,6 +523,36 @@ void YidsRom::handleOBJSET() {
         if (instructionCheck == Constants::OBJB_MAGIC_NUM) {
             cout << "OBJB" << endl;
             YUtils::printVector(subsection);
+            uint32_t subLength = subsection.size();
+            uint32_t subIndex = 0;
+            
+            while (subIndex < subLength) { // Kill when equal to length, meaning it's outside
+                Chartile curTile;
+                curTile.engine = ScreenEngine::A;
+                curTile.index = currentTileIndex;
+                curTile.tiles.resize(64);
+
+                for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
+                    uint32_t subAt = subIndex + currentTileBuildIndex;
+                    if (subAt >= subLength) {
+                        cerr << "[WARN] subAt too high! " << "subAt: " << hex << subAt << ", len: " << hex << subLength << endl;
+                        continue;
+                    }
+                    uint8_t curByte = subsection.at(subIndex + currentTileBuildIndex);
+                    uint8_t highBit = curByte >> 4;
+                    uint8_t lowBit = curByte % 0x10;
+                    int innerPosition = currentTileBuildIndex*2;
+                    curTile.tiles[innerPosition+1] = highBit;
+                    curTile.tiles[innerPosition+0] = lowBit;
+                }
+                this->pixelTilesObj.push_back(curTile);
+                
+                // Skip ahead by 0x20
+                subIndex += Constants::CHARTILE_DATA_SIZE;
+                currentTileIndex++;
+            }
+
+
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
             cout << "PLTB" << endl;
         } else {
@@ -531,4 +562,6 @@ void YidsRom::handleOBJSET() {
         }
         indexObjset += currentInstructionLength;
     }
+    cout << "Tile index max: " << hex << currentTileIndex << endl;
+    cout << "Number pulled: " << hex << this->pixelTilesObj.size() << endl;
 }

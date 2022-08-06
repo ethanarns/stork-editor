@@ -20,7 +20,7 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
     this->verticalHeader()->setMinimumSectionSize(0);
     this->verticalHeader()->setDefaultSectionSize(ChartilesTable::CELL_SIZE_PX);
     this->setColumnCount(ChartilesTable::CHARTILES_TABLE_WIDTH);
-    this->setRowCount(0x100);
+    this->setRowCount(0x1000);
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
@@ -34,16 +34,11 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
 
 void ChartilesTable::refreshLoadedTiles() {
     std::vector<Chartile>* chartiles;
-    chartiles = &this->yidsRom->pixelTilesBg2;
+    chartiles = &this->yidsRom->pixelTilesObj;
     int _loadedTilesCount = 0;
     for (auto it = chartiles->begin(); it != chartiles->end(); it++) {
         QTableWidgetItem *newItem = new QTableWidgetItem();
         auto tiles = it->tiles;
-
-        // for (int i = 0; i < 64; i++) {
-        //     std::cout << hex << (int)tiles[i] << ",";
-        // }
-        // std::cout << std::endl;
 
         // Stick it on both to avoid slash marks
         newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tiles);
@@ -54,6 +49,7 @@ void ChartilesTable::refreshLoadedTiles() {
         newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[0]);
         newItem->setData(PixelDelegateData::FLIP_H_BG2,false);
         newItem->setData(PixelDelegateData::FLIP_V_BG2,false);
+        newItem->setData(PixelDelegateData::DEBUG,it->index);
         if (tiles.size() != 64) {
             cerr << "Wanted 64 pixels, got " << dec << tiles.size() << std::endl;
             continue;
@@ -64,7 +60,6 @@ void ChartilesTable::refreshLoadedTiles() {
         if (this->item(y,x) != nullptr) {
             delete this->item(y,x);
         }
-        //std::cout << "Placing item at y: " << hex << y << ", x: " << hex << x << std::endl;
         this->setItem(y,x,newItem);
         _loadedTilesCount++;
     }
@@ -79,5 +74,7 @@ void ChartilesTable::chartilesTableClicked(int row, int column) {
         std::cout << "No item in location" << std::endl;
     } else {
         std::cout << "Item in location" << std::endl;
+        uint32_t foundIndex = potentialItem->data(PixelDelegateData::DEBUG).toUInt();
+        std::cout << "Index: " << std::hex << foundIndex << std::endl;
     }
 }
