@@ -13,6 +13,7 @@ struct Chartile {
     ScreenEngine engine; // A (top screen) or B (bottom screen)
     uint32_t index;
     QByteArray tiles; // 8x8, each 0-15, representing their connection the current palette
+    uint32_t offset;
 };
 
 struct ChartilePreRenderData {

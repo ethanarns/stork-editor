@@ -1,13 +1,14 @@
 .vscode/
 *.stash
+*.zip
+*.txt
+
+# Build files
 Makefile
 parasol
-*.zip
 *.o
 blz
 lzss
-*.bin
-*.nds
 moc_*
 
 # test extracted files
@@ -15,3 +16,5 @@ moc_*
 *.mpbz
 *.anmz
 *.mpdz
+*.bin
+*.nds

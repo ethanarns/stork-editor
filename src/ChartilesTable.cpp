@@ -2,6 +2,7 @@
 #include "yidsrom.h"
 #include "Chartile.h"
 #include "PixelDelegate.h"
+#include "utils.h"
 
 #include <iostream>
 
@@ -33,9 +34,12 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
 }
 
 void ChartilesTable::refreshLoadedTiles() {
+    uint32_t _chartileOffset = 0;
     std::vector<Chartile>* chartiles;
     chartiles = &this->yidsRom->pixelTilesObj;
     int _loadedTilesCount = 0;
+    int _previousIndex = 0;
+    int _yOffset = 0;
     for (auto it = chartiles->begin(); it != chartiles->end(); it++) {
         QTableWidgetItem *newItem = new QTableWidgetItem();
         auto tiles = it->tiles;
@@ -45,17 +49,17 @@ void ChartilesTable::refreshLoadedTiles() {
         newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[0]);
         newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
         newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
-        newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,tiles);
-        newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[0]);
-        newItem->setData(PixelDelegateData::FLIP_H_BG2,false);
-        newItem->setData(PixelDelegateData::FLIP_V_BG2,false);
-        newItem->setData(PixelDelegateData::DEBUG,it->index);
+        newItem->setData(PixelDelegateData::DEBUG,it->offset); // Offset of loaded tile group
         if (tiles.size() != 64) {
             cerr << "Wanted 64 pixels, got " << dec << tiles.size() << std::endl;
             continue;
         }
         newItem->setText(tr(""));
-        int y = it->index / 0x10;
+        if (_previousIndex != it->offset) {
+            _yOffset += 2;
+            _previousIndex = it->offset;
+        }
+        int y = it->index / 0x10 + _yOffset;
         int x = it->index % 0x10;
         if (this->item(y,x) != nullptr) {
             delete this->item(y,x);
@@ -74,7 +78,10 @@ void ChartilesTable::chartilesTableClicked(int row, int column) {
         std::cout << "No item in location" << std::endl;
     } else {
         std::cout << "Item in location" << std::endl;
-        uint32_t foundIndex = potentialItem->data(PixelDelegateData::DEBUG).toUInt();
-        std::cout << "Index: " << std::hex << foundIndex << std::endl;
+        uint32_t foundDebug = potentialItem->data(PixelDelegateData::DEBUG).toUInt();
+        auto tileArray = potentialItem->data(PixelDelegateData::PIXEL_ARRAY_BG1).toByteArray();
+        std::cout << "Index: " << std::hex << foundDebug << std::endl;
+        std::vector<uint8_t> printableArray(tileArray.begin(), tileArray.end());
+        YUtils::printVector(printableArray);
     }
 }

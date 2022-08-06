@@ -514,6 +514,7 @@ void YidsRom::handleOBJSET() {
     //std::cout << "End index: " << hex << objsetEndIndex << endl;
     uint32_t currentTileIndex = 0;
     uint32_t currentPaletteIndex = 0;
+    uint32_t curTileStartOffset = 0;
     while (indexObjset < objsetEndIndex) {
         auto instructionCheck = YUtils::getUint32FromVec(objsetUncompressedVec,indexObjset);
         //std::cout << "instructionCheck: " << hex << instructionCheck << endl;
@@ -533,6 +534,7 @@ void YidsRom::handleOBJSET() {
                 curTile.engine = ScreenEngine::A;
                 curTile.index = currentTileIndex;
                 curTile.tiles.resize(64);
+                curTile.offset = curTileStartOffset;
 
                 for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
                     uint32_t subAt = subIndex + currentTileBuildIndex;
@@ -554,7 +556,7 @@ void YidsRom::handleOBJSET() {
                 subIndex += Constants::CHARTILE_DATA_SIZE;
                 currentTileIndex++;
             }
-
+            curTileStartOffset++;
 
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
             //std::cout << "PLTB" << std::endl;
