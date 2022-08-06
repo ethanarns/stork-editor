@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "constants.h"
 #include "LevelObject.h"
+#include "PixelDelegate.h"
 
 #include <iostream>
 #include <vector>
@@ -41,7 +42,7 @@ void YidsRom::loadCrsb(std::string fileName_noext) {
 
     // Number of CSCN records, aka maps in level!
     auto mapFileCount = this->getNumberAt<uint32_t>(startAddr + 8);
-    if (this->verbose) cout << "Map count: " << mapFileCount << endl;
+    if (this->verbose) std::cout << "Map count: " << mapFileCount << endl;
 
     const uint32_t OFFSET_TO_FIRST_CSCN = 0xC; // 12
 
@@ -81,7 +82,7 @@ void YidsRom::loadCrsb(std::string fileName_noext) {
 uint32_t timesPaletteLoaded = 0;
 
 void YidsRom::loadMpdz(std::string fileName_noext) {
-    if (this->verbose) cout << "Loading MPDZ '" << fileName_noext << "'" << endl;
+    if (this->verbose) std::cout << "Loading MPDZ '" << fileName_noext << "'" << endl;
     std::string mpdzFileName = fileName_noext.append(Constants::MPDZ_EXTENSION);
     auto fileVector = this->getFileByteVector(mpdzFileName);
     // YUtils::writeByteVectorToFile(fileVector,mpdzFileName); // Uncomment to get uncompressed MPDZ
@@ -93,7 +94,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
         cerr << ", got " << hex << magic << " instead." << endl;
         return;
     } else {
-        if (this->verbose) cout << "[SUCCESS] MPDZ Magic number found" << endl;
+        if (this->verbose) std::cout << "[SUCCESS] MPDZ Magic number found" << endl;
     }
     // 4 because the file length is written at bytes 4-7
     uint32_t mpdzFileLength = YUtils::getUint32FromVec(uncompVec, 4);
@@ -142,27 +143,27 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
     while (indexPointer < scenCutoff) {
         uint32_t curSubInstruction = YUtils::getUint32FromVec(mpdzVec,indexPointer);
         if (curSubInstruction == Constants::INFO_MAGIC_NUM) {
-            cout << ">> Handling INFO instruction: ";
+            std::cout << ">> Handling INFO instruction: ";
             uint32_t infoLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First time: 0x20
 
             uint32_t canvasDimensions = YUtils::getUint32FromVec(mpdzVec, indexPointer + 8); // 00b60208
 
             // TODO: What are these values?
             uint32_t unknownValue1 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 12); // 00000000
-            cout << "unk1: " << hex << unknownValue1 << "; ";
+            std::cout << "unk1: " << hex << unknownValue1 << "; ";
             uint32_t unknownValue2 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 16); // 0x1000
-            cout << "unk2: " << hex << unknownValue2 << "; ";
+            std::cout << "unk2: " << hex << unknownValue2 << "; ";
             uint32_t unknownValue3 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 20); // 0x1000
-            cout << "unk3: " << hex << unknownValue3 << "; ";
+            std::cout << "unk3: " << hex << unknownValue3 << "; ";
             //uint32_t unknownValue4 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 24); // 0x00020202
             whichBgToWriteTo = mpdzVec.at(indexPointer + 24 + 0);
-            cout << "whichBg: " << (int)whichBgToWriteTo << "; ";
+            std::cout << "whichBg: " << (int)whichBgToWriteTo << "; ";
             // uint16_t charBaseBlockHardMaybe = mpdzVec.at(indexPointer + 24 + 1);
             // uint16_t thirdByte = mpdzVec.at(indexPointer + 24 + 2);
             // uint16_t screenBaseBlockMaybe = mpdzVec.at(indexPointer + 24 + 3);
 
             uint32_t unknownValue5 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 28); // 00000000
-            cout << "unk5: " << hex << unknownValue5 << endl;
+            std::cout << "unk5: " << hex << unknownValue5 << endl;
             Q_UNUSED(unknownValue1);
             Q_UNUSED(unknownValue2);
             Q_UNUSED(unknownValue3);
@@ -185,12 +186,12 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             // Increment based on earlier length, +8 is to skip instruction and length
             indexPointer += infoLength + 8;
         } else if (curSubInstruction == Constants::PLTB_MAGIC_NUM) {
-            cout << ">> Handling PLTB instruction" << endl;
+            std::cout << ">> Handling PLTB instruction" << endl;
             uint32_t pltbLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
             Address pltbReadIndex = indexPointer + 8; // +8 is to skip instruction and length
             indexPointer += pltbLength + 8; // Skip past, don't do a manual count up
             if (timesPaletteLoaded > 0) {
-                cout << "[WARN] Only BG palette supported thus far, skipping" << endl;
+                std::cout << "[WARN] Only BG palette supported thus far, skipping" << endl;
                 continue;
             }
             // Cycle up to the index pointer
@@ -208,7 +209,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             }
             timesPaletteLoaded++;
         } else if (curSubInstruction == Constants::MPBZ_MAGIC_NUM) {
-            cout << ">> Handling MPBZ instruction" << endl;
+            std::cout << ">> Handling MPBZ instruction" << endl;
             // Most of this tile placing logic is here: 0201c6dc
             if (whichBgToWriteTo == 0) {
                 cerr << "[ERROR] Which BG to write to was not specified, MPBZ load failed" << endl;
@@ -228,7 +229,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
 
             if (whichBgToWriteTo == 3 || whichBgToWriteTo == 0) {
-                cout << "[WARN] MPBZ tiles other than BG 1 and 2 not implemented, skipping" << endl;
+                std::cout << "[WARN] MPBZ tiles other than BG 1 and 2 not implemented, skipping" << endl;
                 continue;
             }
             // Handle uncompressedMpbz data
@@ -292,9 +293,9 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             }
             //std::cout << "Finished writing to preRenderDataBg2, length is " << this->preRenderDataBg2.size() << std::endl;
         } else if (curSubInstruction == Constants::COLZ_MAGIC_NUM) {
-            cout << ">> Handling COLZ instruction" << endl;
+            std::cout << ">> Handling COLZ instruction" << endl;
             if (collisionTileArray.size() > 0) {
-                cout << "[ERROR] Attempted to load a second COLZ, only one should ever be loaded" << endl;
+                std::cout << "[ERROR] Attempted to load a second COLZ, only one should ever be loaded" << endl;
                 exit(EXIT_FAILURE);
             }
             uint32_t colzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First is 0x0b7c
@@ -312,12 +313,12 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 this->canvasWidthCol = this->canvasWidthBg1;
                 this->canvasHeightCol = this->canvasHeightBg1;
             } else {
-                cout << "[WARN] Using collision on unsupported BG: " << hex << whichBgToWriteTo << endl;
+                std::cout << "[WARN] Using collision on unsupported BG: " << hex << whichBgToWriteTo << endl;
             }
             indexPointer += colzLength + 8;
         } else if (curSubInstruction == Constants::ANMZ_MAGIC_NUM) {
             // TODO: Figure out how this knows where to write. Take a break, so far you have most tiles loading
-            cout << ">> Handling ANMZ instruction" << endl;
+            std::cout << ">> Handling ANMZ instruction" << endl;
             uint32_t anmzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // Should be 0x1080 first time
             // Address compressedDataStart = indexPointer + 8;
             // Address compressedDataEnd = compressedDataStart + anmzLength;
@@ -356,10 +357,10 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             //     } else if (whichBgToWriteTo == 1) {
             //         this->pixelTilesBg1.push_back(curTile);
             //     } else {
-            //         cout << "[WARN] Writing ANMZ to unhandled BG: " << whichBgToWriteTo << endl;
+            //         std::cout << "[WARN] Writing ANMZ to unhandled BG: " << whichBgToWriteTo << endl;
             //     }
             //     // for (int i = 0; i < 64; i++) {
-            //     //     cout << hex << (int)curTile.tiles[i] << ",";
+            //     //     std::cout << hex << (int)curTile.tiles[i] << ",";
             //     // }
             //     // cout << endl;
                 
@@ -371,7 +372,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
 
             indexPointer += anmzLength + 8; // Go to next
         } else if (curSubInstruction == Constants::IMGB_MAGIC_NUM) {
-            cout << ">> Handling IMGB instruction" << endl;
+            std::cout << ">> Handling IMGB instruction" << endl;
             uint32_t imgbLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
             // TODO: Learn about this data
             indexPointer += imgbLength + 8;
@@ -379,14 +380,14 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             cerr << "[ERROR] Found SCEN instruction, overflowed!" << endl;
             return;
         } else {
-            cout << "Unknown instruction: " << hex << curSubInstruction << endl;
+            std::cout << "Unknown instruction: " << hex << curSubInstruction << endl;
             return;
         }
     }
 }
 
 void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
-    if (this->verbose) cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
+    if (this->verbose) std::cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
     if (whichBg == 2) {
         if (this->pixelTilesBg2.size() > 0) {
             cerr << "[ERROR] No overwriting existing pixel tile data for BG 2!" << endl;
@@ -447,7 +448,7 @@ void YidsRom::handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
         cerr << "GRAD instruction did not find magic hex " << hex << Constants::GRAD_MAGIC_NUM << endl;
         return;
     }
-    cout << "*** Starting GRAD instruction parse ***" << endl;
+    std::cout << "*** Starting GRAD instruction parse ***" << endl;
     indexPointer += 4; // Go to length
     auto gradLength = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     indexPointer += 4; // Now at start of actual data
@@ -474,8 +475,8 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
         lo.objectId = YUtils::getUint16FromVec(mpdzVec, indexPointer + 0);
         lo.settingsLength = YUtils::getUint16FromVec(mpdzVec, indexPointer + 2);
         uint16_t len = lo.settingsLength;
-        if (len > 10) {
-            cout << "[WARN] Unusually high object settings length for " << hex << lo.objectId << ": " << hex << len << endl;
+        if (len > 0x10) {
+            std::cout << "[WARN] Unusually high object settings length for " << hex << lo.objectId << ": " << hex << len << endl;
         }
         lo.xPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 4);
         lo.yPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 6);
@@ -495,7 +496,7 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
 }
 
 void YidsRom::handleOBJSET() {
-    cout << "handleOBJSET" << endl;
+    std::cout << "handleOBJSET" << endl;
     const std::string objset_filename = "objset.arcz";
     std::vector<uint8_t> fileVectorObjset = this->getFileByteVector(objset_filename);
     std::vector<uint8_t> objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
@@ -506,23 +507,24 @@ void YidsRom::handleOBJSET() {
         exit(EXIT_FAILURE);
     }
     auto fullObjsetLength = YUtils::getUint32FromVec(objsetUncompressedVec,4);
-    cout << "Full length: " << hex << fullObjsetLength << endl;
+    //std::cout << "Full length: " << hex << fullObjsetLength << endl;
     uint32_t indexObjset = 8; // magic number (4) + length uint32 (4)
-    cout << "First index instruction: " << hex << (int)objsetUncompressedVec.at(indexObjset) << endl;
+    //std::cout << "First index instruction: " << hex << (int)objsetUncompressedVec.at(indexObjset) << endl;
     const uint32_t objsetEndIndex = fullObjsetLength + 8; // Exclusive, but shouldn't matter
-    cout << "End index: " << hex << objsetEndIndex << endl;
+    //std::cout << "End index: " << hex << objsetEndIndex << endl;
     uint32_t currentTileIndex = 0;
+    uint32_t currentPaletteIndex = 0;
     while (indexObjset < objsetEndIndex) {
         auto instructionCheck = YUtils::getUint32FromVec(objsetUncompressedVec,indexObjset);
-        cout << "instructionCheck: " << hex << instructionCheck << endl;
+        //std::cout << "instructionCheck: " << hex << instructionCheck << endl;
         indexObjset += 4; // Skip instruction, go to length
         auto currentInstructionLength = YUtils::getUint32FromVec(objsetUncompressedVec,indexObjset);
         indexObjset += 4; // Skip length, go to first
-        cout << "Found sublength: " << hex << currentInstructionLength << endl;
+        //std::cout << "Found sublength: " << hex << currentInstructionLength << endl;
         auto subsection = YUtils::subVector(objsetUncompressedVec,indexObjset,indexObjset + currentInstructionLength);
         if (instructionCheck == Constants::OBJB_MAGIC_NUM) {
-            cout << "OBJB" << endl;
-            YUtils::printVector(subsection);
+            //std::cout << "OBJB" << endl;
+            //YUtils::printVector(subsection);
             uint32_t subLength = subsection.size();
             uint32_t subIndex = 0;
             
@@ -535,8 +537,9 @@ void YidsRom::handleOBJSET() {
                 for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
                     uint32_t subAt = subIndex + currentTileBuildIndex;
                     if (subAt >= subLength) {
-                        cerr << "[WARN] subAt too high! " << "subAt: " << hex << subAt << ", len: " << hex << subLength << endl;
-                        continue;
+                        // NOTE: For some reason this keeps going over by 0xf on half of them. Very bizarre.
+                        //cerr << "[WARN] subAt too high! " << "subAt: " << hex << subAt << ", len: " << hex << subLength << endl;
+                        break;
                     }
                     uint8_t curByte = subsection.at(subIndex + currentTileBuildIndex);
                     uint8_t highBit = curByte >> 4;
@@ -554,7 +557,21 @@ void YidsRom::handleOBJSET() {
 
 
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
-            cout << "PLTB" << endl;
+            //std::cout << "PLTB" << std::endl;
+            uint32_t subSectionSize = subsection.size();
+            if (subSectionSize != Constants::PALETTE_SIZE) {
+                cerr << "[ERROR] PLTB data not 0x20/32 bytes! Was instead: " << hex << subSectionSize << endl;
+            } else {
+                ObjectPalette currentLoadingPalette;
+                currentLoadingPalette.paletteData.resize(Constants::PALETTE_SIZE);
+                for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
+                    currentLoadingPalette.paletteData[curPaletteIndex] = subsection.at(curPaletteIndex);
+                }
+                currentLoadingPalette.index = currentPaletteIndex;
+                currentPaletteIndex++;
+                currentLoadingPalette.address = indexObjset;
+                this->objectPalettes.push_back(currentLoadingPalette);
+            }
         } else {
             std::cerr << "[ERROR] Known objset magic number not found! Instead found ";
             std::cerr << hex << instructionCheck << " at " << hex << (indexObjset - 4) << std::endl;
@@ -562,6 +579,10 @@ void YidsRom::handleOBJSET() {
         }
         indexObjset += currentInstructionLength;
     }
-    cout << "Tile index max: " << hex << currentTileIndex << endl;
-    cout << "Number pulled: " << hex << this->pixelTilesObj.size() << endl;
+    if (currentTileIndex != this->pixelTilesObj.size()) {
+        std::cerr << "[ERROR] Mismatch in size of pixels and index pulled!" << endl;
+        std::cout << "Tile index max: " << hex << currentTileIndex << endl;
+        std::cout << "Number pulled: " << hex << this->pixelTilesObj.size() << endl;
+    }
+    std::cout << "Loaded " << dec << this->objectPalettes.size() << " palettes" << std::endl;
 }
