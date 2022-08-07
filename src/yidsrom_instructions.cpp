@@ -527,7 +527,33 @@ void YidsRom::handleOBJSET() {
             //std::cout << "OBJB" << endl;
             //YUtils::printVector(subsection);
             uint32_t subLength = subsection.size();
-            uint32_t subIndex = 0xF0;
+            //YUtils::printVector(subsection);
+            uint32_t subIndex = 0x00;
+            
+            uint32_t times0000caught = 0;
+            uint32_t maxTimes = 2;
+            while (times0000caught < maxTimes) {
+                if (subIndex >= subLength) {
+                    cout << "[WARN] Failed to get proper sub-index in loop" << endl;
+                    subIndex = 0;
+                    break;
+                }
+                auto curCaught = YUtils::getUint32FromVec(subsection,subIndex);
+                if (curCaught == 0x00000000) {
+                    times0000caught++;
+                }
+                subIndex += 4;
+            }
+
+            if (subIndex >= subLength) {
+                cout << "[WARN] Failed to get proper sub-index post loop" << endl;
+                subIndex = 0;
+            }
+
+            //subIndex = 0xF0;
+            //exit(EXIT_SUCCESS);
+
+            //const uint32_t _one_one_default_offset = 0xF0;
             std::vector<Chartile> chartileTempVector;
             while (subIndex < subLength) { // Kill when equal to length, meaning it's outside
                 Chartile curTile;
@@ -582,11 +608,6 @@ void YidsRom::handleOBJSET() {
             exit(EXIT_FAILURE);
         }
         indexObjset += currentInstructionLength;
-    }
-    if (currentTileIndex != this->pixelTilesObj.size()) {
-        std::cerr << "[ERROR] Mismatch in size of pixels and index pulled!" << endl;
-        std::cout << "Tile index max: " << hex << currentTileIndex << endl;
-        std::cout << "Number pulled: " << hex << this->pixelTilesObj.size() << endl;
     }
     std::cout << "Loaded " << dec << this->pixelTilesObj.size() << " object tile groups" << std::endl;
     std::cout << "Loaded " << dec << this->objectPalettes.size() << " palettes" << std::endl;
