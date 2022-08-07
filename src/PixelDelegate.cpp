@@ -308,6 +308,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
      *** OBJECTS ***
      ***************/
     int objectId = index.data(PixelDelegateData::OBJECT_ID).toInt();
+    Q_UNUSED(objectId);
     if (!index.data(PixelDelegateData::OBJECT_ID).isNull()) {
         // QStaticText objectText("123");
         // QFont objectFont(tr(""),12,2,false);

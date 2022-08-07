@@ -317,3 +317,19 @@ int DisplayTable::wipeTable() {
     }
     return 0;
 }
+
+void DisplayTable::placeObjectTile(uint32_t x, uint32_t y, uint32_t objectOffset, uint32_t subTile, uint32_t paletteOffset) {
+    auto objectChartiles = this->yidsRom->pixelTilesObj[objectOffset].at(subTile);
+    auto objectPalette = this->yidsRom->objectPalettes[paletteOffset];
+    auto tileItem = this->item(y,x);
+    if (tileItem == nullptr) {
+        tileItem = new QTableWidgetItem();
+    }
+    cout << objectPalette.index << endl;
+    tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,objectChartiles.tiles);
+    tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,objectPalette.paletteData);
+    tileItem->setData(PixelDelegateData::FLIP_H_BG2,0);
+    tileItem->setData(PixelDelegateData::FLIP_V_BG2,0);
+    this->setItem(y,x,tileItem);
+    cout << "placed object at y: " << hex << y << endl;
+}

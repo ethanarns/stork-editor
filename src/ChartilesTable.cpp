@@ -34,11 +34,10 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
 }
 
 void ChartilesTable::refreshLoadedTiles() {
-    uint32_t _chartileOffset = 0;
     std::vector<Chartile>* chartiles;
-    chartiles = &this->yidsRom->pixelTilesObj;
+    chartiles = &this->yidsRom->pixelTilesBg2;
     int _loadedTilesCount = 0;
-    int _previousIndex = 0;
+    uint32_t _previousIndex = 0;
     int _yOffset = 0;
     for (auto it = chartiles->begin(); it != chartiles->end(); it++) {
         QTableWidgetItem *newItem = new QTableWidgetItem();

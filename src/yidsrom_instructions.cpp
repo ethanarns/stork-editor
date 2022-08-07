@@ -527,8 +527,8 @@ void YidsRom::handleOBJSET() {
             //std::cout << "OBJB" << endl;
             //YUtils::printVector(subsection);
             uint32_t subLength = subsection.size();
-            uint32_t subIndex = 0;
-            
+            uint32_t subIndex = 0xF0;
+            std::vector<Chartile> chartileTempVector;
             while (subIndex < subLength) { // Kill when equal to length, meaning it's outside
                 Chartile curTile;
                 curTile.engine = ScreenEngine::A;
@@ -550,12 +550,13 @@ void YidsRom::handleOBJSET() {
                     curTile.tiles[innerPosition+1] = highBit;
                     curTile.tiles[innerPosition+0] = lowBit;
                 }
-                this->pixelTilesObj.push_back(curTile);
+                chartileTempVector.push_back(curTile);
                 
                 // Skip ahead by 0x20
                 subIndex += Constants::CHARTILE_DATA_SIZE;
                 currentTileIndex++;
             }
+            this->pixelTilesObj[curTileStartOffset] = chartileTempVector;
             curTileStartOffset++;
 
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
@@ -572,8 +573,9 @@ void YidsRom::handleOBJSET() {
                 currentLoadingPalette.index = currentPaletteIndex;
                 currentPaletteIndex++;
                 currentLoadingPalette.address = indexObjset;
-                this->objectPalettes.push_back(currentLoadingPalette);
+                this->objectPalettes[curTileStartOffset] = currentLoadingPalette;
             }
+            curTileStartOffset++;
         } else {
             std::cerr << "[ERROR] Known objset magic number not found! Instead found ";
             std::cerr << hex << instructionCheck << " at " << hex << (indexObjset - 4) << std::endl;
@@ -586,5 +588,6 @@ void YidsRom::handleOBJSET() {
         std::cout << "Tile index max: " << hex << currentTileIndex << endl;
         std::cout << "Number pulled: " << hex << this->pixelTilesObj.size() << endl;
     }
+    std::cout << "Loaded " << dec << this->pixelTilesObj.size() << " object tile groups" << std::endl;
     std::cout << "Loaded " << dec << this->objectPalettes.size() << " palettes" << std::endl;
 }
