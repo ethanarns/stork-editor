@@ -13,7 +13,7 @@ enum PixelDelegateData {
 
     COLLISION_DRAW = 106,
     SHOW_COLLISION = 107,
-    DEBUG = 108,
+    DEBUG_DATA = 108,
 
     PIXEL_ARRAY_BG1 = 109,
     PALETTE_ARRAY_BG1 = 110,
