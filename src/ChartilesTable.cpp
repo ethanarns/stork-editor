@@ -34,40 +34,31 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
 }
 
 void ChartilesTable::refreshLoadedTiles() {
-    std::vector<Chartile>* chartiles;
-    chartiles = &this->yidsRom->pixelTilesBg2;
-    int _loadedTilesCount = 0;
-    uint32_t _previousIndex = 0;
-    int _yOffset = 0;
-    for (auto it = chartiles->begin(); it != chartiles->end(); it++) {
-        QTableWidgetItem *newItem = new QTableWidgetItem();
-        auto tiles = it->tiles;
-
-        // Stick it on both to avoid slash marks
-        newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tiles);
-        newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[0]);
-        newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
-        newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
-        newItem->setData(PixelDelegateData::DEBUG,it->offset); // Offset of loaded tile group
-        if (tiles.size() != 64) {
-            cerr << "Wanted 64 pixels, got " << dec << tiles.size() << std::endl;
-            continue;
+    auto tilesMap = &this->yidsRom->pixelTilesObj;
+    uint32_t mapSize = tilesMap->size();
+    uint32_t yOffset = 0;
+    uint32_t indexForOffset = 0;
+    for (uint32_t mapIndex = 0; mapIndex < mapSize; mapIndex++) {
+        auto chartilesVector = (*tilesMap)[mapIndex];
+        for (auto it = chartilesVector.begin(); it != chartilesVector.end(); it++) {
+            QTableWidgetItem *newItem = new QTableWidgetItem();
+            auto tiles = it->tiles;
+            newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tiles);
+            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[0]);
+            newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
+            newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
+            newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);
+            uint32_t x = indexForOffset % 0x10;
+            uint32_t y = indexForOffset / 0x10 + yOffset;
+            if (this->item(y,x) != nullptr) {
+                cout << "OVERWRITING, THIS SHOULD NOT HAPPEN" << endl;
+                delete this->item(y,x);
+            }
+            this->setItem(y,x,newItem);
+            indexForOffset++;
         }
-        newItem->setText(tr(""));
-        if (_previousIndex != it->offset) {
-            _yOffset += 2;
-            _previousIndex = it->offset;
-        }
-        int y = it->index / 0x10 + _yOffset;
-        int x = it->index % 0x10;
-        if (this->item(y,x) != nullptr) {
-            delete this->item(y,x);
-        }
-        this->setItem(y,x,newItem);
-        _loadedTilesCount++;
+        yOffset += 3;
     }
-    Q_UNUSED(_loadedTilesCount); // Do something with this eventually
-    //std::cout << "Loaded tiles via refreshLoadedtiles: " << _loadedTilesCount << std::endl;
 }
 
 void ChartilesTable::chartilesTableClicked(int row, int column) {
@@ -77,7 +68,7 @@ void ChartilesTable::chartilesTableClicked(int row, int column) {
         std::cout << "No item in location" << std::endl;
     } else {
         std::cout << "Item in location" << std::endl;
-        uint32_t foundDebug = potentialItem->data(PixelDelegateData::DEBUG).toUInt();
+        uint32_t foundDebug = potentialItem->data(PixelDelegateData::DEBUG_DATA).toUInt();
         auto tileArray = potentialItem->data(PixelDelegateData::PIXEL_ARRAY_BG1).toByteArray();
         std::cout << "Index: " << std::hex << foundDebug << std::endl;
         std::vector<uint8_t> printableArray(tileArray.begin(), tileArray.end());
