@@ -524,10 +524,7 @@ void YidsRom::handleOBJSET() {
         //std::cout << "Found sublength: " << hex << currentInstructionLength << endl;
         auto subsection = YUtils::subVector(objsetUncompressedVec,indexObjset,indexObjset + currentInstructionLength);
         if (instructionCheck == Constants::OBJB_MAGIC_NUM) {
-            //std::cout << "OBJB" << endl;
-            //YUtils::printVector(subsection);
             uint32_t subLength = subsection.size();
-            //YUtils::printVector(subsection);
             uint32_t subIndex = 0x00;
             
             uint32_t times0000caught = 0;
@@ -535,6 +532,7 @@ void YidsRom::handleOBJSET() {
             while (times0000caught < maxTimes) {
                 if (subIndex >= subLength) {
                     cout << "[WARN] Failed to get proper sub-index in loop" << endl;
+                    //YUtils::printVector(subsection);
                     subIndex = 0;
                     break;
                 }
@@ -544,14 +542,6 @@ void YidsRom::handleOBJSET() {
                 }
                 subIndex += 4;
             }
-
-            if (subIndex >= subLength) {
-                cout << "[WARN] Failed to get proper sub-index post loop" << endl;
-                subIndex = 0;
-            }
-
-            //subIndex = 0xF0;
-            //exit(EXIT_SUCCESS);
 
             //const uint32_t _one_one_default_offset = 0xF0;
             std::vector<Chartile> chartileTempVector;
