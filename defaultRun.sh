@@ -13,11 +13,6 @@ gcc src/lzss.c -o lzss
 qmake
 make
 
-# Remove crap
-rm *.o
-rm .qmake.stash
-rm moc_*
-
 # Execute
 ./parasol
 

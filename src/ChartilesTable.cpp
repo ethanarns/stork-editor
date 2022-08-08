@@ -57,7 +57,7 @@ void ChartilesTable::refreshLoadedTiles() {
             this->setItem(y,x,newItem);
             indexForOffset++;
         }
-        yOffset += 3;
+        yOffset += 2;
     }
 }
 
