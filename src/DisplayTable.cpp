@@ -319,7 +319,10 @@ int DisplayTable::wipeTable() {
 }
 
 void DisplayTable::placeObjectTile(uint32_t x, uint32_t y, uint32_t objectOffset, uint32_t subTile, uint32_t paletteOffset) {
-    auto objectPalette = this->yidsRom->currentPalettes[0]; //this->yidsRom->objectPalettes[paletteOffset];
+    auto objectPalette = this->yidsRom->currentPalettes[0]; //
+    if (paletteOffset != 0) {
+        objectPalette = this->yidsRom->objectPalettes[paletteOffset].paletteData;
+    }
     auto objectTiles = this->yidsRom->pixelTilesObj[objectOffset];
     auto _firstTileObject = objectTiles.at(subTile);
     auto tileItem = this->item(y,x);
@@ -327,7 +330,7 @@ void DisplayTable::placeObjectTile(uint32_t x, uint32_t y, uint32_t objectOffset
         tileItem = new QTableWidgetItem();
     }
     tileItem->setData(PixelDelegateData::OBJECT_TILES,_firstTileObject.pixelVector);
-    tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette); //objectPalette.paletteData);
+    tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette);
     tileItem->setData(PixelDelegateData::FLIP_H_BG2,0);
     tileItem->setData(PixelDelegateData::FLIP_V_BG2,0);
     this->setItem(y+_firstTileObject.offsetY,x+_firstTileObject.offsetX,tileItem);

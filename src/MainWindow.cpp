@@ -283,23 +283,13 @@ void MainWindow::LoadRom() {
         // Misc menu items //
         this->action_memory->setDisabled(false);
 
-        // const uint32_t mainOffset = 0x5a;
-        // this->grid->placeObjectTile(0, 1, mainOffset, 0, 0xdc);
-        // this->grid->placeObjectTile(1, 1, mainOffset, 1, 0xdc);
-        // this->grid->placeObjectTile(2, 1, mainOffset, 2, 0xdc);
-        // this->grid->placeObjectTile(3, 1, mainOffset, 3, 0xdc);
-        // this->grid->placeObjectTile(4, 1, mainOffset, 4, 0xdc);
-        // this->grid->placeObjectTile(5, 1, mainOffset, 5, 0xdc);
-        // this->grid->placeObjectTile(6, 1, mainOffset, 6, 0xdc);
-        // this->grid->placeObjectTile(7, 1, mainOffset, 7, 0xdc);
-        // this->grid->placeObjectTile(8, 1, mainOffset, 8, 0xdc);
-        // this->grid->placeObjectTile(9, 1, mainOffset, 9, 0xdc);
-        // this->grid->placeObjectTile(10, 1, mainOffset, 10, 0xdc);
-        // this->grid->placeObjectTile(11, 1, mainOffset, 11, 0xdc);
-        // this->grid->placeObjectTile(12, 1, mainOffset, 12, 0xdc);
+        const uint32_t mainOffset1 = 0x5a;
+        for (int x = 0; x < 10; x++) {
+            this->grid->placeObjectTile(x, 5, mainOffset1, x, 0xdc);
+        }
         const uint32_t mainOffset2 = 0x0;
         for (int i = 0; i < 18; i++) {
-            this->grid->placeObjectTile(i, 3, mainOffset2, i, 0xdc);
+            this->grid->placeObjectTile(i, 3, mainOffset2, i, 0);
         }
     }
 }
