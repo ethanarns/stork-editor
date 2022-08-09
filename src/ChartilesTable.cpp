@@ -34,31 +34,31 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
 }
 
 void ChartilesTable::refreshLoadedTiles() {
-    auto tilesMap = &this->yidsRom->pixelTilesObj;
-    uint32_t mapSize = tilesMap->size();
-    uint32_t yOffset = 0;
-    uint32_t indexForOffset = 0;
-    for (uint32_t mapIndex = 0; mapIndex < mapSize; mapIndex++) {
-        auto chartilesVector = (*tilesMap)[mapIndex];
-        for (auto it = chartilesVector.begin(); it != chartilesVector.end(); it++) {
-            QTableWidgetItem *newItem = new QTableWidgetItem();
-            auto tiles = it->tiles;
-            newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tiles);
-            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[0]);
-            newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
-            newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
-            newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);
-            uint32_t x = indexForOffset % 0x10;
-            uint32_t y = indexForOffset / 0x10 + yOffset;
-            if (this->item(y,x) != nullptr) {
-                cout << "OVERWRITING, THIS SHOULD NOT HAPPEN" << endl;
-                delete this->item(y,x);
-            }
-            this->setItem(y,x,newItem);
-            indexForOffset++;
-        }
-        yOffset += 2;
-    }
+    // auto tilesMap = &this->yidsRom->pixelTilesObj;
+    // uint32_t mapSize = tilesMap->size();
+    // uint32_t yOffset = 0;
+    // uint32_t indexForOffset = 0;
+    // for (uint32_t mapIndex = 0; mapIndex < mapSize; mapIndex++) {
+    //     auto chartilesVector = (*tilesMap)[mapIndex];
+    //     for (auto it = chartilesVector.begin(); it != chartilesVector.end(); it++) {
+    //         QTableWidgetItem *newItem = new QTableWidgetItem();
+    //         auto tiles = it->tiles;
+    //         newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tiles);
+    //         newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[0]);
+    //         newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
+    //         newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
+    //         newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);
+    //         uint32_t x = indexForOffset % 0x10;
+    //         uint32_t y = indexForOffset / 0x10 + yOffset;
+    //         if (this->item(y,x) != nullptr) {
+    //             cout << "OVERWRITING, THIS SHOULD NOT HAPPEN" << endl;
+    //             delete this->item(y,x);
+    //         }
+    //         this->setItem(y,x,newItem);
+    //         indexForOffset++;
+    //     }
+    //     yOffset += 2;
+    // }
 }
 
 void ChartilesTable::chartilesTableClicked(int row, int column) {

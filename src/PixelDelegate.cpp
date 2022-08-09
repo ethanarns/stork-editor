@@ -324,6 +324,32 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         painter->fillRect(rectCopy,"purple");
         painter->drawRect(rectCopy);
     }
+
+    auto objectTiles = index.data(PixelDelegateData::OBJECT_TILES).toByteArray();
+    auto objectPalette = index.data(PixelDelegateData::OBJECT_PALETTE).toByteArray();
+    if (!objectTiles.isNull() && !objectPalette.isNull()) {
+        for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
+            char whichPalette = objectTiles.at(i);
+            if (whichPalette == 0) {
+                // NOTE: Palette index 0 seems to almost always be the transparent
+                //   value. This may not be true, keep this in mind for future bugs
+                continue;
+            }
+            auto qc = YUtils::getColorFromBytes(
+                objectPalette.at(whichPalette*2),
+                objectPalette.at(whichPalette*2+1)
+            );
+            int x = i % 8;
+            // if (index.data(PixelDelegateData::FLIP_H_BG1).toBool() == true) {
+            //     x = (8 - x - 1);
+            // }
+            int y = i / 8;
+            // if (index.data(PixelDelegateData::FLIP_V_BG1).toBool() == true) {
+            //     y = (8 - y - 1);
+            // }
+            this->drawPixel(painter, option.rect, x, y, qc);
+        }
+    }
 }
 
 void PixelDelegate::drawPixel(QPainter *painter, const QRect &rect, int x, int y, QColor &color) const {

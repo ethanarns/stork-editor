@@ -25,7 +25,9 @@ enum PixelDelegateData {
      * Type: int
      * Purpose: Object ID to print out
      */
-    OBJECT_ID = 114
+    OBJECT_ID = 114,
+    OBJECT_PALETTE = 115,
+    OBJECT_TILES = 116
 };
 
 enum CollisionType {

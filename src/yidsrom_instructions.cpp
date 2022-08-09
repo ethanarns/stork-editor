@@ -524,79 +524,36 @@ void YidsRom::handleOBJSET() {
         //std::cout << "Found sublength: " << hex << currentInstructionLength << endl;
         auto subsection = YUtils::subVector(objsetUncompressedVec,indexObjset,indexObjset + currentInstructionLength);
         if (instructionCheck == Constants::OBJB_MAGIC_NUM) {
-            uint32_t subLength = subsection.size();
-            uint32_t subIndex = 0x00;
-            
-            uint32_t times0000caught = 0;
-            uint32_t maxTimes = 2;
-            while (times0000caught < maxTimes) {
-                if (subIndex >= subLength) {
-                    cout << "[WARN] Failed to get proper sub-index in loop" << endl;
-                    //YUtils::printVector(subsection);
-                    subIndex = 0;
-                    break;
-                }
-                auto curCaught = YUtils::getUint32FromVec(subsection,subIndex);
-                if (curCaught == 0x00000000) {
-                    times0000caught++;
-                }
-                subIndex += 4;
-            }
-
-            //const uint32_t _one_one_default_offset = 0xF0;
-            std::vector<Chartile> chartileTempVector;
-            while (subIndex < subLength) { // Kill when equal to length, meaning it's outside
-                Chartile curTile;
-                curTile.engine = ScreenEngine::A;
-                curTile.index = currentTileIndex;
-                curTile.tiles.resize(64);
-                curTile.offset = curTileStartOffset;
-
-                for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
-                    uint32_t subAt = subIndex + currentTileBuildIndex;
-                    if (subAt >= subLength) {
-                        // NOTE: For some reason this keeps going over by 0xf on half of them. Very bizarre.
-                        //cerr << "[WARN] subAt too high! " << "subAt: " << hex << subAt << ", len: " << hex << subLength << endl;
-                        break;
-                    }
-                    uint8_t curByte = subsection.at(subIndex + currentTileBuildIndex);
-                    uint8_t highBit = curByte >> 4;
-                    uint8_t lowBit = curByte % 0x10;
-                    int innerPosition = currentTileBuildIndex*2;
-                    curTile.tiles[innerPosition+1] = highBit;
-                    curTile.tiles[innerPosition+0] = lowBit;
-                }
-                chartileTempVector.push_back(curTile);
-                
-                // Skip ahead by 0x20
-                subIndex += Constants::CHARTILE_DATA_SIZE;
-                currentTileIndex++;
-            }
-            this->pixelTilesObj[curTileStartOffset] = chartileTempVector;
-            curTileStartOffset++;
-
+            /************
+             *** OBJB ***
+             ************/
+            auto objbInstructions = LevelObject::getInstructionsFromObjsetRecord(subsection);
+            this->pixelTilesObj[curTileStartOffset] = objbInstructions;
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
-            //std::cout << "PLTB" << std::endl;
+            /************
+             *** PLTB ***
+             ************/
             uint32_t subSectionSize = subsection.size();
             if (subSectionSize != Constants::PALETTE_SIZE) {
-                cerr << "[ERROR] PLTB data not 0x20/32 bytes! Was instead: " << hex << subSectionSize << endl;
-            } else {
-                ObjectPalette currentLoadingPalette;
-                currentLoadingPalette.paletteData.resize(Constants::PALETTE_SIZE);
-                for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
-                    currentLoadingPalette.paletteData[curPaletteIndex] = subsection.at(curPaletteIndex);
-                }
-                currentLoadingPalette.index = currentPaletteIndex;
-                currentPaletteIndex++;
-                currentLoadingPalette.address = indexObjset;
-                this->objectPalettes[curTileStartOffset] = currentLoadingPalette;
+                cerr << "[WARN] PLTB data not 0x20/32 bytes! Was instead: " << hex << subSectionSize;
+                cerr << ". Only pulling first one." << endl;
             }
-            curTileStartOffset++;
+            ObjectPalette currentLoadingPalette;
+            currentLoadingPalette.paletteData.resize(Constants::PALETTE_SIZE);
+            for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
+                currentLoadingPalette.paletteData[curPaletteIndex] = subsection.at(curPaletteIndex);
+            }
+            currentLoadingPalette.index = currentPaletteIndex;
+            currentPaletteIndex++;
+            currentLoadingPalette.address = indexObjset;
+            // Does not start at zero! Access is offset by 
+            this->objectPalettes[curTileStartOffset] = currentLoadingPalette;
         } else {
             std::cerr << "[ERROR] Known objset magic number not found! Instead found ";
             std::cerr << hex << instructionCheck << " at " << hex << (indexObjset - 4) << std::endl;
             exit(EXIT_FAILURE);
         }
+        curTileStartOffset++;
         indexObjset += currentInstructionLength;
     }
     std::cout << "Loaded " << dec << this->pixelTilesObj.size() << " object tile groups" << std::endl;
