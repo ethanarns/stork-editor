@@ -19,6 +19,6 @@ public:
     uint16_t settingsLength;
     uint16_t xPosition;
     uint16_t yPosition;
-    static std::vector<ObjectDrawInstruction> getInstructionsFromObjsetRecord(std::vector<uint8_t> dataVector);
+    static std::vector<ObjectDrawInstruction> getInstructionsFromObjsetRecord(std::vector<uint8_t> dataVector, uint32_t objectOffset);
 };
 #endif

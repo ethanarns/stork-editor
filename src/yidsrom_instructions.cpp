@@ -527,7 +527,8 @@ void YidsRom::handleOBJSET() {
             /************
              *** OBJB ***
              ************/
-            auto objbInstructions = LevelObject::getInstructionsFromObjsetRecord(subsection);
+            this->pixelTiles[curTileStartOffset] = subsection;
+            auto objbInstructions = LevelObject::getInstructionsFromObjsetRecord(subsection,curTileStartOffset);
             this->pixelTilesObj[curTileStartOffset] = objbInstructions;
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
             /************

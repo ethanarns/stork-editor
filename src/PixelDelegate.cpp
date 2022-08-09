@@ -37,7 +37,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         byteArrayBg2 = QByteArray::fromRawData(testArrayPrimitive, 64);
     } else if (byteArrayBg2.size() != PIXEL_TILE_TOTAL) {
         cerr << "Attempting to paint without " << PIXEL_TILE_TOTAL;
-        cerr << " pixels! Found " << byteArrayBg2.size() << " pixels instead.";
+        cerr << " pixels! Found " << byteArrayBg2.size() << " pixels instead." << endl;
         return;
     }
     QByteArray paletteBg2 = index.data(PixelDelegateData::PALETTE_ARRAY_BG2).toByteArray();
@@ -82,7 +82,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         byteArrayBg1 = QByteArray::fromRawData(testArrayPrimitive, 64);
     } else if (byteArrayBg1.size() != PIXEL_TILE_TOTAL) {
         cerr << "Attempting to paint without " << PIXEL_TILE_TOTAL;
-        cerr << " pixels! Found " << byteArrayBg1.size() << " pixels instead.";
+        cerr << " pixels! Found " << byteArrayBg1.size() << " pixels instead." << endl;
         return;
     }
     QByteArray paletteBg1 = index.data(PixelDelegateData::PALETTE_ARRAY_BG1).toByteArray();

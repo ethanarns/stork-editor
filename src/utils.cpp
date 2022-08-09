@@ -217,20 +217,20 @@ void YUtils::printLevelObject(LevelObject lo) {
 }
 
 QByteArray YUtils::tileVectorToQByteArray(std::vector<uint8_t> tileVector) {
-    const uint32_t tileVectorSize = tileVector.size();
     QByteArray qb;
-    qb.resize(Constants::CHARTILE_DATA_SIZE);
-    if (tileVectorSize != Constants::CHARTILE_DATA_SIZE/2) {
-        qb.resize(64);
-
-        for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
-            uint8_t curByte = tileVector.at(currentTileBuildIndex);
-            uint8_t highBit = curByte >> 4;
-            uint8_t lowBit = curByte % 0x10;
-            int innerPosition = currentTileBuildIndex*2;
-            qb[innerPosition+1] = highBit;
-            qb[innerPosition+0] = lowBit;
-        }
+    const uint32_t tileVectorSize = tileVector.size();
+    if (tileVectorSize != Constants::CHARTILE_DATA_SIZE) {
+        std::cerr << "[ERROR] input vector not 0x20 in length: " << hex << tileVectorSize << endl;
+        return qb;
+    }
+    qb.resize(64);
+    for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
+        uint8_t curByte = tileVector.at(currentTileBuildIndex);
+        uint8_t highBit = curByte >> 4;
+        uint8_t lowBit = curByte % 0x10;
+        int innerPosition = currentTileBuildIndex*2;
+        qb[innerPosition+1] = highBit;
+        qb[innerPosition+0] = lowBit;
     }
     return qb;
 }
