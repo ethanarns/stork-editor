@@ -60,6 +60,10 @@ uint16_t YUtils::getUint16FromVec(std::vector<uint8_t> &bytes, uint32_t location
     return (uint16_t)(bytes.at(location+1) << 8) + (uint16_t)bytes.at(location);
 }
 
+int16_t YUtils::getInt16FromVec(std::vector<uint8_t> &bytes, uint32_t location) {
+    return (int16_t)(bytes.at(location+1) << 8) + (int16_t)bytes.at(location);
+}
+
 size_t YUtils::getStreamLength(std::ifstream& buffer) {
     uint32_t priorPos = buffer.tellg();
     buffer.seekg(0, ios_base::end);
