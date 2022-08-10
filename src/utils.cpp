@@ -249,3 +249,12 @@ QByteArray YUtils::tileVectorToQByteArray(std::vector<uint8_t> tileVector) {
     }
     return qb;
 }
+
+int16_t YUtils::roundI16Down(int16_t unrounded, int16_t multiple) {
+    if (multiple == 0) return unrounded;
+
+    int16_t remainder = unrounded % multiple;
+    if (remainder == 0) return unrounded;
+
+    return (unrounded) - multiple - remainder;
+}

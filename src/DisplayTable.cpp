@@ -369,7 +369,11 @@ void DisplayTable::placeObjectTile(
             uint16_t frameIndex = YUtils::getUint16FromVec(objectVector,addrOfPositionRecord);
             uint32_t tileStart = frameIndex << 4;
             int16_t xOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 2); // Needs printf to show up:
-            int16_t yOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 4); // printf("x: %d\n",xOffset);
+            int16_t yOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 4); // printf("y: %d\n",yOffset);
+            const int16_t singleTileDim = static_cast<int16_t>(Constants::SINGLE_TILE_DIM);
+            xOffset = YUtils::roundI16Down(xOffset,singleTileDim);
+            yOffset = YUtils::roundI16Down(yOffset,singleTileDim);
+            //printf("x: %d, y: %d\n",xOffset, yOffset);
 
             // uint16_t constructionCode = YUtils::getUint16FromVec(objectVector,addrOfPositionRecord + 6);
             // uint32_t tileStart = frameIndex << 4;
@@ -381,7 +385,7 @@ void DisplayTable::placeObjectTile(
                 cerr << "[WARN] Tried to get too big a chunk! Wanted " << hex << subEnd;
                 cerr << ", only had " << hex << subLength << endl;
             } else {
-                int tileOffsetIndex = 0;
+                uint32_t tileOffsetIndex = 0;
                 const int16_t baseX = x + (xOffset/8);
                 const int16_t baseY = y + (yOffset/8);
                 while (tileOffsetIndex < tilesLength) {
