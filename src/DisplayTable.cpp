@@ -318,20 +318,84 @@ int DisplayTable::wipeTable() {
     return 0;
 }
 
-void DisplayTable::placeObjectTile(uint32_t x, uint32_t y, uint32_t objectOffset, uint32_t subTile, uint32_t paletteOffset) {
-    auto objectPalette = this->yidsRom->currentPalettes[0]; //
+void DisplayTable::placeObjectTile(
+    uint32_t x, uint32_t y,
+    uint32_t objectOffset,
+    uint32_t subTile,
+    uint32_t paletteOffset,
+    uint32_t spriteWidth,
+    uint32_t tilesLength
+) {
+    auto objectPalette = this->yidsRom->currentPalettes[0]; // Default
     if (paletteOffset != 0) {
         objectPalette = this->yidsRom->objectPalettes[paletteOffset].paletteData;
     }
-    auto objectTiles = this->yidsRom->pixelTilesObj[objectOffset];
-    auto _firstTileObject = objectTiles.at(subTile);
-    auto tileItem = this->item(y,x);
-    if (tileItem == nullptr) {
-        tileItem = new QTableWidgetItem();
+
+    auto objectVector = this->yidsRom->pixelTiles[objectOffset];
+    uint32_t subLength = objectVector.size();
+    uint32_t subIndex = 0x00;
+
+    bool endLoop1 = false;
+    uint32_t loopIndex = 0;
+    while (endLoop1 == false) {
+        // Frame record //
+        uint16_t posRecordOffset = YUtils::getUint16FromVec(objectVector,subIndex+0);
+        if (posRecordOffset == 0) {
+            endLoop1 = true;
+            break;
+        }
+
+        if (subTile == loopIndex) {
+            // 3rd byte
+            uint8_t animationHoldTime = objectVector.at(subIndex+2);
+            Q_UNUSED(animationHoldTime);
+            // The first number is an offset to the position record
+            // It is offset FROM the current record
+            uint16_t addrOfPositionRecord = subIndex + posRecordOffset;
+
+            // Position record //
+            uint16_t frameIndex = YUtils::getUint16FromVec(objectVector,addrOfPositionRecord);
+            uint32_t tileStart = frameIndex << 4;
+            int16_t xOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 2); // Doesn't print right, but the math works
+            int16_t yOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 4); // Doesn't print right, but the math works
+
+            // uint16_t constructionCode = YUtils::getUint16FromVec(objectVector,addrOfPositionRecord + 6);
+            // uint32_t tileStart = frameIndex << 4;
+            // uint16_t constructionOffset = constructionCode & 0x1f; // 01FFA6E0
+            // constructionOffset = (constructionOffset << 1) + constructionOffset; // 01FFA6E4
+            
+            uint32_t subEnd = tileStart + Constants::CHARTILE_DATA_SIZE;
+            if (tileStart+Constants::CHARTILE_DATA_SIZE > subLength) {
+                cerr << "[WARN] Tried to get too big a chunk! Wanted " << hex << subEnd;
+                cerr << ", only had " << hex << subLength << endl;
+            } else {
+                int tileOffsetIndex = 0;
+                const int16_t baseX = x + xOffset/2;
+                const int16_t baseY = y + yOffset/2;
+                while (tileOffsetIndex < tilesLength) {
+                    uint32_t curX = (tileOffsetIndex % spriteWidth);
+                    uint32_t curY = (tileOffsetIndex / spriteWidth);
+                    uint32_t curTileAddressOffset = tileOffsetIndex * Constants::CHARTILE_DATA_SIZE;
+                    auto curTiles = YUtils::subVector(objectVector,
+                        tileStart + curTileAddressOffset,
+                        subEnd + curTileAddressOffset
+                    );
+                    auto tileItem = this->item(baseY+curY,baseX+curX);
+                    if (tileItem == nullptr) {
+                        tileItem = new QTableWidgetItem();
+                    }
+                    tileItem->setData(PixelDelegateData::OBJECT_TILES,YUtils::tileVectorToQByteArray(curTiles));
+                    tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette);
+                    tileItem->setData(PixelDelegateData::FLIP_H_BG2,0);
+                    tileItem->setData(PixelDelegateData::FLIP_V_BG2,0);
+
+                    tileOffsetIndex++;
+                }
+                return; // Done
+            } 
+        } else {
+            loopIndex++;
+            subIndex += 4;
+        }
     }
-    tileItem->setData(PixelDelegateData::OBJECT_TILES,_firstTileObject.pixelVector);
-    tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette);
-    tileItem->setData(PixelDelegateData::FLIP_H_BG2,0);
-    tileItem->setData(PixelDelegateData::FLIP_V_BG2,0);
-    this->setItem(y+_firstTileObject.offsetY,x+_firstTileObject.offsetX,tileItem);
 }

@@ -46,9 +46,9 @@ public:
     /**
      * @brief "Characters", or the pixel arrangement of tiles. From OBJ data, for OAM
      */
-    std::map<uint32_t,std::vector<ObjectDrawInstruction>> pixelTilesObj;
-
     std::map<uint32_t,std::vector<uint8_t>> pixelTiles;
+    //std::map<uint32_t,std::vector<ObjectDrawInstruction>> pixelTilesObj;
+    
     /**
      * @brief BG 2's tile attr data, and the main source of level design. 
      * Corresponds with collision the most

@@ -44,8 +44,8 @@ void ChartilesTable::refreshLoadedTiles() {
         for (uint32_t i = 0; i < chartilesVectorSize; i += Constants::CHARTILE_DATA_SIZE) {
             QTableWidgetItem *newItem = new QTableWidgetItem();
             const uint32_t start = i;
-            const uint32_t end = i + Constants::CHARTILE_DATA_SIZE;
-            if (end >= chartilesVectorSize) {
+            uint32_t end = i + Constants::CHARTILE_DATA_SIZE;
+            if (end > chartilesVectorSize) {
                 indexForOffset++;
                 cout << "End too big: " << hex << end << ", versus size: " << hex << chartilesVectorSize << endl;
                 continue;

@@ -9,6 +9,7 @@
 using namespace std;
 
 std::vector<ObjectDrawInstruction> LevelObject::getInstructionsFromObjsetRecord(std::vector<uint8_t> dataVector, uint32_t objectOffset) {
+    // DELETE THIS
     std::vector<ObjectDrawInstruction> result;
 
     uint32_t subLength = dataVector.size();

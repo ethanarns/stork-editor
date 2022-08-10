@@ -528,8 +528,8 @@ void YidsRom::handleOBJSET() {
              *** OBJB ***
              ************/
             this->pixelTiles[curTileStartOffset] = subsection;
-            auto objbInstructions = LevelObject::getInstructionsFromObjsetRecord(subsection,curTileStartOffset);
-            this->pixelTilesObj[curTileStartOffset] = objbInstructions;
+            //auto objbInstructions = LevelObject::getInstructionsFromObjsetRecord(subsection,curTileStartOffset);
+            //this->pixelTilesObj[curTileStartOffset] = objbInstructions;
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
             /************
              *** PLTB ***
@@ -557,6 +557,6 @@ void YidsRom::handleOBJSET() {
         curTileStartOffset++;
         indexObjset += currentInstructionLength;
     }
-    std::cout << "Loaded " << dec << this->pixelTilesObj.size() << " object tile groups" << std::endl;
+    std::cout << "Loaded " << dec << this->pixelTiles.size() << " object tile groups" << std::endl;
     std::cout << "Loaded " << dec << this->objectPalettes.size() << " palettes" << std::endl;
 }
