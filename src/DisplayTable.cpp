@@ -297,7 +297,7 @@ void DisplayTable::updateObjects() {
         if (objectGraphicsMeta.tilesCount == 0) {
             potentialExisting->setData(PixelDelegateData::OBJECT_ID,(int)it->objectId);
             std::stringstream ss;
-            ss << (int)it->objectId;
+            ss << hex << (int)it->objectId;
             ss << endl;
             ss << "Object description goes here";
             potentialExisting->setToolTip(tr(ss.str().c_str()));

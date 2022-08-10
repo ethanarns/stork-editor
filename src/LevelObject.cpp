@@ -25,6 +25,13 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(uint16_t objectId) {
             meta.tileWidth = 4;
             break;
         }
+        case 0x9f: {
+            meta.tilesSectorOffset = 0x5d;
+            meta.paletteSectorOffset = 0xa9;
+            meta.tilesCount = 4;
+            meta.tileWidth = 2;
+            break;
+        }
         default: {
             meta.tilesSectorOffset = 0;
             meta.paletteSectorOffset = 0;
