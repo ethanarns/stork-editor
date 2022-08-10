@@ -356,9 +356,8 @@ void DisplayTable::placeObjectTile(
             // Position record //
             uint16_t frameIndex = YUtils::getUint16FromVec(objectVector,addrOfPositionRecord);
             uint32_t tileStart = frameIndex << 4;
-            int16_t xOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 2); // Needs printf to show up
-            int16_t yOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 4);
-            // printf("x: %d\n",xOffset);
+            int16_t xOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 2); // Needs printf to show up:
+            int16_t yOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 4); // printf("x: %d\n",xOffset);
 
             // uint16_t constructionCode = YUtils::getUint16FromVec(objectVector,addrOfPositionRecord + 6);
             // uint32_t tileStart = frameIndex << 4;

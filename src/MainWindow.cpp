@@ -285,7 +285,7 @@ void MainWindow::LoadRom() {
 
         this->grid->placeObjectTile(5,5,0x0,0,0,2,4);
 
-
+        this->grid->placeObjectTile(10,10,0x5A,0,0xDC,4,12);
 
 
         // const uint32_t mainOffset1 = 0x5a;

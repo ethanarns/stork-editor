@@ -63,6 +63,7 @@ uint16_t YUtils::getUint16FromVec(std::vector<uint8_t> &bytes, uint32_t location
 int16_t YUtils::getInt16FromVec(std::vector<uint8_t> &bytes, uint32_t location) {
     uint16_t first = bytes.at(location+1) << 8;
     int16_t firstS;
+    // Cause it shows up as 0xFFFx
     if (first <= INT16_MAX) {
         firstS = static_cast<int16_t>(first);
     } else if (first >= INT16_MIN) {
