@@ -293,12 +293,24 @@ void DisplayTable::updateObjects() {
             cout << "[WARN] No tile to place object on at x: " << hex << x << ", y: " << hex << y << endl; 
             potentialExisting = new QTableWidgetItem(); // Make it NOT null lmao
         }
-        potentialExisting->setData(PixelDelegateData::OBJECT_ID,(int)it->objectId);
-        std::stringstream ss;
-        ss << (int)it->objectId;
-        ss << endl;
-        ss << "Object description goes here";
-        potentialExisting->setToolTip(tr(ss.str().c_str()));
+        auto objectGraphicsMeta = LevelObject::getObjectGraphicMetadata(it->objectId);
+        if (objectGraphicsMeta.tilesCount == 0) {
+            potentialExisting->setData(PixelDelegateData::OBJECT_ID,(int)it->objectId);
+            std::stringstream ss;
+            ss << (int)it->objectId;
+            ss << endl;
+            ss << "Object description goes here";
+            potentialExisting->setToolTip(tr(ss.str().c_str()));
+        } else {
+            this->placeObjectTile(
+                (uint32_t)x,(uint32_t)y,
+                objectGraphicsMeta.tilesSectorOffset,
+                0,
+                objectGraphicsMeta.paletteSectorOffset,
+                objectGraphicsMeta.tileWidth,
+                objectGraphicsMeta.tilesCount
+            );
+        }
     }
 }
 
@@ -370,8 +382,8 @@ void DisplayTable::placeObjectTile(
                 cerr << ", only had " << hex << subLength << endl;
             } else {
                 int tileOffsetIndex = 0;
-                const int16_t baseX = x;
-                const int16_t baseY = y;
+                const int16_t baseX = x + (xOffset/8);
+                const int16_t baseY = y + (yOffset/8);
                 while (tileOffsetIndex < tilesLength) {
                     uint32_t curX = (tileOffsetIndex % spriteWidth);
                     uint32_t curY = (tileOffsetIndex / spriteWidth);

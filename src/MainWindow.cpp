@@ -283,7 +283,7 @@ void MainWindow::LoadRom() {
         // Misc menu items //
         this->action_memory->setDisabled(false);
 
-        this->grid->placeObjectTile(5,5,0x0,0,0,2,4);
+        this->grid->placeObjectTile(0x29,0x70,0x0,0,0,2,4);
 
         this->grid->placeObjectTile(10,10,0x5A,0,0xDC,4,12);
     }

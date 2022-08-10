@@ -10,9 +10,6 @@ using namespace std;
 
 ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(uint16_t objectId) {
     ObjectGraphicMetadata meta;
-    // Fallback Defaults
-    meta.tileWidth = 2;
-    meta.tilesCount = 4;
     switch(objectId) {
         case 0x0: {
             meta.tilesSectorOffset = 0;
@@ -29,6 +26,10 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(uint16_t objectId) {
             break;
         }
         default: {
+            meta.tilesSectorOffset = 0;
+            meta.paletteSectorOffset = 0;
+            meta.tilesCount = 0;
+            meta.tileWidth = 0;
             break;
         }
     }
