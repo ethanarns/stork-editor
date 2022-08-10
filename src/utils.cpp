@@ -197,7 +197,9 @@ void YUtils::printVector(std::vector<uint8_t> &vectorToPrint, int newlineBreak) 
         cout << hex << setw(2) << (int)vectorToPrint.at(printIndex) << " ";
         if (newlineBreak != 0 && printIndex != 0 && (printIndex + 1) % newlineBreak == 0) {
             cout << endl;
-            cout << hex << setw(INDEX_WIDTH) << (printIndex+1) << " | ";
+            if (printIndex + 1 != lengthOfVec) {
+                cout << hex << setw(INDEX_WIDTH) << (printIndex+1) << " | ";
+            }
         }
     }
     cout << endl;
