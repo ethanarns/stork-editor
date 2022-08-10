@@ -283,7 +283,11 @@ void MainWindow::LoadRom() {
         // Misc menu items //
         this->action_memory->setDisabled(false);
 
-        this->grid->placeObjectTile(0x10,0x10,0x0,0,0,2,4);
+        this->grid->placeObjectTile(5,5,0x0,0,0,2,4);
+
+
+
+
         // const uint32_t mainOffset1 = 0x5a;
         // for (int x = 0; x < 10; x++) {
         //     this->grid->placeObjectTile(x, 5, mainOffset1, x, 0xdc);

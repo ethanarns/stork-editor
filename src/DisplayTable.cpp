@@ -356,8 +356,9 @@ void DisplayTable::placeObjectTile(
             // Position record //
             uint16_t frameIndex = YUtils::getUint16FromVec(objectVector,addrOfPositionRecord);
             uint32_t tileStart = frameIndex << 4;
-            int16_t xOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 2); // Doesn't print right, but the math works
-            int16_t yOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 4); // Doesn't print right, but the math works
+            int16_t xOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 2); // Needs printf to show up
+            int16_t yOffset = YUtils::getInt16FromVec(objectVector, addrOfPositionRecord + 4);
+            // printf("x: %d\n",xOffset);
 
             // uint16_t constructionCode = YUtils::getUint16FromVec(objectVector,addrOfPositionRecord + 6);
             // uint32_t tileStart = frameIndex << 4;
@@ -370,8 +371,8 @@ void DisplayTable::placeObjectTile(
                 cerr << ", only had " << hex << subLength << endl;
             } else {
                 int tileOffsetIndex = 0;
-                const int16_t baseX = x + xOffset/2;
-                const int16_t baseY = y + yOffset/2;
+                const int16_t baseX = x;
+                const int16_t baseY = y;
                 while (tileOffsetIndex < tilesLength) {
                     uint32_t curX = (tileOffsetIndex % spriteWidth);
                     uint32_t curY = (tileOffsetIndex / spriteWidth);

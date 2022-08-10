@@ -61,7 +61,21 @@ uint16_t YUtils::getUint16FromVec(std::vector<uint8_t> &bytes, uint32_t location
 }
 
 int16_t YUtils::getInt16FromVec(std::vector<uint8_t> &bytes, uint32_t location) {
-    return (int16_t)(bytes.at(location+1) << 8) + (int16_t)bytes.at(location);
+    uint16_t first = bytes.at(location+1) << 8;
+    int16_t firstS;
+    if (first <= INT16_MAX) {
+        firstS = static_cast<int16_t>(first);
+    } else if (first >= INT16_MIN) {
+        firstS = static_cast<int16_t>(first - INT16_MIN) + INT16_MIN;
+    }
+    uint16_t second = bytes.at(location);
+    int16_t secondS;
+    if (second <= INT16_MAX) {
+        secondS = static_cast<int16_t>(second);
+    } else if (second >= INT16_MIN) {
+        secondS = static_cast<int16_t>(second - INT16_MIN) + INT16_MIN;
+    }
+    return firstS + secondS;
 }
 
 size_t YUtils::getStreamLength(std::ifstream& buffer) {
