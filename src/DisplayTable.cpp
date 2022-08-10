@@ -305,7 +305,7 @@ void DisplayTable::updateObjects() {
             this->placeObjectTile(
                 (uint32_t)x,(uint32_t)y,
                 objectGraphicsMeta.tilesSectorOffset,
-                0,
+                objectGraphicsMeta.subTile,
                 objectGraphicsMeta.paletteSectorOffset,
                 objectGraphicsMeta.tileWidth,
                 objectGraphicsMeta.tilesCount

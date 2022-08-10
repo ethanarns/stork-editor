@@ -25,6 +25,8 @@ struct ObjectGraphicMetadata {
      * @brief How many tiles will be printed out, not factoring in loop
      */
     uint32_t tilesCount;
+
+    uint32_t subTile;
 };
 
 class LevelObject {

@@ -10,12 +10,21 @@ using namespace std;
 
 ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(uint16_t objectId) {
     ObjectGraphicMetadata meta;
+    meta.subTile = 0;
     switch(objectId) {
         case 0x0: {
             meta.tilesSectorOffset = 0;
             meta.paletteSectorOffset = 0;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
+            break;
+        }
+        case 0x3b: {
+            meta.tilesSectorOffset = 0;
+            meta.paletteSectorOffset = 0;
+            meta.tilesCount = 4;
+            meta.tileWidth = 2;
+            meta.subTile = 6;
             break;
         }
         case 0x9A: {
