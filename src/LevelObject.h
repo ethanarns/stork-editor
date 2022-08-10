@@ -2,15 +2,29 @@
 #define LEVELOBJECT_H
 
 #include <cstdint>
-#include <vector>
+#include <string>
 
 #include <QByteArray>
 
-struct ObjectDrawInstruction {
-    QByteArray pixelVector;
-    int16_t offsetX;
-    int16_t offsetY;
-    uint16_t animationHoldTime;
+struct ObjectGraphicMetadata {
+    /**
+     * @brief The offset/index of the OBJB data.
+     * This is hard-coded in the code sadly, no tables
+     */
+    uint32_t tilesSectorOffset;
+    /**
+     * @brief The offset/index of the PLTB data.
+     * This is hard-coded in the code sadly, no tables
+     */
+    uint32_t paletteSectorOffset;
+    /**
+     * @brief How many tiles (8x8) wide this is before looping
+     */
+    uint32_t tileWidth;
+    /**
+     * @brief How many tiles will be printed out, not factoring in loop
+     */
+    uint32_t tilesCount;
 };
 
 class LevelObject {
@@ -19,6 +33,6 @@ public:
     uint16_t settingsLength;
     uint16_t xPosition;
     uint16_t yPosition;
-    static std::vector<ObjectDrawInstruction> getInstructionsFromObjsetRecord(std::vector<uint8_t> dataVector, uint32_t objectOffset);
+    static ObjectGraphicMetadata getObjectGraphicMetadata(uint16_t objectId);
 };
 #endif
