@@ -45,12 +45,28 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tileWidth = 4;
             break;
         }
+        case 0x2b: { // Poundable Pillar
+            //YUtils::printVector(lo.settings);
+            meta.tilesSectorOffset = 0x17;
+            meta.paletteSectorOffset = 0x8d;
+            meta.tileWidth = 2;
+            meta.tilesCount = 4;
+            // TODO: How far can it repeat down?
+            break;
+        }
         case 0x3b: { // Red coin
             meta.tilesSectorOffset = 0;
             meta.paletteSectorOffset = 0;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             meta.subTile = 6;
+            break;
+        }
+        case 0x3c: { // Timer Block
+            meta.tilesSectorOffset = 0x1e;
+            meta.paletteSectorOffset = 0xe3;
+            meta.tilesCount = 4;
+            meta.tileWidth = 2;
             break;
         }
         case 0x4e: { // Dandylion

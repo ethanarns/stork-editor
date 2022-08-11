@@ -62,7 +62,6 @@ void ChartilesTable::refreshLoadedTiles() {
             uint32_t x = indexForOffset % 0x10;
             uint32_t y = indexForOffset / 0x10 + yOffset;
             if (this->item(y,x) != nullptr) {
-                cout << "OVERWRITING, THIS SHOULD NOT HAPPEN" << endl;
                 delete this->item(y,x);
             }
             this->setItem(y,x,newItem);
