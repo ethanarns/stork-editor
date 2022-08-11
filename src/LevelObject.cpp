@@ -52,6 +52,13 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(uint16_t objectId) {
             meta.tileWidth = 2;
             break;
         }
+        case 0xe7: { // M Block that only shows up when carrying baby Mario
+            meta.tilesSectorOffset = 0x5f;
+            meta.paletteSectorOffset = 0xe3;
+            meta.tilesCount = 4;
+            meta.tileWidth = 2;
+            break;
+        }
         default: {
             meta.tilesSectorOffset = 0;
             meta.paletteSectorOffset = 0;
