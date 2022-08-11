@@ -48,7 +48,8 @@ void ChartilesTable::refreshLoadedTiles() {
             uint32_t end = i + Constants::CHARTILE_DATA_SIZE;
             if (end > chartilesVectorSize) {
                 indexForOffset++;
-                cout << "End too big: " << hex << end << ", versus size: " << hex << chartilesVectorSize << endl;
+                // This is likely it trying to get crap from other areas
+                //cout << "End too big: " << hex << end << ", versus size: " << hex << chartilesVectorSize << endl;
                 continue;
             }
             auto currentSubSection = YUtils::subVector(chartilesVector,start,end);
