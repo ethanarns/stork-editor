@@ -527,8 +527,6 @@ void YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,st
              *** OBJB ***
              ************/
             pixelTiles[curTileStartOffset] = subsection;
-            //auto objbInstructions = LevelObject::getInstructionsFromObjsetRecord(subsection,curTileStartOffset);
-            //this->pixelTilesObj[curTileStartOffset] = objbInstructions;
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
             /************
              *** PLTB ***

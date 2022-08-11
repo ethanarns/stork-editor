@@ -11,6 +11,7 @@ using namespace std;
 ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(uint16_t objectId) {
     ObjectGraphicMetadata meta;
     meta.subTile = 0;
+    meta.whichPaletteFile = PaletteFileName::OBJSET;
     switch(objectId) {
         case 0x0: { // Basic yellow coin
             meta.tilesSectorOffset = 0;
@@ -43,6 +44,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(uint16_t objectId) {
         }
         case 0xa1: { // Block that expands when you hit it
             meta.tilesSectorOffset = 0x5e;
+            meta.whichPaletteFile = PaletteFileName::OBJEFFECT;
             meta.paletteSectorOffset = 0xa8; // Is in objeffect.arcz
             meta.tilesCount = 4;
             meta.tileWidth = 2;

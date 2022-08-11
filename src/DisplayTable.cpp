@@ -308,7 +308,8 @@ void DisplayTable::updateObjects() {
                 objectGraphicsMeta.subTile,
                 objectGraphicsMeta.paletteSectorOffset,
                 objectGraphicsMeta.tileWidth,
-                objectGraphicsMeta.tilesCount
+                objectGraphicsMeta.tilesCount,
+                objectGraphicsMeta.whichPaletteFile
             );
         }
     }
@@ -336,11 +337,19 @@ void DisplayTable::placeObjectTile(
     uint32_t subTile,
     uint32_t paletteOffset,
     uint32_t spriteWidth,
-    uint32_t tilesLength
+    uint32_t tilesLength,
+    PaletteFileName paletteFile
 ) {
     auto objectPalette = this->yidsRom->currentPalettes[0]; // Default
     if (paletteOffset != 0) {
-        objectPalette = this->yidsRom->objsetPalettes[paletteOffset].paletteData;
+        if (paletteFile == PaletteFileName::OBJSET) {
+            objectPalette = this->yidsRom->objsetPalettes[paletteOffset].paletteData;
+        } else if (paletteFile == PaletteFileName::OBJEFFECT) {
+            objectPalette = this->yidsRom->effectPalettes[paletteOffset].paletteData;
+            qDebug() << objectPalette;
+        } else {
+            std::cerr << "[ERROR] Unknown PaletteFileName enum value: " << hex << paletteFile << endl;
+        }
     }
 
     auto objectVector = this->yidsRom->objsetPixelTiles[objectOffset];

@@ -4,6 +4,7 @@
 #include "Chartile.h"
 #include "yidsrom.h"
 #include "PixelDelegate.h"
+#include "LevelObject.h"
 
 #include <QtCore>
 #include <QTableWidget>
@@ -13,7 +14,15 @@ class DisplayTable : public QTableWidget {
 public:
     DisplayTable(QWidget *parent, YidsRom* rom);
     void putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren, uint16_t whichBg);
-    void placeObjectTile(uint32_t x, uint32_t y, uint32_t objectOffset, uint32_t subTile, uint32_t paletteOffset, uint32_t spriteWidth, uint32_t tilesLength);
+    void placeObjectTile(
+        uint32_t x, uint32_t y,
+        uint32_t objectOffset,
+        uint32_t subTile,
+        uint32_t paletteOffset,
+        uint32_t spriteWidth,
+        uint32_t tilesLength,
+        PaletteFileName paletteFile
+    );
     void displayTableClicked(int row, int column);
     void setCellCollision(int row, int column, CollisionDraw colType);
     void updateBg();

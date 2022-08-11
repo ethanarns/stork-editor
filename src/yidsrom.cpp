@@ -110,6 +110,7 @@ void YidsRom::openRom(std::string fileName) {
     }
 
     this->handleObjPltFile("objset.arcz",this->objsetPixelTiles,this->objsetPalettes);
+    this->handleObjPltFile("objeffect.arcz",this->effectPixelTiles,this->effectPalettes);
 
     std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,0);
     this->loadCrsb(crsbFileName);

@@ -6,12 +6,18 @@
 
 #include <QByteArray>
 
+enum PaletteFileName {
+    OBJSET,
+    OBJEFFECT
+};
+
 struct ObjectGraphicMetadata {
     /**
      * @brief The offset/index of the OBJB data.
      * This is hard-coded in the code sadly, no tables
      */
     uint32_t tilesSectorOffset;
+    PaletteFileName whichPaletteFile;
     /**
      * @brief The offset/index of the PLTB data.
      * This is hard-coded in the code sadly, no tables

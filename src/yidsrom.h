@@ -67,6 +67,9 @@ public:
 
     std::map<uint32_t,ObjectPalette> objsetPalettes;
 
+    std::map<uint32_t,std::vector<uint8_t>> effectPixelTiles;
+    std::map<uint32_t,ObjectPalette> effectPalettes;
+
     std::vector<LevelObject> loadedLevelObjects;
     uint32_t canvasWidthBg2 = 0;
     uint32_t canvasHeightBg2 = 0;
