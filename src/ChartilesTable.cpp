@@ -35,7 +35,7 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
 
 void ChartilesTable::refreshLoadedTiles() {
     // The following (messily) spits out all available tiles for debug purposes
-    auto tilesMap = &this->yidsRom->objsetPixelTiles;
+    auto tilesMap = &this->yidsRom->effectPixelTiles;
     uint32_t mapSize = tilesMap->size();
     uint32_t yOffset = 0;
     uint32_t indexForOffset = 0;

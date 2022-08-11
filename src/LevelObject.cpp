@@ -45,7 +45,9 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(uint16_t objectId) {
         case 0xa1: { // Block that expands when you hit it
             meta.tilesSectorOffset = 0x5e;
             meta.whichPaletteFile = PaletteFileName::OBJEFFECT;
-            meta.paletteSectorOffset = 0xa8; // Is in objeffect.arcz
+            meta.paletteSectorOffset = 0x2a-2; // Is in objeffect.arcz, strange offset
+            // 02096680 is where the function to get the palette address is
+            // Actual function is at 020e448c. Doesn't SEEM to have any offset, but might skip the first few?
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             break;
