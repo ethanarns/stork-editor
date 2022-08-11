@@ -11,7 +11,7 @@
 #include "yidsrom.h"
 #include "DisplayTable.h"
 #include "popups/ChartilesTable.h"
-#include "PaletteTable.h"
+#include "popups/PaletteTable.h"
 #include "SettingsEnum.h"
 #include "popups/LevelSelect.h"
 

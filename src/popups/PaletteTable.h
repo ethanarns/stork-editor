@@ -1,7 +1,7 @@
 #ifndef PALETTETABLE_H
 #define PALETTETABLE_H
 
-#include "yidsrom.h"
+#include "../yidsrom.h"
 
 #include <QtCore>
 #include <QTableWidget>

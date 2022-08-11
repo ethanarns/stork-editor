@@ -10,7 +10,7 @@
 
 #include "MainWindow.h"
 #include "popups/ChartilesTable.h"
-#include "PaletteTable.h"
+#include "popups/PaletteTable.h"
 #include "utils.h"
 #include "DisplayTable.h"
 
