@@ -20,12 +20,23 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(uint16_t objectId) {
             meta.tileWidth = 2;
             break;
         }
+        case 0x13: { // Question mark cloud?
+            meta.tilesCount = 0; // Needs special rendering...
+            break;
+        }
         case 0x3b: { // Red coin
             meta.tilesSectorOffset = 0;
             meta.paletteSectorOffset = 0;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             meta.subTile = 6;
+            break;
+        }
+        case 0x4e: { // Dandylion
+            meta.tilesSectorOffset = 0x2f;
+            meta.paletteSectorOffset = 0x8f;
+            meta.tilesCount = 4*6;
+            meta.tileWidth = 4;
             break;
         }
         case 0x9A: { // Red sign
