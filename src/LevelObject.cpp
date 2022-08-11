@@ -25,6 +25,17 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tilesCount = 0; // Needs special rendering...
             break;
         }
+        case 0x23: { // Green pipe
+            // TODO: Needs special rendering...
+            YUtils::printVector(lo.settings);
+            uint32_t pipeHeight = (uint32_t)lo.settings.at(2);
+            meta.tilesSectorOffset = 0x12;
+            meta.paletteSectorOffset = 0x89;
+            meta.tilesCount = 4 * pipeHeight;
+            meta.tileWidth = 4;
+            meta.subTile = 0;
+            break;
+        }
         case 0x28: { // Flower
             meta.tilesSectorOffset = 0x16;
             meta.paletteSectorOffset = 0x9b;
@@ -47,11 +58,34 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tileWidth = 4;
             break;
         }
-        case 0x9A: { // Red sign
+        case 0x9A: { // Red arrow signs
             meta.tilesSectorOffset = 0x5A;
             meta.paletteSectorOffset = 0xDC;
+            // Defaults to classic red arrow sign
             meta.tilesCount = 12;
             meta.tileWidth = 4;
+            if (lo.settingsLength < 2) {
+                std::cerr << "[ERROR] Red Sign needs at least 2 bytes of settings, instead got " << lo.settingsLength << endl;
+                break;
+            }
+            auto firstSettingsByte = (uint32_t)lo.settings.at(0);
+            meta.subTile = firstSettingsByte;
+            switch(firstSettingsByte) {
+                case 0x1: { // Classic right pointing signpost
+                    meta.tilesCount = 3 * 4;
+                    meta.tileWidth = 4;
+                    break;
+                }
+                case 0x6: { // Upwards pointing arrow
+                    meta.tilesCount = 6;
+                    meta.tileWidth = 2;
+                    break;
+                }
+                default: {
+                    std::cout << "[WARN] Unhandled red sign type: " << hex << firstSettingsByte << endl;
+                    break;
+                }
+            }
             break;
         }
         case 0x9f: { // Info/hint block
