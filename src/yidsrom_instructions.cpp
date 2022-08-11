@@ -495,7 +495,7 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
     //cout << "Loaded " << dec << this->loadedLevelObjects.size() << " level objects" << endl;
 }
 
-void YidsRom::handleOBJSET(std::string objset_filename) {
+void YidsRom::handleOBJSET(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes) {
     std::cout << "handleOBJSET: " << objset_filename << endl;
     std::vector<uint8_t> fileVectorObjset = this->getFileByteVector(objset_filename);
     std::vector<uint8_t> objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
@@ -526,7 +526,7 @@ void YidsRom::handleOBJSET(std::string objset_filename) {
             /************
              *** OBJB ***
              ************/
-            this->objsetPixelTiles[curTileStartOffset] = subsection;
+            pixelTiles[curTileStartOffset] = subsection;
             //auto objbInstructions = LevelObject::getInstructionsFromObjsetRecord(subsection,curTileStartOffset);
             //this->pixelTilesObj[curTileStartOffset] = objbInstructions;
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
@@ -547,7 +547,7 @@ void YidsRom::handleOBJSET(std::string objset_filename) {
             currentPaletteIndex++;
             currentLoadingPalette.address = indexObjset;
             // Does not start at zero! Access is offset by 
-            this->objsetPalettes[curTileStartOffset] = currentLoadingPalette;
+            palettes[curTileStartOffset] = currentLoadingPalette;
         } else {
             std::cerr << "[ERROR] Known objset magic number not found! Instead found ";
             std::cerr << hex << instructionCheck << " at " << hex << (indexObjset - 4) << std::endl;
@@ -556,6 +556,6 @@ void YidsRom::handleOBJSET(std::string objset_filename) {
         curTileStartOffset++;
         indexObjset += currentInstructionLength;
     }
-    std::cout << "Loaded " << dec << this->objsetPixelTiles.size() << " object tile groups" << std::endl;
-    std::cout << "Loaded " << dec << this->objsetPalettes.size() << " palettes" << std::endl;
+    std::cout << "Loaded " << dec << pixelTiles.size() << " object tile groups" << std::endl;
+    std::cout << "Loaded " << dec << palettes.size() << " palettes" << std::endl;
 }

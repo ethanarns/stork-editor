@@ -103,7 +103,7 @@ private:
     void handleImbz(std::string fileName_noext, uint16_t whichBg);
     void handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     void handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
-    void handleOBJSET(std::string objset_filename);
+    void handleOBJSET(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes);
 };
 
 #endif
