@@ -54,6 +54,14 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             // TODO: How far can it repeat down?
             break;
         }
+        case 0x2c: { // One-way gate
+            // TODO: Render bottom half as mirror and handle reverse
+            meta.tilesSectorOffset = 0x19;
+            meta.paletteSectorOffset = 0x8e;
+            meta.tileWidth = 2;
+            meta.tilesCount = 2 * 6;
+            break;
+        }
         case 0x3b: { // Red coin
             meta.tilesSectorOffset = 0;
             meta.paletteSectorOffset = 0;
@@ -76,6 +84,12 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tileWidth = 4;
             break;
         }
+        case 0x94: { // Chomp-breakable blocks
+            // Fuck. They're an arc file. "objsbblock.arc"
+            // TODO: Implement objsbblock.arc
+            meta.tilesCount = 0;
+            break;
+        }
         case 0x9A: { // Red arrow signs
             meta.tilesSectorOffset = 0x5A;
             meta.paletteSectorOffset = 0xDC;
@@ -92,6 +106,13 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                 case 0x1: { // Classic right pointing signpost
                     meta.tilesCount = 3 * 4;
                     meta.tileWidth = 4;
+                    break;
+                }
+                case 0x5: { // Down right
+                    // TODO: ROTATED, NEEDS SPECIAL RENDER
+                    meta.tilesCount = 4;
+                    meta.tileWidth = 2;
+                    meta.subTile = 3;
                     break;
                 }
                 case 0x6: { // Upwards pointing arrow
