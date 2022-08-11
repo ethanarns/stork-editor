@@ -24,6 +24,13 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(uint16_t objectId) {
             meta.tilesCount = 0; // Needs special rendering...
             break;
         }
+        case 0x28: { // Flower
+            meta.tilesSectorOffset = 0x16;
+            meta.paletteSectorOffset = 0x9b;
+            meta.tilesCount = 16;
+            meta.tileWidth = 4;
+            break;
+        }
         case 0x3b: { // Red coin
             meta.tilesSectorOffset = 0;
             meta.paletteSectorOffset = 0;
