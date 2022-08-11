@@ -157,7 +157,6 @@ void DisplayTable::displayTableClicked(int row, int column) {
         return;
     }
     cout << dec << curCell->data(PixelDelegateData::DEBUG_DATA).toInt() << endl;
-    //cout << hex << curCell->data(PixelDelegateData::COLLISION_DRAW).toInt() << endl;
 }
 
 void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType) {
@@ -202,6 +201,9 @@ void DisplayTable::initCellCollision() {
             this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);
             this->setCellCollision(y+1,x,  CollisionDraw::DIAG_UP_RIGHT);
             this->setCellCollision(y  ,x+1,CollisionDraw::DIAG_UP_RIGHT);
+        } else if (curCol == CollisionType::STATIC_COIN) {
+            // Don't draw, make a coin
+            this->placeObjectTile(x+1,y,0,0,0,2,4,PaletteFileName::OBJSET);
         } else if (curCol != 0) { // Unknown, draw temp
             this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT);
             this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);

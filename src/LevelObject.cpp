@@ -52,6 +52,15 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(uint16_t objectId) {
             meta.tileWidth = 2;
             break;
         }
+        case 0xd2: { // Yellow egg block
+            meta.tilesSectorOffset = 0x1;
+            meta.whichPaletteFile = PaletteFileName::OBJEFFECT;
+            meta.paletteSectorOffset = 0x2a-2;
+            meta.subTile = 4; // TODO: Get from object data values
+            meta.tilesCount = 4;
+            meta.tileWidth = 2;
+            break;
+        }
         case 0xe7: { // M Block that only shows up when carrying baby Mario
             meta.tilesSectorOffset = 0x5f;
             meta.paletteSectorOffset = 0xe3;
