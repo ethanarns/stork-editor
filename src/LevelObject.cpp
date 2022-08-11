@@ -8,8 +8,9 @@
 
 using namespace std;
 
-ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(uint16_t objectId) {
+ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     ObjectGraphicMetadata meta;
+    auto objectId = lo.objectId;
     meta.subTile = 0;
     meta.whichPaletteFile = PaletteFileName::OBJSET;
     switch(objectId) {

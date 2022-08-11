@@ -43,6 +43,6 @@ public:
     uint16_t xPosition;
     uint16_t yPosition;
     std::vector<uint8_t> settings;
-    static ObjectGraphicMetadata getObjectGraphicMetadata(uint16_t objectId);
+    static ObjectGraphicMetadata getObjectGraphicMetadata(LevelObject lo);
 };
 #endif

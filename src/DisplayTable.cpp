@@ -295,7 +295,7 @@ void DisplayTable::updateObjects() {
             cout << "[WARN] No tile to place object on at x: " << hex << x << ", y: " << hex << y << endl; 
             potentialExisting = new QTableWidgetItem(); // Make it NOT null lmao
         }
-        auto objectGraphicsMeta = LevelObject::getObjectGraphicMetadata(it->objectId);
+        auto objectGraphicsMeta = LevelObject::getObjectGraphicMetadata(*it);
         if (objectGraphicsMeta.tilesCount == 0) {
             potentialExisting->setData(PixelDelegateData::OBJECT_ID,(int)it->objectId);
             std::stringstream ss;
