@@ -1,5 +1,5 @@
 #include "LevelSelect.h"
-#include "yidsrom.h"
+#include "../yidsrom.h"
 
 #include <QtCore>
 #include <QWidget>

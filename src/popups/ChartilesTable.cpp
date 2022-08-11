@@ -1,8 +1,8 @@
 #include "ChartilesTable.h"
-#include "yidsrom.h"
-#include "Chartile.h"
-#include "PixelDelegate.h"
-#include "utils.h"
+#include "../yidsrom.h"
+#include "../Chartile.h"
+#include "../PixelDelegate.h"
+#include "../utils.h"
 
 #include <iostream>
 

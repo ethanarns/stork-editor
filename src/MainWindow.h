@@ -10,10 +10,10 @@
 
 #include "yidsrom.h"
 #include "DisplayTable.h"
-#include "ChartilesTable.h"
+#include "popups/ChartilesTable.h"
 #include "PaletteTable.h"
 #include "SettingsEnum.h"
-#include "LevelSelect.h"
+#include "popups/LevelSelect.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT

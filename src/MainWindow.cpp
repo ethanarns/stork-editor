@@ -9,7 +9,7 @@
  */
 
 #include "MainWindow.h"
-#include "ChartilesTable.h"
+#include "popups/ChartilesTable.h"
 #include "PaletteTable.h"
 #include "utils.h"
 #include "DisplayTable.h"

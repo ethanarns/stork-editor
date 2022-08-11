@@ -1,7 +1,7 @@
 #ifndef LEVELSELECT_H
 #define LEVELSELECT_H
 
-#include "yidsrom.h"
+#include "../yidsrom.h"
 
 #include <QtCore>
 #include <QListWidget>

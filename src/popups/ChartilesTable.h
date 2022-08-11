@@ -1,7 +1,7 @@
 #ifndef CHARTILESTABLE_H
 #define CHARTILESTABLE_H
 
-#include "yidsrom.h"
+#include "../yidsrom.h"
 
 #include <QtCore>
 #include <QTableWidget>
