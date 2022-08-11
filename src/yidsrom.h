@@ -46,7 +46,7 @@ public:
     /**
      * @brief "Characters", or the pixel arrangement of tiles. From OBJ data, for OAM
      */
-    std::map<uint32_t,std::vector<uint8_t>> pixelTiles;
+    std::map<uint32_t,std::vector<uint8_t>> objsetPixelTiles;
     //std::map<uint32_t,std::vector<ObjectDrawInstruction>> pixelTilesObj;
     
     /**
@@ -65,7 +65,7 @@ public:
      */
     std::vector<uint8_t> collisionTileArray;
 
-    std::map<uint32_t,ObjectPalette> objectPalettes;
+    std::map<uint32_t,ObjectPalette> objsetPalettes;
 
     std::vector<LevelObject> loadedLevelObjects;
     uint32_t canvasWidthBg2 = 0;
@@ -103,7 +103,7 @@ private:
     void handleImbz(std::string fileName_noext, uint16_t whichBg);
     void handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     void handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
-    void handleOBJSET();
+    void handleOBJSET(std::string objset_filename);
 };
 
 #endif

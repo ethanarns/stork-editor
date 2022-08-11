@@ -73,12 +73,12 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         pixelTileSize = this->yidsRom->pixelTilesBg1.size();
     }
     if (pixelTileSize < 1) {
-        std::cerr << "[ERROR] pixelTiles are empty, cannot place tile" << std::endl;
+        std::cerr << "[ERROR] objsetPixelTiles are empty, cannot place tile" << std::endl;
         exit(EXIT_FAILURE);
     }
     if (pren.tileId >= pixelTileSize) {
         std::cerr << "[ERROR] Tile ID '" << hex << pren.tileId;
-        std::cerr << "' is greater than pixelTiles count " << hex << pixelTileSize << std::endl;
+        std::cerr << "' is greater than objsetPixelTiles count " << hex << pixelTileSize << std::endl;
         return;
     }
     int pal = (int)pren.paletteId; // int is more commonly used to access, so convert it early
@@ -340,10 +340,10 @@ void DisplayTable::placeObjectTile(
 ) {
     auto objectPalette = this->yidsRom->currentPalettes[0]; // Default
     if (paletteOffset != 0) {
-        objectPalette = this->yidsRom->objectPalettes[paletteOffset].paletteData;
+        objectPalette = this->yidsRom->objsetPalettes[paletteOffset].paletteData;
     }
 
-    auto objectVector = this->yidsRom->pixelTiles[objectOffset];
+    auto objectVector = this->yidsRom->objsetPixelTiles[objectOffset];
     uint32_t subLength = objectVector.size();
     uint32_t subIndex = 0x00;
 

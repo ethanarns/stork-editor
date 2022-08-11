@@ -109,7 +109,7 @@ void YidsRom::openRom(std::string fileName) {
         curFileId++;
     }
 
-    this->handleOBJSET();
+    this->handleOBJSET("objset.arcz");
 
     std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,0);
     this->loadCrsb(crsbFileName);

@@ -495,15 +495,14 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
     //cout << "Loaded " << dec << this->loadedLevelObjects.size() << " level objects" << endl;
 }
 
-void YidsRom::handleOBJSET() {
-    std::cout << "handleOBJSET" << endl;
-    const std::string objset_filename = "objset.arcz";
+void YidsRom::handleOBJSET(std::string objset_filename) {
+    std::cout << "handleOBJSET: " << objset_filename << endl;
     std::vector<uint8_t> fileVectorObjset = this->getFileByteVector(objset_filename);
     std::vector<uint8_t> objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
 
     auto potentialMagicNumber = YUtils::getUint32FromVec(objsetUncompressedVec,0);
     if (potentialMagicNumber != Constants::OBAR_MAGIC_NUM) {
-        cerr << "[ERROR] OBAR magic number not found in file objset.arcz! Found instead: " << hex << potentialMagicNumber << endl;
+        cerr << "[ERROR] OBAR magic number not found in file '" << objset_filename << "'! Found instead: " << hex << potentialMagicNumber << endl;
         exit(EXIT_FAILURE);
     }
     auto fullObjsetLength = YUtils::getUint32FromVec(objsetUncompressedVec,4);
@@ -527,7 +526,7 @@ void YidsRom::handleOBJSET() {
             /************
              *** OBJB ***
              ************/
-            this->pixelTiles[curTileStartOffset] = subsection;
+            this->objsetPixelTiles[curTileStartOffset] = subsection;
             //auto objbInstructions = LevelObject::getInstructionsFromObjsetRecord(subsection,curTileStartOffset);
             //this->pixelTilesObj[curTileStartOffset] = objbInstructions;
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
@@ -548,7 +547,7 @@ void YidsRom::handleOBJSET() {
             currentPaletteIndex++;
             currentLoadingPalette.address = indexObjset;
             // Does not start at zero! Access is offset by 
-            this->objectPalettes[curTileStartOffset] = currentLoadingPalette;
+            this->objsetPalettes[curTileStartOffset] = currentLoadingPalette;
         } else {
             std::cerr << "[ERROR] Known objset magic number not found! Instead found ";
             std::cerr << hex << instructionCheck << " at " << hex << (indexObjset - 4) << std::endl;
@@ -557,6 +556,6 @@ void YidsRom::handleOBJSET() {
         curTileStartOffset++;
         indexObjset += currentInstructionLength;
     }
-    std::cout << "Loaded " << dec << this->pixelTiles.size() << " object tile groups" << std::endl;
-    std::cout << "Loaded " << dec << this->objectPalettes.size() << " palettes" << std::endl;
+    std::cout << "Loaded " << dec << this->objsetPixelTiles.size() << " object tile groups" << std::endl;
+    std::cout << "Loaded " << dec << this->objsetPalettes.size() << " palettes" << std::endl;
 }
