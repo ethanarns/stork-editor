@@ -446,7 +446,7 @@ void YidsRom::handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
         cerr << "GRAD instruction did not find magic hex " << hex << Constants::GRAD_MAGIC_NUM << endl;
         return;
     }
-    std::cout << "*** Starting GRAD instruction parse ***" << endl;
+    //std::cout << "*** Starting GRAD instruction parse ***" << endl;
     indexPointer += 4; // Go to length
     auto gradLength = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     indexPointer += 4; // Now at start of actual data

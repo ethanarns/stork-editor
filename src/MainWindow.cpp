@@ -352,7 +352,6 @@ void MainWindow::menuClick_memory() {
  ****************************/
 
 void MainWindow::buttonClick_levelSelect_load() {
-    cout << "Load clicked" << endl;
     auto potentialCurrentItem = this->levelSelect->currentItem();
     if (potentialCurrentItem == nullptr) {
         return;

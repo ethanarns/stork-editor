@@ -318,7 +318,6 @@ void DisplayTable::updateObjects() {
 }
 
 int DisplayTable::wipeTable() {
-    std::cout << "wipeTable()" << std::endl;
     uint32_t xWidth = this->columnCount();
     uint32_t yHeight = this->rowCount();
     for (uint32_t col = 0; col < xWidth; col++) {
