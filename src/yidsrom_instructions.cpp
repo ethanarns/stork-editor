@@ -464,7 +464,6 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
         cerr << "SETD instruction did not find magic hex " << hex << Constants::SETD_MAGIC_NUM << endl;
         return;
     }
-    //std::cout << "*** Starting SETD instruction parse ***" << std::endl;
     indexPointer += 4; // Go to length
     auto setdLength = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     // Now at start of actual data
@@ -475,7 +474,7 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
         lo.objectId = YUtils::getUint16FromVec(mpdzVec, indexPointer + 0);
         lo.settingsLength = YUtils::getUint16FromVec(mpdzVec, indexPointer + 2);
         uint16_t len = lo.settingsLength;
-        if (len > 0x10) {
+        if (len > 0x20) {
             std::cout << "[WARN] Unusually high object settings length for " << hex << lo.objectId << ": " << hex << len << endl;
         }
         lo.xPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 4);
@@ -483,16 +482,11 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
         
         indexPointer += 8; // This skips to either the settings, or the next object
         if (len > 0) {
-            while (len > 0) {
-                //auto curSetting = YUtils::getUint16FromVec(mpdzVec, indexPointer);
-                indexPointer += 2;
-                len -= 2;
-            }
+            lo.settings = YUtils::subVector(mpdzVec,indexPointer,indexPointer + len);
+            indexPointer += len;
         }
-        //YUtils::printLevelObject(lo);
         this->loadedLevelObjects.push_back(lo);
     }
-    //cout << "Loaded " << dec << this->loadedLevelObjects.size() << " level objects" << endl;
 }
 
 void YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes) {
@@ -511,7 +505,6 @@ void YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,st
     //std::cout << "First index instruction: " << hex << (int)objsetUncompressedVec.at(indexObjset) << endl;
     const uint32_t objsetEndIndex = fullObjsetLength + 8; // Exclusive, but shouldn't matter
     //std::cout << "End index: " << hex << objsetEndIndex << endl;
-    uint32_t currentTileIndex = 0;
     uint32_t currentPaletteIndex = 0;
     uint32_t curTileStartOffset = 0;
     while (indexObjset < objsetEndIndex) {
