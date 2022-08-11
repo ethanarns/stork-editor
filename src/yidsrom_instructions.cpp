@@ -495,8 +495,8 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
     //cout << "Loaded " << dec << this->loadedLevelObjects.size() << " level objects" << endl;
 }
 
-void YidsRom::handleOBJSET(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes) {
-    std::cout << "handleOBJSET: " << objset_filename << endl;
+void YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes) {
+    std::cout << "handleObjPltFile: " << objset_filename << endl;
     std::vector<uint8_t> fileVectorObjset = this->getFileByteVector(objset_filename);
     std::vector<uint8_t> objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
 
