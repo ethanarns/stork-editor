@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void YidsRom::loadCrsb(std::string fileName_noext) {
+void YidsRom::loadCrsb(std::string fileName_noext, const uint32_t subLevel) {
     fileName_noext = YUtils::getLowercase(fileName_noext);
     auto fileName = fileName_noext.append(".crsb");
     auto fileId = this->fileIdMap[fileName];
@@ -42,40 +42,41 @@ void YidsRom::loadCrsb(std::string fileName_noext) {
 
     // Number of CSCN records, aka maps in level!
     auto mapFileCount = this->getNumberAt<uint32_t>(startAddr + 8);
-    if (this->verbose) std::cout << "Map count: " << mapFileCount << endl;
 
     const uint32_t OFFSET_TO_FIRST_CSCN = 0xC; // 12
 
     // This only gets the first one. The block after this gets them all
-    Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN;
-    auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
-    this->loadMpdz(mpdzFilename_noext);
+    // Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN;
+    // auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
+    // this->loadMpdz(mpdzFilename_noext);
 
-    // uint32_t curCscnReadOffset = 0; // In bytes
-    // for (uint32_t cscnIndex = 0; cscnIndex < mapFileCount; cscnIndex++) {
-    //     // Points to the current magic number text, CSCN
-    //     Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN + curCscnReadOffset;
-    //     // Check that the magic text is there, at index 0
-    //     std::string magicTextCscn = this->getTextAt(baseAddrCscn + 0, 4);
-    //     if (magicTextCscn.compare(Constants::CSCN_MAGIC) != 0) {
-    //         cerr << "Magic header text " << Constants::CSCN_MAGIC << " not found! Found '" << magicTextCscn << "' instead." << endl;
-    //         return;
-    //     }
-    //     // Next, get the filename
-    //     auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
-    //     this->loadMpdz(mpdzFilename_noext);
+    uint32_t curCscnReadOffset = 0; // In bytes
+    uint32_t subLevelIndex = 0;
+    for (uint32_t cscnIndex = 0; cscnIndex < mapFileCount; cscnIndex++) {
+        // Points to the current magic number text, CSCN
+        Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN + curCscnReadOffset;
+        // Check that the magic text is there, at index 0
+        std::string magicTextCscn = this->getTextAt(baseAddrCscn + 0, 4);
+        if (magicTextCscn.compare(Constants::CSCN_MAGIC) != 0) {
+            cerr << "Magic header text " << Constants::CSCN_MAGIC << " not found! Found '" << magicTextCscn << "' instead." << endl;
+            return;
+        }
+        // Next, get the filename
+        auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
+        if (subLevelIndex == subLevel) {
+            this->loadMpdz(mpdzFilename_noext);
+            return;
+        }
 
-    //     // +0x4 is because the magic number is 4 long, and the next is the length
-    //     // +0x8 is because that length is added to the current read position in the file
-    //     //   That recreates it as a non-relative offset number (it started from the
-    //     //   maybeExits at +0x8)
-    //     uint32_t cscnLength = this->getNumberAt<uint32_t>(baseAddrCscn + 0x4) + 0x8;
+        // +0x4 is because the magic number is 4 long, and the next is the length
+        // +0x8 is because that length is added to the current read position in the file
+        //   That recreates it as a non-relative offset number (it started from the
+        //   maybeExits at +0x8)
+        uint32_t cscnLength = this->getNumberAt<uint32_t>(baseAddrCscn + 0x4) + 0x8;
         
-    //     curCscnReadOffset += cscnLength;
-    //     return;
-    // }
-
-    //if (this->verbose) cout << "MPDZ files loaded" << endl;
+        curCscnReadOffset += cscnLength;
+        subLevelIndex++;
+    }
 }
 
 // TODO: Get rid of this hacky crap
@@ -186,7 +187,6 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             // Increment based on earlier length, +8 is to skip instruction and length
             indexPointer += infoLength + 8;
         } else if (curSubInstruction == Constants::PLTB_MAGIC_NUM) {
-            std::cout << ">> Handling PLTB instruction" << endl;
             uint32_t pltbLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
             Address pltbReadIndex = indexPointer + 8; // +8 is to skip instruction and length
             indexPointer += pltbLength + 8; // Skip past, don't do a manual count up
@@ -209,7 +209,6 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             }
             timesPaletteLoaded++;
         } else if (curSubInstruction == Constants::MPBZ_MAGIC_NUM) {
-            std::cout << ">> Handling MPBZ instruction" << endl;
             // Most of this tile placing logic is here: 0201c6dc
             if (whichBgToWriteTo == 0) {
                 cerr << "[ERROR] Which BG to write to was not specified, MPBZ load failed" << endl;
@@ -293,7 +292,6 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             }
             //std::cout << "Finished writing to preRenderDataBg2, length is " << this->preRenderDataBg2.size() << std::endl;
         } else if (curSubInstruction == Constants::COLZ_MAGIC_NUM) {
-            std::cout << ">> Handling COLZ instruction" << endl;
             if (collisionTileArray.size() > 0) {
                 std::cout << "[ERROR] Attempted to load a second COLZ, only one should ever be loaded" << endl;
                 exit(EXIT_FAILURE);
@@ -318,7 +316,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             indexPointer += colzLength + 8;
         } else if (curSubInstruction == Constants::ANMZ_MAGIC_NUM) {
             // TODO: Figure out how this knows where to write. Take a break, so far you have most tiles loading
-            std::cout << ">> Handling ANMZ instruction" << endl;
+            //std::cout << ">> Handling ANMZ instruction" << endl;
             uint32_t anmzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // Should be 0x1080 first time
             // Address compressedDataStart = indexPointer + 8;
             // Address compressedDataEnd = compressedDataStart + anmzLength;
@@ -372,7 +370,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
 
             indexPointer += anmzLength + 8; // Go to next
         } else if (curSubInstruction == Constants::IMGB_MAGIC_NUM) {
-            std::cout << ">> Handling IMGB instruction" << endl;
+            //std::cout << ">> Handling IMGB instruction" << endl;
             uint32_t imgbLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
             // TODO: Learn about this data
             indexPointer += imgbLength + 8;
@@ -387,7 +385,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
 }
 
 void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
-    if (this->verbose) std::cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
+    //if (this->verbose) std::cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
     if (whichBg == 2) {
         if (this->pixelTilesBg2.size() > 0) {
             cerr << "[ERROR] No overwriting existing pixel tile data for BG 2!" << endl;

@@ -83,7 +83,7 @@ public:
     void openRom(std::string fileName);
 
     std::string getLevelFileNameFromMapIndex(uint32_t worldIndex, uint32_t levelIndex);
-    void loadCrsb(std::string fileName_noext);
+    void loadCrsb(std::string fileName_noext, const uint32_t subLevel);
     void wipeCrsbData();
     void getGameLevelsMetaData();
 
