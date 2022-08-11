@@ -348,7 +348,6 @@ void DisplayTable::placeObjectTile(
             objectPalette = this->yidsRom->objsetPalettes[paletteOffset].paletteData;
         } else if (paletteFile == PaletteFileName::OBJEFFECT) {
             objectPalette = this->yidsRom->effectPalettes[paletteOffset].paletteData;
-            qDebug() << objectPalette;
         } else {
             std::cerr << "[ERROR] Unknown PaletteFileName enum value: " << hex << paletteFile << endl;
         }
