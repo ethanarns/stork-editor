@@ -25,10 +25,17 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tilesCount = 0; // Needs special rendering...
             break;
         }
+        case 0x20: { // Falling donuts
+            meta.tilesSectorOffset = 0x11;
+            meta.paletteSectorOffset = 0x87;
+            meta.tilesCount = 4;
+            meta.tileWidth = 2;
+            break;
+        }
         case 0x23: { // Green pipe
             constexpr uint32_t VERTICAL_PIPE_TILES = 0x13;
             constexpr uint32_t HORIZONTAL_PIPE_TILES = 0x12;
-            uint32_t pipeHeight = (uint32_t)lo.settings.at(2);
+            uint32_t pipeHeight = (uint32_t)lo.settings.at(2)*2;
             meta.tilesSectorOffset = VERTICAL_PIPE_TILES;
             meta.paletteSectorOffset = 0x89;
             meta.tilesCount = 4 * pipeHeight;
@@ -76,11 +83,25 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tileWidth = 2;
             break;
         }
+        case 0x40: { // Nipper plant
+            meta.tilesSectorOffset = 0x20;
+            meta.paletteSectorOffset = 0x8f;
+            meta.tilesCount = 4;
+            meta.tileWidth = 2;
+            break;
+        }
         case 0x4e: { // Dandylion
             meta.tilesSectorOffset = 0x2f;
             meta.paletteSectorOffset = 0x8f;
             meta.tilesCount = 4*6;
             meta.tileWidth = 4;
+            break;
+        }
+        case 0x50: { // Poundable Box (stars?)
+            meta.tilesSectorOffset = 0x35;
+            meta.paletteSectorOffset = 0xAD;
+            meta.tilesCount = 8*8;
+            meta.tileWidth = 8;
             break;
         }
         case 0x94: { // Chomp-breakable blocks
@@ -157,6 +178,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.paletteSectorOffset = 0xe3;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
+            break;
+        }
+        case 0x112: { // Locked minigame hut
+            // Pulled from "objhouse.arcz"
+            meta.tilesCount = 0;
             break;
         }
         default: {
