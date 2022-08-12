@@ -114,6 +114,12 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
             this->handleGrad(uncompVec,mpdzIndex);
         } else if (curInstruction == Constants::SETD_MAGIC_NUM) {
             this->handleSETD(uncompVec,mpdzIndex);
+        } else if (curInstruction == Constants::AREA_MAGIC_NUM) {
+            this->handleAREA(uncompVec,mpdzIndex);
+        } else if (curInstruction == Constants::PATH_MAGIC_NUM) {
+            this->handlePATH(uncompVec,mpdzIndex);
+        } else if (curInstruction == Constants::ALPH_MAGIC_NUM) {
+            this->handleALPH(uncompVec,mpdzIndex);
         } else {
             cerr << "[WARN] Instruction besides SCEN used: " << hex << curInstruction << endl;
             return;
@@ -374,18 +380,22 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             uint32_t imgbLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
             // TODO: Learn about this data
             indexPointer += imgbLength + 8;
+        } else if (curSubInstruction == Constants::SCRL_MAGIC_NUM) {
+            uint32_t scrlLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
+            // TODO: Learn about this data
+            indexPointer += scrlLength + 8;
         } else if (curSubInstruction == Constants::SCEN_MAGIC_NUM) {
             cerr << "[ERROR] Found SCEN instruction, overflowed!" << endl;
             return;
         } else {
-            std::cout << "Unknown instruction: " << hex << curSubInstruction << endl;
+            std::cout << "Unknown inter-SCEN instruction: " << hex << curSubInstruction << endl;
             return;
         }
     }
 }
 
 void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
-    //if (this->verbose) std::cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
+    if (this->verbose) std::cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
     if (whichBg == 2) {
         if (this->pixelTilesBg2.size() > 0) {
             cerr << "[ERROR] No overwriting existing pixel tile data for BG 2!" << endl;
@@ -454,6 +464,54 @@ void YidsRom::handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
     // Do stuff here
     // For now, skip
     indexPointer += gradLength;
+}
+
+void YidsRom::handleAREA(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
+    uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    if (instructionCheck != Constants::AREA_MAGIC_NUM) {
+        cerr << "AREA instruction did not find magic hex " << hex << Constants::AREA_MAGIC_NUM << endl;
+        return;
+    }
+    //std::cout << "*** Starting AREA instruction parse ***" << endl;
+    indexPointer += 4; // Go to length
+    auto areaLength = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    indexPointer += 4; // Now at start of actual data
+
+    // Do stuff here
+    // For now, skip
+    indexPointer += areaLength;
+}
+
+void YidsRom::handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
+    uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    if (instructionCheck != Constants::PATH_MAGIC_NUM) {
+        cerr << "PATH instruction did not find magic hex " << hex << Constants::PATH_MAGIC_NUM << endl;
+        return;
+    }
+    //std::cout << "*** Starting AREA instruction parse ***" << endl;
+    indexPointer += 4; // Go to length
+    auto pathLength = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    indexPointer += 4; // Now at start of actual data
+
+    // Do stuff here
+    // For now, skip
+    indexPointer += pathLength;
+}
+
+void YidsRom::handleALPH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
+    uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    if (instructionCheck != Constants::ALPH_MAGIC_NUM) {
+        cerr << "ALPH instruction did not find magic hex " << hex << Constants::ALPH_MAGIC_NUM << endl;
+        return;
+    }
+    //std::cout << "*** Starting AREA instruction parse ***" << endl;
+    indexPointer += 4; // Go to length
+    auto alphLength = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    indexPointer += 4; // Now at start of actual data
+
+    // Do stuff here
+    // For now, skip
+    indexPointer += alphLength;
 }
 
 void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {

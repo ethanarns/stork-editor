@@ -106,6 +106,9 @@ private:
     void handleImbz(std::string fileName_noext, uint16_t whichBg);
     void handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     void handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
+    void handleAREA(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
+    void handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
+    void handleALPH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     void handleObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes);
 };
 
