@@ -205,7 +205,7 @@ void YidsRom::initArm9RomData(std::string fileName) {
     } 
 
     this->writeUncompressedARM9(romStart9,romSize9);
-    bool arm9decompResult = YCompression::blzDecompress(Constants::NEW_BIN_FILE, this->verbose);
+    bool arm9decompResult = YCompression::blzDecompress(Constants::NEW_BIN_FILE, false);
     if (!arm9decompResult) {
         cerr << "Could not decompress the ARM9 BIN!" << endl;
         exit(EXIT_FAILURE);

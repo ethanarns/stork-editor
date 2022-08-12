@@ -150,27 +150,28 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
     while (indexPointer < scenCutoff) {
         uint32_t curSubInstruction = YUtils::getUint32FromVec(mpdzVec,indexPointer);
         if (curSubInstruction == Constants::INFO_MAGIC_NUM) {
-            std::cout << ">> Handling INFO instruction: ";
+            constexpr bool showInfoCouts = false;
+            if (showInfoCouts) std::cout << ">> Handling INFO instruction: ";
             uint32_t infoLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First time: 0x20
 
             uint32_t canvasDimensions = YUtils::getUint32FromVec(mpdzVec, indexPointer + 8); // 00b60208
 
             // TODO: What are these values?
             uint32_t unknownValue1 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 12); // 00000000
-            std::cout << "unk1: " << hex << unknownValue1 << "; ";
+            if (showInfoCouts) std::cout << "unk1: " << hex << unknownValue1 << "; ";
             uint32_t unknownValue2 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 16); // 0x1000
-            std::cout << "unk2: " << hex << unknownValue2 << "; ";
+            if (showInfoCouts) std::cout << "unk2: " << hex << unknownValue2 << "; ";
             uint32_t unknownValue3 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 20); // 0x1000
-            std::cout << "unk3: " << hex << unknownValue3 << "; ";
+            if (showInfoCouts) std::cout << "unk3: " << hex << unknownValue3 << "; ";
             //uint32_t unknownValue4 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 24); // 0x00020202
             whichBgToWriteTo = mpdzVec.at(indexPointer + 24 + 0);
-            std::cout << "whichBg: " << (int)whichBgToWriteTo << "; ";
+            if (showInfoCouts) std::cout << "whichBg: " << (int)whichBgToWriteTo << "; ";
             // uint16_t charBaseBlockHardMaybe = mpdzVec.at(indexPointer + 24 + 1);
             // uint16_t thirdByte = mpdzVec.at(indexPointer + 24 + 2);
             // uint16_t screenBaseBlockMaybe = mpdzVec.at(indexPointer + 24 + 3);
 
             uint32_t unknownValue5 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 28); // 00000000
-            std::cout << "unk5: " << hex << unknownValue5 << endl;
+            if (showInfoCouts) std::cout << "unk5: " << hex << unknownValue5 << endl;
             Q_UNUSED(unknownValue1);
             Q_UNUSED(unknownValue2);
             Q_UNUSED(unknownValue3);
@@ -395,7 +396,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
 }
 
 void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
-    if (this->verbose) std::cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
+    //if (this->verbose) std::cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
     if (whichBg == 2) {
         if (this->pixelTilesBg2.size() > 0) {
             cerr << "[ERROR] No overwriting existing pixel tile data for BG 2!" << endl;
@@ -546,7 +547,7 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
 }
 
 void YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes) {
-    std::cout << "handleObjPltFile: " << objset_filename << endl;
+    std::cout << "Loading graphics archive '" << objset_filename << "'" << std::endl;
     std::vector<uint8_t> fileVectorObjset = this->getFileByteVector(objset_filename);
     std::vector<uint8_t> objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
 
@@ -603,6 +604,12 @@ void YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,st
         curTileStartOffset++;
         indexObjset += currentInstructionLength;
     }
-    std::cout << "Loaded " << dec << pixelTiles.size() << " object tile groups" << std::endl;
-    std::cout << "Loaded " << dec << palettes.size() << " palettes" << std::endl;
+    if (pixelTiles.size() < 1) {
+        std::cerr << "[ERROR] Pulled zero pixelTiles!" << std::endl;
+    }
+    if (palettes.size() < 1) {
+        std::cerr << "[ERROR] Pulled zero PLTB records!" << std::endl;
+    }
+    //std::cout << "Loaded " << dec << pixelTiles.size() << " object tile groups" << std::endl;
+    //std::cout << "Loaded " << dec << palettes.size() << " palettes" << std::endl;
 }
