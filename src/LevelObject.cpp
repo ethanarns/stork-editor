@@ -180,6 +180,22 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tileWidth = 2;
             break;
         }
+        case 0x92: { // Stairs
+            // TODO: special print me
+            meta.tilesSectorOffset = 0x54;
+            meta.paletteSectorOffset = 0xe2;
+            meta.tilesCount = 8;
+            meta.tileWidth = 4;
+            YUtils::printVector(lo.settings);
+            break;
+        }
+        case 0x97: { // Ghost Guy
+            meta.tilesSectorOffset = 0x56;
+            meta.paletteSectorOffset = 0xda;
+            meta.tilesCount = 6;
+            meta.tileWidth = 2;
+            break;
+        }
         case 0x112: { // Locked minigame hut
             // Pulled from "objhouse.arcz"
             meta.tilesCount = 0;
