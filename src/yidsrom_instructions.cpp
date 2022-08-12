@@ -83,7 +83,7 @@ void YidsRom::loadCrsb(std::string fileName_noext, const uint32_t subLevel) {
 uint32_t timesPaletteLoaded = 0;
 
 void YidsRom::loadMpdz(std::string fileName_noext) {
-    if (this->verbose) std::cout << "Loading MPDZ '" << fileName_noext << "'" << endl;
+    if (this->verbose) std::cout << "Loading MPDZ (Map) '" << fileName_noext << "'" << endl;
     std::string mpdzFileName = fileName_noext.append(Constants::MPDZ_EXTENSION);
     auto fileVector = this->getFileByteVector(mpdzFileName);
     // YUtils::writeByteVectorToFile(fileVector,mpdzFileName); // Uncomment to get uncompressed MPDZ

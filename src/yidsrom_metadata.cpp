@@ -66,7 +66,7 @@ void YidsRom::getGameLevelsMetaData() {
                 }
                 // Next, get the filename
                 auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
-                cout << "  Loading MPDZ " << mpdzFilename_noext << endl;
+                cout << "  Loading MPDZ (Map) " << mpdzFilename_noext << endl;
 
                 std::string mpdzFileName = mpdzFilename_noext.append(Constants::MPDZ_EXTENSION);
                 auto fileVector = this->getFileByteVector(mpdzFileName);
