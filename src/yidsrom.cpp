@@ -127,7 +127,7 @@ std::string YidsRom::getTextAt(Address position_file, uint32_t length) {
 
 std::string YidsRom::getTextNullTermAt(Address position_file) {
     uint8_t offset = 0;
-    uint8_t MAX_STRING_LENGTH = 0xff;
+    constexpr uint8_t MAX_STRING_LENGTH = 0xff;
     uint8_t killOffset = 0;
     std::string result = "";
 

@@ -33,7 +33,7 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
     QTableWidget::connect(this, &QTableWidget::cellClicked, this, &ChartilesTable::chartilesTableClicked);
 }
 
-void ChartilesTable::refreshLoadedTiles() {
+void ChartilesTable::refreshLoadedTilesMap() {
     // The following (messily) spits out all available tiles for debug purposes
     auto tilesMap = &this->yidsRom->objsetPixelTiles;
     uint32_t mapSize = tilesMap->size();
@@ -69,6 +69,11 @@ void ChartilesTable::refreshLoadedTiles() {
         }
         yOffset += 2;
     }
+}
+
+void ChartilesTable::refreshLoadedTilesVector() {
+    auto tilesVector = &this->yidsRom->pixelTilesBg2;
+    uint32_t tileVectorSize = tilesVector->size();
 }
 
 void ChartilesTable::chartilesTableClicked(int row, int column) {
