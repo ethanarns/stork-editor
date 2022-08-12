@@ -21,7 +21,7 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
     this->verticalHeader()->setMinimumSectionSize(0);
     this->verticalHeader()->setDefaultSectionSize(ChartilesTable::CELL_SIZE_PX);
     this->setColumnCount(ChartilesTable::CHARTILES_TABLE_WIDTH);
-    this->setRowCount(0x1000);
+    this->setRowCount(ChartilesTable::CHARTILES_ROW_COUNT);
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
@@ -71,9 +71,36 @@ void ChartilesTable::refreshLoadedTilesMap() {
     }
 }
 
+void ChartilesTable::wipeTiles() {
+    for (uint32_t tileRowIndex = 0; tileRowIndex < ChartilesTable::CHARTILES_ROW_COUNT; tileRowIndex++) {
+        for (uint32_t tileColumnIndex = 0; tileColumnIndex < ChartilesTable::CHARTILES_TABLE_WIDTH; tileColumnIndex++) {
+            if (this->item(tileRowIndex,tileColumnIndex) != nullptr) {
+                this->takeItem(tileRowIndex,tileColumnIndex);
+                delete this->item(tileRowIndex,tileColumnIndex);
+            }
+        }
+    }
+}
+
 void ChartilesTable::refreshLoadedTilesVector() {
     auto tilesVector = &this->yidsRom->pixelTilesBg2;
     uint32_t tileVectorSize = tilesVector->size();
+    uint32_t tileVectorIndex = 0;
+    for (auto it = tilesVector->begin(); it != tilesVector->end(); it++) {
+        uint32_t x = tileVectorIndex % 0x10;
+        uint32_t y = tileVectorIndex / 0x10;
+        auto newItem = new QTableWidgetItem();
+        newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,it->tiles);
+        newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[0]);
+        newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
+        newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
+        newItem->setData(PixelDelegateData::DEBUG_DATA,tileVectorIndex);
+        if (this->item(y,x) != nullptr) {
+            delete this->item(y,x);
+        }
+        this->setItem(y,x,newItem);
+        tileVectorIndex++;
+    }
 }
 
 void ChartilesTable::chartilesTableClicked(int row, int column) {
