@@ -94,7 +94,9 @@ std::string YUtils::getNullTermTextFromVec(std::vector<uint8_t> &bytes, uint32_t
     std::string result = "";
     
     if (bytes.at(location) == NULL_TERM) {
-        cout << "[WARN] Found empty string at position " << hex << location << endl;
+        std::stringstream ssEmpty;
+        ssEmpty << "Found empty string at position " << hex << location;
+        YUtils::printDebug(ssEmpty.str(),DebugType::WARNING);
         return result;
     }
     // Increment then return offset. 2 birds, meet 1 stone
@@ -259,4 +261,25 @@ int16_t YUtils::roundI16Down(int16_t unrounded, int16_t multiple) {
     if (remainder == 0) return unrounded;
 
     return (unrounded) - multiple - remainder;
+}
+
+void YUtils::printDebug(std::string msg, DebugType dt) {
+    switch(dt) {
+        case DebugType::VERBOSE: {
+            std::cout << "[INFO] " << msg << std::endl;
+            break;
+        }
+        case DebugType::WARNING: {
+            std::cout << "[WARN] " << msg << std::endl;
+            break;
+        }
+        case DebugType::ERROR: {
+            std::cerr << "[ERROR] " << msg << std::endl;
+            break;
+        }
+        case DebugType::FATAL: {
+            std::cerr << "[FATAL] " << msg << std::endl;
+            break;
+        }
+    }
 }

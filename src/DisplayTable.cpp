@@ -92,7 +92,9 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     } else if (whichBg == 1) {
         loadedTile = this->yidsRom->pixelTilesBg1.at(pren.tileId);
     } else {
-        cerr << "[ERROR] Unsupported BG: " << whichBg << endl;
+        std::stringstream ssbg;
+        ssbg << "Unsupported BG: " << hex << whichBg;
+        YUtils::printDebug(ssbg.str(),DebugType::ERROR);
         return;
     }
     auto potentialExisting = this->item(y,x);
@@ -170,13 +172,13 @@ void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType) 
 
 void DisplayTable::initCellCollision() {
     if (this->yidsRom->canvasWidthCol < 1) {
-        cerr << "[ERROR] Canvas Width for Collision is invalid! " << endl;
+        YUtils::printDebug("Canvas Width for Collision is invalid!",DebugType::ERROR);
         return;
     }
     const uint32_t cutOff = this->yidsRom->canvasWidthCol/2;
     const int CELL_LIST_SIZE = this->yidsRom->collisionTileArray.size();
     if (CELL_LIST_SIZE < 1) {
-        cerr << "[ERROR] Collision Tile Array is empty!" << endl;
+        YUtils::printDebug("Collision Tile Array is empty!",DebugType::ERROR);
         return;
     }
     for (int colIndex = 0; colIndex < CELL_LIST_SIZE; colIndex++) {
@@ -236,15 +238,15 @@ void DisplayTable::updateBg() {
      ******************/
     uint32_t preRenderSizeBg2 = this->yidsRom->preRenderDataBg2.size();
     if (preRenderSizeBg2 == 0) {
-        std::cerr << "[WARN] preRenderDataBg2 is empty" << std::endl;
+        YUtils::printDebug("preRenderDataBg2 is empty",DebugType::WARNING);
         return;
     }
     if (this->yidsRom->canvasWidthBg2 == 0) {
-        std::cerr << "[ERROR] Canvas Width for BG2 was never set!" << std::endl;
+        YUtils::printDebug("Canvas Width for BG2 was never set!",DebugType::ERROR);
         return;
     }
     if (this->yidsRom->pixelTilesBg2.size() < 1) {
-        std::cerr << "[WARN] Cannot update BG2, missing pixelTilesBg2" << std::endl;
+        YUtils::printDebug("Cannot update BG2, missing pixelTilesBg2",DebugType::WARNING);
         return;
     }
     //const uint32_t cutOffBg2 = 0x10*32.5;

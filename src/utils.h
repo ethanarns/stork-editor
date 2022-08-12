@@ -16,6 +16,13 @@
 
 using namespace std;
 
+enum DebugType {
+    VERBOSE,
+    WARNING,
+    ERROR,
+    FATAL
+};
+
 class YUtils {
 public:
     static void printSurroundingFiles(std::string path);
@@ -42,6 +49,8 @@ public:
     static void printVector(std::vector<uint8_t> &vectorToPrint, int newlineBreak = 0x10);
     static void writeVectorToFile(std::vector<uint8_t> &dataToWrite,std::string fileOnSystem,uint32_t addressOffset);
     static QByteArray tileVectorToQByteArray(std::vector<uint8_t> tileVector);
+
+    static void printDebug(std::string msg, DebugType dt = DebugType::VERBOSE);
 };
 
 #endif

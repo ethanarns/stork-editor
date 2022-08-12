@@ -77,9 +77,8 @@ public:
     uint32_t canvasHeightBg1 = 0;
     uint32_t canvasWidthCol = 0;
     uint32_t canvasHeightCol = 0;
-    bool verbose;
     bool filesLoaded = false;
-    YidsRom(bool verbose);
+    YidsRom();
     void openRom(std::string fileName);
 
     std::string getLevelFileNameFromMapIndex(uint32_t worldIndex, uint32_t levelIndex);

@@ -249,7 +249,7 @@ MainWindow::MainWindow() {
 void MainWindow::LoadRom() {
     auto fileName = QFileDialog::getOpenFileName(this,tr("Open ROM"),".",tr("NDS files (*.NDS)"));
     if (fileName.isEmpty()) {
-        cout << "Canceled file dialog" << endl;
+        YUtils::printDebug("Canceled file dialog",DebugType::VERBOSE);
     } else {
         this->rom->openRom(fileName.toStdString());
 
@@ -358,7 +358,7 @@ void MainWindow::buttonClick_levelSelect_load() {
     }
     auto potentialItemCrsb = potentialCurrentItem->data(LevelSelect::ITEM_DATA_ID_CRSB);
     if (potentialCurrentItem == NULL || potentialCurrentItem == nullptr) {
-        std::cerr << "Invalid CRSB data attached to item" << std::endl;
+        YUtils::printDebug("Invalid CRSB data attached to item",DebugType::ERROR);
         return;
     }
     this->grid->wipeTable();

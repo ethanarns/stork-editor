@@ -27,9 +27,8 @@
 
 using namespace std;
 
-YidsRom::YidsRom(bool verbose) {
+YidsRom::YidsRom() {
     this->filesLoaded = false;
-    this->verbose = verbose;
     this->pixelTilesBg2.reserve(1000); // Found 988 in 1-1's first IMBZ
     this->preRenderDataBg2.reserve(180'000); // Found 189280 in 1-1's first IMBZ
     this->collisionTileArray.reserve(79'000); // Found roughly 79000 in 1-1's first IMBZ
@@ -39,27 +38,22 @@ void YidsRom::openRom(std::string fileName) {
     this->filesLoaded = false;
     this->romFile.open(fileName, ios::binary | ios::in);
     if (!romFile) {
-        cerr << "ERROR: ROM file could not be opened: '" << fileName << "'" << endl;
-        cerr << "Reported load error code: " << errno << endl;
+        std::stringstream ssNoRom;
+        ssNoRom << "ERROR: ROM file could not be opened: '" << fileName << "'. ";
+        ssNoRom << "Reported load error code: " << errno;
+        YUtils::printDebug(ssNoRom.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
-    } else {
-        if (this->verbose) {
-            cout << "File loaded: " << fileName << " [SUCCESS]" << endl;
-        }
     }
 
     /************************
      *** METADATA/HEADERS *** 
      ************************/
-    if (this->verbose) cout << "Checking ROM game code... ";
     std::string romCode = this->getTextAt(0x0c,4);
-    if (this->verbose) cout << romCode << " ";
     if (romCode.compare(YidsRom::GAME_CODE) != 0) {
-        cout << "[FAIL]";
-        cerr << "Game code AYWE not found! Got '" << romCode << "' instead. Wrong ROM?" << endl;
+        std::stringstream ssGameCode;
+        ssGameCode << "Game code AYWE not found! Got '" << romCode << "' instead. Wrong ROM?";
+        YUtils::printDebug(ssGameCode.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
-    } else {
-        if (this->verbose) cout << "[SUCCESS]" << endl;
     }
 
     // http://problemkaputt.de/gbatek.htm#dscartridgeheader
@@ -85,7 +79,9 @@ void YidsRom::openRom(std::string fileName) {
     auto subdirName = this->getTextAt(fileSubDirectory + 1,subdirNameLength);
     const std::string SUBDIR_NAME = "file";
     if (subdirName.compare(SUBDIR_NAME) != 0) {
-        cerr << "[FAIL] First subdirectory '" << SUBDIR_NAME << "' was not found! Found '" << subdirName << "' instead.";
+        std::stringstream ssFailSub;
+        ssFailSub << "[FAIL] First subdirectory '" << SUBDIR_NAME << "' was not found! Found '" << subdirName << "' instead.";
+        YUtils::printDebug(ssFailSub.str(), DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
     // +4 because 4 bytes between end of text and first entry
@@ -99,7 +95,9 @@ void YidsRom::openRom(std::string fileName) {
     while (FILESDIR_BASE_ADDR + fileOffset < FAT_TABLE_END) {
         uint8_t len = this->getNumberAt<uint8_t>(FILESDIR_BASE_ADDR + fileOffset);
         if (len > 0x20) {
-            cout << hex << "[WARN] Long length: " << (int)len << " at " << hex << (FILESDIR_BASE_ADDR + fileOffset) << endl;
+            std::stringstream ssLongLen;
+            ssLongLen << "Long length: " << hex << (int)len << " at " << hex << (FILESDIR_BASE_ADDR + fileOffset);
+            YUtils::printDebug(ssLongLen.str(),DebugType::WARNING);
         }
         auto nameStr = this->getTextAt(FILESDIR_BASE_ADDR + fileOffset + 1,len);
         // cout << "len: " << hex << (int)len << ", id: " << dec << curFileId << ", name: '" << nameStr << "'" << endl;
@@ -138,7 +136,9 @@ std::string YidsRom::getTextNullTermAt(Address position_file) {
     const uint8_t NULL_TERM = 0x00;
     this->romFile.read(&container, sizeof(container));
     if (container == NULL_TERM) {
-        cout << "[WARN] Found empty string at position " << hex << position_file << endl;
+        std::stringstream nullTermSs;
+        nullTermSs << "Found empty string at position " << hex << position_file;
+        YUtils::printDebug(nullTermSs.str(),DebugType::ERROR);
         return result;
     }
     // Increment then return offset. 2 birds, meet 1 stone
@@ -173,41 +173,37 @@ void YidsRom::initArm9RomData(std::string fileName) {
     Address romStart9;
     this->romFile.read(reinterpret_cast<char *>(&romStart9),sizeof(romStart9));
 
-    if (this->verbose) cout << "Checking ARM9 ROM offset... 0x" << hex << romStart9 << " ";
     if (Constants::ARM9_ROM_OFFSET != romStart9) {
-        cout << "[FAIL]" << endl;
-        cerr << "Found ARM9 ROM offset not equal to " << hex << Constants::ARM9_ROM_OFFSET << endl;
+        std::stringstream ssRomOffset;
+        ssRomOffset << "Found ARM9 ROM offset not equal to ";
+        ssRomOffset << hex << Constants::ARM9_ROM_OFFSET;
+        YUtils::printDebug(ssRomOffset.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
-    } else {
-        if (this->verbose) cout << "[SUCCESS]" << endl;
     }
 
     // Size of ARM9 ROM data, aka "MainSize"
     this->romFile.seekg(0x2c);
     uint32_t romSize9;
     this->romFile.read(reinterpret_cast<char *>(&romSize9),sizeof(romSize9));
-    if (this->verbose) cout << "ARM9 ROM Size: 0x" << hex << romSize9 << endl;
 
     // End of ARM9 ROM (exclusive)
     Address endAddress = romStart9 + romSize9;
-    if (this->verbose) cout << "ARM9 ROM End: 0x" << hex << endAddress << endl;
 
-    if (this->verbose) cout << "Checking SDK_NITROCODE_BE (" << Constants::SDK_NITROCODE_BE << ")... ";
     this->romFile.seekg(endAddress);
     uint32_t endAddressMagicNumber;
     this->romFile.read(reinterpret_cast<char *>(&endAddressMagicNumber),sizeof(endAddressMagicNumber));
     if (endAddressMagicNumber != Constants::SDK_NITROCODE_BE) {
-        cout << "[FAIL]" << endl;
-        cerr << "SDK_NITROCODE_BE magic number " << Constants::SDK_NITROCODE_BE << " not found" << endl;
+        std::stringstream ssMn;
+        ssMn << "SDK_NITROCODE_BG magic number '" << hex << Constants::SDK_NITROCODE_BE << "' not found. ";
+        ssMn << "Instead found " << hex << endAddressMagicNumber;
+        YUtils::printDebug(ssMn.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
-    } else {
-        if (this->verbose) cout << "[SUCCESS]" << endl;
-    } 
+    }
 
     this->writeUncompressedARM9(romStart9,romSize9);
     bool arm9decompResult = YCompression::blzDecompress(Constants::NEW_BIN_FILE, false);
     if (!arm9decompResult) {
-        cerr << "Could not decompress the ARM9 BIN!" << endl;
+        YUtils::printDebug("Could not decompress the ARM9 BIN!",DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
     std::ifstream arm9fileUncomped;
@@ -241,22 +237,22 @@ void YidsRom::initArm9RomData(std::string fileName) {
     arm9fileUncomped.close();
 
     // Test it
-    if (this->verbose) cout << "Testing Decompression and text retrieval... ";
     const Address TEST_POSITION = 0xe9e6e;
     const auto TEST_TEXT = "1-1_D3";
     auto testText1 = this->getTextAt(TEST_POSITION,6);
     if (testText1.compare(TEST_TEXT) != 0) {
-        cerr << "[FAIL]" << endl << "Looked for '" << TEST_TEXT << "' with getTextAt, found '" << testText1 << "'" << endl;
-        cerr << "File decompression may have failed, or been modified improperly" << endl;
+        std::stringstream ssTestText1;
+        ssTestText1 << "Test looked for '" << TEST_TEXT << "' with getTextAt, found '" << testText1 << "'";
+        YUtils::printDebug(ssTestText1.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
     auto testText2 = this->getTextNullTermAt(TEST_POSITION);
     if (testText2.compare(TEST_TEXT) != 0) {
-        cerr << "[FAIL]" << endl << "Looked for '" << TEST_TEXT << "' with getTextNullTermAt, found '" << testText2 << "'" << endl;
-        cerr << "File decompression may have failed, or been modified improperly" << endl;
+        std::stringstream ssTestText2;
+        ssTestText2 << "Test looked for '" << TEST_TEXT << "' with getTextNullTermAt, found '" << testText2 << "'";
+        YUtils::printDebug(ssTestText2.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
-    if (this->verbose) cout << "[SUCCESS]" << endl;
 
     // Delete the old file (Consider streaming to memory instead)
     filesystem::remove(Constants::NEW_ROM_FILE);
@@ -292,8 +288,6 @@ void YidsRom::writeUncompressedARM9(Address arm9start_rom, uint32_t arm9length) 
     }
 
     YUtils::writeByteVectorToFile(outvec,Constants::NEW_BIN_FILE);
-
-    if (this->verbose) cout << "[SUCCESS] Wrote file" << endl;
 }
 
 /**
