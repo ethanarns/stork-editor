@@ -139,7 +139,9 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tilesCount = 12;
             meta.tileWidth = 4;
             if (lo.settingsLength < 2) {
-                std::cerr << "[ERROR] Red Sign needs at least 2 bytes of settings, instead got " << lo.settingsLength << endl;
+                std::stringstream ssRedSignSettingsLen;
+                ssRedSignSettingsLen << "Red Sign needs at least 2 bytes of settings, instead got " << lo.settingsLength;
+                YUtils::printDebug(ssRedSignSettingsLen.str(),DebugType::ERROR);
                 break;
             }
             auto firstSettingsByte = (uint32_t)lo.settings.at(0);

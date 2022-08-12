@@ -395,7 +395,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             // TODO: Learn about this data
             indexPointer += scrlLength + 8;
         } else if (curSubInstruction == Constants::SCEN_MAGIC_NUM) {
-            cerr << "[ERROR] Found SCEN instruction, overflowed!" << endl;
+            YUtils::printDebug("Found SCEN instruction, overflowed!",DebugType::ERROR);
             return;
         } else {
             std::cout << "Unknown inter-SCEN instruction: " << hex << curSubInstruction << endl;
@@ -432,7 +432,7 @@ void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
     int imbzIndex = 0; // Goes up by 0x20/32 each time, offset it
     const int imbzLength = uncompressedImbz.size();
     if (imbzLength < 1) {
-        std::cerr << "[ERROR] imbzLength is 0!" << std::endl;
+        YUtils::printDebug("imbzLength is 0!",DebugType::ERROR);
         return;
     }
     // Do it 0x20 by 0x20 (32)
@@ -465,7 +465,7 @@ void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
 void YidsRom::handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
     uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     if (instructionCheck != Constants::GRAD_MAGIC_NUM) {
-        cerr << "GRAD instruction did not find magic hex " << hex << Constants::GRAD_MAGIC_NUM << endl;
+        YUtils::printDebug("GRAD instruction did not find magic hex",DebugType::ERROR);
         return;
     }
     //std::cout << "*** Starting GRAD instruction parse ***" << endl;
@@ -481,7 +481,7 @@ void YidsRom::handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
 void YidsRom::handleAREA(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
     uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     if (instructionCheck != Constants::AREA_MAGIC_NUM) {
-        cerr << "AREA instruction did not find magic hex " << hex << Constants::AREA_MAGIC_NUM << endl;
+        YUtils::printDebug("AREA instruction did not find magic hex",DebugType::ERROR);
         return;
     }
     //std::cout << "*** Starting AREA instruction parse ***" << endl;
@@ -497,7 +497,7 @@ void YidsRom::handleAREA(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
 void YidsRom::handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
     uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     if (instructionCheck != Constants::PATH_MAGIC_NUM) {
-        cerr << "PATH instruction did not find magic hex " << hex << Constants::PATH_MAGIC_NUM << endl;
+        YUtils::printDebug("PATH instruction did not find magic hex",DebugType::ERROR);
         return;
     }
     //std::cout << "*** Starting AREA instruction parse ***" << endl;
@@ -513,7 +513,7 @@ void YidsRom::handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
 void YidsRom::handleALPH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
     uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     if (instructionCheck != Constants::ALPH_MAGIC_NUM) {
-        cerr << "ALPH instruction did not find magic hex " << hex << Constants::ALPH_MAGIC_NUM << endl;
+        YUtils::printDebug("ALPH instruction did not find its magic hex",DebugType::ERROR);
         return;
     }
     //std::cout << "*** Starting AREA instruction parse ***" << endl;
@@ -529,7 +529,7 @@ void YidsRom::handleALPH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
 void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
     uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     if (instructionCheck != Constants::SETD_MAGIC_NUM) {
-        cerr << "SETD instruction did not find magic hex " << hex << Constants::SETD_MAGIC_NUM << endl;
+        YUtils::printDebug("SETD instruction did not find magic hex",DebugType::ERROR);
         return;
     }
     indexPointer += 4; // Go to length
