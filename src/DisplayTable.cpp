@@ -50,20 +50,26 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
  */
 void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren, uint16_t whichBg) {
     if (whichBg == 0 || whichBg > 3) {
-        cerr << "[ERROR] Invalid BG put index " << whichBg << endl;
+        std::stringstream ssBadBg;
+        ssBadBg << "Invalid BG put index: " << whichBg;
+        YUtils::printDebug(ssBadBg.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
     // NOTE: Remove me once BG3 is supported
     if (whichBg == 3) {
-        cout << "[WARN] BG 3 is not yet supported" << endl;
+        YUtils::printDebug("BG 3 tile placement is not yet supported",DebugType::WARNING);
         return;
     }
     if (x > (uint32_t)this->columnCount()) {
-        std::cerr << "[ERROR] X value too high: " << hex << x << std::endl;
+        std::stringstream ssXvaluHigh;
+        ssXvaluHigh << "X value too high: " << hex << x;
+        YUtils::printDebug(ssXvaluHigh.str(),DebugType::ERROR);
         return;
     }
     if (y > (uint32_t)this->rowCount()) {
-        std::cerr << "[ERROR] Y value too high: " << hex << y << std::endl;
+        std::stringstream ssYvaluHigh;
+        ssYvaluHigh << "Y value too high: " << hex << y;
+        YUtils::printDebug(ssYvaluHigh.str(),DebugType::ERROR);
         return;
     }
     uint32_t pixelTileSize = 0;
@@ -73,12 +79,16 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         pixelTileSize = this->yidsRom->pixelTilesBg1.size();
     }
     if (pixelTileSize < 1) {
-        std::cerr << "[ERROR] objsetPixelTiles are empty, cannot place tile" << std::endl;
+        std::stringstream ssEmptyTiles;
+        ssEmptyTiles << "pixelTilesBgX is empty, cannot place tile. whichBg: " << whichBg;
+        YUtils::printDebug(ssEmptyTiles.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
     if (pren.tileId >= pixelTileSize) {
-        std::cerr << "[ERROR] Tile ID '" << hex << pren.tileId;
-        std::cerr << "' is greater than objsetPixelTiles count " << hex << pixelTileSize << std::endl;
+        std::stringstream ssTileId;
+        ssTileId << "Tile ID '" << hex << pren.tileId;
+        ssTileId << "' is greater than objsetPixelTiles count " << hex << pixelTileSize;
+        YUtils::printDebug(ssTileId.str(),DebugType::ERROR);
         return;
     }
     int pal = (int)pren.paletteId; // int is more commonly used to access, so convert it early
@@ -263,15 +273,15 @@ void DisplayTable::updateBg() {
      ******************/
     uint32_t preRenderSizeBg1 = this->yidsRom->preRenderDataBg1.size();
     if (preRenderSizeBg1 == 0) {
-        std::cerr << "[WARN] preRenderDataBg1 is empty" << std::endl;
+        YUtils::printDebug("preRenderDataBg1 is empty",DebugType::WARNING);
         return;
     }
     if (this->yidsRom->canvasWidthBg1 == 0) {
-        std::cerr << "[ERROR] Canvas Width for BG1 was never set!" << std::endl;
+        YUtils::printDebug("Canvas Width for BG1 was never set!",DebugType::ERROR);
         return;
     }
     if (this->yidsRom->pixelTilesBg1.size() < 1) {
-        std::cerr << "[WARN] Cannot update BG1, missing pixelTilesBg1" << std::endl;
+        YUtils::printDebug("Cannot update BG1, missing pixelTilesBg1",DebugType::WARNING);
         return;
     }
     const uint32_t cutOffBg1 = this->yidsRom->canvasWidthBg1;
@@ -285,7 +295,7 @@ void DisplayTable::updateBg() {
 
 void DisplayTable::updateObjects() {
     if (this->yidsRom->loadedLevelObjects.size() == 0) {
-        cout << "[WARN] No objects loaded" << endl;
+        YUtils::printDebug("No objects loaded, cannot update",DebugType::ERROR);
         return;
     }
     for (auto it = this->yidsRom->loadedLevelObjects.cbegin(); it != this->yidsRom->loadedLevelObjects.cend(); it++) {
@@ -294,8 +304,7 @@ void DisplayTable::updateObjects() {
         auto potentialExisting = this->item(y,x);
         // Very basic pointing to position
         if (potentialExisting == nullptr) {
-            cout << "[WARN] No tile to place object on at x: " << hex << x << ", y: " << hex << y << endl; 
-            potentialExisting = new QTableWidgetItem(); // Make it NOT null lmao
+            potentialExisting = new QTableWidgetItem(); // Make it NOT null
         }
         auto objectGraphicsMeta = LevelObject::getObjectGraphicMetadata(*it);
         if (objectGraphicsMeta.tilesCount == 0) {
@@ -393,8 +402,10 @@ void DisplayTable::placeObjectTile(
             
             uint32_t subEnd = tileStart + Constants::CHARTILE_DATA_SIZE;
             if (tileStart+Constants::CHARTILE_DATA_SIZE > subLength) {
-                cerr << "[WARN] Tried to get too big a chunk! Wanted " << hex << subEnd;
-                cerr << ", only had " << hex << subLength << endl;
+                std::stringstream ssChunk;
+                ssChunk << "Tried to get too big a chunk! Wanted " << hex << subEnd;
+                ssChunk << ", only had " << hex << subLength;
+                YUtils::printDebug(ssChunk.str(),DebugType::WARNING);
             } else {
                 uint32_t tileOffsetIndex = 0;
                 const int16_t baseX = x + (xOffset/8);

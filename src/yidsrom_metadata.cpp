@@ -221,7 +221,6 @@ void YidsRom::getGameLevelsMetaData() {
                             uint16_t len = lo.settingsLength;
                             if (len > 10) {
                                 // Silence this here
-                                //cout << "[WARN] Unusually high object settings length for " << hex << lo.objectId << ": " << hex << len << endl;
                             }
                             lo.xPosition = YUtils::getUint16FromVec(uncompVec, mpdzIndex + 4);
                             lo.yPosition = YUtils::getUint16FromVec(uncompVec, mpdzIndex + 6);
@@ -285,7 +284,9 @@ void YidsRom::getGameLevelsMetaData() {
                         // For now, skip
                         mpdzIndex += brakLength;
                     } else {
-                        cerr << "[WARN] Instruction besides SCEN used: " << hex << curInstruction << endl;
+                        std::stringstream ssInstNotScen;
+                        ssInstNotScen << "Instruction besides SCEN used: " << hex << curInstruction;
+                        YUtils::printDebug(ssInstNotScen.str(),DebugType::ERROR);
                         return;
                     }
                 }
