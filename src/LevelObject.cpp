@@ -52,7 +52,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         case 0x2b: { // Poundable Pillar
-            //YUtils::printVector(lo.settings);
             meta.tilesSectorOffset = 0x17;
             meta.paletteSectorOffset = 0x8d;
             meta.tileWidth = 2;
@@ -104,10 +103,33 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tileWidth = 8;
             break;
         }
+        case 0x8e: { // Large breakable rock squares
+            meta.tilesSectorOffset = 0x48;
+            // See 020db27c for other potential palettes
+            meta.paletteSectorOffset = 0xCD;
+            meta.tilesCount = 4 * 4;
+            meta.tileWidth = 4;
+            break;
+        }
+        case 0x92: { // Stairs
+            // TODO: special print me
+            meta.tilesSectorOffset = 0x54;
+            meta.paletteSectorOffset = 0xe2;
+            meta.tilesCount = 8;
+            meta.tileWidth = 4;
+            break;
+        }
         case 0x94: { // Chomp-breakable blocks
             // Fuck. They're an arc file. "objsbblock.arc"
             // TODO: Implement objsbblock.arc
             meta.tilesCount = 0;
+            break;
+        }
+        case 0x97: { // Ghost Guy
+            meta.tilesSectorOffset = 0x56;
+            meta.paletteSectorOffset = 0xda;
+            meta.tilesCount = 6;
+            meta.tileWidth = 2;
             break;
         }
         case 0x9A: { // Red arrow signs
@@ -177,22 +199,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tilesSectorOffset = 0x5f;
             meta.paletteSectorOffset = 0xe3;
             meta.tilesCount = 4;
-            meta.tileWidth = 2;
-            break;
-        }
-        case 0x92: { // Stairs
-            // TODO: special print me
-            meta.tilesSectorOffset = 0x54;
-            meta.paletteSectorOffset = 0xe2;
-            meta.tilesCount = 8;
-            meta.tileWidth = 4;
-            YUtils::printVector(lo.settings);
-            break;
-        }
-        case 0x97: { // Ghost Guy
-            meta.tilesSectorOffset = 0x56;
-            meta.paletteSectorOffset = 0xda;
-            meta.tilesCount = 6;
             meta.tileWidth = 2;
             break;
         }
