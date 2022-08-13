@@ -26,6 +26,8 @@ PaletteTable::PaletteTable(QWidget* parent, YidsRom* rom) {
     this->verticalHeader()->hide();
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
     this->setItemDelegate(new PixelDelegate);
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
 
     // Drag and Drop //
     this->setMouseTracking(true);

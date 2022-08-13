@@ -12,7 +12,7 @@ public:
     PaletteTable(QWidget *parent, YidsRom* rom);
     void refreshLoadedTiles();
 
-    const static int PALETTE_TABLE_WINDOW_HEIGHT = 550;
+    const static int PALETTE_TABLE_WINDOW_HEIGHT = 536;
     const static int PALETTE_TABLE_WINDOW_WIDTH = 536;
     const static int PALETTE_TABLE_WIDTH = 0x10;
     const static int PALETTE_TABLE_HEIGHT = 0x20;
