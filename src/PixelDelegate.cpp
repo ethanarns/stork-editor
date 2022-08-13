@@ -15,8 +15,11 @@ using namespace std;
 // A single drawn tile is 8x8
 const int PIXEL_TILE_DIVISIONS = 8;
 const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
+const QColor selectionColor(255,0,0,50);
+const QColor hardSelectionColor(255,0,0,100);
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
+    const bool selected = (option.state & QStyle::State_Selected) != 0;
 
     /*********************************
      *** PRIMARY (BG2) TILE PIXELS ***
@@ -137,6 +140,9 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             //     y = (8 - y - 1);
             // }
             this->drawPixel(painter, option.rect, x, y, qc);
+            if (selected) {
+                this->drawPixel(painter, option.rect, x, y, hardSelectionColor);
+            }
         }
     }
 
@@ -352,13 +358,12 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         }
     }
 
-    if ((option.state & QStyle::State_Selected) != 0) {
-        QColor selectionColor(255,0,0,100);
+    if (selected) {
         painter->fillRect(option.rect,selectionColor);
     }
 }
 
-void PixelDelegate::drawPixel(QPainter *painter, const QRect &rect, int x, int y, QColor &color) const {
+void PixelDelegate::drawPixel(QPainter *painter, const QRect &rect, const int x, const int y, const QColor &color) const {
     // Don't worry about memory waste, none of this is stored past function scope
     // Division gets weird with ints, use floats temporarily
     const float TRUE_HEIGHT = static_cast<float>(rect.height());
