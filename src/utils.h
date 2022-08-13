@@ -27,6 +27,7 @@ class YUtils {
 public:
     static void printSurroundingFiles(std::string path);
     static std::string getLowercase(std::string input);
+    static std::string getUppercase(std::string input);
     static Address conv2xAddrToFileAddr(AddressMemory x2address);
     static bool writeByteVectorToFile(std::vector<uint8_t> &bytes, std::string filename);
 

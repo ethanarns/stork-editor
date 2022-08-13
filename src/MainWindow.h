@@ -25,12 +25,12 @@ public:
     void LoadRom();
 
     QLabel* paletteHoverLabel;
+    PaletteTable* paletteTable;
 private:
     DisplayTable* grid;
     QWidget* chartilesPopup;
     ChartilesTable* chartilesTable;
     QWidget* palettePopup;
-    PaletteTable* paletteTable;
     QWidget* levelSelectPopup;
     LevelSelect* levelSelect;
 

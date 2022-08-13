@@ -31,6 +31,14 @@ std::string YUtils::getLowercase(std::string input) {
     return out.str();
 }
 
+std::string YUtils::getUppercase(std::string input) {
+    std::stringstream out;
+    for (auto elem: input) {
+        out << (char)toupper(elem);
+    }
+    return out.str();
+}
+
 void YUtils::printSurroundingFiles(std::string path) {
     for (const auto entry : filesystem::directory_iterator(path)) {
         std::string curFileName = entry.path().filename().string();

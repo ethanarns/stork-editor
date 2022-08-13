@@ -5,10 +5,12 @@
 #include "../utils.h"
 
 #include <iostream>
+#include <sstream>
 
 #include <QtCore>
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QLabel>
 
 using namespace std;
 
@@ -24,13 +26,15 @@ PaletteTable::PaletteTable(QWidget* parent, YidsRom* rom) {
     this->setRowCount(PaletteTable::PALETTE_TABLE_HEIGHT);
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
+    
+    this->setEditTriggers(QAbstractItemView::NoEditTriggers); // Disable text editing
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
     this->setItemDelegate(new PixelDelegate);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-
-    // Drag and Drop //
     this->setMouseTracking(true);
+
+    QTableWidget::connect(this, &QTableWidget::cellClicked, this, &PaletteTable::paletteTableClicked);
 }
 
 void PaletteTable::refreshLoadedTiles() {
@@ -51,4 +55,18 @@ void PaletteTable::refreshLoadedTiles() {
             this->setItem(paletteIndex,colorIndex,tileItem);
         }
     }
+}
+
+void PaletteTable::paletteTableClicked(int row, int column) {
+    // Color WORD
+    uint8_t firstByte = this->yidsRom->currentPalettes[row][column*2];
+    uint8_t secondByte = this->yidsRom->currentPalettes[row][column*2+1];
+    uint16_t colorBytes = (secondByte << 8) + firstByte;
+    std::stringstream ssColorShort;
+    ssColorShort << std::setfill('0') << std::setw(4) << hex << colorBytes;
+    std::string colorValueString = YUtils::getUppercase(ssColorShort.str());
+
+    // Set label
+    auto label = this->parent()->findChild<QLabel*>("label_colorShort");
+    label->setText(colorValueString.c_str());
 }

@@ -11,6 +11,7 @@ class PaletteTable : public QTableWidget {
 public:
     PaletteTable(QWidget *parent, YidsRom* rom);
     void refreshLoadedTiles();
+    void paletteTableClicked(int row, int column);
 
     const static int PALETTE_TABLE_WINDOW_HEIGHT = 536;
     const static int PALETTE_TABLE_WINDOW_WIDTH = 536;
