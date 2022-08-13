@@ -537,6 +537,7 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
     const uint32_t indexEnd = indexPointer + setdLength;
     while (indexPointer < indexEnd) {
         LevelObject lo;
+        lo.uuid = this->levelObjectLoadIndex++;
         lo.objectId = YUtils::getUint16FromVec(mpdzVec, indexPointer + 0);
         lo.settingsLength = YUtils::getUint16FromVec(mpdzVec, indexPointer + 2);
         uint16_t len = lo.settingsLength;

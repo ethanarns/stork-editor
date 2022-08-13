@@ -169,7 +169,7 @@ void DisplayTable::displayTableClicked(int row, int column) {
         // Nothing has loaded yet, cancel
         return;
     }
-    cout << dec << curCell->data(PixelDelegateData::DEBUG_DATA).toInt() << endl;
+    cout << dec << curCell->data(PixelDelegateData::OBJECT_UUID).toInt() << endl;
 }
 
 void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType) {
@@ -216,7 +216,7 @@ void DisplayTable::initCellCollision() {
             this->setCellCollision(y  ,x+1,CollisionDraw::DIAG_UP_RIGHT);
         } else if (curCol == CollisionType::STATIC_COIN) {
             // Don't draw, make a coin
-            this->placeObjectTile(x+1,y,0,0,0,2,4,PaletteFileName::OBJSET);
+            this->placeObjectTile(x+1,y,0,0,0,2,4,PaletteFileName::OBJSET,this->yidsRom->levelObjectLoadIndex++);
         } else if (curCol != 0) { // Unknown, draw temp
             this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT);
             this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);
@@ -323,7 +323,8 @@ void DisplayTable::updateObjects() {
                 objectGraphicsMeta.paletteSectorOffset,
                 objectGraphicsMeta.tileWidth,
                 objectGraphicsMeta.tilesCount,
-                objectGraphicsMeta.whichPaletteFile
+                objectGraphicsMeta.whichPaletteFile,
+                it->uuid
             );
         }
     }
@@ -351,7 +352,8 @@ void DisplayTable::placeObjectTile(
     uint32_t paletteOffset,
     uint32_t spriteWidth,
     uint32_t tilesLength,
-    PaletteFileName paletteFile
+    PaletteFileName paletteFile,
+    uint32_t uuid
 ) {
     auto objectPalette = this->yidsRom->currentPalettes[0]; // Default
     if (paletteOffset != 0) {
@@ -427,6 +429,7 @@ void DisplayTable::placeObjectTile(
                     tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette);
                     tileItem->setData(PixelDelegateData::FLIP_H_BG2,0);
                     tileItem->setData(PixelDelegateData::FLIP_V_BG2,0);
+                    tileItem->setData(PixelDelegateData::OBJECT_UUID,uuid);
 
                     tileOffsetIndex++;
                 }

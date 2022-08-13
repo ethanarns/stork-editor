@@ -71,6 +71,8 @@ public:
     std::map<uint32_t,ObjectPalette> effectPalettes;
 
     std::vector<LevelObject> loadedLevelObjects;
+    uint32_t levelObjectLoadIndex = 0; // Instead of UUIDs
+
     uint32_t canvasWidthBg2 = 0;
     uint32_t canvasHeightBg2 = 0;
     uint32_t canvasWidthBg1 = 0;

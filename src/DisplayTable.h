@@ -21,7 +21,8 @@ public:
         uint32_t paletteOffset,
         uint32_t spriteWidth,
         uint32_t tilesLength,
-        PaletteFileName paletteFile
+        PaletteFileName paletteFile,
+        uint32_t uuid
     );
     void displayTableClicked(int row, int column);
     void setCellCollision(int row, int column, CollisionDraw colType);
