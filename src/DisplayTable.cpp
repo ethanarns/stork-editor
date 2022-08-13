@@ -87,7 +87,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     if (pren.tileId >= pixelTileSize) {
         std::stringstream ssTileId;
         ssTileId << "Tile ID '" << hex << pren.tileId;
-        ssTileId << "' is greater than objsetPixelTiles count " << hex << pixelTileSize;
+        ssTileId << "' is greater than pixelTileSize count " << hex << pixelTileSize;
         ssTileId << " for BG " << whichBg;
         YUtils::printDebug(ssTileId.str(),DebugType::ERROR);
         return;

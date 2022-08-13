@@ -5,6 +5,7 @@
 #include "constants.h"
 #include "LevelObject.h"
 #include "PixelDelegate.h"
+#include "popups/PaletteTable.h"
 
 #include <iostream>
 #include <vector>
@@ -81,6 +82,7 @@ void YidsRom::loadCrsb(std::string fileName_noext, const uint32_t subLevel) {
 
 // TODO: Get rid of this hacky crap
 uint32_t timesPaletteLoaded = 0;
+int globalPaletteIndex = 1;
 
 void YidsRom::loadMpdz(std::string fileName_noext) {
     std::stringstream ssMpdzLoad;
@@ -106,6 +108,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
 
     // TODO: Get rid of this hacky crap
     timesPaletteLoaded = 0;
+    globalPaletteIndex = 1;
 
     // Instruction loop
     while (mpdzIndex < mpdzFileLength) {
@@ -130,8 +133,6 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
         }
     }
 }
-
-
 
 /**
  * @brief Handles the SCEN instruction from MPDZ files
@@ -200,22 +201,24 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
         } else if (curSubInstruction == Constants::PLTB_MAGIC_NUM) {
             uint32_t pltbLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
             Address pltbReadIndex = indexPointer + 8; // +8 is to skip instruction and length
+            // auto testSub = YUtils::subVector(mpdzVec,pltbReadIndex,pltbReadIndex+pltbLength);
+            // YUtils::printVector(testSub);
             indexPointer += pltbLength + 8; // Skip past, don't do a manual count up
-            if (timesPaletteLoaded > 0) {
-                YUtils::printDebug("Only BG palette supported thus far, skipping",DebugType::WARNING);
-                continue;
-            }
             // Cycle up to the index pointer
-            int globalPaletteIndex = 1; // Start at 1 because universal
+            //int globalPaletteIndex = 1; // Start at 1 because universal
             while (pltbReadIndex < indexPointer) {
                 QByteArray currentLoadingPalette;
                 currentLoadingPalette.resize(Constants::PALETTE_SIZE);
                 for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
                     currentLoadingPalette[curPaletteIndex] = mpdzVec.at(pltbReadIndex + curPaletteIndex);
                 }
-                // Should round down because of int
-                this->currentPalettes[globalPaletteIndex] = currentLoadingPalette;
-                globalPaletteIndex++;
+                if (globalPaletteIndex >= PaletteTable::PALETTE_TABLE_HEIGHT) {
+                    YUtils::printDebug("More than 0x20 palettes attempted to be added",DebugType::WARNING);
+                    break;
+                } else {
+                    this->currentPalettes[globalPaletteIndex] = currentLoadingPalette;
+                    globalPaletteIndex++;
+                }
                 pltbReadIndex += Constants::PALETTE_SIZE; // 1 palette is 32 bytes, or 0x20
             }
             timesPaletteLoaded++;
@@ -334,55 +337,50 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             // TODO: Figure out how this knows where to write. Take a break, so far you have most tiles loading
             //std::cout << ">> Handling ANMZ instruction" << endl;
             uint32_t anmzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // Should be 0x1080 first time
-            // Address compressedDataStart = indexPointer + 8;
-            // Address compressedDataEnd = compressedDataStart + anmzLength;
-            // auto compressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
-            // auto uncompressedAnmz = YCompression::lzssVectorDecomp(compressedSubArray, false);
+            Address compressedDataStart = indexPointer + 8;
+            Address compressedDataEnd = compressedDataStart + anmzLength;
+            auto compressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
+            auto uncompressedAnmz = YCompression::lzssVectorDecomp(compressedSubArray, false);
 
-            // // Uncomment to get decompressed ANMZ
-            // // YUtils::writeByteVectorToFile(uncompressedAnmz,"test.anmz");
-            // // bool decompResult = YCompression::lzssDecomp("test.anmz", verbose);
+            // Uncomment to get decompressed ANMZ
+            // YUtils::writeByteVectorToFile(uncompressedAnmz,"test.anmz");
+            // bool decompResult = YCompression::lzssDecomp("test.anmz", verbose);
 
-            // // TODO: Do something with this data
-            // const uint32_t ANMZ_INCREMENT = 0x20;
-            // const uint32_t ANMZ_HEADER_BASE_LENGTH = 0x8;
-            // auto animationFrameCount = uncompressedAnmz.at(0);
-            // //cout << "Animation Frame Count: " << dec << (int)animationFrameCount << endl;
-            // uint32_t anmzFileIndex = ANMZ_HEADER_BASE_LENGTH + animationFrameCount;
-            // uint32_t anmzDataLength = ANMZ_INCREMENT * 0x20; // Pull first 32 for example
-            // uint32_t anmzDataIndexEnd = anmzFileIndex + anmzDataLength;
-            // uint32_t currentTileIndex = this->pixelTilesBg2.size(); // Size is last index + 1 already
-            // while(anmzFileIndex < anmzDataIndexEnd) {
-            //     Chartile curTile;
-            //     curTile.engine = ScreenEngine::A;
-            //     curTile.index = currentTileIndex;
-            //     curTile.tiles.resize(64);
-            //     // Go up by 2 since you split the bytes
-            //     for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
-            //         uint8_t curByte = uncompressedAnmz.at(anmzFileIndex + currentTileBuildIndex);
-            //         uint8_t highBit = curByte >> 4;
-            //         uint8_t lowBit = curByte % 0x10;
-            //         int innerPosition = currentTileBuildIndex*2;
-            //         curTile.tiles[innerPosition+1] = highBit;
-            //         curTile.tiles[innerPosition+0] = lowBit;
-            //     }
-            //     if (whichBgToWriteTo == 2) {
-            //         this->pixelTilesBg2.push_back(curTile);
-            //     } else if (whichBgToWriteTo == 1) {
-            //         this->pixelTilesBg1.push_back(curTile);
-            //     } else {
-            //         // warn
-            //     }
-            //     // for (int i = 0; i < 64; i++) {
-            //     //     std::cout << hex << (int)curTile.tiles[i] << ",";
-            //     // }
-            //     // cout << endl;
+            const uint32_t ANMZ_INCREMENT = 0x20;
+            const uint32_t ANMZ_HEADER_BASE_LENGTH = 0x8;
+            auto animationFrameCount = uncompressedAnmz.at(0);
+            //cout << "Animation Frame Count: " << dec << (int)animationFrameCount << endl;
+            uint32_t anmzFileIndex = ANMZ_HEADER_BASE_LENGTH + animationFrameCount;
+            uint32_t anmzDataLength = ANMZ_INCREMENT * 0x20; // Pull first 32 for example
+            uint32_t anmzDataIndexEnd = anmzFileIndex + anmzDataLength;
+            uint32_t currentTileIndex = this->pixelTilesBg2.size(); // Size is last index + 1 already
+            while(anmzFileIndex < anmzDataIndexEnd) {
+                Chartile curTile;
+                curTile.engine = ScreenEngine::A;
+                curTile.index = currentTileIndex;
+                curTile.tiles.resize(64);
+                // Go up by 2 since you split the bytes
+                for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
+                    uint8_t curByte = uncompressedAnmz.at(anmzFileIndex + currentTileBuildIndex);
+                    uint8_t highBit = curByte >> 4;
+                    uint8_t lowBit = curByte % 0x10;
+                    int innerPosition = currentTileBuildIndex*2;
+                    curTile.tiles[innerPosition+1] = highBit;
+                    curTile.tiles[innerPosition+0] = lowBit;
+                }
+                if (whichBgToWriteTo == 2) {
+                    // this->pixelTilesBg2.push_back(curTile);
+                } else if (whichBgToWriteTo == 1) {
+                    //this->pixelTilesBg1.push_back(curTile);
+                } else {
+                    // warn
+                }
                 
-            //     // Skip ahead by 0x20
-            //     anmzFileIndex += Constants::CHARTILE_DATA_SIZE;
-            //     currentTileIndex++;
-            // }
-            // cout << "Wrote ANMZ to bg: " << whichBgToWriteTo << endl;
+                // Skip ahead by 0x20
+                anmzFileIndex += Constants::CHARTILE_DATA_SIZE;
+                currentTileIndex++;
+            }
+            //cout << "Wrote ANMZ to bg: " << whichBgToWriteTo << endl;
 
             indexPointer += anmzLength + 8; // Go to next
         } else if (curSubInstruction == Constants::IMGB_MAGIC_NUM) {

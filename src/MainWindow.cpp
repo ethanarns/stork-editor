@@ -375,6 +375,7 @@ void MainWindow::buttonClick_levelSelect_load() {
     this->grid->updateObjects();
     this->chartilesTable->wipeTiles();
     this->chartilesTable->refreshLoadedTilesVector();
+    this->paletteTable->refreshLoadedTiles();
 }
 
 void MainWindow::buttonClick_levelSelect_cancel() {

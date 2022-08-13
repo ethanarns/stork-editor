@@ -34,7 +34,7 @@ public:
     std::map<std::string,uint32_t> fileIdMap;
     std::fstream romFile;
     RomMetadata metadata;
-    QByteArray currentPalettes[0x10]; // Will probably only use first 8
+    QByteArray currentPalettes[0x20];
     /**
      * @brief "Characters", or the pixel arrangement of tiles. From IMBZ data, for BG2
      */

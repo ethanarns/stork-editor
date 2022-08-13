@@ -32,28 +32,21 @@ PaletteTable::PaletteTable(QWidget* parent, YidsRom* rom) {
 }
 
 void PaletteTable::refreshLoadedTiles() {
-    const int PALETTE_DIMS = 16; // 0x0-0xf
-
-    for (int paletteIndex = 0; paletteIndex < PALETTE_DIMS; paletteIndex++) {
+    for (int paletteIndex = 0; paletteIndex < PaletteTable::PALETTE_TABLE_HEIGHT; paletteIndex++) {
         QByteArray curPalette = this->yidsRom->currentPalettes[paletteIndex];
-        for (int colorIndex = 0; colorIndex < PALETTE_DIMS; colorIndex++) {
-            // Do not delete this, it is being stored in this class
-            // That said, if you are re-setting it, delete the existing one (TODO)
-            QTableWidgetItem *newItem = new QTableWidgetItem();
+        for (int colorIndex = 0; colorIndex < PaletteTable::PALETTE_TABLE_WIDTH; colorIndex++) {
+            auto tileItem = this->item(paletteIndex,colorIndex);
+            if (tileItem == nullptr) {
+                tileItem = new QTableWidgetItem();
+            }
             QByteArray fill;
             fill.resize(64);
             for (int i = 0; i < 64; i++) {
                 fill[i] = colorIndex;
             }
-            newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,fill);
-            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,curPalette);
-            //cout << "Placing " << hex << colorIndex << " at (" << colorIndex << "," << paletteIndex << ")" << endl;
-            this->setItem(paletteIndex,colorIndex,newItem);
+            tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,fill);
+            tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,curPalette);
+            this->setItem(paletteIndex,colorIndex,tileItem);
         }
-        // cout << "Palette " << paletteIndex << endl;
-        // for (int testIndex = 0; testIndex < curPalette.size(); testIndex += 2) {
-        //     auto tempCol = YUtils::getColorFromBytes(curPalette.at(testIndex),curPalette.at(testIndex+1));
-        //     cout << "Color: " << dec << tempCol.red() << "," << tempCol.green() << "," << tempCol.blue() << endl;
-        // }
     }
 }
