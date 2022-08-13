@@ -169,7 +169,9 @@ void DisplayTable::displayTableClicked(int row, int column) {
         // Nothing has loaded yet, cancel
         return;
     }
-    cout << dec << curCell->data(PixelDelegateData::OBJECT_UUID).toInt() << endl;
+    if (!curCell->data(PixelDelegateData::OBJECT_UUID).isNull()) {
+        cout << dec << curCell->data(PixelDelegateData::OBJECT_UUID).toInt() << endl;
+    }
 }
 
 void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType) {

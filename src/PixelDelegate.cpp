@@ -16,7 +16,7 @@ using namespace std;
 const int PIXEL_TILE_DIVISIONS = 8;
 const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
 const QColor selectionColor(255,0,0,50);
-const QColor hardSelectionColor(255,0,0,100);
+const QColor hardSelectionColor(255,255,255,100);
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
     const bool selected = (option.state & QStyle::State_Selected) != 0;
@@ -358,9 +358,9 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         }
     }
 
-    if (selected) {
-        painter->fillRect(option.rect,selectionColor);
-    }
+    // if (selected) {
+    //     painter->fillRect(option.rect,selectionColor);
+    // }
 }
 
 void PixelDelegate::drawPixel(QPainter *painter, const QRect &rect, const int x, const int y, const QColor &color) const {
