@@ -42,7 +42,7 @@ void YidsRom::openRom(std::string fileName) {
         ssNoRom << "ERROR: ROM file could not be opened: '" << fileName << "'. ";
         ssNoRom << "Reported load error code: " << errno;
         YUtils::printDebug(ssNoRom.str(),DebugType::FATAL);
-        exit(EXIT_FAILURE);
+        return;
     }
 
     /************************

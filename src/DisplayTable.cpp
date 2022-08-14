@@ -100,8 +100,10 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     Chartile loadedTile;
     if (whichBg == 2) {
         loadedTile = this->yidsRom->pixelTilesBg2.at(pren.tileId);
+        pal += this->yidsRom->paletteOffsetBg2;
     } else if (whichBg == 1) {
         loadedTile = this->yidsRom->pixelTilesBg1.at(pren.tileId);
+        pal += this->yidsRom->paletteOffsetBg1;
     } else {
         std::stringstream ssbg;
         ssbg << "Unsupported BG: " << hex << whichBg;

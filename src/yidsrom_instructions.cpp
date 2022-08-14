@@ -204,8 +204,14 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             // auto testSub = YUtils::subVector(mpdzVec,pltbReadIndex,pltbReadIndex+pltbLength);
             // YUtils::printVector(testSub);
             indexPointer += pltbLength + 8; // Skip past, don't do a manual count up
-            // Cycle up to the index pointer
-            //int globalPaletteIndex = 1; // Start at 1 because universal
+
+            // BGs have offsets
+            if (whichBgToWriteTo == 2) {
+                this->paletteOffsetBg2 = globalPaletteIndex-1; // Starts at 1
+            } else if (whichBgToWriteTo == 1) {
+                this->paletteOffsetBg1 = globalPaletteIndex-1;
+            }
+
             while (pltbReadIndex < indexPointer) {
                 QByteArray currentLoadingPalette;
                 currentLoadingPalette.resize(Constants::PALETTE_SIZE);
@@ -387,8 +393,33 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
         } else if (curSubInstruction == Constants::IMGB_MAGIC_NUM) {
             //std::cout << ">> Handling IMGB instruction" << endl;
             uint32_t imgbLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
-            // TODO: Learn about this data
-            indexPointer += imgbLength + 8;
+            const uint32_t imgbEnd = indexPointer + 8 + imgbLength;
+            indexPointer += 8;
+
+            // Do it 0x20 by 0x20 (32)
+            while (indexPointer < imgbEnd) {
+                Chartile curTile;
+                curTile.engine = ScreenEngine::A;
+                curTile.index = indexPointer; // change this
+                curTile.tiles.resize(64);
+                // Go up by 2 since you split the bytes
+                for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
+                    uint8_t curByte = mpdzVec.at(indexPointer + currentTileBuildIndex);
+                    uint8_t highBit = curByte >> 4;
+                    uint8_t lowBit = curByte % 0x10;
+                    int innerPosition = currentTileBuildIndex*2;
+                    curTile.tiles[innerPosition+1] = highBit;
+                    curTile.tiles[innerPosition+0] = lowBit;
+                }
+                if (whichBgToWriteTo == 2) {
+                    this->pixelTilesBg2.push_back(curTile);
+                } else if (whichBgToWriteTo == 1) {
+                    this->pixelTilesBg1.push_back(curTile);
+                }
+                
+                // Skip ahead by 0x20
+                indexPointer += Constants::CHARTILE_DATA_SIZE;
+            }
         } else if (curSubInstruction == Constants::SCRL_MAGIC_NUM) {
             uint32_t scrlLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
             // TODO: Learn about this data

@@ -70,6 +70,9 @@ public:
     std::map<uint32_t,std::vector<uint8_t>> effectPixelTiles;
     std::map<uint32_t,ObjectPalette> effectPalettes;
 
+    uint32_t paletteOffsetBg1 = 0;
+    uint32_t paletteOffsetBg2 = 0;
+
     std::vector<LevelObject> loadedLevelObjects;
     uint32_t levelObjectLoadIndex = 0; // Instead of UUIDs
 
