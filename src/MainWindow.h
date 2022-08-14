@@ -42,6 +42,10 @@ private:
     QAction* action_about;
     QAction* action_memory;
 
+    QAction* action_viewBg1;
+    QAction* action_viewBg2;
+    QAction* action_viewBg3;
+
     void toolbarClick_palette();
     void toolbarClick_tiles();
     void toolbarClick_showCollision();

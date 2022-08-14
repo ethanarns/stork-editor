@@ -108,6 +108,27 @@ MainWindow::MainWindow() {
     action_paste->setDisabled(true);
     // Add connect() once implemented
 
+    // View menu //
+    QMenu* menu_view = menuBar()->addMenu("&View");
+
+    this->action_viewBg1 = new QAction("&Show BG 1");
+    this->action_viewBg1->setShortcut(tr("CTRL+1"));
+    this->action_viewBg1->setCheckable(true);
+    this->action_viewBg1->setChecked(true);
+    menu_view->addAction(this->action_viewBg1);
+
+    this->action_viewBg2 = new QAction("&Show BG 2");
+    this->action_viewBg2->setShortcut(tr("CTRL+2"));
+    this->action_viewBg2->setCheckable(true);
+    this->action_viewBg2->setChecked(true);
+    menu_view->addAction(this->action_viewBg2);
+
+    this->action_viewBg3 = new QAction("&Show BG 3");
+    this->action_viewBg3->setShortcut(tr("CTRL+3"));
+    this->action_viewBg3->setCheckable(true);
+    this->action_viewBg3->setChecked(true);
+    menu_view->addAction(this->action_viewBg3);
+
     // Tools menu //
     QMenu* menu_tools = menuBar()->addMenu("&Tools");
 
