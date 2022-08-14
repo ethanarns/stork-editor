@@ -454,23 +454,8 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
 }
 
 void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
-    //if (this->verbose) std::cout << ">> Handling IMBZ file: '" << fileName_noext << "'" << endl;
-    if (whichBg == 2) {
-        if (this->pixelTilesBg2.size() > 0) {
-            YUtils::printDebug("No overwriting existing pixel tile data for BG 2!",DebugType::ERROR);
-            return;
-        }
-    } else if (whichBg == 1) {
-        if (this->pixelTilesBg1.size() > 0) {
-            YUtils::printDebug("No overwriting existing pixel tile data for BG 1!",DebugType::ERROR);
-            return;
-        }
-    } else {
-        std::stringstream ssUnhandledBg;
-        ssUnhandledBg << "Attempting to write to unhandled pixel tiles for BG " << whichBg;
-        YUtils::printDebug(ssUnhandledBg.str(),DebugType::WARNING);
-        return;
-    }
+    this->pixelTilesBg1index = 0;
+    this->pixelTilesBg2index = 0;
 
     auto uncompressedFileVector = this->getFileByteVector(fileName_noext.append(".imbz"));
     std::vector uncompressedImbz = YCompression::lzssVectorDecomp(uncompressedFileVector,false);
