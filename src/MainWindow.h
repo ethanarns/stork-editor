@@ -46,6 +46,7 @@ private:
     QAction* action_viewBg2;
     QAction* action_viewBg3;
     QAction* action_viewObjects;
+    QAction* action_showCollision;
 
     void menuClick_viewBg1(bool checked);
     void menuClick_viewBg2(bool checked);
@@ -54,7 +55,8 @@ private:
 
     void toolbarClick_palette();
     void toolbarClick_tiles();
-    void toolbarClick_showCollision();
+    void toolbarClick_showCollision(bool shouldShow);
+    void toolbarClick_toggleCollision();
 
     void menuClick_levelSelect();
     void menuClick_memory();

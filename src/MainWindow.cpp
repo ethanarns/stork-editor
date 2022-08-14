@@ -115,6 +115,7 @@ MainWindow::MainWindow() {
     this->action_viewBg1->setShortcut(tr("CTRL+1"));
     this->action_viewBg1->setCheckable(true);
     this->action_viewBg1->setChecked(true);
+    this->action_viewBg1->setDisabled(true);
     menu_view->addAction(this->action_viewBg1);
     connect(this->action_viewBg1, &QAction::triggered, this, &MainWindow::menuClick_viewBg1);
 
@@ -122,6 +123,7 @@ MainWindow::MainWindow() {
     this->action_viewBg2->setShortcut(tr("CTRL+2"));
     this->action_viewBg2->setCheckable(true);
     this->action_viewBg2->setChecked(true);
+    this->action_viewBg2->setDisabled(true);
     menu_view->addAction(this->action_viewBg2);
     connect(this->action_viewBg2, &QAction::triggered, this, &MainWindow::menuClick_viewBg2);
 
@@ -129,6 +131,7 @@ MainWindow::MainWindow() {
     this->action_viewBg3->setShortcut(tr("CTRL+3"));
     this->action_viewBg3->setCheckable(true);
     this->action_viewBg3->setChecked(true);
+    this->action_viewBg3->setDisabled(true);
     menu_view->addAction(this->action_viewBg3);
     connect(this->action_viewBg3, &QAction::triggered, this, &MainWindow::menuClick_viewBg3);
 
@@ -136,8 +139,19 @@ MainWindow::MainWindow() {
     this->action_viewObjects->setShortcut(tr("CTRL+4"));
     this->action_viewObjects->setCheckable(true);
     this->action_viewObjects->setChecked(true);
+    this->action_viewObjects->setDisabled(true);
     menu_view->addAction(this->action_viewObjects);
     connect(this->action_viewObjects, &QAction::triggered, this, &MainWindow::menuClick_viewObjects);
+
+    menu_view->addSeparator();
+
+    this->action_showCollision = new QAction("&Show Collision");
+    this->action_showCollision->setShortcut(tr("CTRL+5"));
+    this->action_showCollision->setCheckable(true);
+    this->action_showCollision->setChecked(true);
+    this->action_showCollision->setDisabled(true);
+    menu_view->addAction(this->action_showCollision);
+    connect(this->action_showCollision, &QAction::triggered, this, &MainWindow::toolbarClick_showCollision);
 
     // Tools menu //
     QMenu* menu_tools = menuBar()->addMenu("&Tools");
@@ -182,7 +196,7 @@ MainWindow::MainWindow() {
     this->button_toggleCollision = toolbar->addAction(QIcon(iconCollisionShow), tr("Toggle collision visibility"));
     this->button_toggleCollision->setObjectName("button_iconCollision");
     this->button_toggleCollision->setDisabled(true);
-    connect(this->button_toggleCollision,&QAction::triggered, this, &MainWindow::toolbarClick_showCollision);
+    connect(this->button_toggleCollision,&QAction::triggered, this, &MainWindow::toolbarClick_toggleCollision);
 
     toolbar->addSeparator();
 
@@ -322,6 +336,11 @@ void MainWindow::LoadRom() {
 
         // Misc menu items //
         this->action_memory->setDisabled(false);
+        this->action_showCollision->setDisabled(false);
+        this->action_viewBg1->setDisabled(false);
+        this->action_viewBg2->setDisabled(false);
+        this->action_viewBg3->setDisabled(false);
+        this->action_viewObjects->setDisabled(false);
     }
 }
 
@@ -345,8 +364,15 @@ void MainWindow::toolbarClick_tiles() {
     }
 }
 
-void MainWindow::toolbarClick_showCollision() {
-    this->grid->toggleShowCollision();
+void MainWindow::toolbarClick_showCollision(bool shouldShow) {
+    this->grid->shouldShowCollision = shouldShow;
+    this->grid->updateShowCollision();
+}
+
+void MainWindow::toolbarClick_toggleCollision() {
+    this->grid->shouldShowCollision = !this->grid->shouldShowCollision;
+    this->action_showCollision->setChecked(this->grid->shouldShowCollision);
+    this->grid->updateShowCollision();
 }
 
 /*******************

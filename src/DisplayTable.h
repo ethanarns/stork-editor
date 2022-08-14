@@ -16,6 +16,7 @@ public:
     bool drawBg2;
     bool drawBg3;
     bool drawObjects;
+    bool shouldShowCollision;
 
     DisplayTable(QWidget *parent, YidsRom* rom);
     void putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren, uint16_t whichBg);
@@ -33,7 +34,7 @@ public:
     void setCellCollision(int row, int column, CollisionDraw colType);
     void updateBg();
     void initCellCollision();
-    void toggleShowCollision();
+    void updateShowCollision();
     void setLayerDraw(int whichLayer, bool shouldDraw);
     void updateObjects();
     int wipeTable();
@@ -42,7 +43,6 @@ private:
     const static int CELL_COUNT_W = 0xff*4;
     const static int CELL_COUNT_H = 0xff*2;
     YidsRom* yidsRom;
-    bool shouldShowCollision;
 
     void cellEnteredTriggered(int row, int column);
 };

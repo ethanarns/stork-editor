@@ -230,13 +230,7 @@ void DisplayTable::initCellCollision() {
     }
 }
 
-void DisplayTable::toggleShowCollision() {
-    if (this->shouldShowCollision == true) {
-        this->shouldShowCollision = false;
-        auto allItems = this->items(nullptr);
-    } else {
-        this->shouldShowCollision = true;
-    }
+void DisplayTable::updateShowCollision() {
     const int ROW_COUNT = this->rowCount();
     const int COLUMN_COUNT = this->columnCount();
     for (int row = 0; row < ROW_COUNT; row++) {

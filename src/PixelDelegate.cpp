@@ -147,12 +147,6 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     }
 
     if (!index.data(PixelDelegateData::OBJECT_ID).isNull() && index.data(PixelDelegateData::DRAW_OBJECTS).toBool()) {
-        // QStaticText objectText("123");
-        // QFont objectFont(tr(""),12,2,false);
-        // painter->setFont(objectFont);
-        // QPoint start = option.rect.topLeft();
-        // start.setY(start.y()-(option.rect.height()/2));
-        // painter->drawStaticText(start,objectText);
         QPen qcWhiteRect("white");
         painter->setPen(qcWhiteRect);
         auto rectCopy = option.rect;
