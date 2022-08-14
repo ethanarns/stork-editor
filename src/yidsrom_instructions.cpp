@@ -343,18 +343,19 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             auto uncompressedAnmz = YCompression::lzssVectorDecomp(compressedSubArray, false);
 
             // Uncomment to get decompressed ANMZ
-            // YUtils::writeByteVectorToFile(uncompressedAnmz,"test.anmz");
-            // bool decompResult = YCompression::lzssDecomp("test.anmz", verbose);
+            // YUtils::writeByteVectorToFile(uncompressedAnmz,"test2.anmz");
+            // bool decompResult = YCompression::lzssDecomp("test2.anmz");
+            // exit(EXIT_SUCCESS);
 
             const uint32_t ANMZ_INCREMENT = 0x20;
             const uint32_t ANMZ_HEADER_BASE_LENGTH = 0x8;
             auto animationFrameCount = uncompressedAnmz.at(0);
             //cout << "Animation Frame Count: " << dec << (int)animationFrameCount << endl;
             uint32_t anmzFileIndex = ANMZ_HEADER_BASE_LENGTH + animationFrameCount;
-            uint32_t anmzDataLength = ANMZ_INCREMENT * 0x20; // Pull first 32 for example
-            uint32_t anmzDataIndexEnd = anmzFileIndex + anmzDataLength;
+            anmzFileIndex = 0xC;
             uint32_t currentTileIndex = this->pixelTilesBg2.size(); // Size is last index + 1 already
-            while(anmzFileIndex < anmzDataIndexEnd) {
+            uint32_t anmzSize = uncompressedAnmz.size();
+            while(anmzFileIndex < anmzSize) {
                 Chartile curTile;
                 curTile.engine = ScreenEngine::A;
                 curTile.index = currentTileIndex;
@@ -369,7 +370,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                     curTile.tiles[innerPosition+0] = lowBit;
                 }
                 if (whichBgToWriteTo == 2) {
-                    // this->pixelTilesBg2.push_back(curTile);
+                    //this->pixelTilesBg2.push_back(curTile);
                 } else if (whichBgToWriteTo == 1) {
                     //this->pixelTilesBg1.push_back(curTile);
                 } else {
