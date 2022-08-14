@@ -82,6 +82,8 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         try {
             loadedTile = this->yidsRom->pixelTilesBg2.at(pren.tileId);
         } catch (...) {
+            // 0 often just means "empty," but is not consistent
+            // Use this as a fallback until you find out
             if (pren.tileId != 0) {
                 std::stringstream ssTile;
                 ssTile << "Could not get certain tileId for BG2: " << pren.tileId;
