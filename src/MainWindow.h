@@ -45,6 +45,12 @@ private:
     QAction* action_viewBg1;
     QAction* action_viewBg2;
     QAction* action_viewBg3;
+    QAction* action_viewObjects;
+
+    void menuClick_viewBg1(bool checked);
+    void menuClick_viewBg2(bool checked);
+    void menuClick_viewBg3(bool checked);
+    void menuClick_viewObjects(bool checked);
 
     void toolbarClick_palette();
     void toolbarClick_tiles();

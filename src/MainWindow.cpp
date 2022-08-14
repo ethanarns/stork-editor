@@ -116,18 +116,28 @@ MainWindow::MainWindow() {
     this->action_viewBg1->setCheckable(true);
     this->action_viewBg1->setChecked(true);
     menu_view->addAction(this->action_viewBg1);
+    connect(this->action_viewBg1, &QAction::triggered, this, &MainWindow::menuClick_viewBg1);
 
     this->action_viewBg2 = new QAction("&Show BG 2");
     this->action_viewBg2->setShortcut(tr("CTRL+2"));
     this->action_viewBg2->setCheckable(true);
     this->action_viewBg2->setChecked(true);
     menu_view->addAction(this->action_viewBg2);
+    connect(this->action_viewBg2, &QAction::triggered, this, &MainWindow::menuClick_viewBg2);
 
     this->action_viewBg3 = new QAction("&Show BG 3");
     this->action_viewBg3->setShortcut(tr("CTRL+3"));
     this->action_viewBg3->setCheckable(true);
     this->action_viewBg3->setChecked(true);
     menu_view->addAction(this->action_viewBg3);
+    connect(this->action_viewBg3, &QAction::triggered, this, &MainWindow::menuClick_viewBg3);
+
+    this->action_viewObjects = new QAction("&Show Objects");
+    this->action_viewObjects->setShortcut(tr("CTRL+4"));
+    this->action_viewObjects->setCheckable(true);
+    this->action_viewObjects->setChecked(true);
+    menu_view->addAction(this->action_viewObjects);
+    connect(this->action_viewObjects, &QAction::triggered, this, &MainWindow::menuClick_viewObjects);
 
     // Tools menu //
     QMenu* menu_tools = menuBar()->addMenu("&Tools");
@@ -411,4 +421,20 @@ void MainWindow::buttonClick_levelSelect_load() {
 void MainWindow::buttonClick_levelSelect_cancel() {
     this->levelSelectPopup->close();
     this->rom->getGameLevelsMetaData();
+}
+
+void MainWindow::menuClick_viewBg1(bool checked) {
+    cout << "1" << endl;
+}
+
+void MainWindow::menuClick_viewBg2(bool checked) {
+    cout << "2" << endl;
+}
+
+void MainWindow::menuClick_viewBg3(bool checked) {
+    cout << "3" << checked << endl;
+}
+
+void MainWindow::menuClick_viewObjects(bool checked) {
+    cout << "4" << endl;
 }
