@@ -71,6 +71,36 @@ void ChartilesTable::refreshLoadedObjectTilesMap() {
     }
 }
 
+void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
+    std::map<uint32_t,Chartile>* tilesMap;
+    if (whichBg == 1) {
+        tilesMap = &this->yidsRom->pixelTilesBg1;
+    } else if (whichBg == 2) {
+        tilesMap = &this->yidsRom->pixelTilesBg2;
+    } else {
+        return;
+    }
+    uint32_t mapSize = tilesMap->size();
+    uint32_t yOffset = 0;
+    uint32_t indexForOffset = 0;
+    for (uint32_t mapIndex = 0; mapIndex < mapSize; mapIndex++) {
+        auto chartile = (*tilesMap)[mapIndex];
+        QTableWidgetItem *newItem = new QTableWidgetItem();
+        newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,chartile.tiles);
+        newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[0]);
+        newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
+        newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
+        newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);
+        uint32_t x = indexForOffset % 0x10;
+        uint32_t y = indexForOffset / 0x10;
+        if (this->item(y,x) != nullptr) {
+            delete this->item(y,x);
+        }
+        this->setItem(y,x,newItem);
+        indexForOffset++;
+    }
+}
+
 void ChartilesTable::wipeTiles() {
     for (uint32_t tileRowIndex = 0; tileRowIndex < ChartilesTable::CHARTILES_ROW_COUNT; tileRowIndex++) {
         for (uint32_t tileColumnIndex = 0; tileColumnIndex < ChartilesTable::CHARTILES_TABLE_WIDTH; tileColumnIndex++) {
