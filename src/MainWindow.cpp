@@ -424,17 +424,17 @@ void MainWindow::buttonClick_levelSelect_cancel() {
 }
 
 void MainWindow::menuClick_viewBg1(bool checked) {
-    cout << "1" << endl;
+    this->grid->setLayerDraw(1,checked);
 }
 
 void MainWindow::menuClick_viewBg2(bool checked) {
-    cout << "2" << endl;
+    this->grid->setLayerDraw(2,checked);
 }
 
 void MainWindow::menuClick_viewBg3(bool checked) {
-    cout << "3" << checked << endl;
+    this->grid->setLayerDraw(3,checked);
 }
 
 void MainWindow::menuClick_viewObjects(bool checked) {
-    cout << "4" << endl;
+    this->grid->setLayerDraw(4,checked);
 }

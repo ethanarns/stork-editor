@@ -81,7 +81,6 @@ void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
         return;
     }
     uint32_t mapSize = tilesMap->size();
-    uint32_t yOffset = 0;
     uint32_t indexForOffset = 0;
     for (uint32_t mapIndex = 0; mapIndex < mapSize; mapIndex++) {
         auto chartile = (*tilesMap)[mapIndex];

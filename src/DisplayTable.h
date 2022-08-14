@@ -12,6 +12,11 @@
 class DisplayTable : public QTableWidget {
     Q_OBJECT
 public:
+    bool drawBg1;
+    bool drawBg2;
+    bool drawBg3;
+    bool drawObjects;
+
     DisplayTable(QWidget *parent, YidsRom* rom);
     void putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren, uint16_t whichBg);
     void placeObjectTile(
@@ -29,6 +34,7 @@ public:
     void updateBg();
     void initCellCollision();
     void toggleShowCollision();
+    void setLayerDraw(int whichLayer, bool shouldDraw);
     void updateObjects();
     int wipeTable();
 private:

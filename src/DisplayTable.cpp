@@ -249,6 +249,36 @@ void DisplayTable::toggleShowCollision() {
     }
 }
 
+void DisplayTable::setLayerDraw(int whichLayer, bool shouldDraw) {
+    if (whichLayer == 1) {
+        this->drawBg1 = shouldDraw;
+    } else if (whichLayer == 2) {
+        this->drawBg2 = shouldDraw;
+    } else if (whichLayer == 3) {
+        this->drawBg3 = shouldDraw;
+    } else {
+        this->drawObjects = shouldDraw;
+    }
+    const int ROW_COUNT = this->rowCount();
+    const int COLUMN_COUNT = this->columnCount();
+    for (int row = 0; row < ROW_COUNT; row++) {
+        for (int col = 0; col < COLUMN_COUNT; col++) {
+            auto potentialItem = this->item(row,col);
+            if (potentialItem != nullptr) {
+                if (whichLayer == 1) {
+                    potentialItem->setData(PixelDelegateData::DRAW_BG1,this->drawBg1);
+                } else if (whichLayer == 2) {
+                    potentialItem->setData(PixelDelegateData::DRAW_BG2,this->drawBg2);
+                } else if (whichLayer == 3) {
+                    potentialItem->setData(PixelDelegateData::DRAW_BG3,this->drawBg3);
+                } else {
+                    potentialItem->setData(PixelDelegateData::DRAW_OBJECTS,this->drawObjects);
+                }
+            }
+        }
+    }
+}
+
 void DisplayTable::updateBg() {
     /******************
      ** BACKGROUND 2 **

@@ -28,7 +28,12 @@ enum PixelDelegateData {
     OBJECT_ID = 114,
     OBJECT_PALETTE = 115,
     OBJECT_TILES = 116,
-    OBJECT_UUID = 117
+    OBJECT_UUID = 117,
+
+    DRAW_BG1 = 118,
+    DRAW_BG2 = 119,
+    DRAW_BG3 = 110,
+    DRAW_OBJECTS = 111
 };
 
 enum CollisionType {

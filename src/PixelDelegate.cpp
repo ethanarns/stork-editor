@@ -119,7 +119,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 
     auto objectTiles = index.data(PixelDelegateData::OBJECT_TILES).toByteArray();
     auto objectPalette = index.data(PixelDelegateData::OBJECT_PALETTE).toByteArray();
-    if (!objectTiles.isNull() && !objectPalette.isNull()) {
+    if (!objectTiles.isNull() && !objectPalette.isNull() && index.data(PixelDelegateData::DRAW_OBJECTS).toBool()) {
         for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
             char whichPalette = objectTiles.at(i);
             if (whichPalette == 0) {
@@ -146,7 +146,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         }
     }
 
-    if (!index.data(PixelDelegateData::OBJECT_ID).isNull()) {
+    if (!index.data(PixelDelegateData::OBJECT_ID).isNull() && index.data(PixelDelegateData::DRAW_OBJECTS).toBool()) {
         // QStaticText objectText("123");
         // QFont objectFont(tr(""),12,2,false);
         // painter->setFont(objectFont);
