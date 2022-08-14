@@ -30,9 +30,9 @@ enum PixelDelegateData {
     OBJECT_TILES = 116,
     OBJECT_UUID = 117,
 
-    DRAW_BG1 = 118,
-    DRAW_BG2 = 119,
-    DRAW_BG3 = 110,
+    DRAW_BG1 = 32,
+    DRAW_BG2 = 31,
+    DRAW_BG3 = 30,
     DRAW_OBJECTS = 111
 };
 
