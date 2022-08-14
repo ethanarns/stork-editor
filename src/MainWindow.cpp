@@ -268,7 +268,7 @@ void MainWindow::LoadRom() {
         this->chartilesPopup->setMinimumHeight(300);
         this->chartilesPopup->setWindowTitle("Tile Viewer");
         this->button_iconTiles->setDisabled(false);
-        this->chartilesTable->refreshLoadedTilesMap();
+        this->chartilesTable->refreshLoadedTilesVector(1);
 
         // Palette popup //
         this->palettePopup->resize(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH,PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);
@@ -383,7 +383,7 @@ void MainWindow::buttonClick_levelSelect_load() {
     this->grid->initCellCollision();
     this->grid->updateObjects();
     this->chartilesTable->wipeTiles();
-    this->chartilesTable->refreshLoadedTilesVector();
+    this->chartilesTable->refreshLoadedTilesVector(1);
     this->paletteTable->refreshLoadedTiles();
 }
 

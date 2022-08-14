@@ -203,14 +203,16 @@ void YUtils::printVector(std::vector<uint8_t> &vectorToPrint, int newlineBreak) 
     uint32_t lengthOfVec = vectorToPrint.size();
     constexpr int INDEX_WIDTH = 6;
     cout << hex << setw(INDEX_WIDTH) << 0 << " | ";
-    for (uint32_t printIndex = 0; printIndex < lengthOfVec; printIndex++) {
-        cout << hex << setw(2) << (int)vectorToPrint.at(printIndex) << " ";
+    uint32_t printIndex = 0;
+    for (auto it = vectorToPrint.begin(); it != vectorToPrint.end(); it++) {
+        cout << hex << setw(2) << (int)(*it) << " ";
         if (newlineBreak != 0 && printIndex != 0 && (printIndex + 1) % newlineBreak == 0) {
             cout << endl;
             if (printIndex + 1 != lengthOfVec) {
                 cout << hex << setw(INDEX_WIDTH) << (printIndex+1) << " | ";
             }
         }
+        printIndex++;
     }
     cout << endl;
 }

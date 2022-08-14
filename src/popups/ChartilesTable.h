@@ -11,7 +11,7 @@ class ChartilesTable : public QTableWidget {
 public:
     ChartilesTable(QWidget *parent, YidsRom* rom);
     void refreshLoadedTilesMap();
-    void refreshLoadedTilesVector();
+    void refreshLoadedTilesVector(int whichBg);
     void chartilesTableClicked(int row, int column);
     void wipeTiles();
 private:

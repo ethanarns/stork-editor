@@ -82,8 +82,16 @@ void ChartilesTable::wipeTiles() {
     }
 }
 
-void ChartilesTable::refreshLoadedTilesVector() {
-    auto tilesVector = &this->yidsRom->pixelTilesBg2;
+void ChartilesTable::refreshLoadedTilesVector(int whichBg) {
+    std::vector<Chartile>* tilesVector;
+    if (whichBg == 1) {
+        tilesVector = &this->yidsRom->pixelTilesBg1;
+    } else if (whichBg == 2) {
+        tilesVector = &this->yidsRom->pixelTilesBg2;
+    } else {
+        cerr << "no" << endl;
+    }
+    
     uint32_t tileVectorIndex = 0;
     for (auto it = tilesVector->begin(); it != tilesVector->end(); it++) {
         uint32_t x = tileVectorIndex % 0x10;
