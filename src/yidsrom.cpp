@@ -35,7 +35,6 @@ YidsRom::YidsRom() {
 }
 
 void YidsRom::openRom(std::string fileName) {
-    this->filesLoaded = false;
     this->romFile.open(fileName, ios::binary | ios::in);
     if (!romFile) {
         std::stringstream ssNoRom;
@@ -44,9 +43,10 @@ void YidsRom::openRom(std::string fileName) {
         YUtils::printDebug(ssNoRom.str(),DebugType::FATAL);
         return;
     }
+    this->filesLoaded = false;
 
     /************************
-     *** METADATA/HEADERS *** 
+     *** METADATA/HEADERS ***
      ************************/
     std::string romCode = this->getTextAt(0x0c,4);
     if (romCode.compare(YidsRom::GAME_CODE) != 0) {
