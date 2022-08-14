@@ -29,7 +29,6 @@ using namespace std;
 
 YidsRom::YidsRom() {
     this->filesLoaded = false;
-    this->pixelTilesBg2.reserve(1000); // Found 988 in 1-1's first IMBZ
     this->preRenderDataBg2.reserve(180'000); // Found 189280 in 1-1's first IMBZ
     this->collisionTileArray.reserve(79'000); // Found roughly 79000 in 1-1's first IMBZ
 }

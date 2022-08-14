@@ -72,26 +72,6 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         YUtils::printDebug(ssYvaluHigh.str(),DebugType::ERROR);
         return;
     }
-    uint32_t pixelTileSize = 0;
-    if (whichBg == 2) {
-        pixelTileSize = this->yidsRom->pixelTilesBg2.size();
-    } else if (whichBg == 1) {
-        pixelTileSize = this->yidsRom->pixelTilesBg1.size();
-    }
-    if (pixelTileSize < 1) {
-        std::stringstream ssEmptyTiles;
-        ssEmptyTiles << "pixelTilesBgX is empty, cannot place tile. whichBg: " << whichBg;
-        YUtils::printDebug(ssEmptyTiles.str(),DebugType::FATAL);
-        exit(EXIT_FAILURE);
-    }
-    if (pren.tileId >= pixelTileSize) {
-        std::stringstream ssTileId;
-        ssTileId << "Tile ID '" << hex << pren.tileId;
-        ssTileId << "' is greater than pixelTileSize count " << hex << pixelTileSize;
-        ssTileId << " for BG " << whichBg;
-        YUtils::printDebug(ssTileId.str(),DebugType::ERROR);
-        return;
-    }
     int pal = (int)pren.paletteId; // int is more commonly used to access, so convert it early
     if (pal > 0xf) {
         cerr << "paletteId unusually high, got " << hex << pal << endl;
@@ -99,10 +79,30 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     }
     Chartile loadedTile;
     if (whichBg == 2) {
-        loadedTile = this->yidsRom->pixelTilesBg2.at(pren.tileId);
+        try {
+            loadedTile = this->yidsRom->pixelTilesBg2.at(pren.tileId);
+        } catch (...) {
+            if (pren.tileId != 0) {
+                std::stringstream ssTile;
+                ssTile << "Could not get certain tileId for BG2: " << pren.tileId;
+                YUtils::printDebug(ssTile.str(),DebugType::ERROR);
+            }
+            return;
+        }
+        
         pal += this->yidsRom->paletteOffsetBg2;
     } else if (whichBg == 1) {
-        loadedTile = this->yidsRom->pixelTilesBg1.at(pren.tileId);
+        try {
+            loadedTile = this->yidsRom->pixelTilesBg1.at(pren.tileId);
+        } catch (...) {
+            if (pren.tileId != 0) {
+                std::stringstream ssTile;
+                ssTile << "Could not get certain tileId for BG1: " << pren.tileId;
+                YUtils::printDebug(ssTile.str(),DebugType::ERROR);
+            }
+            return;
+        }
+
         pal += this->yidsRom->paletteOffsetBg1;
     } else {
         std::stringstream ssbg;

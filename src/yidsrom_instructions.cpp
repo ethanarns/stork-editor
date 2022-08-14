@@ -360,10 +360,20 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             //cout << "Animation Frame Count: " << dec << (int)animationFrameCount << endl;
             uint32_t anmzFileIndex = ANMZ_HEADER_BASE_LENGTH + animationFrameCount;
             anmzFileIndex = 0xC;
-            uint32_t currentTileIndex = this->pixelTilesBg2.size(); // Size is last index + 1 already
+            uint32_t currentTileIndex;
             uint32_t anmzSize = uncompressedAnmz.size();
             auto startIndex = YUtils::getUint16FromVec(uncompressedAnmz,4);
-            this->pixelTilesBg1index = startIndex;
+
+            if (whichBgToWriteTo == 1) {
+                this->pixelTilesBg1index = startIndex;
+                currentTileIndex = this->pixelTilesBg1.size(); // Size is last index + 1 already
+            } else if (whichBgToWriteTo == 2) {
+                this->pixelTilesBg2index = startIndex;
+                currentTileIndex = this->pixelTilesBg2.size();
+            } else {
+                YUtils::printDebug("Unhandled BG in ANMZ",DebugType::WARNING);
+            }
+            
             while(anmzFileIndex < anmzSize) {
                 Chartile curTile;
                 curTile.engine = ScreenEngine::A;
@@ -379,6 +389,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                     curTile.tiles[innerPosition+0] = lowBit;
                 }
                 if (whichBgToWriteTo == 2) {
+                    this->pixelTilesBg2[this->pixelTilesBg2index++] = curTile;
                     //this->pixelTilesBg2.push_back(curTile);
                 } else if (whichBgToWriteTo == 1) {
                     this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
@@ -391,7 +402,11 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 currentTileIndex++;
             }
             // Reset the start to 0
-            this->pixelTilesBg1index = 0;
+            if (whichBgToWriteTo == 1) {
+                this->pixelTilesBg1index = 0;
+            } else if (whichBgToWriteTo == 2) {
+                this->pixelTilesBg2index = 0;
+            }
 
             indexPointer += anmzLength + 8; // Go to next
         } else if (curSubInstruction == Constants::IMGB_MAGIC_NUM) {
@@ -416,7 +431,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                     curTile.tiles[innerPosition+0] = lowBit;
                 }
                 if (whichBgToWriteTo == 2) {
-                    this->pixelTilesBg2.push_back(curTile);
+                    this->pixelTilesBg2[this->pixelTilesBg2index++] = curTile;
                 } else if (whichBgToWriteTo == 1) {
                     this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
                 }
@@ -485,7 +500,7 @@ void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
             curTile.tiles[innerPosition+0] = lowBit;
         }
         if (whichBg == 2) {
-            this->pixelTilesBg2.push_back(curTile);
+            this->pixelTilesBg2[this->pixelTilesBg2index++] = curTile;
         } else if (whichBg == 1) {
             this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
         }
