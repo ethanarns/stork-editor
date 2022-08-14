@@ -42,7 +42,8 @@ public:
     /**
      * @brief "Characters", or the pixel arrangement of tiles. From IMBZ data, for BG1
      */
-    std::vector<Chartile> pixelTilesBg1;
+    std::map<uint32_t,Chartile> pixelTilesBg1;
+    uint32_t pixelTilesBg1index = 0;
     /**
      * @brief "Characters", or the pixel arrangement of tiles. From OBJ data, for OAM
      */

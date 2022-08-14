@@ -106,6 +106,8 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     // 8 in order to start it at the first instruction besides SET
     Address mpdzIndex = 8; // Pass this in as a pointer to functions
 
+    this->pixelTilesBg1index = 0;
+
     // TODO: Get rid of this hacky crap
     timesPaletteLoaded = 0;
     globalPaletteIndex = 1;
@@ -340,7 +342,6 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             }
             indexPointer += colzLength + 8;
         } else if (curSubInstruction == Constants::ANMZ_MAGIC_NUM) {
-            // TODO: Figure out how this knows where to write. Take a break, so far you have most tiles loading
             //std::cout << ">> Handling ANMZ instruction" << endl;
             uint32_t anmzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // Should be 0x1080 first time
             Address compressedDataStart = indexPointer + 8;
@@ -361,6 +362,8 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             anmzFileIndex = 0xC;
             uint32_t currentTileIndex = this->pixelTilesBg2.size(); // Size is last index + 1 already
             uint32_t anmzSize = uncompressedAnmz.size();
+            auto startIndex = YUtils::getUint16FromVec(uncompressedAnmz,4);
+            this->pixelTilesBg1index = startIndex;
             while(anmzFileIndex < anmzSize) {
                 Chartile curTile;
                 curTile.engine = ScreenEngine::A;
@@ -378,7 +381,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 if (whichBgToWriteTo == 2) {
                     //this->pixelTilesBg2.push_back(curTile);
                 } else if (whichBgToWriteTo == 1) {
-                    //this->pixelTilesBg1.push_back(curTile);
+                    this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
                 } else {
                     // warn
                 }
@@ -387,7 +390,8 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 anmzFileIndex += Constants::CHARTILE_DATA_SIZE;
                 currentTileIndex++;
             }
-            //cout << "Wrote ANMZ to bg: " << whichBgToWriteTo << endl;
+            // Reset the start to 0
+            this->pixelTilesBg1index = 0;
 
             indexPointer += anmzLength + 8; // Go to next
         } else if (curSubInstruction == Constants::IMGB_MAGIC_NUM) {
@@ -414,7 +418,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 if (whichBgToWriteTo == 2) {
                     this->pixelTilesBg2.push_back(curTile);
                 } else if (whichBgToWriteTo == 1) {
-                    this->pixelTilesBg1.push_back(curTile);
+                    this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
                 }
                 
                 // Skip ahead by 0x20
@@ -483,7 +487,7 @@ void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
         if (whichBg == 2) {
             this->pixelTilesBg2.push_back(curTile);
         } else if (whichBg == 1) {
-            this->pixelTilesBg1.push_back(curTile);
+            this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
         }
         
         // Skip ahead by 0x20
