@@ -304,15 +304,22 @@ void DisplayTable::updateBg() {
         YUtils::printDebug("Cannot update BG2, missing pixelTilesBg2",DebugType::WARNING);
         return;
     }
-    //const uint32_t cutOffBg2 = 0x10*32.5;
+
     const uint32_t cutOffBg2 = this->yidsRom->canvasWidthBg2;
-    for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSizeBg2; preRenderIndex++) {
-        uint32_t y = preRenderIndex / cutOffBg2;
-        uint32_t x = preRenderIndex % cutOffBg2;
-        ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex));
-        //cout << "x: " << hex << x << ", y: " << hex << y << endl;
-        this->putTileBg(x,y,curShort,2);
+    uint32_t bg2LeftOffset = 0;
+    while (bg2LeftOffset < newCanvasWidth) {
+        for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSizeBg2; preRenderIndex++) {
+            uint32_t y = preRenderIndex / cutOffBg2;
+            uint32_t x = (preRenderIndex % cutOffBg2) + bg2LeftOffset;
+            ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex));
+            if (x > newCanvasWidth) {
+                continue;
+            }
+            this->putTileBg(x,y,curShort,2);
+        }
+        bg2LeftOffset += cutOffBg2;
     }
+
     /******************
      ** BACKGROUND 1 **
      ******************/
