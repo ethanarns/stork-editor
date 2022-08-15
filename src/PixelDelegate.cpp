@@ -118,46 +118,48 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     /***************
      *** OBJECTS ***
      ***************/
-    int objectId = index.data(PixelDelegateData::OBJECT_ID).toInt();
-    Q_UNUSED(objectId);
+    if (index.data(PixelDelegateData::DRAW_OBJECTS).isNull() || index.data(PixelDelegateData::DRAW_OBJECTS).toBool() == true) {
+        int objectId = index.data(PixelDelegateData::OBJECT_ID).toInt();
+        Q_UNUSED(objectId);
 
-    auto objectTiles = index.data(PixelDelegateData::OBJECT_TILES).toByteArray();
-    auto objectPalette = index.data(PixelDelegateData::OBJECT_PALETTE).toByteArray();
-    if (!objectTiles.isNull() && !objectPalette.isNull() && index.data(PixelDelegateData::DRAW_OBJECTS).toBool()) {
-        for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
-            char whichPalette = objectTiles.at(i);
-            if (whichPalette == 0) {
-                // NOTE: Palette index 0 seems to almost always be the transparent
-                //   value. This may not be true, keep this in mind for future bugs
-                continue;
-            }
-            auto qc = YUtils::getColorFromBytes(
-                objectPalette.at(whichPalette*2),
-                objectPalette.at(whichPalette*2+1)
-            );
-            int x = i % 8;
-            // if (index.data(PixelDelegateData::FLIP_H_BG1).toBool() == true) {
-            //     x = (8 - x - 1);
-            // }
-            int y = i / 8;
-            // if (index.data(PixelDelegateData::FLIP_V_BG1).toBool() == true) {
-            //     y = (8 - y - 1);
-            // }
-            this->drawPixel(painter, option.rect, x, y, qc);
-            if (selected) {
-                this->drawPixel(painter, option.rect, x, y, hardSelectionColor);
+        auto objectTiles = index.data(PixelDelegateData::OBJECT_TILES).toByteArray();
+        auto objectPalette = index.data(PixelDelegateData::OBJECT_PALETTE).toByteArray();
+        if (!objectTiles.isNull() && !objectPalette.isNull()) {
+            for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
+                char whichPalette = objectTiles.at(i);
+                if (whichPalette == 0) {
+                    // NOTE: Palette index 0 seems to almost always be the transparent
+                    //   value. This may not be true, keep this in mind for future bugs
+                    continue;
+                }
+                auto qc = YUtils::getColorFromBytes(
+                    objectPalette.at(whichPalette*2),
+                    objectPalette.at(whichPalette*2+1)
+                );
+                int x = i % 8;
+                // if (index.data(PixelDelegateData::FLIP_H_BG1).toBool() == true) {
+                //     x = (8 - x - 1);
+                // }
+                int y = i / 8;
+                // if (index.data(PixelDelegateData::FLIP_V_BG1).toBool() == true) {
+                //     y = (8 - y - 1);
+                // }
+                this->drawPixel(painter, option.rect, x, y, qc);
+                if (selected) {
+                    this->drawPixel(painter, option.rect, x, y, hardSelectionColor);
+                }
             }
         }
-    }
 
-    if (!index.data(PixelDelegateData::OBJECT_ID).isNull() && index.data(PixelDelegateData::DRAW_OBJECTS).toBool()) {
-        QPen qcWhiteRect("white");
-        painter->setPen(qcWhiteRect);
-        auto rectCopy = option.rect;
-        rectCopy.setHeight(option.rect.height()-1);
-        rectCopy.setWidth(option.rect.width()-1);
-        painter->fillRect(rectCopy,"purple");
-        painter->drawRect(rectCopy);
+        if (!index.data(PixelDelegateData::OBJECT_ID).isNull() && index.data(PixelDelegateData::DRAW_OBJECTS).toBool()) {
+            QPen qcWhiteRect("white");
+            painter->setPen(qcWhiteRect);
+            auto rectCopy = option.rect;
+            rectCopy.setHeight(option.rect.height()-1);
+            rectCopy.setWidth(option.rect.width()-1);
+            painter->fillRect(rectCopy,"purple");
+            painter->drawRect(rectCopy);
+        }
     }
 
     /*****************
