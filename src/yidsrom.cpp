@@ -408,3 +408,25 @@ void YidsRom::wipeCrsbData() {
     this->preRenderDataBg1.clear();
     this->preRenderDataBg2.clear();
 }
+
+uint32_t YidsRom::getGreatestCanvasHeight() {
+    uint32_t greatHeight = 0;
+    if (this->canvasHeightBg1 > greatHeight) {
+        greatHeight = this->canvasHeightBg1;
+    }
+    if (this->canvasHeightBg2 > greatHeight) {
+        greatHeight = this->canvasHeightBg2;
+    }
+    return greatHeight;
+}
+
+uint32_t YidsRom::getGreatestCanvasWidth() {
+    uint32_t greatWidth = 0;
+    if (this->canvasWidthBg1 > greatWidth) {
+        greatWidth = this->canvasWidthBg1;
+    }
+    if (this->canvasWidthBg2 > greatWidth) {
+        greatWidth = this->canvasWidthBg2;
+    }
+    return greatWidth;
+}

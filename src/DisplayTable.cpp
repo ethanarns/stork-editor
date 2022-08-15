@@ -274,6 +274,20 @@ void DisplayTable::setLayerDraw(int whichLayer, bool shouldDraw) {
 }
 
 void DisplayTable::updateBg() {
+    auto newCanvasHeight = this->yidsRom->getGreatestCanvasHeight();
+    if (newCanvasHeight == 0) {
+        YUtils::printDebug("Canvas height calculation failed!",DebugType::ERROR);
+    } else {
+        this->setRowCount(newCanvasHeight);
+    }
+    
+    auto newCanvasWidth = this->yidsRom->getGreatestCanvasWidth();
+    if (newCanvasWidth == 0) {
+        YUtils::printDebug("Canvas width calculation failed!",DebugType::ERROR);
+    } else {
+        this->setColumnCount(newCanvasWidth);
+    }
+
     /******************
      ** BACKGROUND 2 **
      ******************/

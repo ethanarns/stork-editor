@@ -102,6 +102,9 @@ public:
     template<typename T>
     T getNumberAt(Address addr);
 
+    uint32_t getGreatestCanvasWidth();
+    uint32_t getGreatestCanvasHeight();
+
     ~YidsRom();
 private:
 
