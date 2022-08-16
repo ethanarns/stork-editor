@@ -7,6 +7,7 @@
 #include "PixelDelegate.h"
 #include "popups/PaletteTable.h"
 #include "Level.h"
+#include "FsPacker.h"
 
 #include <iostream>
 #include <vector>
@@ -41,11 +42,6 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
         exit(EXIT_FAILURE);
     }
 
-    // Important is MPDZ, which are marked by SCEN, and is the actual data for
-    //   each level and sublevel inside a world level. 1-1 has 4, one for each
-    //   area, and no more
-
-    // Number of CSCN records, aka maps in level!
     auto mapFileCount = this->getNumberAt<uint32_t>(startAddr + 8);
     if (mapFileCount == 0) {
         YUtils::printDebug("mapFileCount in CRSB was 0",DebugType::ERROR);
@@ -80,10 +76,27 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
         auto mpdzText = this->getTextNullTermAt(crsbIndex + 12);
         curCscnData.mpdzFileNoExtension = mpdzText;
 
+        // +1 accounts for the null terminator (doesn't count with size())
+        uint32_t postStringIndex = crsbIndex + 12 + curCscnData.mpdzFileNoExtension.size() + 1;
+        uint32_t endPostString = crsbIndex + cscnLength + 0x08;
+
+        // Note: There always seems to be 8 zeroes before anything happens post-string
+        // It makes no sense, but I have yet to open a level with anything but 8 zeroes
+        postStringIndex += 8;
+
+        while (postStringIndex < endPostString) {
+            uint16_t curPostStringValue;
+            this->romFile.seekg(postStringIndex);
+            this->romFile.read(reinterpret_cast<char *>(&curPostStringValue), sizeof(curPostStringValue));
+            cout << hex << setw(4) << std::setfill('0') << curPostStringValue << " ";
+            postStringIndex += 2;
+        }
+        cout << endl;
+
+        //cout << "lol " << hex << (int)this->getNumberAt<uint8_t>(postStringIndex-2) << endl;
+
         // Finally, add it to the parent object
         crsbData.cscnList.push_back(curCscnData);
-
-        std::cout << curCscnData.toString() << endl;
 
         // +8 because the length doesn't factor in magic hex and length
         crsbIndex += cscnLength + 0x8;
@@ -102,41 +115,6 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
     }
 
     return crsbData;
-
-    //const uint32_t OFFSET_TO_FIRST_CSCN = 0xC; // 12
-
-    // This only gets the first one. The block after this gets them all
-    // Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN;
-    // auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
-    // this->loadMpdz(mpdzFilename_noext);
-
-    // uint32_t curCscnReadOffset = 0; // In bytes
-    // uint32_t subLevelIndex = 0;
-    // for (uint32_t cscnIndex = 0; cscnIndex < mapFileCount; cscnIndex++) {
-    //     // Points to the current magic number text, CSCN
-    //     Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN + curCscnReadOffset;
-    //     // Check that the magic text is there, at index 0
-    //     std::string magicTextCscn = this->getTextAt(baseAddrCscn + 0, 4);
-    //     if (magicTextCscn.compare(Constants::CSCN_MAGIC) != 0) {
-    //         cerr << "Magic header text " << Constants::CSCN_MAGIC << " not found! Found '" << magicTextCscn << "' instead." << endl;
-    //         return;
-    //     }
-    //     // Next, get the filename
-    //     auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
-    //     if (subLevelIndex == subLevel) {
-    //         this->loadMpdz(mpdzFilename_noext);
-    //         return;
-    //     }
-
-    //     // +0x4 is because the magic number is 4 long, and the next is the length
-    //     // +0x8 is because that length is added to the current read position in the file
-    //     //   That recreates it as a non-relative offset number (it started from the
-    //     //   maybeExits at +0x8)
-    //     uint32_t cscnLength = this->getNumberAt<uint32_t>(baseAddrCscn + 0x4) + 0x8;
-        
-    //     curCscnReadOffset += cscnLength;
-    //     subLevelIndex++;
-    // }
 }
 
 // TODO: Get rid of this hacky crap
