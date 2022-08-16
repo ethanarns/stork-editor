@@ -14,6 +14,7 @@
 #include "constants.h"
 #include "LevelObject.h"
 #include "PixelDelegate.h"
+#include "Level.h"
 
 #include <QByteArray>
 
@@ -89,7 +90,8 @@ public:
     void openRom(std::string fileName);
 
     std::string getLevelFileNameFromMapIndex(uint32_t worldIndex, uint32_t levelIndex);
-    void loadCrsb(std::string fileName_noext, const uint32_t subLevel);
+    CrsbData loadCrsb(std::string fileName_noext);
+    void loadMpdz(std::string fileName_noext);
     void wipeCrsbData();
     void getGameLevelsMetaData();
 
@@ -110,7 +112,6 @@ private:
 
     void initArm9RomData(std::string fileName);
     void writeUncompressedARM9(uint32_t arm9start_rom, uint32_t arm9length);
-    void loadMpdz(std::string fileName_noext);
     void handleSCEN(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     void handleImbz(std::string fileName_noext, uint16_t whichBg);
     void handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);

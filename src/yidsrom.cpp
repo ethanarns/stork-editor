@@ -110,7 +110,8 @@ void YidsRom::openRom(std::string fileName) {
     this->handleObjPltFile("objeffect.arcz",this->effectPixelTiles,this->effectPalettes);
 
     std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,0);
-    this->loadCrsb(crsbFileName,0);
+    auto crsb = this->loadCrsb(crsbFileName);
+    this->loadMpdz(crsb.cscnList.at(0).mpdzFileNoExtension);
 }
 
 std::string YidsRom::getTextAt(Address position_file, uint32_t length) {

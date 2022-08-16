@@ -6,19 +6,22 @@
 #include "LevelObject.h"
 #include "PixelDelegate.h"
 #include "popups/PaletteTable.h"
+#include "Level.h"
 
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-void YidsRom::loadCrsb(std::string fileName_noext, const uint32_t subLevel) {
+CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
+    CrsbData crsbData;
+
     fileName_noext = YUtils::getLowercase(fileName_noext);
     auto fileName = fileName_noext.append(".crsb");
     auto fileId = this->fileIdMap[fileName];
     if (fileId == 0) {
         cerr << "Failed to load level: " << fileName << endl;
-        return;
+        return crsbData;
     }
     // x8 because each record of ranges is 8 bytes. 4 + 4
     Address rangesAddr = this->metadata.fatOffsets + fileId * 8;
@@ -29,55 +32,111 @@ void YidsRom::loadCrsb(std::string fileName_noext, const uint32_t subLevel) {
     uint32_t MAX_SIZE = 1U << (17 + 0x08);
     if (length > MAX_SIZE) {
         cerr << "File is too big! File size: " << dec << length << ", max size: " << dec << MAX_SIZE << endl;
-        return;
+        return crsbData;
     }
     
     std::string magicText = this->getTextAt(startAddr + 0,4);
     if (magicText.compare(Constants::CRSB_MAGIC) != 0) {
         cerr << "Magic header text " << Constants::CRSB_MAGIC << " not found! Found '" << magicText << "' instead." << endl;
-        return;
+        exit(EXIT_FAILURE);
     }
+
     // Important is MPDZ, which are marked by SCEN, and is the actual data for
     //   each level and sublevel inside a world level. 1-1 has 4, one for each
     //   area, and no more
 
     // Number of CSCN records, aka maps in level!
     auto mapFileCount = this->getNumberAt<uint32_t>(startAddr + 8);
+    if (mapFileCount == 0) {
+        YUtils::printDebug("mapFileCount in CRSB was 0",DebugType::ERROR);
+        return crsbData;
+    }
+    crsbData.mapFileCount = mapFileCount;
 
-    const uint32_t OFFSET_TO_FIRST_CSCN = 0xC; // 12
+    uint32_t crsbIndex = startAddr + 0x0C; // All important data retrieved, jump to the first CSCN
+
+    uint32_t mapFileIndex = 0;
+    while (mapFileIndex < mapFileCount) {
+        CscnData curCscnData;
+
+        // Check that the magic text is there, at index 0
+        std::string magicTextCscn = this->getTextAt(crsbIndex + 0, 4);
+        if (magicTextCscn.compare(Constants::CSCN_MAGIC) != 0) {
+            std::stringstream cscnMagic;
+            cscnMagic << "Magic header text " << Constants::CSCN_MAGIC << " not found! Found '" << magicTextCscn << "' instead.";
+            YUtils::printDebug(cscnMagic.str(),DebugType::ERROR);
+            return crsbData;
+        }
+
+        uint32_t cscnLength = this->getNumberAt<uint32_t>(crsbIndex + 4);
+
+        // TODO: Figure out why uint16 doesn't work with getNumber at.
+        // Maybe this? https://stackoverflow.com/questions/10632251/undefined-reference-to-template-function
+        this->romFile.seekg(crsbIndex + 8);
+        this->romFile.read(reinterpret_cast<char *>(&curCscnData.exitCount), sizeof(curCscnData.exitCount));
+
+        curCscnData.unknown_16 = this->getNumberAt<uint8_t>(crsbIndex + 10);
+        curCscnData.unknown_17 = this->getNumberAt<uint8_t>(crsbIndex + 11);
+        auto mpdzText = this->getTextNullTermAt(crsbIndex + 12);
+        curCscnData.mpdzFileNoExtension = mpdzText;
+
+        // Finally, add it to the parent object
+        crsbData.cscnList.push_back(curCscnData);
+
+        std::cout << curCscnData.toString() << endl;
+
+        // +8 because the length doesn't factor in magic hex and length
+        crsbIndex += cscnLength + 0x8;
+
+        mapFileIndex++;
+    }
+
+    if (crsbData.cscnList.size() == 0) {
+        YUtils::printDebug("CRSB pulled 0 CSCN records",DebugType::FATAL);
+        exit(EXIT_FAILURE);
+    }
+
+    if (crsbData.cscnList.size() != crsbData.mapFileCount) {
+        YUtils::printDebug("CRSB mismatch between CSCN record count and mapFileCount",DebugType::FATAL);
+        exit(EXIT_FAILURE);
+    }
+
+    return crsbData;
+
+    //const uint32_t OFFSET_TO_FIRST_CSCN = 0xC; // 12
 
     // This only gets the first one. The block after this gets them all
     // Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN;
     // auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
     // this->loadMpdz(mpdzFilename_noext);
 
-    uint32_t curCscnReadOffset = 0; // In bytes
-    uint32_t subLevelIndex = 0;
-    for (uint32_t cscnIndex = 0; cscnIndex < mapFileCount; cscnIndex++) {
-        // Points to the current magic number text, CSCN
-        Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN + curCscnReadOffset;
-        // Check that the magic text is there, at index 0
-        std::string magicTextCscn = this->getTextAt(baseAddrCscn + 0, 4);
-        if (magicTextCscn.compare(Constants::CSCN_MAGIC) != 0) {
-            cerr << "Magic header text " << Constants::CSCN_MAGIC << " not found! Found '" << magicTextCscn << "' instead." << endl;
-            return;
-        }
-        // Next, get the filename
-        auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
-        if (subLevelIndex == subLevel) {
-            this->loadMpdz(mpdzFilename_noext);
-            return;
-        }
+    // uint32_t curCscnReadOffset = 0; // In bytes
+    // uint32_t subLevelIndex = 0;
+    // for (uint32_t cscnIndex = 0; cscnIndex < mapFileCount; cscnIndex++) {
+    //     // Points to the current magic number text, CSCN
+    //     Address baseAddrCscn = startAddr + OFFSET_TO_FIRST_CSCN + curCscnReadOffset;
+    //     // Check that the magic text is there, at index 0
+    //     std::string magicTextCscn = this->getTextAt(baseAddrCscn + 0, 4);
+    //     if (magicTextCscn.compare(Constants::CSCN_MAGIC) != 0) {
+    //         cerr << "Magic header text " << Constants::CSCN_MAGIC << " not found! Found '" << magicTextCscn << "' instead." << endl;
+    //         return;
+    //     }
+    //     // Next, get the filename
+    //     auto mpdzFilename_noext = this->getTextNullTermAt(baseAddrCscn + 0xC);
+    //     if (subLevelIndex == subLevel) {
+    //         this->loadMpdz(mpdzFilename_noext);
+    //         return;
+    //     }
 
-        // +0x4 is because the magic number is 4 long, and the next is the length
-        // +0x8 is because that length is added to the current read position in the file
-        //   That recreates it as a non-relative offset number (it started from the
-        //   maybeExits at +0x8)
-        uint32_t cscnLength = this->getNumberAt<uint32_t>(baseAddrCscn + 0x4) + 0x8;
+    //     // +0x4 is because the magic number is 4 long, and the next is the length
+    //     // +0x8 is because that length is added to the current read position in the file
+    //     //   That recreates it as a non-relative offset number (it started from the
+    //     //   maybeExits at +0x8)
+    //     uint32_t cscnLength = this->getNumberAt<uint32_t>(baseAddrCscn + 0x4) + 0x8;
         
-        curCscnReadOffset += cscnLength;
-        subLevelIndex++;
-    }
+    //     curCscnReadOffset += cscnLength;
+    //     subLevelIndex++;
+    // }
 }
 
 // TODO: Get rid of this hacky crap

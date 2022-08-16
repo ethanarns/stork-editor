@@ -433,7 +433,8 @@ void MainWindow::buttonClick_levelSelect_load() {
     std::stringstream ssLevelLoad;
     ssLevelLoad << "Loading CRSB (Level) '" << loadingCrsb << "'";
     YUtils::printDebug(ssLevelLoad.str(),DebugType::VERBOSE);
-    this->rom->loadCrsb(loadingCrsb,0);
+    auto crsb = this->rom->loadCrsb(loadingCrsb);
+    this->rom->loadMpdz(crsb.cscnList.at(0).mpdzFileNoExtension);
     this->levelSelectPopup->close();
     // Visual updates
     this->grid->updateBg();
