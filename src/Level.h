@@ -44,15 +44,27 @@ struct CscnExitData {
     }
 };
 
+// Reference: https://www.youtube.com/watch?v=Zb9jvSQg9sw
+// Usually comes in as uint8_t, but this is stored as int
+// To find these, break on 2013208, load 1-1, and edit 0231e307
+enum Music {
+    YOSHIS_ISLAND_DS = 0x02,
+    SCORE = 0x07,
+    FLOWER_FIELD = 0x09
+};
+
 struct CscnData {
-    uint16_t exitCount; // 1-1: 0x0004
-    uint8_t unknown_16; // 1-1: 0x03
-    uint8_t unknown_17; // 1-1: 0x09
+    // (jump in, fly in from coin running level near growblock, shyguy pipe 1, shyguy pipe 2)
+    uint16_t numEntranceOffsets; // 1-1: 0x0004
+    // Pipe to coin running, shy guy pipe 1, shy guy pipe 2
+    uint8_t numExitsInScene; // 1-1: 0x03
+    uint8_t musicId; // 1-1: 0x09
     std::string mpdzFileNoExtension;
+    // 8 zeroes
     std::vector<CscnExitData> exits;
     std::string toString() {
         std::stringstream ssCscn;
-        ssCscn << "CscnData { exit count: " << hex << this->exitCount << ", ";
+        ssCscn << "CscnData { exit count: " << hex << this->numEntranceOffsets << ", ";
         ssCscn << "mpdz filename: " << this->mpdzFileNoExtension << " }";
         return ssCscn.str();
     }

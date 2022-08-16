@@ -69,10 +69,10 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
         // TODO: Figure out why uint16 doesn't work with getNumber at.
         // Maybe this? https://stackoverflow.com/questions/10632251/undefined-reference-to-template-function
         this->romFile.seekg(crsbIndex + 8);
-        this->romFile.read(reinterpret_cast<char *>(&curCscnData.exitCount), sizeof(curCscnData.exitCount));
+        this->romFile.read(reinterpret_cast<char *>(&curCscnData.numEntranceOffsets), sizeof(curCscnData.numEntranceOffsets));
 
-        curCscnData.unknown_16 = this->getNumberAt<uint8_t>(crsbIndex + 10);
-        curCscnData.unknown_17 = this->getNumberAt<uint8_t>(crsbIndex + 11);
+        curCscnData.numExitsInScene = this->getNumberAt<uint8_t>(crsbIndex + 10);
+        curCscnData.musicId = this->getNumberAt<uint8_t>(crsbIndex + 11);
         auto mpdzText = this->getTextNullTermAt(crsbIndex + 12);
         curCscnData.mpdzFileNoExtension = mpdzText;
 
@@ -83,14 +83,22 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
         // Note: There always seems to be 8 zeroes before anything happens post-string
         // It makes no sense, but I have yet to open a level with anything but 8 zeroes
         postStringIndex += 8;
+        // Those 0x8000 ones: do >> 14 and check if its equal to 2 (0b10)
+        //   if it is 2, Yoshi starts on the bottom screen. Anything else, he starts on the top
+        //   This is why there are so many that start with 0x8nnn
+        cout << "CSCN" << endl;
+        uint32_t entrancesIndex = 0;
+        while (entrancesIndex < curCscnData.numEntranceOffsets) {
 
-        while (postStringIndex < endPostString) {
-            uint16_t curPostStringValue;
-            this->romFile.seekg(postStringIndex);
-            this->romFile.read(reinterpret_cast<char *>(&curPostStringValue), sizeof(curPostStringValue));
-            cout << hex << setw(4) << std::setfill('0') << curPostStringValue << " ";
-            postStringIndex += 2;
+            entrancesIndex++;
         }
+        // while (postStringIndex < endPostString) {
+        //     uint16_t curPostStringValue;
+        //     this->romFile.seekg(postStringIndex);
+        //     this->romFile.read(reinterpret_cast<char *>(&curPostStringValue), sizeof(curPostStringValue));
+        //     cout << hex << setw(4) << std::setfill('0') << curPostStringValue << " ";
+        //     postStringIndex += 2;
+        // }
         cout << endl;
 
         //cout << "lol " << hex << (int)this->getNumberAt<uint8_t>(postStringIndex-2) << endl;
