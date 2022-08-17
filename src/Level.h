@@ -16,6 +16,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "utils.h"
+
 using namespace std;
 
 enum ExitStartType {
@@ -54,6 +56,18 @@ struct CscnEnterIntoMap {
         ssReturnEnter << "which screen: " << std::hex << (int)this->screen << " }";
         return ssReturnEnter.str();
     }
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        auto entranceXvec = YUtils::uint16toVec(this->entranceX);
+        auto entranceYvec = YUtils::uint16toVec(this->entranceY);
+        YUtils::appendVector(result,entranceXvec);
+        YUtils::appendVector(result,entranceYvec);
+        uint16_t thirdWord = (uint16_t)this->enterMapAnimation; // The right part is now here
+        thirdWord += ((uint16_t)this->screen) << 14; // Make the 0x80xx
+        auto thirdWordVec = YUtils::uint16toVec(thirdWord);
+        YUtils::appendVector(result,thirdWordVec);
+        return result;
+    }
 };
 
 struct CscnExitData {
@@ -69,6 +83,18 @@ struct CscnExitData {
         ssExit << "whichMapTo: " << std::hex << (int)this->whichMapTo << ", exitStartType: " << std::hex << this->exitStartType;
         ssExit << ", whichMapEntranceTo: " << std::hex << (int)this->whichEntranceTo << " }";
         return ssExit.str();
+    }
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        auto exitLocX = YUtils::uint16toVec(this->exitLocationX);
+        auto exitLocY = YUtils::uint16toVec(this->exitLocationY);
+        auto exitStartTypeVec = YUtils::uint16toVec((uint16_t)this->exitStartType);
+        YUtils::appendVector(result,exitLocX);
+        YUtils::appendVector(result,exitLocY);
+        YUtils::appendVector(result,exitStartTypeVec);
+        result.push_back(this->whichMapTo);
+        result.push_back(this->whichEntranceTo);
+        return result;
     }
 };
 
@@ -97,19 +123,27 @@ enum CscnMusicId {
 
 struct CscnData {
     // (jump in, fly in from coin running level near growblock, shyguy pipe 1, shyguy pipe 2)
-    uint16_t numEntranceOffsets; // 1-1: 0x0004
+    uint16_t numMapEnters; // 1-1: 0x0004
     // Pipe to coin running, shy guy pipe 1, shy guy pipe 2
     uint8_t numExitsInScene; // 1-1: 0x03
-    uint8_t musicId; // 1-1: 0x09
+    CscnMusicId musicId; // 1 byte, but enums are stored as 4 bytes
     std::string mpdzFileNoExtension;
     // 8 zeroes
     std::vector<CscnEnterIntoMap> entrances;
     std::vector<CscnExitData> exits;
     std::string toString() {
         std::stringstream ssCscn;
-        ssCscn << "CscnData { exit count: " << hex << this->numEntranceOffsets << ", ";
+        ssCscn << "CscnData { exit count: " << hex << this->numMapEnters << ", ";
         ssCscn << "mpdz filename: " << this->mpdzFileNoExtension << " }";
         return ssCscn.str();
+    }
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        auto numMapEntersVec = YUtils::uint16toVec(this->numMapEnters);
+        result = numMapEntersVec;
+        result.push_back(this->numExitsInScene);
+        result.push_back((uint8_t)this->musicId);
+        return result;
     }
 };
 

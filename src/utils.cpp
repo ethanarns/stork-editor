@@ -309,3 +309,15 @@ std::vector<uint8_t> YUtils::uint32toVec(uint32_t inputInt) {
 
     return result;
 }
+
+std::vector<uint8_t> YUtils::uint16toVec(uint16_t inputInt) {
+    std::vector<uint8_t> result;
+
+    uint8_t byte1 = (uint8_t)((inputInt >> 0) % 0x100);
+    uint8_t byte2 = (uint8_t)((inputInt >> 8) % 0x100);
+
+    result.push_back(byte1);
+    result.push_back(byte2);
+
+    return result;
+}

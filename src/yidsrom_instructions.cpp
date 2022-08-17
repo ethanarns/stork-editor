@@ -66,9 +66,10 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
 
         uint32_t cscnLength = this->getNumberAt<uint32_t>(crsbIndex + 4);
 
-        curCscnData.numEntranceOffsets = this->getNumberAt<uint16_t>(crsbIndex + 8);
+        curCscnData.numMapEnters = this->getNumberAt<uint16_t>(crsbIndex + 8);
         curCscnData.numExitsInScene = this->getNumberAt<uint8_t>(crsbIndex + 10);
-        curCscnData.musicId = this->getNumberAt<uint8_t>(crsbIndex + 11);
+        // Is 1 bytem but Enums are 4 bytes
+        curCscnData.musicId = (CscnMusicId)this->getNumberAt<uint8_t>(crsbIndex + 11);
         auto mpdzText = this->getTextNullTermAt(crsbIndex + 12);
         curCscnData.mpdzFileNoExtension = mpdzText;
 
@@ -84,7 +85,7 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
         //   This is why there are so many that start with 0x8nnn
         cout << "CSCN" << endl;
         uint32_t entrancesIndex = 0;
-        while (entrancesIndex < curCscnData.numEntranceOffsets) {
+        while (entrancesIndex < curCscnData.numMapEnters) {
             auto xEntry = this->getNumberAt<uint16_t>(postStringIndex+0);
             auto yEntry = this->getNumberAt<uint16_t>(postStringIndex+2);
             auto returnAnimAndScreen = this->getNumberAt<uint16_t>(postStringIndex+4);
@@ -96,6 +97,8 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
             curRet.enterMapAnimation = (ExitAnimation)(returnAnimAndScreen % 0x1000);
 
             std::cout << curRet.toString() << std::endl;
+            auto curRetVec = curRet.compile();
+            YUtils::printVector(curRetVec);
 
             postStringIndex += 6;
             entrancesIndex++;
@@ -122,6 +125,8 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
             curExit.whichEntranceTo = whichEntrance;
 
             cout << curExit.toString() << endl;
+            auto curExitVec = curExit.compile();
+            YUtils::printVector(curExitVec);
 
             postStringIndex += 8; // It's 8 bytes
             exitsIndex++;
