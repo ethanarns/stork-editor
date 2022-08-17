@@ -138,11 +138,39 @@ struct CscnData {
         return ssCscn.str();
     }
     std::vector<uint8_t> compile() {
+        // Update these just in case
+        this->numExitsInScene = this->exits.size();
+        this->numMapEnters = this->entrances.size();
+        // Begin compiling
         std::vector<uint8_t> result;
         auto numMapEntersVec = YUtils::uint16toVec(this->numMapEnters);
         result = numMapEntersVec;
         result.push_back(this->numExitsInScene);
         result.push_back((uint8_t)this->musicId);
+        auto mapVec = YUtils::stringToVector(this->mpdzFileNoExtension);
+        YUtils::appendVector(result,mapVec);
+        // 0x14: 02033224
+        // 0x04: Skip pre-string bytes
+        const uint32_t numZeroes = 0x14 - mapVec.size() - 0x4;
+        // numZeroes should pretty much always be 8 (doesn't include null terminator)
+        for (uint32_t zeroIndex = 0; zeroIndex < numZeroes; zeroIndex++) {
+            result.push_back(0);
+        }
+        for (uint32_t entrancesIndex = 0; entrancesIndex < this->entrances.size(); entrancesIndex++) {
+            auto enterVec = this->entrances.at(entrancesIndex).compile();
+            YUtils::appendVector(result,enterVec);
+        }
+        // See 02033238-02033240 in ARM9 code
+        uint32_t enterVecSize = this->entrances.size() * 6;
+        uint32_t finalExitsOffset = (enterVecSize + 3) & 0xFFFFFFFC;
+        const uint32_t spacerZeroes = (finalExitsOffset - enterVecSize);
+        for (uint32_t spacerIndex = 0; spacerIndex < spacerZeroes; spacerIndex++) {
+            result.push_back(0);
+        }
+        for (uint32_t exitsIndex = 0; exitsIndex < this->numExitsInScene; exitsIndex++) {
+            auto exitVec = this->exits.at(exitsIndex).compile();
+            YUtils::appendVector(result,exitVec);
+        }
         return result;
     }
 };

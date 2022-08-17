@@ -321,3 +321,12 @@ std::vector<uint8_t> YUtils::uint16toVec(uint16_t inputInt) {
 
     return result;
 }
+
+std::vector<uint8_t> YUtils::stringToVector(std::string &inputString) {
+    std::vector<uint8_t> result;
+    for (uint8_t c : inputString) {
+        result.push_back(c);
+    }
+    result.push_back(0); // Null terminator
+    return result;
+}
