@@ -66,11 +66,7 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
 
         uint32_t cscnLength = this->getNumberAt<uint32_t>(crsbIndex + 4);
 
-        // TODO: Figure out why uint16 doesn't work with getNumber at.
-        // Maybe this? https://stackoverflow.com/questions/10632251/undefined-reference-to-template-function
-        this->romFile.seekg(crsbIndex + 8);
-        this->romFile.read(reinterpret_cast<char *>(&curCscnData.numEntranceOffsets), sizeof(curCscnData.numEntranceOffsets));
-
+        curCscnData.numEntranceOffsets = this->getNumberAt<uint16_t>(crsbIndex + 8);
         curCscnData.numExitsInScene = this->getNumberAt<uint8_t>(crsbIndex + 10);
         curCscnData.musicId = this->getNumberAt<uint8_t>(crsbIndex + 11);
         auto mpdzText = this->getTextNullTermAt(crsbIndex + 12);
@@ -89,19 +85,54 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
         cout << "CSCN" << endl;
         uint32_t entrancesIndex = 0;
         while (entrancesIndex < curCscnData.numEntranceOffsets) {
+            auto xEntry = this->getNumberAt<uint16_t>(postStringIndex+0);
+            auto yEntry = this->getNumberAt<uint16_t>(postStringIndex+2);
+            auto returnAnimAndScreen = this->getNumberAt<uint16_t>(postStringIndex+4);
+            
+            CscnEnterIntoMap curRet;
+            curRet.entranceX = xEntry;
+            curRet.entranceY = yEntry;
+            curRet.screen = returnAnimAndScreen >> 14;
+            curRet.enterMapAnimation = (ExitAnimation)(returnAnimAndScreen % 0x1000);
 
+            std::cout << curRet.toString() << std::endl;
+
+            postStringIndex += 6;
             entrancesIndex++;
         }
+        auto checkZero = this->getNumberAt<uint16_t>(postStringIndex);
+        if (checkZero == 0) {
+            // Unexplained zero spacer. Skip it
+            postStringIndex += 2;
+        }
+        
+        uint32_t exitsIndex = 0;
+        while (exitsIndex < curCscnData.numExitsInScene) {
+            auto exitTargetX = this->getNumberAt<uint16_t>(postStringIndex+0);
+            auto exitTargetY = this->getNumberAt<uint16_t>(postStringIndex+2);
+            auto exitStartType = this->getNumberAt<uint16_t>(postStringIndex+4);
+            auto whichMap = this->getNumberAt<uint8_t>(postStringIndex+6);
+            auto whichEntrance = this->getNumberAt<uint8_t>(postStringIndex+7);
+
+            CscnExitData curExit;
+            curExit.exitLocationX = exitTargetX;
+            curExit.exitLocationY = exitTargetY;
+            curExit.exitStartType = (ExitStartType)exitStartType;
+            curExit.whichMapTo = whichMap;
+            curExit.whichEntranceTo = whichEntrance;
+
+            cout << curExit.toString() << endl;
+
+            postStringIndex += 8; // It's 8 bytes
+            exitsIndex++;
+        }
+        
         // while (postStringIndex < endPostString) {
-        //     uint16_t curPostStringValue;
-        //     this->romFile.seekg(postStringIndex);
-        //     this->romFile.read(reinterpret_cast<char *>(&curPostStringValue), sizeof(curPostStringValue));
+        //     uint16_t curPostStringValue = this->getNumberAt<uint16_t>(postStringIndex);
         //     cout << hex << setw(4) << std::setfill('0') << curPostStringValue << " ";
         //     postStringIndex += 2;
         // }
-        cout << endl;
-
-        //cout << "lol " << hex << (int)this->getNumberAt<uint8_t>(postStringIndex-2) << endl;
+        // cout << endl;
 
         // Finally, add it to the parent object
         crsbData.cscnList.push_back(curCscnData);
