@@ -155,14 +155,6 @@ std::string YidsRom::getTextNullTermAt(Address position_file) {
     return "STRING LONGER THAN 0xFF";
 }
 
-template<typename T>
-T YidsRom::getNumberAt(uint32_t addr) {
-    T container;
-    this->romFile.seekg(addr);
-    this->romFile.read(reinterpret_cast<char *>(&container), sizeof(container));
-    return container;
-}
-
 YidsRom::~YidsRom() {
     // delete/delete[] things here
 }

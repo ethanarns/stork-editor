@@ -102,7 +102,12 @@ public:
     std::vector<uint8_t> getFileByteVector(std::string fileName);
 
     template<typename T>
-    T getNumberAt(Address addr);
+    T getNumberAt(Address addr){
+        T container;
+        this->romFile.seekg(addr);
+        this->romFile.read(reinterpret_cast<char *>(&container), sizeof(container));
+        return container;
+    }
 
     uint32_t getGreatestCanvasWidth();
     uint32_t getGreatestCanvasHeight();
