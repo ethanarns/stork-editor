@@ -35,6 +35,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x23: { // Green pipe
             constexpr uint32_t VERTICAL_PIPE_TILES = 0x13;
             constexpr uint32_t HORIZONTAL_PIPE_TILES = 0x12;
+            Q_UNUSED(HORIZONTAL_PIPE_TILES);
             uint32_t pipeHeight = (uint32_t)lo.settings.at(2)*2;
             meta.tilesSectorOffset = VERTICAL_PIPE_TILES;
             meta.paletteSectorOffset = 0x89;

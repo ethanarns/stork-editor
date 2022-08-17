@@ -66,6 +66,7 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
 
         uint32_t cscnLength = this->getNumberAt<uint32_t>(crsbIndex + 4);
 
+        uint32_t trueDataStart = crsbIndex + 8;
         curCscnData.numMapEnters = this->getNumberAt<uint16_t>(crsbIndex + 8);
         curCscnData.numExitsInScene = this->getNumberAt<uint8_t>(crsbIndex + 10);
         // Is 1 bytem but Enums are 4 bytes
@@ -73,17 +74,9 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
         auto mpdzText = this->getTextNullTermAt(crsbIndex + 12);
         curCscnData.mpdzFileNoExtension = mpdzText;
 
-        // +1 accounts for the null terminator (doesn't count with size())
-        uint32_t postStringIndex = crsbIndex + 12 + curCscnData.mpdzFileNoExtension.size() + 1;
-        uint32_t endPostString = crsbIndex + cscnLength + 0x08;
+        // Yes, that's a hard coded 0x14
+        uint32_t postStringIndex = (trueDataStart + 0x14); // 02033224
 
-        // Note: There always seems to be 8 zeroes before anything happens post-string
-        // It makes no sense, but I have yet to open a level with anything but 8 zeroes
-        postStringIndex += 8;
-        // Those 0x8000 ones: do >> 14 and check if its equal to 2 (0b10)
-        //   if it is 2, Yoshi starts on the bottom screen. Anything else, he starts on the top
-        //   This is why there are so many that start with 0x8nnn
-        cout << " >> CSCN" << endl;
         uint32_t entrancesIndex = 0;
         uint32_t entrancesAddress = postStringIndex;
         while (entrancesIndex < curCscnData.numMapEnters) {
@@ -94,12 +87,19 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
             CscnEnterIntoMap curRet;
             curRet.entranceX = xEntry;
             curRet.entranceY = yEntry;
+
+            // NOTE: Those 0x8000 ones: do >> 14 and check if its equal to 2 (0b10)
+            //   if it is 2, Yoshi starts on the bottom screen. Anything else, he starts on the top
+            //   This is why there are so many that start with 0x8nnn
             curRet.screen = returnAnimAndScreen >> 14;
             curRet.enterMapAnimation = (ExitAnimation)(returnAnimAndScreen % 0x1000);
+
+            curCscnData.entrances.push_back(curRet);
 
             entrancesAddress += 6; // Length of total is 6 bytes
             entrancesIndex++;
         }
+
         // The following instructions are done at 02033238-02033240
         // Unsure where 3 and FF..FC is from, but its hard coded so can't do much
         uint16_t finalExitsOffset = ((6 * curCscnData.numMapEnters) + 3) & 0xFFFFFFFC;
@@ -120,16 +120,11 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
             curExit.whichMapTo = whichMap;
             curExit.whichEntranceTo = whichEntrance;
 
+            curCscnData.exits.push_back(curExit);
+
             postStringIndex += 8; // It's 8 bytes
             exitsIndex++;
         }
-        
-        // while (postStringIndex < endPostString) {
-        //     uint16_t curPostStringValue = this->getNumberAt<uint16_t>(postStringIndex);
-        //     cout << hex << setw(4) << std::setfill('0') << curPostStringValue << " ";
-        //     postStringIndex += 2;
-        // }
-        // cout << endl;
 
         // Finally, add it to the parent object
         crsbData.cscnList.push_back(curCscnData);
