@@ -17,6 +17,7 @@
 #include <iostream>
 
 #include "utils.h"
+#include "FsPacker.h"
 
 using namespace std;
 
@@ -136,7 +137,7 @@ struct CscnData {
         ssCscn << "CscnData { exit count: " << hex << this->numMapEnters << ", ";
         ssCscn << "mpdz filename: " << this->mpdzFileNoExtension << " }";
         return ssCscn.str();
-    }
+    };
     std::vector<uint8_t> compile() {
         // Update these just in case
         this->numExitsInScene = this->exits.size();
@@ -171,8 +172,9 @@ struct CscnData {
             auto exitVec = this->exits.at(exitsIndex).compile();
             YUtils::appendVector(result,exitVec);
         }
+        result = FsPacker::packInstruction(Constants::CSCN_MAGIC_NUM,result,false);
         return result;
-    }
+    };
 };
 
 struct CrsbData {
@@ -184,7 +186,19 @@ struct CrsbData {
         ssCrsb << "loaded maps: " << hex << cscnList.size();
         ssCrsb << " }";
         return ssCrsb.str();
-    }
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> resultData;
+        const uint32_t sceneCount = this->cscnList.size();
+        this->mapFileCount = sceneCount; // Update just in case
+        resultData = YUtils::uint32toVec(this->mapFileCount);
+        for (uint32_t cscnIndex = 0; cscnIndex < sceneCount; cscnIndex++) {
+            auto cscnVec = this->cscnList.at(cscnIndex).compile();
+            YUtils::appendVector(resultData,cscnVec);
+        }
+        auto result = FsPacker::packInstruction(Constants::CRSB_MAGIC_NUM,resultData,false);
+        return result;
+    };
 };
 
 #endif
