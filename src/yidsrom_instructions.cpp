@@ -97,10 +97,11 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
             curRet.screen = returnAnimAndScreen >> 14;
             curRet.enterMapAnimation = (ExitAnimation)(returnAnimAndScreen % 0x1000);
 
-            entrancesAddress += 6;
+            entrancesAddress += 6; // Length of total is 6 bytes
             entrancesIndex++;
         }
-        // 02033238-02033240
+        // The following instructions are done at 02033238-02033240
+        // Unsure where 3 and FF..FC is from, but its hard coded so can't do much
         uint16_t finalExitsOffset = ((6 * curCscnData.numMapEnters) + 3) & 0xFFFFFFFC;
         postStringIndex += finalExitsOffset;
         
