@@ -83,12 +83,13 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
         // Those 0x8000 ones: do >> 14 and check if its equal to 2 (0b10)
         //   if it is 2, Yoshi starts on the bottom screen. Anything else, he starts on the top
         //   This is why there are so many that start with 0x8nnn
-        cout << "CSCN" << endl;
+        cout << " >> CSCN" << endl;
         uint32_t entrancesIndex = 0;
+        uint32_t entrancesAddress = postStringIndex;
         while (entrancesIndex < curCscnData.numMapEnters) {
-            auto xEntry = this->getNumberAt<uint16_t>(postStringIndex+0);
-            auto yEntry = this->getNumberAt<uint16_t>(postStringIndex+2);
-            auto returnAnimAndScreen = this->getNumberAt<uint16_t>(postStringIndex+4);
+            auto xEntry = this->getNumberAt<uint16_t>(entrancesAddress+0);
+            auto yEntry = this->getNumberAt<uint16_t>(entrancesAddress+2);
+            auto returnAnimAndScreen = this->getNumberAt<uint16_t>(entrancesAddress+4);
             
             CscnEnterIntoMap curRet;
             curRet.entranceX = xEntry;
@@ -96,18 +97,12 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
             curRet.screen = returnAnimAndScreen >> 14;
             curRet.enterMapAnimation = (ExitAnimation)(returnAnimAndScreen % 0x1000);
 
-            std::cout << curRet.toString() << std::endl;
-            auto curRetVec = curRet.compile();
-            YUtils::printVector(curRetVec);
-
-            postStringIndex += 6;
+            entrancesAddress += 6;
             entrancesIndex++;
         }
-        auto checkZero = this->getNumberAt<uint16_t>(postStringIndex);
-        if (checkZero == 0) {
-            // Unexplained zero spacer. Skip it
-            postStringIndex += 2;
-        }
+        // 02033238-02033240
+        uint16_t finalExitsOffset = ((6 * curCscnData.numMapEnters) + 3) & 0xFFFFFFFC;
+        postStringIndex += finalExitsOffset;
         
         uint32_t exitsIndex = 0;
         while (exitsIndex < curCscnData.numExitsInScene) {
@@ -123,10 +118,6 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
             curExit.exitStartType = (ExitStartType)exitStartType;
             curExit.whichMapTo = whichMap;
             curExit.whichEntranceTo = whichEntrance;
-
-            cout << curExit.toString() << endl;
-            auto curExitVec = curExit.compile();
-            YUtils::printVector(curExitVec);
 
             postStringIndex += 8; // It's 8 bytes
             exitsIndex++;
