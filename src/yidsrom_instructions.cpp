@@ -225,33 +225,21 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
     while (indexPointer < scenCutoff) {
         uint32_t curSubInstruction = YUtils::getUint32FromVec(mpdzVec,indexPointer);
         if (curSubInstruction == Constants::INFO_MAGIC_NUM) {
-            std::stringstream ssInfo;
-            ssInfo << "Handling INFO instruction: ";
+            InfoData infoData;
+
             uint32_t infoLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First time: 0x20
-
+            whichBgToWriteTo = mpdzVec.at(indexPointer + 24);
             uint32_t canvasDimensions = YUtils::getUint32FromVec(mpdzVec, indexPointer + 8); // 00b60208
-
-            // TODO: What are these values?
-            uint32_t unknownValue1 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 12); // 00000000
-            ssInfo << "unk1: " << hex << unknownValue1 << "; ";
-            uint32_t unknownValue2 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 16); // 0x1000
-            ssInfo << "unk2: " << hex << unknownValue2 << "; ";
-            uint32_t unknownValue3 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 20); // 0x1000
-            ssInfo << "unk3: " << hex << unknownValue3 << "; ";
-            //uint32_t unknownValue4 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 24); // 0x00020202
-            whichBgToWriteTo = mpdzVec.at(indexPointer + 24 + 0);
-            ssInfo << "whichBg: " << (int)whichBgToWriteTo << "; ";
-            // uint16_t charBaseBlockHardMaybe = mpdzVec.at(indexPointer + 24 + 1);
-            // uint16_t thirdByte = mpdzVec.at(indexPointer + 24 + 2);
-            // uint16_t screenBaseBlockMaybe = mpdzVec.at(indexPointer + 24 + 3);
-
-            uint32_t unknownValue5 = YUtils::getUint32FromVec(mpdzVec, indexPointer + 28); // 00000000
-            ssInfo << "unk5: " << hex << unknownValue5;
-            YUtils::printDebug(ssInfo.str(),DebugType::VERBOSE);
-            Q_UNUSED(unknownValue1);
-            Q_UNUSED(unknownValue2);
-            Q_UNUSED(unknownValue3);
-            Q_UNUSED(unknownValue5);
+            infoData.layerHeight = canvasDimensions >> 0x10;
+            infoData.layerWidth = canvasDimensions % 0x10000;
+            infoData.whichBg = whichBgToWriteTo;
+            infoData.bgYOffsetMaybe = YUtils::getUint32FromVec(mpdzVec, indexPointer + 12);
+            infoData.xOffset = YUtils::getUint32FromVec(mpdzVec, indexPointer + 16);
+            infoData.yOffset = YUtils::getUint32FromVec(mpdzVec, indexPointer + 20);
+            infoData.layerOrderMaybe = mpdzVec.at(indexPointer + 24 + 1);
+            infoData.unkThirdByte = mpdzVec.at(indexPointer + 24 + 2);
+            infoData.screenBaseBlockMaybe = mpdzVec.at(indexPointer + 24 + 3);
+            infoData.unk32 = mpdzVec.at(indexPointer + 28);
 
             // Only the first one matters for the primary height and width, since BG 2 decides everything
             if (whichBgToWriteTo == 2) {
@@ -266,6 +254,9 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
                 // Get charfile string
                 auto charFileNoExt = YUtils::getNullTermTextFromVec(mpdzVec, indexPointer + 32);
                 this->handleImbz(charFileNoExt, whichBgToWriteTo);
+                infoData.tileGraphics.fileName = charFileNoExt;
+            } else {
+                infoData.tileGraphics.fileName = "none";
             }
             // Increment based on earlier length, +8 is to skip instruction and length
             indexPointer += infoLength + 8;

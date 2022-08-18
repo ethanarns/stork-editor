@@ -27,6 +27,9 @@ public:
     virtual std::vector<uint8_t> compile() = 0;
 };
 
+/**
+ * @brief MPDZ file
+ */
 struct MapFile : public Instruction {
 
     std::vector<Instruction*> majorInstructions;
@@ -42,6 +45,71 @@ struct MapFile : public Instruction {
         // This trick deletes all the data's memory in the vector
         std::vector<Instruction*>().swap(this->majorInstructions);
     }
+};
+
+struct ImbzData {
+    std::string fileName;
+};
+
+struct InfoData : public Instruction {
+    uint32_t layerHeight;
+    uint32_t layerWidth;
+    uint8_t whichBg;
+    uint32_t bgYOffsetMaybe;
+    uint32_t xOffset;
+    uint32_t yOffset;
+    uint8_t layerOrderMaybe;
+    uint8_t unkThirdByte;
+    uint8_t screenBaseBlockMaybe;
+    uint32_t unk32;
+    ImbzData tileGraphics;
+    std::string toString() {
+        std::stringstream ssInfo;
+        ssInfo << "InfoData { height/width: " << hex << this->layerHeight;
+        ssInfo << "/" << this->layerWidth << ", bg: " << (int)this->whichBg;
+        ssInfo << ", bgYOffsetMaybe: " << hex << this->bgYOffsetMaybe;
+        ssInfo << ", xOffset: " << hex << this->xOffset;
+        ssInfo << ", yOffset: " << hex << this->yOffset;
+        ssInfo << ", layerOrderMaybe: " << hex << (int)this->layerOrderMaybe;
+        ssInfo << ", unkThirdByte: " << hex << (int)this->unkThirdByte;
+        ssInfo << ", scrnBaseBlockMybe: " << hex << (int)this->screenBaseBlockMaybe;
+        ssInfo << ", unk32: " << hex << this->unk32;
+        ssInfo << ", imbz: " << tileGraphics.fileName << " }";
+        return ssInfo.str();
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        result = YUtils::uint16toVec(this->layerWidth);
+
+        auto layerHeightVec = YUtils::uint16toVec(this->layerHeight);
+        YUtils::appendVector(result,layerHeightVec);
+
+        auto bgYOffsetMaybeVec = YUtils::uint32toVec(this->bgYOffsetMaybe);
+        YUtils::appendVector(result,bgYOffsetMaybeVec);
+
+        auto xOffsetVec = YUtils::uint32toVec(this->xOffset);
+        auto yOffsetVec = YUtils::uint32toVec(this->yOffset);
+        YUtils::appendVector(result,xOffsetVec);
+        YUtils::appendVector(result,yOffsetVec);
+
+        result.push_back(this->whichBg);
+        result.push_back(this->layerOrderMaybe);
+        result.push_back(this->unkThirdByte);
+        result.push_back(this->screenBaseBlockMaybe);
+
+        auto unk32vec = YUtils::uint32toVec(this->unk32);
+        YUtils::appendVector(result,unk32vec);
+
+        auto fileName = this->tileGraphics.fileName;
+        // If the imbz filename is present, add it
+        if (fileName.compare("none") != 0) {
+            auto fileNameVec = YUtils::stringToVector(fileName);
+            YUtils::appendVector(result,fileNameVec);
+        }
+
+        result = FsPacker::packInstruction(Constants::INFO_MAGIC_NUM,result);
+        return result;
+    };
 };
 
 enum ExitStartType {
