@@ -117,8 +117,8 @@ private:
 
     void initArm9RomData(std::string fileName);
     void writeUncompressedARM9(uint32_t arm9start_rom, uint32_t arm9length);
-    void handleSCEN(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
-    void handleImbz(std::string fileName_noext, uint16_t whichBg);
+    ScenData handleSCEN(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
+    ImbzData handleImbz(std::string fileName_noext, uint16_t whichBg);
     void handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     void handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     void handleAREA(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);

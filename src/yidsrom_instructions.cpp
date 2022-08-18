@@ -211,12 +211,14 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
  * @param mpdzVec Reference to vector with MPDZ data, all of it
  * @param indexPointer Reference to Address, pointing at the current SCEN instruction
  */
-void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
+ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
+    ScenData scenData;
+    
     uint16_t whichBgToWriteTo = 0;
     uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     if (instructionCheck != Constants::SCEN_MAGIC_NUM) {
         YUtils::printDebug("SCEN instruction did not find magic hex",DebugType::ERROR);
-        return;
+        return scenData;
     }
     indexPointer += sizeof(uint32_t);
     uint32_t scenLength = YUtils::getUint32FromVec(mpdzVec, indexPointer);
@@ -294,7 +296,7 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             // Most of this tile placing logic is here: 0201c6dc
             if (whichBgToWriteTo == 0) {
                 YUtils::printDebug("Which BG to write to was not specified, MPBZ load failed",DebugType::ERROR);
-                return;
+                return scenData;
             }
             uint32_t mpbzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
             // Slice out MPBZ data
@@ -505,15 +507,20 @@ void YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
             indexPointer += scrlLength + 8;
         } else if (curSubInstruction == Constants::SCEN_MAGIC_NUM) {
             YUtils::printDebug("Found SCEN instruction, overflowed!",DebugType::ERROR);
-            return;
+            return scenData;
         } else {
             std::cout << "Unknown inter-SCEN instruction: " << hex << curSubInstruction << endl;
-            return;
+            return scenData;
         }
     }
+    return scenData;
 }
 
-void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
+ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
+    ImbzData imbzData;
+    imbzData.fileName = fileName_noext;
+    imbzData.whichBg = whichBg;
+
     this->pixelTilesBg1index = 0;
     this->pixelTilesBg2index = 0;
 
@@ -527,7 +534,7 @@ void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
     const int imbzLength = uncompressedImbz.size();
     if (imbzLength < 1) {
         YUtils::printDebug("imbzLength is 0!",DebugType::ERROR);
-        return;
+        return imbzData;
     }
     // Do it 0x20 by 0x20 (32)
     while (imbzIndex < imbzLength) { // Kill when equal to length, meaning it's outside
@@ -549,11 +556,15 @@ void YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
         } else if (whichBg == 1) {
             this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
         }
+
+        imbzData.pixelTiles.push_back(curTile);
         
         // Skip ahead by 0x20
         imbzIndex += Constants::CHARTILE_DATA_SIZE;
         currentTileIndex++;
     }
+
+    return imbzData;
 }
 
 void YidsRom::handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {

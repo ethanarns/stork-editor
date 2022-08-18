@@ -18,6 +18,7 @@
 
 #include "utils.h"
 #include "FsPacker.h"
+#include "constants.h"
 
 using namespace std;
 
@@ -25,13 +26,14 @@ class Instruction {
 public:
     virtual std::string toString() = 0;
     virtual std::vector<uint8_t> compile() = 0;
+    uint32_t magicNum = 0;
 };
 
 /**
  * @brief MPDZ file
  */
 struct MapFile : public Instruction {
-
+    uint32_t magicNum = Constants::MPDZ_MAGIC_NUM;
     std::vector<Instruction*> majorInstructions;
 
     std::string toString() {
@@ -39,6 +41,7 @@ struct MapFile : public Instruction {
     };
     std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
+        result = FsPacker::packInstruction(Constants::MPDZ_MAGIC_NUM,result);
         return result;
     };
     ~MapFile() {
@@ -47,8 +50,43 @@ struct MapFile : public Instruction {
     }
 };
 
-struct ImbzData {
+struct ScenData : public Instruction {
+    uint32_t magicNum = Constants::SCEN_MAGIC_NUM;
+    std::vector<Instruction*> minorInstructions;
+    std::string toString() {
+        std::stringstream ssScen;
+        ssScen << "ScenData { minorInstructions: ";
+        ssScen << dec << minorInstructions.size() << " }";
+        return ssScen.str();
+    }
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        result = FsPacker::packInstruction(Constants::SCEN_MAGIC_NUM,result);
+        return result;
+    }
+    ~ScenData() {
+        // This trick deletes all the data's memory in the vector
+        std::vector<Instruction*>().swap(this->minorInstructions);
+    }
+};
+
+struct ImbzData : public Instruction {
     std::string fileName;
+    uint16_t whichBg;
+    std::vector<Chartile> pixelTiles;
+    std::string toString() {
+        std::stringstream ssImbz;
+        ssImbz << "ImbzData { fileName: " << this->fileName;
+        ssImbz << ", whichBg: " << this->whichBg;
+        ssImbz << ", pixelTiles: " << hex << pixelTiles.size();
+        ssImbz << " }";
+        return ssImbz.str();
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        result = FsPacker::packInstruction(Constants::IMBZ_MAGIC_NUM,result);
+        return result;
+    };
 };
 
 struct InfoData : public Instruction {
