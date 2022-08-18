@@ -21,6 +21,29 @@
 
 using namespace std;
 
+class IInstruction {
+public:
+    virtual std::string toString() = 0;
+    virtual std::vector<uint8_t> compile() = 0;
+};
+
+struct MapFile : public IInstruction {
+
+    std::vector<IInstruction*> majorInstructions;
+
+    std::string toString() {
+        return "MapFile {}";
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        return result;
+    };
+    ~MapFile() {
+        // This trick deletes all the data's memory in the vector
+        std::vector<IInstruction*>().swap(this->majorInstructions);
+    }
+};
+
 enum ExitStartType {
     WALK_TO_LEFT = 0x01,
     PRESS_DOWN_PIPE = 0x04
@@ -44,7 +67,7 @@ enum ExitAnimation {
  * to places where he returns to this level (ie coming back out of
  * a shy guy pipe)
  */
-struct CscnEnterIntoMap {
+struct CscnEnterIntoMap : public IInstruction {
     uint16_t entranceX;
     uint16_t entranceY;
     ExitAnimation enterMapAnimation;
@@ -71,7 +94,7 @@ struct CscnEnterIntoMap {
     }
 };
 
-struct CscnExitData {
+struct CscnExitData : public IInstruction {
     uint16_t exitLocationX;
     uint16_t exitLocationY;
     ExitStartType exitStartType;
@@ -122,7 +145,7 @@ enum CscnMusicId {
     WILDLANDS = 0x0F
 };
 
-struct CscnData {
+struct CscnData : public IInstruction {
     // (jump in, fly in from coin running level near growblock, shyguy pipe 1, shyguy pipe 2)
     uint16_t numMapEnters; // 1-1: 0x0004
     // Pipe to coin running, shy guy pipe 1, shy guy pipe 2
@@ -177,7 +200,7 @@ struct CscnData {
     };
 };
 
-struct CrsbData {
+struct CrsbData : public IInstruction {
     uint32_t mapFileCount;
     std::vector<CscnData> cscnList;
     std::string toString() {

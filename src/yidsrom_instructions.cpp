@@ -153,6 +153,7 @@ uint32_t timesPaletteLoaded = 0;
 int globalPaletteIndex = 1;
 
 void YidsRom::loadMpdz(std::string fileName_noext) {
+    MapFile mf;
     std::stringstream ssMpdzLoad;
     ssMpdzLoad << "Loading MPDZ (Map) '" << fileName_noext << "'";
     YUtils::printDebug(ssMpdzLoad.str(),DebugType::VERBOSE);
