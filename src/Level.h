@@ -52,6 +52,23 @@ struct MapFile : public Instruction {
     }
 };
 
+struct ColzData : public Instruction {
+    uint32_t magicNum = Constants::COLZ_MAGIC_NUM;
+    std::vector<uint8_t> colArray;
+
+    std::string toString() {
+        std::stringstream ssColz;
+        ssColz << "ColzData { ";
+        ssColz << "colArray: " << hex << this->colArray.size();
+        ssColz << " }";
+        return ssColz.str();
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result = FsPacker::packInstruction(Constants::COLZ_MAGIC_NUM,this->colArray,true);
+        return result;
+    };
+};
+
 struct MpbzData : public Instruction {
     uint32_t magicNum = Constants::MPBZ_MAGIC_NUM;
     std::vector<uint16_t> tileRenderData;

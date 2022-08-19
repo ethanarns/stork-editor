@@ -400,6 +400,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 std::cout << "[ERROR] Attempted to load a second COLZ, only one should ever be loaded" << endl;
                 exit(EXIT_FAILURE);
             }
+            ColzData colzData;
             uint32_t colzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First is 0x0b7c
             // Slice out COLZ data
             Address compressedDataStart = indexPointer + 8;
@@ -407,7 +408,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             auto colzCompressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
             auto uncompressedColz = YCompression::lzssVectorDecomp(colzCompressedSubArray, false);
             this->collisionTileArray = uncompressedColz; // Copy directly
-            //YUtils::appendVector(this->collisionTileArray,uncompressedColz);
+            colzData.colArray = uncompressedColz;
             if (whichBgToWriteTo == 2) {
                 this->canvasWidthCol = this->canvasWidthBg2;
                 this->canvasHeightCol = this->canvasHeightBg2;
@@ -419,6 +420,8 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 ssColErr << "Using collision on unsupported BG: " << hex << whichBgToWriteTo;
                 YUtils::printDebug(ssColErr.str(),DebugType::WARNING);
             }
+
+            scenData.minorInstructions.push_back(&colzData);
             indexPointer += colzLength + 8;
         } else if (curSubInstruction == Constants::ANMZ_MAGIC_NUM) {
             //std::cout << ">> Handling ANMZ instruction" << endl;
