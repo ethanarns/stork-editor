@@ -52,6 +52,38 @@ struct MapFile : public Instruction {
     }
 };
 
+struct MpbzData : public Instruction {
+    uint32_t magicNum = Constants::MPBZ_MAGIC_NUM;
+    std::vector<uint16_t> tileRenderData;
+    uint16_t tileOffset;
+    uint16_t whichBg;
+    std::string toString() {
+        std::stringstream ssMpbz;
+        ssMpbz << "MpbzData { tiles: " << hex << this->tileRenderData.size();
+        ssMpbz << ", tileOffset: " << hex << this->tileOffset;
+        ssMpbz << ", whichBg: " << this->whichBg << " }";
+        return ssMpbz.str();
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        if (this->tileOffset != 0) {
+            result.push_back(0xFF);
+            result.push_back(0xFF);
+            auto offsetVec = YUtils::uint16toVec(this->tileOffset);
+            YUtils::appendVector(result,offsetVec);
+            result.push_back(0xFE);
+        }
+        for (auto it = this->tileRenderData.cbegin(); it != this->tileRenderData.cend(); it++) {
+            auto curShort = (*it) - 0x1000; // undo 0201c730
+            uint16_t secondByte = curShort >> 8;
+            uint16_t firstByte = curShort % 0x100;
+            result.push_back((uint8_t)firstByte);
+            result.push_back((uint8_t)secondByte);
+        }
+        return result;
+    };
+};
+
 struct ScenData : public Instruction {
     uint32_t magicNum = Constants::SCEN_MAGIC_NUM;
     std::vector<Instruction*> minorInstructions;
@@ -72,7 +104,7 @@ struct ScenData : public Instruction {
     }
 };
 
-struct PltbData {
+struct PltbData : public Instruction {
     uint32_t magicNum = Constants::PLTB_MAGIC_NUM;
     std::vector<QByteArray> palettes;
     std::string toString() {

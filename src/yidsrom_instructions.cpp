@@ -260,6 +260,8 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             } else {
                 infoData.tileGraphics.fileName = "none";
             }
+
+            scenData.minorInstructions.push_back(&infoData);
             // Increment based on earlier length, +8 is to skip instruction and length
             indexPointer += infoLength + 8;
         } else if (curSubInstruction == Constants::PLTB_MAGIC_NUM) {
@@ -292,8 +294,10 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 pltbData.palettes.push_back(currentLoadingPalette);
                 pltbReadIndex += Constants::PALETTE_SIZE; // 1 palette is 32 bytes, or 0x20
             }
+            scenData.minorInstructions.push_back(&pltbData);
             timesPaletteLoaded++;
         } else if (curSubInstruction == Constants::MPBZ_MAGIC_NUM) {
+            MpbzData mpbzData;
             // Most of this tile placing logic is here: 0201c6dc
             if (whichBgToWriteTo == 0) {
                 YUtils::printDebug("Which BG to write to was not specified, MPBZ load failed",DebugType::ERROR);
@@ -316,6 +320,8 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 YUtils::printDebug("MPBZ tiles other than BG 1 and 2 not implemented, skipping",DebugType::WARNING);
                 continue;
             }
+            mpbzData.whichBg = whichBgToWriteTo;
+
             // Handle uncompressedMpbz data
             const uint32_t uncompressedMpbzTwoByteCount = uncompressedMpbz.size() / 2;
             if (uncompressedMpbzTwoByteCount < 1) {
@@ -335,6 +341,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 uint16_t firstOffsetByte = (uint16_t)uncompressedMpbz.at(2);
                 uint16_t secondOffsetByte = (uint16_t)uncompressedMpbz.at(3);
                 uint16_t offset = (secondOffsetByte << 8) + firstOffsetByte;
+                mpbzData.tileOffset = offset;
                 // Skip drawing the number of lines specified in offset
                 if (whichBgToWriteTo == 2) {
                     offset = offset * this->canvasWidthBg2;
@@ -359,13 +366,17 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                     YUtils::printDebug(ssUnhandledBg.str(),DebugType::WARNING);
                     break;
                 }
+            } else {
+                mpbzData.tileOffset = 0;
             }
+
             while (mpbzIndex < uncompressedMpbzTwoByteCount) {
                 uint32_t trueOffset = mpbzIndex*2;
                 uint16_t firstByte = (uint16_t)uncompressedMpbz.at(trueOffset);
                 uint16_t secondByte = (uint16_t)uncompressedMpbz.at(trueOffset+1);
                 uint16_t curShort = (secondByte << 8) + firstByte;
                 curShort += 0x1000; // 0201c730
+                mpbzData.tileRenderData.push_back(curShort);
                 if (whichBgToWriteTo == 2) {
                     this->preRenderDataBg2.push_back(curShort);
                 } else if (whichBgToWriteTo == 1) {
@@ -378,7 +389,11 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 }
                 mpbzIndex++;
             }
-            //std::cout << "Finished writing to preRenderDataBg2, length is " << this->preRenderDataBg2.size() << std::endl;
+            // cout << mpbzData.toString() << endl;
+            // cout << "lol" << whichBgToWriteTo << "2" << endl;
+            // auto compTest = mpbzData.compile();
+            // YUtils::printVector(compTest);
+            scenData.minorInstructions.push_back(&mpbzData);
         } else if (curSubInstruction == Constants::COLZ_MAGIC_NUM) {
             if (collisionTileArray.size() > 0) {
                 std::cout << "[ERROR] Attempted to load a second COLZ, only one should ever be loaded" << endl;
