@@ -263,10 +263,10 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             // Increment based on earlier length, +8 is to skip instruction and length
             indexPointer += infoLength + 8;
         } else if (curSubInstruction == Constants::PLTB_MAGIC_NUM) {
+            PltbData pltbData;
             uint32_t pltbLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
             Address pltbReadIndex = indexPointer + 8; // +8 is to skip instruction and length
-            // auto testSub = YUtils::subVector(mpdzVec,pltbReadIndex,pltbReadIndex+pltbLength);
-            // YUtils::printVector(testSub);
+            
             indexPointer += pltbLength + 8; // Skip past, don't do a manual count up
 
             // BGs have offsets
@@ -289,6 +289,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                     this->currentPalettes[globalPaletteIndex] = currentLoadingPalette;
                     globalPaletteIndex++;
                 }
+                pltbData.palettes.push_back(currentLoadingPalette);
                 pltbReadIndex += Constants::PALETTE_SIZE; // 1 palette is 32 bytes, or 0x20
             }
             timesPaletteLoaded++;

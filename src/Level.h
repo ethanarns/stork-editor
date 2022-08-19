@@ -72,6 +72,27 @@ struct ScenData : public Instruction {
     }
 };
 
+struct PltbData {
+    uint32_t magicNum = Constants::PLTB_MAGIC_NUM;
+    std::vector<QByteArray> palettes;
+    std::string toString() {
+        std::stringstream ssPltb;
+        ssPltb << "PltbData { palettes: " << this->palettes.size();
+        ssPltb << " }";
+        return ssPltb.str();
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        for (auto it = this->palettes.cbegin(); it != this->palettes.cend(); it++) {
+            for (uint pIndex = 0; pIndex < Constants::PALETTE_SIZE; pIndex++) {
+                result.push_back(it->at(pIndex));
+            }
+        }
+        result = FsPacker::packInstruction(Constants::PLTB_MAGIC_NUM,result);
+        return result;
+    };
+};
+
 struct ImbzData : public Instruction {
     uint32_t magicNum = Constants::IMBZ_MAGIC_NUM;
     std::string fileName;
