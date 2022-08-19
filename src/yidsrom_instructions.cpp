@@ -311,11 +311,6 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             // Decompress MPBZ data
             auto uncompressedMpbz = YCompression::lzssVectorDecomp(compressedSubArray, false);
 
-            // Testing
-            cout << "lol " << whichBgToWriteTo << " 1" << endl;
-            auto testOG = YUtils::subVector(mpdzVec, compressedDataStart - 8, compressedDataEnd);
-            YUtils::printVector(testOG);
-
             indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
 
             mpbzData.whichBg = whichBgToWriteTo;
@@ -398,11 +393,6 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 }
                 mpbzIndex++;
             }
-            // Testing
-            cout << mpbzData.toString() << endl;
-            cout << "lol " << whichBgToWriteTo << " 2" << endl;
-            auto compTest = mpbzData.compile();
-            YUtils::printVector(compTest);
 
             scenData.minorInstructions.push_back(&mpbzData);
         } else if (curSubInstruction == Constants::COLZ_MAGIC_NUM) {
