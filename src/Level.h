@@ -55,23 +55,36 @@ struct MapFile : public Instruction {
 struct MpbzData : public Instruction {
     uint32_t magicNum = Constants::MPBZ_MAGIC_NUM;
     std::vector<uint16_t> tileRenderData;
+    /**
+     * @brief Setting this to non-zero pushes the tiles down N rows. It's
+     * a storage space saver.
+     */
     uint16_t tileOffset;
+    /**
+     * @brief Setting this to non-zero cuts off from the bottom
+     * N rows. Just becomes transparent.
+     */
+    uint16_t bottomTrim;
     uint16_t whichBg;
     std::string toString() {
         std::stringstream ssMpbz;
         ssMpbz << "MpbzData { tiles: " << hex << this->tileRenderData.size();
         ssMpbz << ", tileOffset: " << hex << this->tileOffset;
+        ssMpbz << ", bottomTrim: " << hex << this->bottomTrim;
         ssMpbz << ", whichBg: " << this->whichBg << " }";
         return ssMpbz.str();
     };
     std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
-        if (this->tileOffset != 0) {
+        // If either settings aren't zero
+        if (this->tileOffset != 0 || this->bottomTrim != 0) {
+            // 0xFFFF is a constant indicating this has offset settings
             result.push_back(0xFF);
             result.push_back(0xFF);
             auto offsetVec = YUtils::uint16toVec(this->tileOffset);
             YUtils::appendVector(result,offsetVec);
-            result.push_back(0xFE);
+            auto bottomTrimVec = YUtils::uint16toVec(this->bottomTrim);
+            YUtils::appendVector(result,bottomTrimVec);
         }
         for (auto it = this->tileRenderData.cbegin(); it != this->tileRenderData.cend(); it++) {
             auto curShort = (*it) - 0x1000; // undo 0201c730
@@ -80,6 +93,7 @@ struct MpbzData : public Instruction {
             result.push_back((uint8_t)firstByte);
             result.push_back((uint8_t)secondByte);
         }
+        result = FsPacker::packInstruction(Constants::MPBZ_MAGIC_NUM,result,true);
         return result;
     };
 };

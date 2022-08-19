@@ -63,6 +63,10 @@ public:
      */
     std::vector<uint16_t> preRenderDataBg1;
     /**
+     * @brief BG 3's tile data. Animated bg?
+     */
+    std::vector<uint16_t> preRenderDataBg3;
+    /**
      * @brief Collision tiles, each taking up a full 16x16 tile. Also handles 
      * static normal coins for some reason
      */

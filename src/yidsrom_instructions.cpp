@@ -310,16 +310,14 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             auto compressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
             // Decompress MPBZ data
             auto uncompressedMpbz = YCompression::lzssVectorDecomp(compressedSubArray, false);
-            // Uncomment to get uncompressed MPBZ
-            // YUtils::writeByteVectorToFile(compressedSubArray,"2-4-test.mpbz");
-            // YCompression::lzssDecomp("2-4-test.mpbz", true);
+
+            // Testing
+            cout << "lol " << whichBgToWriteTo << " 1" << endl;
+            auto testOG = YUtils::subVector(mpdzVec, compressedDataStart - 8, compressedDataEnd);
+            YUtils::printVector(testOG);
 
             indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
 
-            if (whichBgToWriteTo == 3 || whichBgToWriteTo == 0) {
-                YUtils::printDebug("MPBZ tiles other than BG 1 and 2 not implemented, skipping",DebugType::WARNING);
-                continue;
-            }
             mpbzData.whichBg = whichBgToWriteTo;
 
             // Handle uncompressedMpbz data
@@ -338,10 +336,13 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 //   sliding, come back and look at this again
 
                 // Get the next WORD, which should be the Y offset/lines skipped
-                uint16_t firstOffsetByte = (uint16_t)uncompressedMpbz.at(2);
-                uint16_t secondOffsetByte = (uint16_t)uncompressedMpbz.at(3);
-                uint16_t offset = (secondOffsetByte << 8) + firstOffsetByte;
+                auto offset = YUtils::getUint16FromVec(uncompressedMpbz,2);
                 mpbzData.tileOffset = offset;
+
+                auto bottomTrim = YUtils::getUint16FromVec(uncompressedMpbz,4);
+                // TODO: Implement?
+                mpbzData.bottomTrim = bottomTrim;
+
                 // Skip drawing the number of lines specified in offset
                 if (whichBgToWriteTo == 2) {
                     offset = offset * this->canvasWidthBg2;
@@ -358,6 +359,12 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                     // Potentially collapse me later, could probably be merged into above
                     for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
                         this->preRenderDataBg1.push_back(0x0000);
+                    } 
+                    mpbzIndex += 3; // 0x0201c714
+                } else if (whichBgToWriteTo == 3) {
+                    // Potentially collapse me later, could probably be merged into above
+                    for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
+                        this->preRenderDataBg3.push_back(0x0000);
                     } 
                     mpbzIndex += 3; // 0x0201c714
                 } else {
@@ -381,6 +388,8 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                     this->preRenderDataBg2.push_back(curShort);
                 } else if (whichBgToWriteTo == 1) {
                     this->preRenderDataBg1.push_back(curShort);
+                } else if (whichBgToWriteTo == 3) {
+                    this->preRenderDataBg3.push_back(curShort);
                 } else {
                     std::stringstream ssUnhandledBg;
                     ssUnhandledBg << "Writing to unhandled BG " << whichBgToWriteTo;
@@ -389,10 +398,12 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 }
                 mpbzIndex++;
             }
-            // cout << mpbzData.toString() << endl;
-            // cout << "lol" << whichBgToWriteTo << "2" << endl;
-            // auto compTest = mpbzData.compile();
-            // YUtils::printVector(compTest);
+            // Testing
+            cout << mpbzData.toString() << endl;
+            cout << "lol " << whichBgToWriteTo << " 2" << endl;
+            auto compTest = mpbzData.compile();
+            YUtils::printVector(compTest);
+
             scenData.minorInstructions.push_back(&mpbzData);
         } else if (curSubInstruction == Constants::COLZ_MAGIC_NUM) {
             if (collisionTileArray.size() > 0) {
