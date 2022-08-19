@@ -524,9 +524,9 @@ ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
     this->pixelTilesBg1index = 0;
     this->pixelTilesBg2index = 0;
 
-    auto uncompressedFileVector = this->getFileByteVector(fileName_noext.append(".imbz"));
-    std::vector uncompressedImbz = YCompression::lzssVectorDecomp(uncompressedFileVector,false);
-    uncompressedFileVector.clear();
+    auto compressedFileVector = this->getFileByteVector(fileName_noext.append(".imbz"));
+    std::vector uncompressedImbz = YCompression::lzssVectorDecomp(compressedFileVector,false);
+    compressedFileVector.clear();
 
     // Use ints since they're natural and not stored excessively anyway
     int currentTileIndex = 0; // The index of the tile within list of tiles
@@ -563,6 +563,13 @@ ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
         imbzIndex += Constants::CHARTILE_DATA_SIZE;
         currentTileIndex++;
     }
+
+    // cout << "lol1" << endl;
+    // YUtils::printVector(compressedFileVector);
+    // auto packed = imbzData.compile();
+    // cout << "lol2" << endl;
+    // YUtils::printVector(packed);
+    // exit(EXIT_SUCCESS);
 
     return imbzData;
 }

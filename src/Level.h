@@ -19,6 +19,8 @@
 #include "utils.h"
 #include "FsPacker.h"
 #include "constants.h"
+#include "Chartile.h"
+#include "compression.h"
 
 using namespace std;
 
@@ -71,6 +73,7 @@ struct ScenData : public Instruction {
 };
 
 struct ImbzData : public Instruction {
+    uint32_t magicNum = Constants::IMBZ_MAGIC_NUM;
     std::string fileName;
     uint16_t whichBg;
     std::vector<Chartile> pixelTiles;
@@ -84,7 +87,17 @@ struct ImbzData : public Instruction {
     };
     std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
-        result = FsPacker::packInstruction(Constants::IMBZ_MAGIC_NUM,result);
+        for (auto it = this->pixelTiles.cbegin(); it != this->pixelTiles.cend(); it++) {
+            auto charTiles = it->tiles;
+            for (int tileIndex = 0; tileIndex < 64; tileIndex += 2) {
+                uint8_t highByte = charTiles.at(tileIndex + 1);
+                uint8_t lowByte = charTiles.at(tileIndex + 0);
+                uint16_t shortToAdd = ((uint16_t)(highByte) << 4) + (uint16_t)lowByte;
+                result.push_back(shortToAdd);
+            }
+        }
+        result = YCompression::lzssVectorRecomp(result);
+        // Technically this is not an Instruction, so don't pack it
         return result;
     };
 };
