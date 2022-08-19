@@ -255,8 +255,8 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             if (infoLength > 0x18) {
                 // Get charfile string
                 auto charFileNoExt = YUtils::getNullTermTextFromVec(mpdzVec, indexPointer + 32);
-                this->handleImbz(charFileNoExt, whichBgToWriteTo);
-                infoData.tileGraphics.fileName = charFileNoExt;
+                auto gotImbz = this->handleImbz(charFileNoExt, whichBgToWriteTo);
+                infoData.tileGraphics = gotImbz;
             } else {
                 infoData.tileGraphics.fileName = "none";
             }
