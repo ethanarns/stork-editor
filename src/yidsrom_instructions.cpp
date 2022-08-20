@@ -721,7 +721,9 @@ SetdObjectData YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& inde
     return setdObjectData;
 }
 
-void YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes) {
+ObjectFile YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes) {
+    ObjectFile objFileData;
+    
     std::stringstream ssGraphics;
     ssGraphics << "Loading graphics archive '" << objset_filename << "'";
     YUtils::printDebug(ssGraphics.str(),DebugType::VERBOSE);
@@ -754,6 +756,7 @@ void YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,st
              *** OBJB ***
              ************/
             pixelTiles[curTileStartOffset] = subsection;
+            objFileData.objectPixelTiles[curTileStartOffset] = subsection;
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
             /************
              *** PLTB ***
@@ -775,6 +778,7 @@ void YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,st
             currentLoadingPalette.address = indexObjset;
             // Does not start at zero! Access is offset by 
             palettes[curTileStartOffset] = currentLoadingPalette;
+            objFileData.objectPalettes[curTileStartOffset] = currentLoadingPalette;
         } else {
             std::cerr << "[ERROR] Known objset magic number not found! Instead found ";
             std::cerr << hex << instructionCheck << " at " << hex << (indexObjset - 4) << std::endl;
@@ -783,12 +787,11 @@ void YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,st
         curTileStartOffset++;
         indexObjset += currentInstructionLength;
     }
-    if (pixelTiles.size() < 1) {
-        std::cerr << "[ERROR] Pulled zero pixelTiles!" << std::endl;
+    if (objFileData.objectPixelTiles.size() < 1) {
+        YUtils::printDebug("Pulled zero OBJB records",DebugType::ERROR);
     }
-    if (palettes.size() < 1) {
-        std::cerr << "[ERROR] Pulled zero PLTB records!" << std::endl;
+    if (objFileData.objectPalettes.size() < 1) {
+        YUtils::printDebug("Pulled zero PLTB records",DebugType::ERROR);
     }
-    //std::cout << "Loaded " << dec << pixelTiles.size() << " object tile groups" << std::endl;
-    //std::cout << "Loaded " << dec << palettes.size() << " palettes" << std::endl;
+    return objFileData;
 }

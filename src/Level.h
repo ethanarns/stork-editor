@@ -15,6 +15,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <map>
 
 #include "utils.h"
 #include "FsPacker.h"
@@ -71,6 +72,11 @@ struct PathRecord {
 
 struct SetdObjectData {
     std::vector<LevelObject> levelObjects;
+};
+
+struct ObjectFile {
+    std::map<uint32_t,std::vector<uint8_t>> objectPixelTiles;
+    std::map<uint32_t,ObjectPalette> objectPalettes;
 };
 
 struct PathData {

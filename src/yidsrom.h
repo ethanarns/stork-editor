@@ -128,7 +128,7 @@ private:
     void handleAREA(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     PathData handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     void handleALPH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
-    void handleObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes);
+    ObjectFile handleObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes);
 };
 
 #endif
