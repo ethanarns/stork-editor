@@ -69,6 +69,10 @@ struct PathRecord {
     }
 };
 
+struct SetdObjectData {
+    std::vector<LevelObject> levelObjects;
+};
+
 struct PathData {
     uint32_t pathCount;
 };

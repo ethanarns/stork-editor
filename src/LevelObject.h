@@ -4,6 +4,10 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <sstream>
+#include <iostream>
+// setw()
+#include <iomanip>
 
 #include <QByteArray>
 
@@ -45,5 +49,17 @@ public:
     uint32_t uuid;
     std::vector<uint8_t> settings;
     static ObjectGraphicMetadata getObjectGraphicMetadata(LevelObject lo);
+    std::string toString() {
+        this->settingsLength = this->settings.size();
+        std::stringstream ssLevelObject;
+        ssLevelObject << "LevelObject {";
+        ssLevelObject << " objectId: " << std::setw(4) << std::setfill('0') << std::hex << this->objectId;
+        ssLevelObject << ", x/y: " << std::setw(4) << std::setfill('0') << std::hex << this->xPosition;
+        ssLevelObject << "/" << std::setw(4) << std::setfill('0') << std::hex << this->yPosition;
+        ssLevelObject << ", settingsLength: " << std::hex << this->settingsLength;
+        ssLevelObject << ", uuid: " << std::hex << this->uuid;
+        ssLevelObject << " }";
+        return ssLevelObject.str();
+    };
 };
 #endif

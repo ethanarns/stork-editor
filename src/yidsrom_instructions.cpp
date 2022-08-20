@@ -631,13 +631,14 @@ void YidsRom::handleAREA(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
     indexPointer += areaLength;
 }
 
-void YidsRom::handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
+PathData YidsRom::handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
     uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    PathData pathData;
+    pathData.pathCount = 0;
     if (instructionCheck != Constants::PATH_MAGIC_NUM) {
         YUtils::printDebug("PATH instruction did not find magic hex",DebugType::ERROR);
-        return;
+        return pathData;
     }
-    PathData pathData;
 
     indexPointer += 4; // Go to length
     auto pathLength = YUtils::getUint32FromVec(mpdzVec,indexPointer);
@@ -662,6 +663,8 @@ void YidsRom::handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
     // Do stuff here
     // For now, skip
     indexPointer += pathLength;
+
+    return pathData;
 }
 
 void YidsRom::handleALPH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
@@ -680,11 +683,12 @@ void YidsRom::handleALPH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
     indexPointer += alphLength;
 }
 
-void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
+SetdObjectData YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) {
     uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    SetdObjectData setdObjectData;
     if (instructionCheck != Constants::SETD_MAGIC_NUM) {
         YUtils::printDebug("SETD instruction did not find magic hex",DebugType::ERROR);
-        return;
+        return setdObjectData;
     }
     indexPointer += 4; // Go to length
     auto setdLength = YUtils::getUint32FromVec(mpdzVec,indexPointer);
@@ -710,8 +714,11 @@ void YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
             lo.settings = YUtils::subVector(mpdzVec,indexPointer,indexPointer + len);
             indexPointer += len;
         }
+        setdObjectData.levelObjects.push_back(lo);
         this->loadedLevelObjects.push_back(lo);
+        std::cout << lo.toString() << std::endl;
     }
+    return setdObjectData;
 }
 
 void YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes) {
