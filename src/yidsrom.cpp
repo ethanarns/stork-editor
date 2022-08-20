@@ -106,8 +106,10 @@ void YidsRom::openRom(std::string fileName) {
         curFileId++;
     }
 
-    this->handleObjPltFile("objset.arcz",this->objsetPixelTiles,this->objsetPalettes);
-    this->handleObjPltFile("objeffect.arcz",this->effectPixelTiles,this->effectPalettes);
+    auto objsetFile = this->getObjPltFile("objset.arcz",this->objsetPixelTiles,this->objsetPalettes);
+    auto effectFile = this->getObjPltFile("objeffect.arcz",this->effectPixelTiles,this->effectPalettes);
+    Q_UNUSED(objsetFile);
+    Q_UNUSED(effectFile);
 
     std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,0);
     auto crsb = this->loadCrsb(crsbFileName);

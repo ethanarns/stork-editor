@@ -75,6 +75,7 @@ struct SetdObjectData {
 };
 
 struct ObjectFile {
+    std::string objectFileName;
     std::map<uint32_t,std::vector<uint8_t>> objectPixelTiles;
     std::map<uint32_t,ObjectPalette> objectPalettes;
 };

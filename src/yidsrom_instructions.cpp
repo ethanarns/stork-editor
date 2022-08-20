@@ -721,8 +721,9 @@ SetdObjectData YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& inde
     return setdObjectData;
 }
 
-ObjectFile YidsRom::handleObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes) {
+ObjectFile YidsRom::getObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes) {
     ObjectFile objFileData;
+    objFileData.objectFileName = objset_filename;
     
     std::stringstream ssGraphics;
     ssGraphics << "Loading graphics archive '" << objset_filename << "'";
