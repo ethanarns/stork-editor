@@ -523,7 +523,12 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             }
         } else if (curSubInstruction == Constants::SCRL_MAGIC_NUM) {
             uint32_t scrlLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4);
-            // TODO: Learn about this data
+            // TODO: Learn about this data (020202a4)
+            uint32_t scrlDataStart = indexPointer + 8;
+            uint32_t scrlDataEnd = scrlDataStart + scrlLength;
+            auto dataVec = YUtils::subVector(mpdzVec,scrlDataStart,scrlDataEnd);
+            Q_UNUSED(dataVec);
+            //YUtils::printVector(dataVec);
             indexPointer += scrlLength + 8;
         } else if (curSubInstruction == Constants::SCEN_MAGIC_NUM) {
             YUtils::printDebug("Found SCEN instruction, overflowed!",DebugType::ERROR);
