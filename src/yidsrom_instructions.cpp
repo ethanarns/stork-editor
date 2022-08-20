@@ -656,8 +656,9 @@ PathData YidsRom::handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPoint
         pathRec.distance = YUtils::getInt16FromVec(pathVec,pathBase + 2);
         pathRec.startX = YUtils::getUint32FromVec(pathVec,pathBase + 4);
         pathRec.startY = YUtils::getUint32FromVec(pathVec,pathBase + 8);
-        std::cout << pathRec.toString();
-        printf("%d\n",pathRec.distance);
+        // std::cout << pathRec.toString();
+        // printf("%d\n",pathRec.distance);
+        Q_UNUSED(pathRec);
     }
 
     // Do stuff here
@@ -716,7 +717,7 @@ SetdObjectData YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& inde
         }
         setdObjectData.levelObjects.push_back(lo);
         this->loadedLevelObjects.push_back(lo);
-        std::cout << lo.toString() << std::endl;
+        //std::cout << lo.toString() << std::endl;
     }
     return setdObjectData;
 }
@@ -737,20 +738,20 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename, std::map<uint32_t
         exit(EXIT_FAILURE);
     }
     auto fullObjsetLength = YUtils::getUint32FromVec(objsetUncompressedVec,4);
-    //std::cout << "Full length: " << hex << fullObjsetLength << endl;
+
     uint32_t indexObjset = 8; // magic number (4) + length uint32 (4)
-    //std::cout << "First index instruction: " << hex << (int)objsetUncompressedVec.at(indexObjset) << endl;
+
     const uint32_t objsetEndIndex = fullObjsetLength + 8; // Exclusive, but shouldn't matter
-    //std::cout << "End index: " << hex << objsetEndIndex << endl;
+
     uint32_t currentPaletteIndex = 0;
     uint32_t curTileStartOffset = 0;
     while (indexObjset < objsetEndIndex) {
         auto instructionCheck = YUtils::getUint32FromVec(objsetUncompressedVec,indexObjset);
-        //std::cout << "instructionCheck: " << hex << instructionCheck << endl;
+
         indexObjset += 4; // Skip instruction, go to length
         auto currentInstructionLength = YUtils::getUint32FromVec(objsetUncompressedVec,indexObjset);
         indexObjset += 4; // Skip length, go to first
-        //std::cout << "Found sublength: " << hex << currentInstructionLength << endl;
+
         auto subsection = YUtils::subVector(objsetUncompressedVec,indexObjset,indexObjset + currentInstructionLength);
         if (instructionCheck == Constants::OBJB_MAGIC_NUM) {
             /************
