@@ -52,6 +52,27 @@ struct MapFile : public Instruction {
     }
 };
 
+struct PathRecord {
+    uint16_t angle;
+    int16_t distance;
+    uint32_t startX;
+    uint32_t startY;
+    std::string toString() {
+        std::stringstream ssPathRecord;
+        ssPathRecord << "PathRecord { start x/y: ";
+        ssPathRecord << setw(8) << setfill('0') << hex << this->startX << "/";
+        ssPathRecord << hex << setw(8) << setfill('0') << this->startY;
+        ssPathRecord << ", distance: " << setw(4) << hex << this->distance;
+        ssPathRecord << ", angle: " << setw(4) << hex << this->angle;
+        ssPathRecord << " } ";
+        return ssPathRecord.str();
+    }
+};
+
+struct PathData {
+    uint32_t pathCount;
+};
+
 struct ColzData : public Instruction {
     uint32_t magicNum = Constants::COLZ_MAGIC_NUM;
     std::vector<uint8_t> colArray;

@@ -637,10 +637,27 @@ void YidsRom::handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer) 
         YUtils::printDebug("PATH instruction did not find magic hex",DebugType::ERROR);
         return;
     }
-    //std::cout << "*** Starting AREA instruction parse ***" << endl;
+    PathData pathData;
+
     indexPointer += 4; // Go to length
     auto pathLength = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     indexPointer += 4; // Now at start of actual data
+
+    auto pathCount = YUtils::getUint32FromVec(mpdzVec,indexPointer);
+    pathData.pathCount = pathCount;
+
+    // +4 to skip the count
+    auto pathVec = YUtils::subVector(mpdzVec,indexPointer+4,indexPointer + pathLength);
+
+    for (uint32_t pathBase = 0; pathBase < pathVec.size(); pathBase += 12) {
+        PathRecord pathRec;
+        pathRec.angle = YUtils::getUint16FromVec(pathVec,pathBase + 0);
+        pathRec.distance = YUtils::getInt16FromVec(pathVec,pathBase + 2);
+        pathRec.startX = YUtils::getUint32FromVec(pathVec,pathBase + 4);
+        pathRec.startY = YUtils::getUint32FromVec(pathVec,pathBase + 8);
+        std::cout << pathRec.toString();
+        printf("%d\n",pathRec.distance);
+    }
 
     // Do stuff here
     // For now, skip
