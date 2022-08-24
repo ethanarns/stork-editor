@@ -11,9 +11,10 @@
 
 #include <QByteArray>
 
-enum PaletteFileName {
+enum ObjectFileName {
     OBJSET,
-    OBJEFFECT
+    OBJEFFECT,
+    OBJSBBLOCK
 };
 
 struct ObjectGraphicMetadata {
@@ -22,7 +23,8 @@ struct ObjectGraphicMetadata {
      * This is hard-coded in the code sadly, no tables
      */
     uint32_t tilesSectorOffset;
-    PaletteFileName whichPaletteFile;
+    ObjectFileName whichPaletteFile;
+    ObjectFileName whichObjectFile;
     /**
      * @brief The offset/index of the PLTB data.
      * This is hard-coded in the code sadly, no tables

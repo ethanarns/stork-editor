@@ -222,7 +222,7 @@ void DisplayTable::initCellCollision() {
             this->setCellCollision(y  ,x+1,CollisionDraw::DIAG_UP_RIGHT);
         } else if (curCol == CollisionType::STATIC_COIN) {
             // Don't draw, make a coin
-            this->placeObjectTile(x+1,y,0,0,0,2,4,PaletteFileName::OBJSET,this->yidsRom->levelObjectLoadIndex++);
+            this->placeObjectTile(x+1,y,0,0,0,2,4,ObjectFileName::OBJSET,ObjectFileName::OBJSET,this->yidsRom->levelObjectLoadIndex++);
         } else if (curCol != 0) { // Unknown, draw temp
             this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT);
             this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);
@@ -375,6 +375,7 @@ void DisplayTable::updateObjects() {
                 objectGraphicsMeta.tileWidth,
                 objectGraphicsMeta.tilesCount,
                 objectGraphicsMeta.whichPaletteFile,
+                objectGraphicsMeta.whichObjectFile,
                 it->uuid
             );
         }
@@ -403,14 +404,15 @@ void DisplayTable::placeObjectTile(
     uint32_t paletteOffset,
     uint32_t spriteWidth,
     uint32_t tilesLength,
-    PaletteFileName paletteFile,
+    ObjectFileName paletteFile,
+    ObjectFileName objectFile,
     uint32_t uuid
 ) {
     auto objectPalette = this->yidsRom->currentPalettes[0]; // Default
     if (paletteOffset != 0) {
-        if (paletteFile == PaletteFileName::OBJSET) {
+        if (paletteFile == ObjectFileName::OBJSET) {
             objectPalette = this->yidsRom->objsetPalettes[paletteOffset].paletteData;
-        } else if (paletteFile == PaletteFileName::OBJEFFECT) {
+        } else if (paletteFile == ObjectFileName::OBJEFFECT) {
             objectPalette = this->yidsRom->effectPalettes[paletteOffset].paletteData;
         } else {
             std::cerr << "[ERROR] Unknown PaletteFileName enum value: " << hex << paletteFile << endl;

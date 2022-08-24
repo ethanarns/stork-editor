@@ -118,7 +118,6 @@ public:
 
     ~YidsRom();
 private:
-
     void initArm9RomData(std::string fileName);
     void writeUncompressedARM9(uint32_t arm9start_rom, uint32_t arm9length);
     ScenData handleSCEN(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
@@ -128,7 +127,10 @@ private:
     void handleAREA(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     PathData handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     void handleALPH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
-    ObjectFile getObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes);
+    ObjectFile getMajorObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes);
+    ObjectFile getObjPltFile(std::string objset_filename);
+
+    std::map<uint32_t,ObjectFile> objectFiles;
 };
 
 #endif

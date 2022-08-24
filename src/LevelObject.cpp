@@ -12,7 +12,8 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     ObjectGraphicMetadata meta;
     auto objectId = lo.objectId;
     meta.subTile = 0;
-    meta.whichPaletteFile = PaletteFileName::OBJSET;
+    meta.whichPaletteFile = ObjectFileName::OBJSET;
+    meta.whichObjectFile = ObjectFileName::OBJSET;
     switch(objectId) {
         case 0x0: { // Basic yellow coin
             meta.tilesSectorOffset = 0;
@@ -123,7 +124,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x94: { // Chomp-breakable blocks
             // Fuck. They're an arc file. "objsbblock.arc"
             // TODO: Implement objsbblock.arc
-            meta.tilesCount = 0;
+            meta.tilesCount = 4;
+            meta.tileWidth = 4;
+            meta.subTile = 0;
+            meta.tilesSectorOffset = 0;
+            meta.whichObjectFile = ObjectFileName::OBJSBBLOCK;
             break;
         }
         case 0x97: { // Ghost Guy
@@ -183,7 +188,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         }
         case 0xa1: { // Block that expands when you hit it
             meta.tilesSectorOffset = 0x5e;
-            meta.whichPaletteFile = PaletteFileName::OBJEFFECT;
+            meta.whichPaletteFile = ObjectFileName::OBJEFFECT;
             meta.paletteSectorOffset = 0x2a-2; // Is in objeffect.arcz, strange offset
             // 02096680 is where the function to get the palette address is
             // Actual function is at 020e448c. Doesn't SEEM to have any offset, but might skip the first few?
@@ -193,7 +198,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         }
         case 0xd2: { // Yellow egg block
             meta.tilesSectorOffset = 0x1;
-            meta.whichPaletteFile = PaletteFileName::OBJEFFECT;
+            meta.whichPaletteFile = ObjectFileName::OBJEFFECT;
             meta.paletteSectorOffset = 0x2a-2;
             meta.subTile = 4; // TODO: Get from object data values
             meta.tilesCount = 4;

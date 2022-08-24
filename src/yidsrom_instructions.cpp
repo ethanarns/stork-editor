@@ -722,7 +722,7 @@ SetdObjectData YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& inde
     return setdObjectData;
 }
 
-ObjectFile YidsRom::getObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes) {
+ObjectFile YidsRom::getMajorObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes) {
     ObjectFile objFileData;
     objFileData.objectFileName = objset_filename;
     
@@ -780,6 +780,80 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename, std::map<uint32_t
             currentLoadingPalette.address = indexObjset;
             // Does not start at zero! Access is offset by 
             palettes[curTileStartOffset] = currentLoadingPalette;
+            objFileData.objectPalettes[curTileStartOffset] = currentLoadingPalette;
+        } else {
+            std::cerr << "[ERROR] Known objset magic number not found! Instead found ";
+            std::cerr << hex << instructionCheck << " at " << hex << (indexObjset - 4) << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        curTileStartOffset++;
+        indexObjset += currentInstructionLength;
+    }
+    if (objFileData.objectPixelTiles.size() < 1) {
+        YUtils::printDebug("Pulled zero OBJB records",DebugType::ERROR);
+    }
+    if (objFileData.objectPalettes.size() < 1) {
+        YUtils::printDebug("Pulled zero PLTB records",DebugType::ERROR);
+    }
+    return objFileData;
+}
+
+ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
+    ObjectFile objFileData;
+    objFileData.objectFileName = objset_filename;
+    
+    std::stringstream ssGraphics;
+    ssGraphics << "Loading graphics archive '" << objset_filename << "'";
+    YUtils::printDebug(ssGraphics.str(),DebugType::VERBOSE);
+    std::vector<uint8_t> fileVectorObjset = this->getFileByteVector(objset_filename);
+    std::vector<uint8_t> objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
+
+    auto potentialMagicNumber = YUtils::getUint32FromVec(objsetUncompressedVec,0);
+    if (potentialMagicNumber != Constants::OBAR_MAGIC_NUM) {
+        cerr << "[ERROR] OBAR magic number not found in file '" << objset_filename << "'! Found instead: " << hex << potentialMagicNumber << endl;
+        exit(EXIT_FAILURE);
+    }
+    auto fullObjsetLength = YUtils::getUint32FromVec(objsetUncompressedVec,4);
+
+    uint32_t indexObjset = 8; // magic number (4) + length uint32 (4)
+
+    const uint32_t objsetEndIndex = fullObjsetLength + 8; // Exclusive, but shouldn't matter
+
+    uint32_t currentPaletteIndex = 0;
+    uint32_t curTileStartOffset = 0;
+    while (indexObjset < objsetEndIndex) {
+        auto instructionCheck = YUtils::getUint32FromVec(objsetUncompressedVec,indexObjset);
+
+        indexObjset += 4; // Skip instruction, go to length
+        auto currentInstructionLength = YUtils::getUint32FromVec(objsetUncompressedVec,indexObjset);
+        indexObjset += 4; // Skip length, go to first
+
+        auto subsection = YUtils::subVector(objsetUncompressedVec,indexObjset,indexObjset + currentInstructionLength);
+        if (instructionCheck == Constants::OBJB_MAGIC_NUM || instructionCheck == Constants::OBJZ_MAGIC_NUM) {
+            /**************
+             *** OBJB/Z ***
+             **************/
+            objFileData.objectPixelTiles[curTileStartOffset] = subsection;
+        } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
+            /************
+             *** PLTB ***
+             ************/
+            uint32_t subSectionSize = subsection.size();
+            if (subSectionSize != Constants::PALETTE_SIZE) {
+                std::stringstream ssPltbSize;
+                ssPltbSize << "PLTB data not 0x20/32 bytes! Was instead: " << hex << subSectionSize;
+                ssPltbSize << ". Only pulling first one.";
+                YUtils::printDebug(ssPltbSize.str(),DebugType::WARNING);
+            }
+            ObjectPalette currentLoadingPalette;
+            currentLoadingPalette.paletteData.resize(Constants::PALETTE_SIZE);
+            for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
+                currentLoadingPalette.paletteData[curPaletteIndex] = subsection.at(curPaletteIndex);
+            }
+            currentLoadingPalette.index = currentPaletteIndex;
+            currentPaletteIndex++;
+            currentLoadingPalette.address = indexObjset;
+            // Does not start at zero! Access is offset by 
             objFileData.objectPalettes[curTileStartOffset] = currentLoadingPalette;
         } else {
             std::cerr << "[ERROR] Known objset magic number not found! Instead found ";

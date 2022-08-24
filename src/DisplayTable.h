@@ -27,7 +27,8 @@ public:
         uint32_t paletteOffset,
         uint32_t spriteWidth,
         uint32_t tilesLength,
-        PaletteFileName paletteFile,
+        ObjectFileName paletteFile,
+        ObjectFileName objectFile,
         uint32_t uuid
     );
     void displayTableClicked(int row, int column);
