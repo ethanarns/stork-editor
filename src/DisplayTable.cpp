@@ -419,7 +419,14 @@ void DisplayTable::placeObjectTile(
         }
     }
 
-    auto objectVector = this->yidsRom->objsetPixelTiles[objectOffset];
+    std::vector<uint8_t> objectVector;
+    //objectVector = this->yidsRom->objsetPixelTiles[objectOffset];
+    if (objectFile == ObjectFileName::OBJSET) {
+        objectVector = this->yidsRom->objsetPixelTiles[objectOffset];
+    } else {
+        objectVector = this->yidsRom->objectFiles[objectFile].objectPixelTiles[0];
+    }
+    
     uint32_t subLength = objectVector.size();
     uint32_t subIndex = 0x00;
 

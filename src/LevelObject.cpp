@@ -124,7 +124,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x94: { // Chomp-breakable blocks
             // Fuck. They're an arc file. "objsbblock.arc"
             // TODO: Implement objsbblock.arc
-            meta.tilesCount = 4;
+            meta.tilesCount = 4*5;
             meta.tileWidth = 4;
             meta.subTile = 0;
             meta.tilesSectorOffset = 0;

@@ -13,6 +13,7 @@ moc_*
 
 # test extracted files
 *.arcz
+*.arc
 *.mpbz
 *.anmz
 *.mpdz

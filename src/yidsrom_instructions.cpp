@@ -833,6 +833,9 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
             /**************
              *** OBJB/Z ***
              **************/
+            if (instructionCheck == Constants::OBJZ_MAGIC_NUM) {
+                subsection = YCompression::lzssVectorDecomp(subsection,true);
+            }
             objFileData.objectPixelTiles[curTileStartOffset] = subsection;
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
             /************

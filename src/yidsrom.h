@@ -76,6 +76,7 @@ public:
 
     std::map<uint32_t,std::vector<uint8_t>> effectPixelTiles;
     std::map<uint32_t,ObjectPalette> effectPalettes;
+    std::map<uint32_t,ObjectFile> objectFiles;
 
     uint32_t paletteOffsetBg1 = 0;
     uint32_t paletteOffsetBg2 = 0;
@@ -129,8 +130,6 @@ private:
     void handleALPH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     ObjectFile getMajorObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes);
     ObjectFile getObjPltFile(std::string objset_filename);
-
-    std::map<uint32_t,ObjectFile> objectFiles;
 };
 
 #endif
