@@ -29,6 +29,8 @@ public:
         uint32_t tilesLength,
         ObjectFileName paletteFile,
         ObjectFileName objectFile,
+        uint32_t xPixelOffset,
+        uint32_t yPixelOffset,
         uint32_t uuid
     );
     void displayTableClicked(int row, int column);

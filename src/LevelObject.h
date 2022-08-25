@@ -40,6 +40,17 @@ struct ObjectGraphicMetadata {
     uint32_t tilesCount;
 
     uint32_t subTile;
+
+    /**
+     * Sometimes the rounding is off. Use this to adjust the rounding enough to place
+     * it in a better-looking tile
+     */
+    int32_t xPixelOffset;
+    /**
+     * Sometimes the rounding is off. Use this to adjust the rounding enough to place
+     * it in a better-looking tile
+     */
+    int32_t yPixelOffset;
 };
 
 class LevelObject {

@@ -14,6 +14,8 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     meta.subTile = 0;
     meta.whichPaletteFile = ObjectFileName::OBJSET;
     meta.whichObjectFile = ObjectFileName::OBJSET;
+    meta.xPixelOffset = 0;
+    meta.yPixelOffset = 0;
     switch(objectId) {
         case 0x0: { // Basic yellow coin
             meta.tilesSectorOffset = 0;
@@ -131,6 +133,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             // TODO: Make the palette work
             meta.whichPaletteFile = ObjectFileName::OBJSBBLOCK;
             meta.paletteSectorOffset = 2;
+            meta.xPixelOffset = 8;
             break;
         }
         case 0x97: { // Ghost Guy
