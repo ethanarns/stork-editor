@@ -122,13 +122,15 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         case 0x94: { // Chomp-breakable blocks
-            // Fuck. They're an arc file. "objsbblock.arc"
-            // TODO: Implement objsbblock.arc
+            // From an arc file: "objsbblock.arc"
             meta.tilesCount = 4*5;
             meta.tileWidth = 4;
             meta.subTile = 0;
             meta.tilesSectorOffset = 0;
             meta.whichObjectFile = ObjectFileName::OBJSBBLOCK;
+            // TODO: Make the palette work
+            meta.whichPaletteFile = ObjectFileName::OBJSBBLOCK;
+            meta.paletteSectorOffset = 2;
             break;
         }
         case 0x97: { // Ghost Guy

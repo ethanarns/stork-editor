@@ -834,7 +834,7 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
              *** OBJB/Z ***
              **************/
             if (instructionCheck == Constants::OBJZ_MAGIC_NUM) {
-                subsection = YCompression::lzssVectorDecomp(subsection,true);
+                subsection = YCompression::lzssVectorDecomp(subsection,false);
             }
             objFileData.objectPixelTiles[curTileStartOffset] = subsection;
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
@@ -856,7 +856,6 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
             currentLoadingPalette.index = currentPaletteIndex;
             currentPaletteIndex++;
             currentLoadingPalette.address = indexObjset;
-            // Does not start at zero! Access is offset by 
             objFileData.objectPalettes[curTileStartOffset] = currentLoadingPalette;
         } else {
             std::cerr << "[ERROR] Known objset magic number not found! Instead found ";

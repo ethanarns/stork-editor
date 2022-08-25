@@ -409,14 +409,13 @@ void DisplayTable::placeObjectTile(
     uint32_t uuid
 ) {
     auto objectPalette = this->yidsRom->currentPalettes[0]; // Default
-    if (paletteOffset != 0) {
-        if (paletteFile == ObjectFileName::OBJSET) {
-            objectPalette = this->yidsRom->objsetPalettes[paletteOffset].paletteData;
-        } else if (paletteFile == ObjectFileName::OBJEFFECT) {
-            objectPalette = this->yidsRom->effectPalettes[paletteOffset].paletteData;
-        } else {
-            std::cerr << "[ERROR] Unknown PaletteFileName enum value: " << hex << paletteFile << endl;
-        }
+    if (paletteFile == ObjectFileName::OBJSET) {
+        objectPalette = this->yidsRom->objsetPalettes[paletteOffset].paletteData;
+    } else if (paletteFile == ObjectFileName::OBJEFFECT) {
+        objectPalette = this->yidsRom->effectPalettes[paletteOffset].paletteData;
+    } else {
+        objectPalette = this->yidsRom->objectFiles[objectFile].objectPalettes[paletteOffset].paletteData;
+        //std::cerr << "[ERROR] Unknown PaletteFileName enum value: " << hex << paletteFile << endl;
     }
 
     std::vector<uint8_t> objectVector;
@@ -424,7 +423,7 @@ void DisplayTable::placeObjectTile(
     if (objectFile == ObjectFileName::OBJSET) {
         objectVector = this->yidsRom->objsetPixelTiles[objectOffset];
     } else {
-        objectVector = this->yidsRom->objectFiles[objectFile].objectPixelTiles[0];
+        objectVector = this->yidsRom->objectFiles[objectFile].objectPixelTiles[objectOffset];
     }
     
     uint32_t subLength = objectVector.size();

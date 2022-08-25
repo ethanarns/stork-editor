@@ -55,6 +55,7 @@ public:
     static QByteArray tileVectorToQByteArray(std::vector<uint8_t> tileVector);
 
     static void printDebug(std::string msg, DebugType dt = DebugType::VERBOSE);
+    static void printQbyte(QByteArray& qb, int newlineBreak = 0x10);
 };
 
 #endif
