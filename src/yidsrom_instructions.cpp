@@ -215,6 +215,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
     ScenData scenData;
     
     uint16_t whichBgToWriteTo = 0;
+    uint32_t whichBgColorModeMaybe = 0; // 0 = 16, 1 = 256
     uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     if (instructionCheck != Constants::SCEN_MAGIC_NUM) {
         YUtils::printDebug("SCEN instruction did not find magic hex",DebugType::ERROR);
@@ -242,6 +243,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             infoData.unkThirdByte = mpdzVec.at(indexPointer + 24 + 2);
             infoData.screenBaseBlockMaybe = mpdzVec.at(indexPointer + 24 + 3);
             infoData.colorModeMaybe = mpdzVec.at(indexPointer + 28);
+            whichBgColorModeMaybe = infoData.colorModeMaybe;
 
             // Only the first one matters for the primary height and width, since BG 2 decides everything
             if (whichBgToWriteTo == 2) {
@@ -297,7 +299,6 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             scenData.minorInstructions.push_back(&pltbData);
             timesPaletteLoaded++;
         } else if (curSubInstruction == Constants::MPBZ_MAGIC_NUM) {
-            MpbzData mpbzData;
             // Most of this tile placing logic is here: 0201c6dc
             if (whichBgToWriteTo == 0) {
                 YUtils::printDebug("Which BG to write to was not specified, MPBZ load failed",DebugType::ERROR);
@@ -313,88 +314,15 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
 
             indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
 
-            mpbzData.whichBg = whichBgToWriteTo;
-
-            // Handle uncompressedMpbz data
-            const uint32_t uncompressedMpbzTwoByteCount = uncompressedMpbz.size() / 2;
-            if (uncompressedMpbzTwoByteCount < 1) {
-                YUtils::printDebug("uncompressedMpbzTwoByteCount was 0",DebugType::ERROR);
-                continue;
-            }
-
-            uint32_t mpbzIndex = 0;
-
-            // 0x0201c700
-            if (uncompressedMpbz.at(0) == 0xFF && uncompressedMpbz.at(1) == 0xFF) {
-                // NOTE: It is not unlikely that there's a third byte for X offset, but
-                //   currently it just seems like Y is only what's used. If you see further
-                //   sliding, come back and look at this again
-
-                // Get the next WORD, which should be the Y offset/lines skipped
-                auto offset = YUtils::getUint16FromVec(uncompressedMpbz,2);
-                mpbzData.tileOffset = offset;
-
-                auto bottomTrim = YUtils::getUint16FromVec(uncompressedMpbz,4);
-                // TODO: Implement?
-                mpbzData.bottomTrim = bottomTrim;
-
-                // Skip drawing the number of lines specified in offset
-                if (whichBgToWriteTo == 2) {
-                    offset = offset * this->canvasWidthBg2;
-                } else if (whichBgToWriteTo == 1) {
-                    offset = offset * this->canvasWidthBg1;
-                }
-                
-                if (whichBgToWriteTo == 2) {
-                    for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
-                        this->preRenderDataBg2.push_back(0x0000);
-                    } 
-                    mpbzIndex += 3; // 0x0201c714
-                } else if (whichBgToWriteTo == 1) {
-                    // Potentially collapse me later, could probably be merged into above
-                    for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
-                        this->preRenderDataBg1.push_back(0x0000);
-                    } 
-                    mpbzIndex += 3; // 0x0201c714
-                } else if (whichBgToWriteTo == 3) {
-                    // Potentially collapse me later, could probably be merged into above
-                    for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
-                        this->preRenderDataBg3.push_back(0x0000);
-                    } 
-                    mpbzIndex += 3; // 0x0201c714
-                } else {
-                    std::stringstream ssUnhandledBg;
-                    ssUnhandledBg << "Writing to unhandled BG " << whichBgToWriteTo;
-                    YUtils::printDebug(ssUnhandledBg.str(),DebugType::WARNING);
-                    break;
-                }
+            if (whichBgColorModeMaybe == 0) {
+                MpbzData mpbzData = this->handleMPBZ(uncompressedMpbz,whichBgToWriteTo);
+                scenData.minorInstructions.push_back(&mpbzData);
             } else {
-                mpbzData.tileOffset = 0;
+                std::stringstream ssColMode;
+                ssColMode << "Unused color mode '" << whichBgColorModeMaybe << "' for bg '";
+                ssColMode << whichBgToWriteTo << "'!";
+                YUtils::printDebug(ssColMode.str(),DebugType::WARNING);
             }
-
-            while (mpbzIndex < uncompressedMpbzTwoByteCount) {
-                uint32_t trueOffset = mpbzIndex*2;
-                uint16_t firstByte = (uint16_t)uncompressedMpbz.at(trueOffset);
-                uint16_t secondByte = (uint16_t)uncompressedMpbz.at(trueOffset+1);
-                uint16_t curShort = (secondByte << 8) + firstByte;
-                curShort += 0x1000; // 0201c730
-                mpbzData.tileRenderData.push_back(curShort);
-                if (whichBgToWriteTo == 2) {
-                    this->preRenderDataBg2.push_back(curShort);
-                } else if (whichBgToWriteTo == 1) {
-                    this->preRenderDataBg1.push_back(curShort);
-                } else if (whichBgToWriteTo == 3) {
-                    this->preRenderDataBg3.push_back(curShort);
-                } else {
-                    std::stringstream ssUnhandledBg;
-                    ssUnhandledBg << "Writing to unhandled BG " << whichBgToWriteTo;
-                    YUtils::printDebug(ssUnhandledBg.str(),DebugType::WARNING);
-                    break;
-                }
-                mpbzIndex++;
-            }
-
-            scenData.minorInstructions.push_back(&mpbzData);
         } else if (curSubInstruction == Constants::COLZ_MAGIC_NUM) {
             if (collisionTileArray.size() > 0) {
                 std::cout << "[ERROR] Attempted to load a second COLZ, only one should ever be loaded" << endl;
@@ -872,4 +800,89 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
         YUtils::printDebug("Pulled zero PLTB records",DebugType::ERROR);
     }
     return objFileData;
+}
+
+MpbzData YidsRom::handleMPBZ(std::vector<uint8_t>& uncompressedMpbz, uint16_t whichBg) {
+    MpbzData mpbzData;
+    mpbzData.whichBg = whichBg;
+
+    // Handle uncompressedMpbz data
+    const uint32_t uncompressedMpbzTwoByteCount = uncompressedMpbz.size() / 2;
+    if (uncompressedMpbzTwoByteCount < 1) {
+        YUtils::printDebug("uncompressedMpbzTwoByteCount was 0",DebugType::ERROR);
+        return mpbzData;
+    }
+
+    uint32_t mpbzIndex = 0;
+
+    // 0x0201c700
+    if (uncompressedMpbz.at(0) == 0xFF && uncompressedMpbz.at(1) == 0xFF) {
+        // NOTE: It is not unlikely that there's a third byte for X offset, but
+        //   currently it just seems like Y is only what's used. If you see further
+        //   sliding, come back and look at this again
+
+        // Get the next WORD, which should be the Y offset/lines skipped
+        auto offset = YUtils::getUint16FromVec(uncompressedMpbz,2);
+        mpbzData.tileOffset = offset;
+
+        auto bottomTrim = YUtils::getUint16FromVec(uncompressedMpbz,4);
+        // TODO: Implement?
+        mpbzData.bottomTrim = bottomTrim;
+
+        // Skip drawing the number of lines specified in offset
+        if (whichBg == 2) {
+            offset = offset * this->canvasWidthBg2;
+        } else if (whichBg == 1) {
+            offset = offset * this->canvasWidthBg1;
+        }
+        
+        if (whichBg == 2) {
+            for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
+                this->preRenderDataBg2.push_back(0x0000);
+            } 
+            mpbzIndex += 3; // 0x0201c714
+        } else if (whichBg == 1) {
+            // Potentially collapse me later, could probably be merged into above
+            for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
+                this->preRenderDataBg1.push_back(0x0000);
+            } 
+            mpbzIndex += 3; // 0x0201c714
+        } else if (whichBg == 3) {
+            // Potentially collapse me later, could probably be merged into above
+            for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
+                this->preRenderDataBg3.push_back(0x0000);
+            } 
+            mpbzIndex += 3; // 0x0201c714
+        } else {
+            std::stringstream ssUnhandledBg;
+            ssUnhandledBg << "Writing to unhandled BG " << whichBg;
+            YUtils::printDebug(ssUnhandledBg.str(),DebugType::WARNING);
+            return mpbzData;
+        }
+    } else {
+        mpbzData.tileOffset = 0;
+    }
+
+    while (mpbzIndex < uncompressedMpbzTwoByteCount) {
+        uint32_t trueOffset = mpbzIndex*2;
+        uint16_t firstByte = (uint16_t)uncompressedMpbz.at(trueOffset);
+        uint16_t secondByte = (uint16_t)uncompressedMpbz.at(trueOffset+1);
+        uint16_t curShort = (secondByte << 8) + firstByte;
+        curShort += 0x1000; // 0201c730
+        mpbzData.tileRenderData.push_back(curShort);
+        if (whichBg == 2) {
+            this->preRenderDataBg2.push_back(curShort);
+        } else if (whichBg == 1) {
+            this->preRenderDataBg1.push_back(curShort);
+        } else if (whichBg == 3) {
+            this->preRenderDataBg3.push_back(curShort);
+        } else {
+            std::stringstream ssUnhandledBg;
+            ssUnhandledBg << "Writing to unhandled BG " << whichBg;
+            YUtils::printDebug(ssUnhandledBg.str(),DebugType::WARNING);
+            break;
+        }
+        mpbzIndex++;
+    }
+    return mpbzData;
 }

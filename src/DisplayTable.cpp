@@ -294,7 +294,6 @@ void DisplayTable::updateBg() {
     uint32_t preRenderSizeBg2 = this->yidsRom->preRenderDataBg2.size();
     if (preRenderSizeBg2 == 0) {
         YUtils::printDebug("preRenderDataBg2 is empty",DebugType::WARNING);
-        return;
     }
     if (this->yidsRom->canvasWidthBg2 == 0) {
         YUtils::printDebug("Canvas Width for BG2 was never set!",DebugType::ERROR);
@@ -302,7 +301,6 @@ void DisplayTable::updateBg() {
     }
     if (this->yidsRom->pixelTilesBg2.size() < 1) {
         YUtils::printDebug("Cannot update BG2, missing pixelTilesBg2",DebugType::WARNING);
-        return;
     }
 
     const uint32_t cutOffBg2 = this->yidsRom->canvasWidthBg2;
