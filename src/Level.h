@@ -101,9 +101,15 @@ struct ColzData : public Instruction {
     };
 };
 
+enum BgColorMode {
+    MODE_16 = 0,
+    MODE_256 = 1
+};
+
 struct MpbzData : public Instruction {
     uint32_t magicNum = Constants::MPBZ_MAGIC_NUM;
     std::vector<uint16_t> tileRenderData;
+    uint32_t bgColorMode; // BgColorMode?
     /**
      * @brief Setting this to non-zero pushes the tiles down N rows. It's
      * a storage space saver.

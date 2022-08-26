@@ -314,15 +314,10 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
 
             indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
 
-            if (whichBgColorModeMaybe == 0) {
-                MpbzData mpbzData = this->handleMPBZ(uncompressedMpbz,whichBgToWriteTo);
-                scenData.minorInstructions.push_back(&mpbzData);
-            } else {
-                std::stringstream ssColMode;
-                ssColMode << "Unused color mode '" << whichBgColorModeMaybe << "' for bg '";
-                ssColMode << whichBgToWriteTo << "'!";
-                YUtils::printDebug(ssColMode.str(),DebugType::WARNING);
-            }
+            MpbzData mpbzData = this->handleMPBZ(uncompressedMpbz,whichBgToWriteTo);
+            mpbzData.whichBg = whichBgToWriteTo;
+            mpbzData.bgColorMode = whichBgColorModeMaybe;
+            scenData.minorInstructions.push_back(&mpbzData);
         } else if (curSubInstruction == Constants::COLZ_MAGIC_NUM) {
             if (collisionTileArray.size() > 0) {
                 std::cout << "[ERROR] Attempted to load a second COLZ, only one should ever be loaded" << endl;
