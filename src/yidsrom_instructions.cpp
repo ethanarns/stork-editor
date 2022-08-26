@@ -241,7 +241,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             infoData.layerOrderMaybe = mpdzVec.at(indexPointer + 24 + 1);
             infoData.unkThirdByte = mpdzVec.at(indexPointer + 24 + 2);
             infoData.screenBaseBlockMaybe = mpdzVec.at(indexPointer + 24 + 3);
-            infoData.unk32 = mpdzVec.at(indexPointer + 28);
+            infoData.colorModeMaybe = mpdzVec.at(indexPointer + 28);
 
             // Only the first one matters for the primary height and width, since BG 2 decides everything
             if (whichBgToWriteTo == 2) {
