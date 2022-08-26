@@ -309,10 +309,10 @@ void DisplayTable::updateBg() {
         for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSizeBg2; preRenderIndex++) {
             uint32_t y = preRenderIndex / cutOffBg2;
             uint32_t x = (preRenderIndex % cutOffBg2) + bg2LeftOffset;
-            ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex));
             if (x > newCanvasWidth) {
                 continue;
             }
+            ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex));
             this->putTileBg(x,y,curShort,2);
         }
         bg2LeftOffset += cutOffBg2;

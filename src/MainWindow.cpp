@@ -313,7 +313,7 @@ void MainWindow::LoadRom() {
         this->chartilesPopup->setMinimumHeight(300);
         this->chartilesPopup->setWindowTitle("Tile Viewer");
         this->button_iconTiles->setDisabled(false);
-        this->chartilesTable->refreshLoadedObjectTilesMap();
+        this->chartilesTable->refreshLoadedMapTilesMap(2);
 
         // Palette popup //
         this->palettePopup->resize(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH,PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);

@@ -249,9 +249,13 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             if (whichBgToWriteTo == 2) {
                 this->canvasHeightBg2 = canvasDimensions >> 0x10;
                 this->canvasWidthBg2 = canvasDimensions % 0x10000;
+                this->colorModeBg2 = infoData.colorModeMaybe;
             } else if (whichBgToWriteTo == 1) {
                 this->canvasHeightBg1 = canvasDimensions >> 0x10;
                 this->canvasWidthBg1 = canvasDimensions % 0x10000;
+                this->colorModeBg1 = infoData.colorModeMaybe;
+            } else if (whichBgToWriteTo == 3) {
+                this->colorModeBg3 = infoData.colorModeMaybe;
             }
 
             if (infoLength > 0x18) {

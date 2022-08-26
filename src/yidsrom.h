@@ -57,15 +57,18 @@ public:
      * Corresponds with collision the most
      */
     std::vector<uint16_t> preRenderDataBg2;
+    uint32_t colorModeBg2;
     /**
      * @brief BG 1's tile data. Animated foreground for the most part, 
      * no collision (seen so far)
      */
     std::vector<uint16_t> preRenderDataBg1;
+    uint32_t colorModeBg1;
     /**
      * @brief BG 3's tile data. Animated bg?
      */
     std::vector<uint16_t> preRenderDataBg3;
+    uint32_t colorModeBg3;
     /**
      * @brief Collision tiles, each taking up a full 16x16 tile. Also handles 
      * static normal coins for some reason
