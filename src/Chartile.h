@@ -2,6 +2,8 @@
 #define CHARTILESTRUCT_H
 
 #include <cstdint>
+#include <string>
+#include <sstream>
 #include <QByteArray>
 
 enum ScreenEngine {
@@ -22,6 +24,13 @@ struct ChartilePreRenderData {
     bool flipH;
     bool flipV;
     uint16_t tileAttr;
+    std::string toString() {
+        std::stringstream ssChartilePreRend;
+        ssChartilePreRend << "ChartilePreRenderData { tileId: " << std::hex << this->tileId;
+        ssChartilePreRend << ", paletteId: " << std::hex << this->paletteId;
+        ssChartilePreRend << ", flip H/V: " << this->flipH << "/" << this->flipV << " }";
+        return ssChartilePreRend.str();
+    }
 };
 
 #endif
