@@ -136,14 +136,27 @@ std::vector<uint8_t> YUtils::subVector(std::vector<uint8_t> &inVec, uint32_t sta
     return newVec;
 }
 
-ChartilePreRenderData YUtils::getCharPreRender(uint16_t tileAttr) {
+ChartilePreRenderData YUtils::getCharPreRender(uint16_t tileAttr, BgColorMode bgColorMode) {
     ChartilePreRenderData res;
-    res.flipV = ((tileAttr >> 11) % 2) == 1;
-    res.flipH = ((tileAttr >> 10) % 2) == 1;
-    res.paletteId = tileAttr >> 12;
-    res.tileId = tileAttr & 0b1111111111;
     res.tileAttr = tileAttr;
-    return res;
+    if (bgColorMode == BgColorMode::MODE_16) {
+        res.flipV = ((tileAttr >> 11) % 2) == 1;
+        res.flipH = ((tileAttr >> 10) % 2) == 1;
+        res.paletteId = tileAttr >> 12;
+        res.tileId = tileAttr & 0b1111111111;
+        return res;
+    } else if (bgColorMode == BgColorMode::MODE_256) {
+        res.flipH = false;
+        res.flipV = false;
+        res.paletteId = 0;
+        res.tileId = 3;
+        return res;
+    } else {
+        std::stringstream ssCharPreRenErr;
+        ssCharPreRenErr << "Unknown BgColorMode used in getCharPreRender: " << bgColorMode;
+        YUtils::printDebug(ssCharPreRenErr.str(),DebugType::ERROR);
+        return res;
+    }
 }
 
 /**

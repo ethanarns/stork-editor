@@ -312,7 +312,7 @@ void DisplayTable::updateBg() {
             if (x > newCanvasWidth) {
                 continue;
             }
-            ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex));
+            ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex),this->yidsRom->colorModeBg2);
             this->putTileBg(x,y,curShort,2);
         }
         bg2LeftOffset += cutOffBg2;
@@ -338,7 +338,7 @@ void DisplayTable::updateBg() {
     for (uint32_t preRenderIndex1 = 0; preRenderIndex1 < preRenderSizeBg1; preRenderIndex1++) {
         uint32_t y = preRenderIndex1 / cutOffBg1;
         uint32_t x = preRenderIndex1 % cutOffBg1;
-        ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg1.at(preRenderIndex1));
+        ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg1.at(preRenderIndex1),this->yidsRom->colorModeBg1);
         this->putTileBg(x,y,curShort,1);
     }
 }
