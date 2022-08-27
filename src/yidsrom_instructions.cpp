@@ -385,7 +385,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             
             while(anmzFileIndex < anmzSize) {
                 Chartile curTile;
-                curTile.engine = ScreenEngine::A;
+                curTile.bgColMode = BgColorMode::MODE_16;
                 curTile.index = currentTileIndex;
                 curTile.tiles.resize(64);
                 // Go up by 2 since you split the bytes
@@ -427,7 +427,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             // Do it 0x20 by 0x20 (32)
             while (indexPointer < imgbEnd) {
                 Chartile curTile;
-                curTile.engine = ScreenEngine::A;
+                curTile.bgColMode = BgColorMode::MODE_16;
                 curTile.index = indexPointer; // change this
                 curTile.tiles.resize(64);
                 // Go up by 2 since you split the bytes
@@ -491,7 +491,7 @@ ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
     // Do it 0x20 by 0x20 (32)
     while (imbzIndex < imbzLength) { // Kill when equal to length, meaning it's outside
         Chartile curTile;
-        curTile.engine = ScreenEngine::A;
+        curTile.bgColMode = BgColorMode::MODE_16;
         curTile.index = currentTileIndex;
         curTile.tiles.resize(64);
         // Go up by 2 since you split the bytes

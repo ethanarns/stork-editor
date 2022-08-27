@@ -6,13 +6,13 @@
 #include <sstream>
 #include <QByteArray>
 
-enum ScreenEngine {
-    A, // Top screen
-    B  // Bottom screen
+enum BgColorMode {
+    MODE_16 = 0,
+    MODE_256 = 1
 };
 
 struct Chartile {
-    ScreenEngine engine; // A (top screen) or B (bottom screen)
+    BgColorMode bgColMode;
     uint32_t index;
     QByteArray tiles; // 8x8, each 0-15, representing their connection the current palette
     uint32_t offset;
