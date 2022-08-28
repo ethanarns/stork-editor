@@ -229,7 +229,7 @@ struct InfoData : public Instruction {
     uint8_t layerOrderMaybe;
     uint8_t unkThirdByte;
     uint8_t screenBaseBlockMaybe;
-    uint32_t colorModeMaybe;
+    uint32_t colorModeData;
     ImbzData tileGraphics;
     std::string toString() {
         std::stringstream ssInfo;
@@ -241,7 +241,7 @@ struct InfoData : public Instruction {
         ssInfo << ", layerOrderMaybe: " << hex << (int)this->layerOrderMaybe;
         ssInfo << ", unkThirdByte: " << hex << (int)this->unkThirdByte;
         ssInfo << ", scrnBaseBlockMybe: " << hex << (int)this->screenBaseBlockMaybe;
-        ssInfo << ", colorModeMaybe: " << hex << this->colorModeMaybe;
+        ssInfo << ", colorModeData: " << hex << this->colorModeData;
         ssInfo << ", imbz: " << tileGraphics.fileName << " }";
         return ssInfo.str();
     };
@@ -265,8 +265,8 @@ struct InfoData : public Instruction {
         result.push_back(this->unkThirdByte);
         result.push_back(this->screenBaseBlockMaybe);
 
-        auto unk32vec = YUtils::uint32toVec(this->colorModeMaybe);
-        YUtils::appendVector(result,unk32vec);
+        auto colorModeDataVec = YUtils::uint32toVec(this->colorModeData);
+        YUtils::appendVector(result,colorModeDataVec);
 
         auto fileName = this->tileGraphics.fileName;
         // If the imbz filename is present, add it

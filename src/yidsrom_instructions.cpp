@@ -215,7 +215,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
     ScenData scenData;
     
     uint16_t whichBgToWriteTo = 0;
-    uint32_t whichBgColorModeMaybe = 0; // 0 = 16, 1 = 256
+    BgColorMode whichBgColorModeMaybe = BgColorMode::MODE_16; // 0 = 16, 1 = 256
     uint32_t instructionCheck = YUtils::getUint32FromVec(mpdzVec,indexPointer);
     if (instructionCheck != Constants::SCEN_MAGIC_NUM) {
         YUtils::printDebug("SCEN instruction did not find magic hex",DebugType::ERROR);
@@ -242,26 +242,26 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             infoData.layerOrderMaybe = mpdzVec.at(indexPointer + 24 + 1);
             infoData.unkThirdByte = mpdzVec.at(indexPointer + 24 + 2);
             infoData.screenBaseBlockMaybe = mpdzVec.at(indexPointer + 24 + 3);
-            infoData.colorModeMaybe = mpdzVec.at(indexPointer + 28);
-            whichBgColorModeMaybe = infoData.colorModeMaybe;
+            infoData.colorModeData = mpdzVec.at(indexPointer + 28);
+            whichBgColorModeMaybe = infoData.colorModeData == 0 ? BgColorMode::MODE_16 : BgColorMode::MODE_256;
 
             // Only the first one matters for the primary height and width, since BG 2 decides everything
             if (whichBgToWriteTo == 2) {
                 this->canvasHeightBg2 = canvasDimensions >> 0x10;
                 this->canvasWidthBg2 = canvasDimensions % 0x10000;
-                this->colorModeBg2 = infoData.colorModeMaybe == 0 ? BgColorMode::MODE_16 : BgColorMode::MODE_256;
+                this->colorModeBg2 = whichBgColorModeMaybe;
             } else if (whichBgToWriteTo == 1) {
                 this->canvasHeightBg1 = canvasDimensions >> 0x10;
                 this->canvasWidthBg1 = canvasDimensions % 0x10000;
-                this->colorModeBg1 = infoData.colorModeMaybe == 0 ? BgColorMode::MODE_16 : BgColorMode::MODE_256;
+                this->colorModeBg1 = whichBgColorModeMaybe;
             } else if (whichBgToWriteTo == 3) {
-                this->colorModeBg3 = infoData.colorModeMaybe == 0 ? BgColorMode::MODE_16 : BgColorMode::MODE_256;
+                this->colorModeBg3 = whichBgColorModeMaybe;
             }
 
             if (infoLength > 0x18) {
                 // Get charfile string
                 auto charFileNoExt = YUtils::getNullTermTextFromVec(mpdzVec, indexPointer + 32);
-                auto gotImbz = this->handleImbz(charFileNoExt, whichBgToWriteTo);
+                auto gotImbz = this->handleImbz(charFileNoExt, whichBgToWriteTo, whichBgColorModeMaybe);
                 infoData.tileGraphics = gotImbz;
             } else {
                 infoData.tileGraphics.fileName = "none";
@@ -318,7 +318,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
 
             indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
 
-            MpbzData mpbzData = this->handleMPBZ(uncompressedMpbz,whichBgToWriteTo);
+            MpbzData mpbzData = this->handleMPBZ(uncompressedMpbz,whichBgToWriteTo, whichBgColorModeMaybe);
             mpbzData.whichBg = whichBgToWriteTo;
             mpbzData.bgColorMode = whichBgColorModeMaybe;
             scenData.minorInstructions.push_back(&mpbzData);
@@ -468,7 +468,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
     return scenData;
 }
 
-ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
+ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg, BgColorMode bgColMode) {
     ImbzData imbzData;
     imbzData.fileName = fileName_noext;
     imbzData.whichBg = whichBg;
@@ -491,17 +491,25 @@ ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
     // Do it 0x20 by 0x20 (32)
     while (imbzIndex < imbzLength) { // Kill when equal to length, meaning it's outside
         Chartile curTile;
-        curTile.bgColMode = BgColorMode::MODE_16;
         curTile.index = currentTileIndex;
         curTile.tiles.resize(64);
-        // Go up by 2 since you split the bytes
-        for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
-            uint8_t curByte = uncompressedImbz.at(imbzIndex + currentTileBuildIndex);
-            uint8_t highBit = curByte >> 4;
-            uint8_t lowBit = curByte % 0x10;
-            int innerPosition = currentTileBuildIndex*2;
-            curTile.tiles[innerPosition+1] = highBit;
-            curTile.tiles[innerPosition+0] = lowBit;
+        if (bgColMode == BgColorMode::MODE_16) {
+            curTile.bgColMode = BgColorMode::MODE_16;
+            // Go up by 2 since you split the bytes
+            for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
+                uint8_t curByte = uncompressedImbz.at(imbzIndex + currentTileBuildIndex);
+                uint8_t highBit = curByte >> 4;
+                uint8_t lowBit = curByte % 0x10;
+                int innerPosition = currentTileBuildIndex*2;
+                curTile.tiles[innerPosition+1] = highBit;
+                curTile.tiles[innerPosition+0] = lowBit;
+            }
+        } else {
+            curTile.bgColMode = BgColorMode::MODE_256;
+            for (int currentTileIndex = 0; currentTileIndex < 64; currentTileIndex++) {
+                uint8_t curByte = uncompressedImbz.at(imbzIndex + currentTileIndex);
+                curTile.tiles[currentTileIndex] = curByte;
+            }
         }
         if (whichBg == 2) {
             this->pixelTilesBg2[this->pixelTilesBg2index++] = curTile;
@@ -511,8 +519,12 @@ ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg) {
 
         imbzData.pixelTiles.push_back(curTile);
         
-        // Skip ahead by 0x20
-        imbzIndex += Constants::CHARTILE_DATA_SIZE;
+        if (bgColMode == BgColorMode::MODE_16) {
+            // Skip ahead by 0x20/32
+            imbzIndex += Constants::CHARTILE_DATA_SIZE;
+        } else {
+            imbzIndex += 64;
+        }
         currentTileIndex++;
     }
 
@@ -801,7 +813,7 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
     return objFileData;
 }
 
-MpbzData YidsRom::handleMPBZ(std::vector<uint8_t>& uncompressedMpbz, uint16_t whichBg) {
+MpbzData YidsRom::handleMPBZ(std::vector<uint8_t>& uncompressedMpbz, uint16_t whichBg, BgColorMode bgColMode) {
     MpbzData mpbzData;
     mpbzData.whichBg = whichBg;
 
@@ -867,7 +879,9 @@ MpbzData YidsRom::handleMPBZ(std::vector<uint8_t>& uncompressedMpbz, uint16_t wh
         uint16_t firstByte = (uint16_t)uncompressedMpbz.at(trueOffset);
         uint16_t secondByte = (uint16_t)uncompressedMpbz.at(trueOffset+1);
         uint16_t curShort = (secondByte << 8) + firstByte;
-        curShort += 0x1000; // 0201c730
+        if (bgColMode == BgColorMode::MODE_16) {
+            curShort += 0x1000; // 0201c730
+        }
         mpbzData.tileRenderData.push_back(curShort);
         if (whichBg == 2) {
             this->preRenderDataBg2.push_back(curShort);

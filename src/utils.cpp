@@ -149,7 +149,7 @@ ChartilePreRenderData YUtils::getCharPreRender(uint16_t tileAttr, BgColorMode bg
         res.flipH = false;
         res.flipV = false;
         res.paletteId = 0;
-        res.tileId = 3;
+        res.tileId = tileAttr;
         return res;
     } else {
         std::stringstream ssCharPreRenErr;
