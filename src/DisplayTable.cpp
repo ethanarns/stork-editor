@@ -72,11 +72,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         YUtils::printDebug(ssYvaluHigh.str(),DebugType::ERROR);
         return;
     }
-    int pal = (int)pren.paletteId; // int is more commonly used to access, so convert it early
-    if (pal > 0xf) {
-        cerr << "paletteId unusually high, got " << hex << pal << endl;
-        pal = 0;
-    }
+    auto pal = pren.paletteId;
     Chartile loadedTile;
     if (whichBg == 2) {
         try {
