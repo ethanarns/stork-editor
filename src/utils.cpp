@@ -346,20 +346,18 @@ std::vector<uint8_t> YUtils::stringToVector(std::string &inputString) {
 
 void YUtils::printQbyte(QByteArray& qb, int newlineBreak) {
     uint32_t lengthOfQ = qb.size();
+    auto qbArray = (uint8_t*)qb.data();
     constexpr int INDEX_WIDTH = 6;
     cout << hex << setw(INDEX_WIDTH) << 0 << " | ";
     for (uint32_t qIndex = 0; qIndex < lengthOfQ; qIndex++) {
-    // uint32_t printIndex = 0;
-    // for (auto it = vectorToPrint.begin(); it != vectorToPrint.end(); it++) {
-        auto it = qb.at(qIndex);
-        cout << hex << setw(2) << (int)(it) << " ";
+        auto it = qbArray[qIndex];
+        cout << hex << setw(2) << (uint16_t)(it) << " ";
         if (newlineBreak != 0 && qIndex != 0 && (qIndex + 1) % newlineBreak == 0) {
             cout << endl;
             if (qIndex + 1 != lengthOfQ) {
                 cout << hex << setw(INDEX_WIDTH) << (qIndex+1) << " | ";
             }
         }
-        //printIndex++;
     }
     cout << endl;
 }
