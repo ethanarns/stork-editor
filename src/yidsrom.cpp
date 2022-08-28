@@ -427,3 +427,16 @@ uint32_t YidsRom::getGreatestCanvasWidth() {
     }
     return greatWidth;
 }
+
+QByteArray YidsRom::get256Palettes(uint32_t offset) {
+    QByteArray qbResult;
+    qbResult.resize(256);
+    int qbIndex = 0;
+    for (int whichPaletteIndex = offset; whichPaletteIndex < 0x20; whichPaletteIndex++) {
+        for (int whichColorIndex = 0; whichColorIndex < 0x10; whichColorIndex++) {
+            qbResult[qbIndex] = this->currentPalettes[whichPaletteIndex].at(whichColorIndex);
+            qbIndex++;
+        }
+    }
+    return qbResult;
+}

@@ -102,6 +102,7 @@ public:
     void loadMpdz(std::string fileName_noext);
     void wipeCrsbData();
     void getGameLevelsMetaData();
+    QByteArray get256Palettes(uint32_t offset);
 
     std::string getTextAt(uint32_t position, uint32_t length);
     std::string getTextNullTermAt(uint32_t position_file);

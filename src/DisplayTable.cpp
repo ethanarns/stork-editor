@@ -118,7 +118,11 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         QTableWidgetItem *newItem = new QTableWidgetItem();
         if (whichBg == 2) {
             newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
-            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
+            if (this->yidsRom->colorModeBg2 == BgColorMode::MODE_16) {
+                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
+            } else {
+                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(this->yidsRom->paletteOffsetBg2 + 1));
+            }
             newItem->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
             newItem->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
             newItem->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
@@ -140,7 +144,11 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         // There is already an item here, lets just update it
         if (whichBg == 2) {
             potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
-            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
+            if (this->yidsRom->colorModeBg2 == BgColorMode::MODE_16) {
+                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
+            } else {
+                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(this->yidsRom->paletteOffsetBg2 + 1));
+            }
             potentialExisting->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
             potentialExisting->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
             potentialExisting->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
@@ -175,6 +183,16 @@ void DisplayTable::displayTableClicked(int row, int column) {
     }
     if (!curCell->data(PixelDelegateData::OBJECT_UUID).isNull()) {
         cout << dec << curCell->data(PixelDelegateData::OBJECT_UUID).toInt() << endl;
+    }
+    if (!curCell->data(PixelDelegateData::PIXEL_ARRAY_BG2).isNull()) {
+        auto pixArray2 = curCell->data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
+        YUtils::printDebug("Pixel Array for BG 2:",DebugType::VERBOSE);
+        YUtils::printQbyte(pixArray2);
+    }
+    if (!curCell->data(PixelDelegateData::PIXEL_ARRAY_BG1).isNull()) {
+        auto pixArray1 = curCell->data(PixelDelegateData::PIXEL_ARRAY_BG1).toByteArray();
+        YUtils::printDebug("Pixel Array for BG 1:",DebugType::VERBOSE);
+        YUtils::printQbyte(pixArray1);
     }
 }
 
