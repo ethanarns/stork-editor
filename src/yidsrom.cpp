@@ -404,6 +404,14 @@ void YidsRom::wipeCrsbData() {
 
     this->preRenderDataBg1.clear();
     this->preRenderDataBg2.clear();
+
+    // 1: Skip the universal palette at index 0
+    for (uint32_t palDelIndex = 1; palDelIndex < 0x20; palDelIndex++) {
+        // 0x10 * 2: Each color is 2 bytes
+        for (uint32_t colDelIndex = 0; colDelIndex < (0x10*2); colDelIndex++) {
+            this->currentPalettes[palDelIndex][colDelIndex] = 0;
+        }
+    }
 }
 
 uint32_t YidsRom::getGreatestCanvasHeight() {
