@@ -86,7 +86,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             // Use this as a fallback until you find out
             if (pren.tileId != 0) {
                 std::stringstream ssTile;
-                ssTile << "Could not get certain tileId for BG2: " << pren.tileId;
+                ssTile << "Could not get certain tileId for BG2: " << std::hex << pren.tileId;
                 YUtils::printDebug(ssTile.str(),DebugType::ERROR);
             }
             return;
@@ -99,7 +99,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         } catch (...) {
             if (pren.tileId != 0) {
                 std::stringstream ssTile;
-                ssTile << "Could not get certain tileId for BG1: " << pren.tileId;
+                ssTile << "Could not get certain tileId for BG1: " << std::hex << pren.tileId;
                 YUtils::printDebug(ssTile.str(),DebugType::ERROR);
             }
             return;
