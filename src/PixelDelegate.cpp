@@ -9,6 +9,7 @@
 #include <QtCore>
 #include <QtWidgets>
 #include <QStaticText>
+#include <QColor>
 
 using namespace std;
 
@@ -46,16 +47,24 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         }
         QByteArray paletteBg2 = index.data(PixelDelegateData::PALETTE_ARRAY_BG2).toByteArray();
         for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
-            char whichPalette = byteArrayBg2.at(i);
+            QColor qc;
+            int16_t whichPalette = (int16_t)byteArrayBg2.at(i);
             if (whichPalette == 0) {
                 // NOTE: Palette index 0 seems to almost always be the transparent
                 //   value. This may not be true, keep this in mind for future bugs
                 continue;
             }
-            auto qc = YUtils::getColorFromBytes(
-                paletteBg2.at(whichPalette*2),
-                paletteBg2.at(whichPalette*2+1)
-            );
+            if (whichPalette >= 0 && whichPalette < 0x100) {
+                uint8_t firstByte = paletteBg2.at(whichPalette*2);
+                uint8_t secondByte = paletteBg2.at(whichPalette*2+1);
+                qc = YUtils::getColorFromBytes(
+                    firstByte,
+                    secondByte
+                );
+            } else {
+                qc = QColor("pink");
+            }
+
             int x = i % 8;
             if (index.data(PixelDelegateData::FLIP_H_BG2).toBool() == true) {
                 x = (8 - x - 1);
