@@ -55,7 +55,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 //   value. This may not be true, keep this in mind for future bugs
                 continue;
             }
-            
+
             auto firstByte = paletteBg2[whichPalette*2];
             auto secondByte = paletteBg2[whichPalette*2+1];
             qc = YUtils::getColorFromBytes(
@@ -108,16 +108,14 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 //   value. This may not be true, keep this in mind for future bugs
                 continue;
             }
-            if (whichPalette >= 0 && whichPalette < 0x100) {
-                auto firstByte = paletteBg1[whichPalette*2];
-                auto secondByte = paletteBg1[whichPalette*2+1];
-                qc = YUtils::getColorFromBytes(
-                    firstByte,
-                    secondByte
-                );
-            } else {
-                qc = QColor("pink");
-            }
+            
+            auto firstByte = paletteBg1[whichPalette*2];
+            auto secondByte = paletteBg1[whichPalette*2+1];
+            qc = YUtils::getColorFromBytes(
+                firstByte,
+                secondByte
+            );
+
             int x = i % 8;
             if (index.data(PixelDelegateData::FLIP_H_BG1).toBool() == true) {
                 x = (8 - x - 1);
