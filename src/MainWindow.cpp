@@ -447,7 +447,6 @@ void MainWindow::buttonClick_levelSelect_load() {
 
 void MainWindow::buttonClick_levelSelect_cancel() {
     this->levelSelectPopup->close();
-    this->rom->getGameLevelsMetaData();
 }
 
 void MainWindow::menuClick_viewBg1(bool checked) {
