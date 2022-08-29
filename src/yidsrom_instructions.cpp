@@ -149,7 +149,6 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
 }
 
 // TODO: Get rid of this hacky crap
-uint32_t timesPaletteLoaded = 0;
 int globalPaletteIndex = 1;
 
 void YidsRom::loadMpdz(std::string fileName_noext) {
@@ -178,7 +177,6 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     this->pixelTilesBg1index = 0;
 
     // TODO: Get rid of this hacky crap
-    timesPaletteLoaded = 0;
     globalPaletteIndex = 1;
 
     // Instruction loop
@@ -301,7 +299,6 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 pltbReadIndex += Constants::PALETTE_SIZE; // 1 palette is 32 bytes, or 0x20
             }
             scenData.minorInstructions.push_back(&pltbData);
-            timesPaletteLoaded++;
         } else if (curSubInstruction == Constants::MPBZ_MAGIC_NUM) {
             // Most of this tile placing logic is here: 0201c6dc
             if (whichBgToWriteTo == 0) {
