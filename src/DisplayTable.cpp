@@ -323,7 +323,9 @@ void DisplayTable::updateBg() {
         for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSizeBg2; preRenderIndex++) {
             uint32_t y = preRenderIndex / cutOffBg2;
             uint32_t x = (preRenderIndex % cutOffBg2) + bg2LeftOffset;
-            if (x > newCanvasWidth) {
+            // Note: You might need to apply this to other layers later
+            // -1 because if you go the full length, it loops back around. Remember, .length - 1!
+            if (x > newCanvasWidth-1) {
                 continue;
             }
             ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex),this->yidsRom->colorModeBg2);
