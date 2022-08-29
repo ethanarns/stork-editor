@@ -368,9 +368,8 @@ void DisplayTable::updateObjects() {
         auto x = it->xPosition;
         auto y = it->yPosition;
         auto potentialExisting = this->item(y,x);
-        // Very basic pointing to position
         if (potentialExisting == nullptr) {
-            potentialExisting = new QTableWidgetItem(); // Make it NOT null
+            potentialExisting = new QTableWidgetItem();
         }
         auto objectGraphicsMeta = LevelObject::getObjectGraphicMetadata(*it);
         if (objectGraphicsMeta.tilesCount == 0) {
@@ -433,11 +432,9 @@ void DisplayTable::placeObjectTile(
         objectPalette = this->yidsRom->effectPalettes[paletteOffset].paletteData;
     } else {
         objectPalette = this->yidsRom->objectFiles[objectFile].objectPalettes[paletteOffset].paletteData;
-        //std::cerr << "[ERROR] Unknown PaletteFileName enum value: " << hex << paletteFile << endl;
     }
 
     std::vector<uint8_t> objectVector;
-    //objectVector = this->yidsRom->objsetPixelTiles[objectOffset];
     if (objectFile == ObjectFileName::OBJSET) {
         objectVector = this->yidsRom->objsetPixelTiles[objectOffset];
     } else {
