@@ -442,7 +442,7 @@ QByteArray YidsRom::get256Palettes(uint32_t offset) {
     qbResult.resize(256);
     int qbIndex = 0;
     for (int whichPaletteIndex = offset; whichPaletteIndex < 0x20; whichPaletteIndex++) {
-        for (int whichColorIndex = 0; whichColorIndex < 0x10; whichColorIndex++) {
+        for (int whichColorIndex = 0; whichColorIndex < 0x20; whichColorIndex++) {
             qbResult[qbIndex] = this->currentPalettes[whichPaletteIndex].at(whichColorIndex);
             qbIndex++;
         }
