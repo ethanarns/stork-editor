@@ -1,5 +1,6 @@
 #include "LevelObject.h"
 #include "utils.h"
+#include "InstructionRenderer.h"
 
 #include <vector>
 #include <iostream>
@@ -39,13 +40,18 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             constexpr uint32_t VERTICAL_PIPE_TILES = 0x13;
             constexpr uint32_t HORIZONTAL_PIPE_TILES = 0x12;
             Q_UNUSED(HORIZONTAL_PIPE_TILES);
-            uint32_t pipeHeight = (uint32_t)lo.settings.at(2)*2;
+            //uint32_t pipeHeight = (uint32_t)lo.settings.at(2)*2;
+            int32_t pipeHeight = 6;
             meta.tilesSectorOffset = VERTICAL_PIPE_TILES;
             meta.paletteSectorOffset = 0x89;
             meta.tilesCount = 4 * pipeHeight;
             meta.tileWidth = 4;
             meta.subTile = 0;
             // TODO: Special rendering to repeat downwards
+            meta.specialRender = ([](){
+                std::vector<RenderInstruction> instructions;
+                return instructions;
+            });
             break;
         }
         case 0x28: { // Flower

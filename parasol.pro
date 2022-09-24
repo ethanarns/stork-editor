@@ -16,6 +16,6 @@ HEADERS += src/Chartile.h \
 src/yidsrom.h src/utils.h src/compression.h src/MainWindow.h \
 src/DisplayTable.h src/popups/ChartilesTable.h src/PixelDelegate.h \
 src/popups/PaletteTable.h src/LevelObject.h src/SettingsEnum.h \
-src/popups/LevelSelect.h src/Level.h src/FsPacker.h
+src/popups/LevelSelect.h src/Level.h src/FsPacker.h src/InstructionRenderer.h
 
 QT += core gui widgets

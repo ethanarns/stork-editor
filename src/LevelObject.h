@@ -9,7 +9,12 @@
 // setw()
 #include <iomanip>
 
+// std::function<>
+#include <functional>
+
 #include <QByteArray>
+
+#include "InstructionRenderer.h"
 
 enum ObjectFileName {
     OBJSET,
@@ -51,6 +56,8 @@ struct ObjectGraphicMetadata {
      * it in a better-looking tile
      */
     int32_t yPixelOffset;
+
+    std::function<std::vector<RenderInstruction>()> specialRender;
 };
 
 class LevelObject {
