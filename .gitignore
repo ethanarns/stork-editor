@@ -10,6 +10,7 @@ parasol
 blz
 lzss
 moc_*
+_nds_unpack/
 
 # test extracted files
 *.arcz

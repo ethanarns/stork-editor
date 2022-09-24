@@ -10,5 +10,3 @@ make
 
 # Execute
 ./parasol
-
-rm Makefile
