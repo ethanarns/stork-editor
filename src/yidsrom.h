@@ -108,7 +108,7 @@ public:
     std::string getTextNullTermAt(uint32_t position_file);
     Address getAddrFromAddrPtr(Address pointerAddress_file);
 
-    std::vector<uint8_t> getFileByteVector(std::string fileName);
+    std::vector<uint8_t> getByteVectorFromFile(std::string fileName);
 
     template<typename T>
     T getNumberAt(Address addr){

@@ -157,7 +157,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     ssMpdzLoad << "Loading MPDZ (Map) '" << fileName_noext << "'";
     YUtils::printDebug(ssMpdzLoad.str(),DebugType::VERBOSE);
     std::string mpdzFileName = fileName_noext.append(Constants::MPDZ_EXTENSION);
-    auto fileVector = this->getFileByteVector(mpdzFileName);
+    auto fileVector = this->getByteVectorFromFile(mpdzFileName);
     // YUtils::writeByteVectorToFile(fileVector,mpdzFileName); // Uncomment to get uncompressed MPDZ
     auto uncompVec = YCompression::lzssVectorDecomp(fileVector,false);
     
@@ -473,7 +473,7 @@ ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg, BgCol
     this->pixelTilesBg1index = 0;
     this->pixelTilesBg2index = 0;
 
-    auto compressedFileVector = this->getFileByteVector(fileName_noext.append(".imbz"));
+    auto compressedFileVector = this->getByteVectorFromFile(fileName_noext.append(".imbz"));
     std::vector uncompressedImbz = YCompression::lzssVectorDecomp(compressedFileVector,false);
     compressedFileVector.clear();
 
@@ -665,7 +665,7 @@ ObjectFile YidsRom::getMajorObjPltFile(std::string objset_filename, std::map<uin
     std::stringstream ssGraphics;
     ssGraphics << "Loading graphics archive '" << objset_filename << "'";
     YUtils::printDebug(ssGraphics.str(),DebugType::VERBOSE);
-    std::vector<uint8_t> fileVectorObjset = this->getFileByteVector(objset_filename);
+    std::vector<uint8_t> fileVectorObjset = this->getByteVectorFromFile(objset_filename);
     std::vector<uint8_t> objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
 
     auto potentialMagicNumber = YUtils::getUint32FromVec(objsetUncompressedVec,0);
@@ -741,7 +741,7 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
     std::stringstream ssGraphics;
     ssGraphics << "Loading graphics archive '" << objset_filename << "'";
     YUtils::printDebug(ssGraphics.str(),DebugType::VERBOSE);
-    std::vector<uint8_t> fileVectorObjset = this->getFileByteVector(objset_filename);
+    std::vector<uint8_t> fileVectorObjset = this->getByteVectorFromFile(objset_filename);
     std::vector<uint8_t> objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
 
     auto potentialMagicNumber = YUtils::getUint32FromVec(objsetUncompressedVec,0);

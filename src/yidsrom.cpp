@@ -361,29 +361,17 @@ Address YidsRom::getAddrFromAddrPtr(Address pointerAddress_file) {
     return YUtils::conv2xAddrToFileAddr(addr0x2);
 }
 
-std::vector<uint8_t> YidsRom::getFileByteVector(std::string fileName) {
-    fileName = YUtils::getLowercase(fileName); // All comparisons are done in lowercase
-    auto fileId = this->fileIdMap[fileName];
-    if (fileId == 0) {
-        cerr << "[FAIL] Could not find fileId for filename '" << fileName << "'" << endl;
-        exit(EXIT_FAILURE);
-    }
-    // x8 because each record of ranges is 8 bytes. 4 + 4
-    Address rangesAddr = this->metadata.fatOffsets + fileId * 8;
-    Address startAddr = this->getNumberAt<uint32_t>(rangesAddr + 0);
-    Address endAddr = this->getNumberAt<uint32_t>(rangesAddr + 4);
-    uint32_t length = endAddr - startAddr;
-    // 0x08 is from device capacity. Understand this better
-    uint32_t MAX_SIZE = 1U << (17 + 0x08);
-    if (length > MAX_SIZE) {
-        cerr << "File is too big! File size: " << dec << length << ", max size: " << dec << MAX_SIZE << endl;
-        exit(EXIT_FAILURE);
-    }
-    std::vector<uint8_t> outVec(length,0xfe);
-    for(uint32_t vecIndex = 0; vecIndex < length; vecIndex++) {
-        outVec.at(vecIndex) = this->getNumberAt<uint8_t>(startAddr + vecIndex);
-    }
-    return outVec;
+std::vector<uint8_t> YidsRom::getByteVectorFromFile(std::string fileName) {
+    std::vector<uint8_t> vec;
+    std::string UNPACKED_FILE_LOCATION = "_nds_unpack/data/file/";
+    fileName = UNPACKED_FILE_LOCATION.append(fileName);
+    std::ifstream inputFile{fileName, ios::binary};
+    std::copy(
+        std::istreambuf_iterator<char>(inputFile),
+        std::istreambuf_iterator<char>(),
+        std::back_inserter(vec)
+    );
+    return vec;
 }
 
 void YidsRom::wipeCrsbData() {

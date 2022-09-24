@@ -69,7 +69,7 @@ void YidsRom::getGameLevelsMetaData() {
                 cout << "  Loading MPDZ (Map) " << mpdzFilename_noext << endl;
 
                 std::string mpdzFileName = mpdzFilename_noext.append(Constants::MPDZ_EXTENSION);
-                auto fileVector = this->getFileByteVector(mpdzFileName);
+                auto fileVector = this->getByteVectorFromFile(mpdzFileName);
                 // YUtils::writeByteVectorToFile(fileVector,mpdzFileName); // Uncomment to get uncompressed MPDZ
                 auto uncompVec = YCompression::lzssVectorDecomp(fileVector,false);
                 
