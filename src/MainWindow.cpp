@@ -322,6 +322,7 @@ void MainWindow::LoadRom() {
         YUtils::printDebug("Canceled file dialog",DebugType::VERBOSE);
     } else {
         YCompression::unpackRom(fileName.toStdString());
+        YCompression::repackRom("repacked.nds");
         this->rom->openRom(fileName.toStdString());
 
         // Chartiles popup //

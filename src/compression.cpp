@@ -167,3 +167,42 @@ void YCompression::unpackRom(std::string romFileName) {
         YUtils::printDebug(ssUnpackResult.str(),DebugType::VERBOSE);
     }
 }
+
+void YCompression::repackRom(std::string outputFileName) {
+    bool windows = false;
+
+    std::string execPath = NDSTOOL_PATH;
+    if (windows) {
+        execPath = execPath.append(".exe");
+    }
+    if (!std::filesystem::exists(execPath)) {
+        YUtils::printDebug("NDSTool not found",DebugType::FATAL);
+        exit(EXIT_FAILURE);
+    }
+    if (!std::filesystem::exists(ROM_EXTRACT_DIR)) {
+        YUtils::printDebug("ROM unpack directory not found, canceling repack",DebugType::ERROR);
+        return;
+    }
+    if (std::filesystem::exists(outputFileName)) {
+        std::filesystem::remove(outputFileName);
+    }
+    execPath = execPath.append(" -c ").append(outputFileName);
+    execPath = execPath.append(" -9 ").append(ROM_EXTRACT_DIR).append("/arm9.bin");
+    execPath = execPath.append(" -y9 ").append(ROM_EXTRACT_DIR).append("/y9.bin");
+    execPath = execPath.append(" -d ").append(ROM_EXTRACT_DIR).append("/data");
+    execPath = execPath.append(" -h ").append(ROM_EXTRACT_DIR).append("/header.bin");
+    execPath = execPath.append(" -7 ").append(ROM_EXTRACT_DIR).append("/arm7.bin");
+    execPath = execPath.append(" -y7 ").append(ROM_EXTRACT_DIR).append("/y7.bin");
+    execPath = execPath.append(" -y ").append(ROM_EXTRACT_DIR).append("/overlay");
+    execPath = execPath.append(" -t ").append(ROM_EXTRACT_DIR).append("/banner.bin");
+    if (!windows) execPath.append(" 1> /dev/null");
+    YUtils::printDebug(execPath,DebugType::VERBOSE);
+    auto result = system(execPath.c_str());
+    if (result == 0) {
+        YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
+    } else {
+        std::stringstream ssUnpackResult;
+        ssUnpackResult << "System result: " << result;
+        YUtils::printDebug(ssUnpackResult.str(),DebugType::VERBOSE);
+    }
+}
