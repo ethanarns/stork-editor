@@ -17,6 +17,8 @@ using namespace std;
 
 const char* BLZ_PATH = "./blz";
 const char* LZSS_PATH = "./lzss";
+const char* ROM_EXTRACT_DIR = "_nds_unpack";
+const char* NDSTOOL_PATH = "./lib/ndstool";
 
 /**
  * @brief Modifies the file in place with Backwards Decompression (BLZ)
@@ -125,4 +127,43 @@ std::vector<uint8_t> YCompression::lzssVectorRecomp(std::vector<uint8_t>& uncomp
     recomped.close();
     std::filesystem::remove(tempName);
     return recompVec;
+}
+
+void YCompression::unpackRom(std::string romFileName) {
+    bool windows = false;
+
+    std::string execPath = NDSTOOL_PATH;
+    if (windows) {
+        execPath = execPath.append(".exe");
+    }
+    if (!std::filesystem::exists(execPath)) {
+        YUtils::printDebug("NDSTool not found",DebugType::FATAL);
+        exit(EXIT_FAILURE);
+    }
+    if (std::filesystem::exists(ROM_EXTRACT_DIR)) {
+        YUtils::printDebug("ROM unpack directory already exists, skipping extraction",DebugType::VERBOSE);
+        return;
+    } else {
+        YUtils::printDebug("Unpacking ROM with NDSTool",DebugType::VERBOSE);
+        std::filesystem::create_directory(ROM_EXTRACT_DIR);
+    }
+    execPath = execPath.append(" -x ").append(romFileName);
+    execPath = execPath.append(" -9 ").append(ROM_EXTRACT_DIR).append("/arm9.bin");
+    execPath = execPath.append(" -y9 ").append(ROM_EXTRACT_DIR).append("/y9.bin");
+    execPath = execPath.append(" -d ").append(ROM_EXTRACT_DIR).append("/data");
+    execPath = execPath.append(" -h ").append(ROM_EXTRACT_DIR).append("/header.bin");
+    execPath = execPath.append(" -7 ").append(ROM_EXTRACT_DIR).append("/arm7.bin");
+    execPath = execPath.append(" -y7 ").append(ROM_EXTRACT_DIR).append("/y7.bin");
+    execPath = execPath.append(" -y ").append(ROM_EXTRACT_DIR).append("/overlay");
+    execPath = execPath.append(" -t ").append(ROM_EXTRACT_DIR).append("/banner.bin");
+    if (!windows) execPath.append(" 1> /dev/null");
+    YUtils::printDebug(execPath,DebugType::VERBOSE);
+    auto result = system(execPath.c_str());
+    if (result == 0) {
+        YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
+    } else {
+        std::stringstream ssUnpackResult;
+        ssUnpackResult << "System result: " << result;
+        YUtils::printDebug(ssUnpackResult.str(),DebugType::VERBOSE);
+    }
 }

@@ -13,6 +13,7 @@
 #include "popups/PaletteTable.h"
 #include "utils.h"
 #include "DisplayTable.h"
+#include "compression.h"
 
 #include <QtCore>
 #include <QObject>
@@ -320,6 +321,7 @@ void MainWindow::LoadRom() {
     if (fileName.isEmpty()) {
         YUtils::printDebug("Canceled file dialog",DebugType::VERBOSE);
     } else {
+        YCompression::unpackRom(fileName.toStdString());
         this->rom->openRom(fileName.toStdString());
 
         // Chartiles popup //
