@@ -199,10 +199,10 @@ MainWindow::MainWindow() {
 
     QMenu* menu_help = menuBar()->addMenu("&Help");
 
-    this->action_about = new QAction("&About",this);
-    this->action_about->setIcon(QIcon::fromTheme("help-about"));
-    menu_help->addAction(this->action_about);
-    this->action_about->setDisabled(true);
+    auto action_about = new QAction("&About",this);
+    action_about->setShortcut(tr("F1"));
+    action_about->setIcon(QIcon::fromTheme("help-about"));
+    menu_help->addAction(action_about);
     // Add connect() once implemented
     
     /***************

@@ -43,7 +43,6 @@ private:
     QAction* menu_levelSelect;
     QAction* menu_save;
     QAction* menu_save_as;
-    QAction* action_about;
     QAction* action_memory;
 
     QAction* action_viewBg1;
