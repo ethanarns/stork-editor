@@ -49,20 +49,39 @@ MainWindow::MainWindow() {
 
     QAction* action_open = new QAction("&Open",this);
     action_open->setShortcut(tr("CTRL+O"));
+    action_open->setIcon(QIcon::fromTheme("document-open"));
     menu_file->addAction(action_open);
     // Always enabled, never disabled
     connect(action_open,&QAction::triggered,this,&MainWindow::LoadRom);
 
     QAction* action_close = new QAction("&Close File",this);
     // No shortcut
+    action_close->setIcon(QIcon::fromTheme("window-close"));
     menu_file->addAction(action_close);
     action_close->setDisabled(true);
     //Add connect once implemeted
 
     menu_file->addSeparator();
 
+    this->menu_save = new QAction("&Save",this);
+    this->menu_save->setShortcut(tr("CTRL+S"));
+    this->menu_save->setIcon(QIcon::fromTheme("document-save"));
+    menu_file->addAction(this->menu_save);
+    this->menu_save->setDisabled(true);
+    // Connect
+
+    this->menu_save_as = new QAction("&Save As...",this);
+    this->menu_save_as->setShortcut(tr("SHIFT+CTRL+S"));
+    this->menu_save_as->setIcon(QIcon::fromTheme("document-save-as"));
+    menu_file->addAction(this->menu_save_as);
+    this->menu_save_as->setDisabled(true);
+    // Connect
+
+    menu_file->addSeparator();
+
     this->menu_levelSelect = new QAction("&Select Level...",this);
     this->menu_levelSelect->setShortcut(tr("CTRL+U"));
+    //this->menu_levelSelect->setIcon(QIcon::fromTheme("document-page-setup"));
     menu_file->addAction(this->menu_levelSelect);
     this->menu_levelSelect->setDisabled(true);
     connect(this->menu_levelSelect, &QAction::triggered, this, &MainWindow::menuClick_levelSelect);
@@ -71,6 +90,7 @@ MainWindow::MainWindow() {
 
     QAction* action_quit = new QAction("&Quit",this);
     action_quit->setShortcut(tr("CTRL+Q"));
+    action_quit->setIcon(QIcon::fromTheme("application-exit"));
     menu_file->addAction(action_quit);
     // Always enabled, never disabled
     connect(action_quit,&QAction::triggered,qApp,QApplication::quit);
@@ -80,12 +100,14 @@ MainWindow::MainWindow() {
 
     QAction* action_undo = new QAction("&Undo",this);
     action_undo->setShortcut(tr("CTRL+Z"));
+    action_undo->setIcon(QIcon::fromTheme("edit-undo"));
     menu_edit->addAction(action_undo);
     action_undo->setDisabled(true);
     // Add connect() once implemented
 
     QAction* action_redo = new QAction("&Redo",this);
     action_redo->setShortcut(tr("CTRL+Y"));
+    action_redo->setIcon(QIcon::fromTheme("edit-redo"));
     menu_edit->addAction(action_redo);
     action_redo->setDisabled(true);
     // Add connect() once implemented
@@ -94,18 +116,21 @@ MainWindow::MainWindow() {
 
     QAction* action_cut = new QAction("&Cut",this);
     action_cut->setShortcut(tr("CTRL+X"));
+    action_cut->setIcon(QIcon::fromTheme("edit-cut"));
     menu_edit->addAction(action_cut);
     action_cut->setDisabled(true);
     // Add connect() once implemented
 
     QAction* action_copy = new QAction("&Copy",this);
     action_copy->setShortcut(tr("CTRL+C"));
+    action_copy->setIcon(QIcon::fromTheme("edit-copy"));
     menu_edit->addAction(action_copy);
     action_copy->setDisabled(true);
     // Add connect() once implemented
 
     QAction* action_paste = new QAction("&Paste",this);
     action_paste->setShortcut(tr("CTRL+V"));
+    action_paste->setIcon(QIcon::fromTheme("edit-paste"));
     menu_edit->addAction(action_paste);
     action_paste->setDisabled(true);
     // Add connect() once implemented
@@ -160,14 +185,22 @@ MainWindow::MainWindow() {
 
     this->action_memory = new QAction("&Memory Info",this);
     this->action_memory->setShortcut(tr("CTRL+M"));
+    //this->action_memory->setIcon(QIcon::fromTheme("document-properties"));
     menu_tools->addAction(this->action_memory);
     this->action_memory->setDisabled(true);
     connect(this->action_memory, &QAction::triggered, this, &MainWindow::menuClick_memory);
 
+    auto action_settings = new QAction("&Settings...",this);
+    action_settings->setShortcut(tr("CTRL+U"));
+    action_settings->setIcon(QIcon::fromTheme("document-properties"));
+    menu_tools->addAction(action_settings);
+    action_settings->setDisabled(true); // Once implemented, never disable
+    // Connect
+
     QMenu* menu_help = menuBar()->addMenu("&Help");
 
     this->action_about = new QAction("&About",this);
-    //this->action_about->setShortcut(tr("CTRL+M"));
+    this->action_about->setIcon(QIcon::fromTheme("help-about"));
     menu_help->addAction(this->action_about);
     this->action_about->setDisabled(true);
     // Add connect() once implemented
