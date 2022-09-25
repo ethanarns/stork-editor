@@ -7,6 +7,7 @@
 #include <QDialog>
 #include <QAction>
 #include <QLabel>
+#include <QComboBox>
 
 #include "yidsrom.h"
 #include "DisplayTable.h"
@@ -33,6 +34,7 @@ private:
     QWidget* palettePopup;
     QWidget* levelSelectPopup;
     LevelSelect* levelSelect;
+    QComboBox* layerSelectDropdown;
 
     QAction* button_iconPalette;
     QAction* button_iconTiles;
@@ -57,6 +59,7 @@ private:
     void toolbarClick_tiles();
     void toolbarClick_showCollision(bool shouldShow);
     void toolbarClick_toggleCollision();
+    void toolbarClick_layerSelect(const QString str);
 
     void menuClick_levelSelect();
     void menuClick_memory();

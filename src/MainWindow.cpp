@@ -29,6 +29,7 @@
 #include <QPushButton>
 #include <QDialog>
 #include <QLabel>
+#include <QComboBox>
 
 #include <iostream>
 using namespace std;
@@ -197,6 +198,19 @@ MainWindow::MainWindow() {
     this->button_toggleCollision->setObjectName("button_iconCollision");
     this->button_toggleCollision->setDisabled(true);
     connect(this->button_toggleCollision,&QAction::triggered, this, &MainWindow::toolbarClick_toggleCollision);
+
+    toolbar->addSeparator();
+
+    this->layerSelectDropdown = new QComboBox(this);
+    this->layerSelectDropdown->setObjectName("layerSelectDropdown");
+    this->layerSelectDropdown->setToolTip(tr("What type of items can be selected and moved"));
+    this->layerSelectDropdown->addItem("BG1");
+    this->layerSelectDropdown->addItem("BG2");
+    this->layerSelectDropdown->addItem("BG3");
+    this->layerSelectDropdown->addItem("Sprites");
+    this->layerSelectDropdown->addItem("Colliders");
+    toolbar->addWidget(this->layerSelectDropdown);
+    connect(this->layerSelectDropdown,&QComboBox::currentTextChanged,this,&MainWindow::toolbarClick_layerSelect);
 
     toolbar->addSeparator();
 
@@ -373,6 +387,26 @@ void MainWindow::toolbarClick_toggleCollision() {
     this->grid->shouldShowCollision = !this->grid->shouldShowCollision;
     this->action_showCollision->setChecked(this->grid->shouldShowCollision);
     this->grid->updateShowCollision();
+}
+
+void MainWindow::toolbarClick_layerSelect(const QString str) {
+    auto strToCompare = str.toStdString();
+    if (str.compare("BG1") == 0) {
+        YUtils::printDebug("bg1");
+    } else if (str.compare("BG2") == 0) {
+        YUtils::printDebug("bg2");
+    } else if (str.compare("BG3") == 0) {
+        YUtils::printDebug("bg3");
+    } else if (str.compare("Sprites") == 0) {
+        YUtils::printDebug("sprites");
+    } else if (str.compare("Colliders") == 0) {
+        YUtils::printDebug("coll");
+    } else {
+        std::stringstream ssLayerSelect;
+        ssLayerSelect << "Unknown layer selected in dropdown: ";
+        ssLayerSelect << strToCompare;
+        YUtils::printDebug(ssLayerSelect.str(),DebugType::ERROR);
+    }
 }
 
 /*******************
