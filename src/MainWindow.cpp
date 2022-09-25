@@ -204,11 +204,12 @@ MainWindow::MainWindow() {
     this->layerSelectDropdown = new QComboBox(this);
     this->layerSelectDropdown->setObjectName("layerSelectDropdown");
     this->layerSelectDropdown->setToolTip(tr("What type of items can be selected and moved"));
+    this->layerSelectDropdown->addItem("Sprites");
     this->layerSelectDropdown->addItem("BG1");
     this->layerSelectDropdown->addItem("BG2");
     this->layerSelectDropdown->addItem("BG3");
-    this->layerSelectDropdown->addItem("Sprites");
     this->layerSelectDropdown->addItem("Colliders");
+    this->layerSelectDropdown->setCurrentText("Sprites");
     toolbar->addWidget(this->layerSelectDropdown);
     connect(this->layerSelectDropdown,&QComboBox::currentTextChanged,this,&MainWindow::toolbarClick_layerSelect);
 
@@ -392,21 +393,28 @@ void MainWindow::toolbarClick_toggleCollision() {
 void MainWindow::toolbarClick_layerSelect(const QString str) {
     auto strToCompare = str.toStdString();
     if (str.compare("BG1") == 0) {
+        this->grid->layerSelectMode = LayerSelectMode::BG1_LAYER;
         YUtils::printDebug("bg1");
     } else if (str.compare("BG2") == 0) {
+        this->grid->layerSelectMode = LayerSelectMode::BG2_LAYER;
         YUtils::printDebug("bg2");
     } else if (str.compare("BG3") == 0) {
+        this->grid->layerSelectMode = LayerSelectMode::BG3_LAYER;
         YUtils::printDebug("bg3");
     } else if (str.compare("Sprites") == 0) {
+        this->grid->layerSelectMode = LayerSelectMode::SPRITES_LAYER;
         YUtils::printDebug("sprites");
     } else if (str.compare("Colliders") == 0) {
+        this->grid->layerSelectMode = LayerSelectMode::COLLISION_LAYER;
         YUtils::printDebug("coll");
     } else {
         std::stringstream ssLayerSelect;
         ssLayerSelect << "Unknown layer selected in dropdown: ";
         ssLayerSelect << strToCompare;
         YUtils::printDebug(ssLayerSelect.str(),DebugType::ERROR);
+        return;
     }
+    this->grid->clearSelection();
 }
 
 /*******************

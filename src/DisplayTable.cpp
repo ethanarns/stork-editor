@@ -190,6 +190,28 @@ void DisplayTable::displayTableClicked(int row, int column) {
         YUtils::printDebug("Pixel Array for BG 1:",DebugType::VERBOSE);
         YUtils::printQbyte(pixArray1);
     }
+
+    if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER && !curCell->data(PixelDelegateData::OBJECT_UUID).isNull()) {
+        auto curUuid = curCell->data(PixelDelegateData::OBJECT_UUID).toInt();
+        this->selectItemByUuid(curUuid);
+    }
+}
+
+void DisplayTable::selectItemByUuid(int uuid) {
+    if (this->layerSelectMode != LayerSelectMode::SPRITES_LAYER) {
+        YUtils::printDebug("Items should not be selected when not in SPRITES_LAYER mode",DebugType::WARNING);
+        return;
+    }
+    auto allItems = this->findItems("sprite",Qt::MatchExactly);
+    for (int i = 0; i < allItems.size(); i++) {
+        auto potentialItem = allItems.at(i);
+        if (potentialItem != nullptr) {
+            auto foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toInt();
+            if (foundUuid == uuid) {
+                this->setItemSelected(potentialItem,true);
+            }
+        }
+    }
 }
 
 void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType) {
@@ -504,6 +526,7 @@ void DisplayTable::placeObjectTile(
                     tileItem->setData(PixelDelegateData::FLIP_H_BG2,0);
                     tileItem->setData(PixelDelegateData::FLIP_V_BG2,0);
                     tileItem->setData(PixelDelegateData::OBJECT_UUID,uuid);
+                    tileItem->setText("sprite");
 
                     tileOffsetIndex++;
                 }
