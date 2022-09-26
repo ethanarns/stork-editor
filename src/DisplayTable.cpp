@@ -161,12 +161,15 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
 }
 
 void DisplayTable::cellEnteredTriggered(int y, int x) {
-    //cout << "Cell entered at x,y: " << hex << x << "," << y << endl;
     QTableWidgetItem* curCell = this->item(y,x);
     if (curCell == nullptr) {
         return;
     } else {
-        //cout << hex << curCell->data(PixelDelegateData::TILEATTR_BG2).toUInt() << endl;
+        if (curCell->isSelected()) {
+            this->setCursor(Qt::OpenHandCursor);
+        } else {
+            this->setCursor(Qt::ArrowCursor);
+        }
     }
 }
 
@@ -199,10 +202,15 @@ void DisplayTable::displayTableClicked(int row, int column) {
 
 void DisplayTable::selectItemByUuid(int uuid) {
     if (this->layerSelectMode != LayerSelectMode::SPRITES_LAYER) {
-        YUtils::printDebug("Items should not be selected when not in SPRITES_LAYER mode",DebugType::WARNING);
+        YUtils::printDebug("Items should not be selected when not in SPRITES_LAYER mode",DebugType::ERROR);
         return;
     }
+    this->selectedObjects.push_back(uuid);
     auto allItems = this->findItems("sprite",Qt::MatchExactly);
+    if (allItems.size() == 0) {
+        YUtils::printDebug("Zero sprites given text data!",DebugType::WARNING);
+        return;
+    }
     for (int i = 0; i < allItems.size(); i++) {
         auto potentialItem = allItems.at(i);
         if (potentialItem != nullptr) {

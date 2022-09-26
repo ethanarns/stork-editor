@@ -1,6 +1,8 @@
 #ifndef DISPLAYTABLE_H
 #define DISPLAYTABLE_H
 
+#include <vector>
+
 #include "Chartile.h"
 #include "yidsrom.h"
 #include "PixelDelegate.h"
@@ -27,6 +29,7 @@ public:
     bool shouldShowCollision;
 
     LayerSelectMode layerSelectMode = LayerSelectMode::SPRITES_LAYER;
+    std::vector<int> selectedObjects;
 
     DisplayTable(QWidget *parent, YidsRom* rom);
     void putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren, uint16_t whichBg);
