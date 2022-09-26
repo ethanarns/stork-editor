@@ -54,7 +54,11 @@ public:
     void setLayerDraw(int whichLayer, bool shouldDraw);
     void updateObjects();
     int wipeTable();
+
+    void wipeObject(int uuid);
     void selectItemByUuid(int uuid);
+    void moveSprite(int uuid, int xOffset, int yOffset);
+    void moveCurrentlySelectedSprites(int xOffset, int yOffset);
 private:
     const static int CELL_SIZE_PX = 8;
     const static int CELL_COUNT_W = 0xff*4;

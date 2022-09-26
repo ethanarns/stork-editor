@@ -437,3 +437,17 @@ QByteArray YidsRom::get256Palettes(uint32_t offset) {
     }
     return qbResult;
 }
+
+void YidsRom::moveObject(int objectUuid, int xOffset, int yOffset) {
+    std::cout << this->loadedLevelObjects.size() << std::endl;
+    for (uint32_t currentObjectIndex = 0; currentObjectIndex < this->loadedLevelObjects.size(); currentObjectIndex++) {
+        auto curObject = this->loadedLevelObjects.at(currentObjectIndex);
+        if (curObject.uuid == objectUuid) {
+            curObject.xPosition += xOffset;
+            curObject.yPosition += yOffset;
+            this->loadedLevelObjects.at(currentObjectIndex) = curObject;
+            return;
+        }
+    }
+    YUtils::printDebug("Could not move object, UUID not found",DebugType::WARNING);
+}

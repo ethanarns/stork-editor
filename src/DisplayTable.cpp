@@ -194,9 +194,14 @@ void DisplayTable::displayTableClicked(int row, int column) {
         YUtils::printQbyte(pixArray1);
     }
 
-    if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER && !curCell->data(PixelDelegateData::OBJECT_UUID).isNull()) {
-        auto curUuid = curCell->data(PixelDelegateData::OBJECT_UUID).toInt();
-        this->selectItemByUuid(curUuid);
+    if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+        if (!curCell->data(PixelDelegateData::OBJECT_UUID).isNull()) {
+            auto curUuid = curCell->data(PixelDelegateData::OBJECT_UUID).toInt();
+            this->selectItemByUuid(curUuid);
+        } else {
+            this->clearSelection();
+            this->selectedObjects.clear();
+        }
     }
 }
 
@@ -287,7 +292,20 @@ void DisplayTable::updateShowCollision() {
     }
 }
 
+void DisplayTable::moveSprite(int uuid, int xOffset, int yOffset) {
+    this->wipeObject(uuid);
+    this->yidsRom->moveObject(uuid,xOffset,yOffset);
+}
+
+void DisplayTable::moveCurrentlySelectedSprites(int xOffset, int yOffset) {
+    for (auto it = this->selectedObjects.begin(); it != this->selectedObjects.end(); it++) {
+        this->moveSprite(*it, xOffset, yOffset);
+    }
+    this->updateObjects();
+}
+
 void DisplayTable::setLayerDraw(int whichLayer, bool shouldDraw) {
+    this->moveCurrentlySelectedSprites(2,1);
     if (whichLayer == 1) {
         this->drawBg1 = shouldDraw;
     } else if (whichLayer == 2) {
@@ -543,6 +561,23 @@ void DisplayTable::placeObjectTile(
         } else {
             loopIndex++;
             subIndex += 4;
+        }
+    }
+}
+
+void DisplayTable::wipeObject(int uuid) {
+    auto allItems = this->findItems("sprite",Qt::MatchExactly);
+    if (allItems.size() == 0) {
+        YUtils::printDebug("Zero sprites given text data!",DebugType::WARNING);
+        return;
+    }
+    for (int i = 0; i < allItems.size(); i++) {
+        auto potentialItem = allItems.at(i);
+        if (potentialItem != nullptr) {
+            auto foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toInt();
+            if (foundUuid == uuid) {
+                potentialItem->setData(PixelDelegateData::OBJECT_TILES,QByteArray());
+            }
         }
     }
 }
