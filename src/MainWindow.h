@@ -1,6 +1,8 @@
 #ifndef YMAINWINDOW_H
 #define YMAINWINDOW_H
 
+#include <string>
+
 #include <QtCore>
 #include <QWidget>
 #include <QMainWindow>
@@ -25,8 +27,14 @@ public:
     MainWindow();
     void LoadRom();
 
+    void saveRom();
+    void saveRomAs();
+    void markSavableUpdate();
+
     QLabel* paletteHoverLabel;
     PaletteTable* paletteTable;
+
+    std::string currentFileName = "";
 private:
     DisplayTable* grid;
     QWidget* chartilesPopup;

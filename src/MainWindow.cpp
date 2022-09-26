@@ -68,14 +68,14 @@ MainWindow::MainWindow() {
     this->menu_save->setIcon(QIcon::fromTheme("document-save"));
     menu_file->addAction(this->menu_save);
     this->menu_save->setDisabled(true);
-    // Connect
+    connect(this->menu_save, &QAction::triggered, this, &MainWindow::saveRom);
 
     this->menu_save_as = new QAction("&Save As...",this);
     this->menu_save_as->setShortcut(tr("SHIFT+CTRL+S"));
     this->menu_save_as->setIcon(QIcon::fromTheme("document-save-as"));
     menu_file->addAction(this->menu_save_as);
     this->menu_save_as->setDisabled(true);
-    // Connect
+    connect(this->menu_save_as, &QAction::triggered, this, &MainWindow::saveRomAs);
 
     menu_file->addSeparator();
 
@@ -203,6 +203,7 @@ MainWindow::MainWindow() {
     action_about->setShortcut(tr("F1"));
     action_about->setIcon(QIcon::fromTheme("help-about"));
     menu_help->addAction(action_about);
+    connect(action_about,&QAction::triggered,this,&MainWindow::markSavableUpdate);
     // Add connect() once implemented
     
     /***************
@@ -355,7 +356,7 @@ void MainWindow::LoadRom() {
         YUtils::printDebug("Canceled file dialog",DebugType::VERBOSE);
     } else {
         YCompression::unpackRom(fileName.toStdString());
-        YCompression::repackRom("repacked.nds");
+        this->currentFileName = ""; // Don't save to same rom file
         this->rom->openRom(fileName.toStdString());
 
         // Chartiles popup //
@@ -392,6 +393,12 @@ void MainWindow::LoadRom() {
         this->action_viewBg2->setDisabled(false);
         this->action_viewBg3->setDisabled(false);
         this->action_viewObjects->setDisabled(false);
+        this->menu_save->setDisabled(false); // This will just trigger saveAs
+        this->menu_save_as->setDisabled(false);
+
+        std::string newWindowTitle = Constants::WINDOW_TITLE;
+        newWindowTitle.append(" - *Untitled");
+        this->setWindowTitle(tr(newWindowTitle.c_str()));
     }
 }
 
@@ -541,4 +548,47 @@ void MainWindow::menuClick_viewBg3(bool checked) {
 
 void MainWindow::menuClick_viewObjects(bool checked) {
     this->grid->setLayerDraw(4,checked);
+}
+
+void MainWindow::saveRom() {
+    if (this->currentFileName.empty() || this->currentFileName.compare("") == 0) {
+        this->saveRomAs();
+        return;
+    }
+    std::string newWindowTitle = Constants::WINDOW_TITLE;
+    newWindowTitle.append(" - ").append(this->currentFileName);
+    this->setWindowTitle(tr(newWindowTitle.c_str()));
+    // Do actual saving here //
+    this->menu_save->setDisabled(true);
+}
+
+void MainWindow::saveRomAs() {
+    auto fileName = QFileDialog::getSaveFileName(this,tr("Save ROM"),".",tr("NDS files (*.NDS)"));
+    if (fileName.isEmpty()) {
+        YUtils::printDebug("Cancelled Save As");
+    } else {
+        if (!fileName.endsWith(".nds") && !fileName.endsWith(".NDS")) {
+            fileName = fileName.append(".nds");
+        }
+        this->currentFileName = fileName.toStdString();
+        std::string newWindowTitle = Constants::WINDOW_TITLE;
+        newWindowTitle.append(" - ").append(fileName.toStdString());
+        this->setWindowTitle(tr(newWindowTitle.c_str()));
+        this->saveRom();
+        YCompression::repackRom(fileName.toStdString());
+    }
+}
+
+void MainWindow::markSavableUpdate() {
+    YUtils::printDebug("Savable change made",DebugType::VERBOSE);
+    this->menu_save->setDisabled(false);
+    // Should already be enabled, but just in case
+    this->menu_save_as->setDisabled(false);
+    std::string newWindowTitle = Constants::WINDOW_TITLE;
+    if (this->currentFileName.empty() || this->currentFileName.compare("") == 0) {
+        newWindowTitle.append(" - *").append("Untitled");
+    } else {
+        newWindowTitle.append(" - *").append(this->currentFileName);
+    }
+    this->setWindowTitle(tr(newWindowTitle.c_str()));
 }

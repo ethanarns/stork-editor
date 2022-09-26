@@ -14,6 +14,7 @@
 #include <iostream>
 
 #include "src/MainWindow.h"
+#include "src/constants.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -23,7 +24,7 @@ int main(int argc, char *argv[]) {
     window.resize(800, 600);
     window.setMinimumWidth(600);
     window.setMinimumHeight(400);
-    window.setWindowTitle("Parasol Editor");
+    window.setWindowTitle(Constants::WINDOW_TITLE);
     window.show();
 
     return app.exec();
