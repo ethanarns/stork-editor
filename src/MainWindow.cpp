@@ -1,6 +1,6 @@
 /**
  * @file MainWindow.cpp
- * @author Ethan Messinger-Arns (<email hidden>)
+ * @author @YoshiDonoshi (<email hidden>)
  * @brief This class is not only the base window, but also contains the connections to the ROM itself. It's the true main.
  * @version 0.1
  * @date 2022-06-12
@@ -591,4 +591,6 @@ void MainWindow::markSavableUpdate() {
         newWindowTitle.append(" - *").append(this->currentFileName);
     }
     this->setWindowTitle(tr(newWindowTitle.c_str()));
+    // TODO: Delete this
+    this->grid->moveCurrentlySelectedSprites(1,1);
 }

@@ -305,7 +305,6 @@ void DisplayTable::moveCurrentlySelectedSprites(int xOffset, int yOffset) {
 }
 
 void DisplayTable::setLayerDraw(int whichLayer, bool shouldDraw) {
-    this->moveCurrentlySelectedSprites(2,1);
     if (whichLayer == 1) {
         this->drawBg1 = shouldDraw;
     } else if (whichLayer == 2) {
