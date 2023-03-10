@@ -19,7 +19,7 @@ namespace Constants {
     inline const char* CSCN_MAGIC{"CSCN"};
     inline const char* MPDZ_EXTENSION{".mpdz"};
 
-    inline const char* WINDOW_TITLE{"Parasol Editor"};
+    inline const char* WINDOW_TITLE{"Stork Editor"};
 
     inline constexpr uint32_t MPDZ_MAGIC_NUM{0x00544553}; // "SET "
     inline constexpr uint32_t SCEN_MAGIC_NUM{0x4e454353}; // "SCEN"
