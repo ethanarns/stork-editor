@@ -7,7 +7,8 @@ It currently has visuals working, as well as loading 90% of levels successfully.
 
 ### To run:
 1. Install QT5
-2. Run defaultRun.sh
+2. Extract a USA YIDS rom as rom.nds
+3. Run defaultRun.sh
 
 ### Todo:
 - Drag and drop objects
