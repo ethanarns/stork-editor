@@ -14,7 +14,7 @@
 #include <QtGlobal>
 
 const char* BLZ_PATH = "./lib/blz.py";
-const char* LZSS_PATH = "./lzss";
+const char* LZSS_PATH = "./lib/lzss.py";
 const char* ROM_EXTRACT_DIR = "_nds_unpack";
 const char* NDSTOOL_PATH = "./lib/ndstool";
 
@@ -45,7 +45,7 @@ bool YCompression::lzssDecomp(std::string filepath, bool verbose) {
         return false;
     }
     std::string lzssPath = LZSS_PATH;
-    std::string lzssCmd = lzssPath.append(" -d ").append(filepath);
+    std::string lzssCmd = lzssPath.append(" ").append(filepath).append(" --out ").append(filepath);
     if (verbose) cout << "> " << lzssCmd << endl;
     // Silence stdout?
     if (!verbose) lzssCmd.append(" 1> /dev/null");
