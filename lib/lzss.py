@@ -12,7 +12,3 @@ args = parser.parse_args()
 decomressed = ndspy.lz10.decompressFromFile(args.filename)
 with open(args.out, "wb") as decompLz:
     decompLz.write(decomressed)
-
-# decompressed = ndspy.codeCompression.decompressFromFile(args.filename)
-# with open(args.out,"wb") as decompBin9:
-#     decompBin9.write(decompressed)
