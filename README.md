@@ -7,7 +7,7 @@ It currently has visuals working, as well as loading 90% of levels successfully.
 
 ### To run:
 1. Install QT5
-2. Extract a USA YIDS rom as rom.nds
+2. Extract a USA YIDS 1.0 rom
 3. Run defaultRun.sh
 
 ### Todo:
