@@ -706,7 +706,7 @@ ObjectFile YidsRom::getMajorObjPltFile(std::string objset_filename, std::map<uin
             uint32_t subSectionSize = subsection.size();
             if (subSectionSize != Constants::PALETTE_SIZE) {
                 std::stringstream ssPltbSize;
-                ssPltbSize << "PLTB data not 0x20/32 bytes! Was instead: " << hex << subSectionSize;
+                ssPltbSize << "PLTB data not 0x20/32 bytes! Was instead: 0x" << hex << subSectionSize;
                 ssPltbSize << ". Only pulling first one.";
                 YUtils::printDebug(ssPltbSize.str(),DebugType::WARNING);
             }
@@ -746,7 +746,12 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
     ssGraphics << "Loading graphics archive '" << objset_filename << "'";
     YUtils::printDebug(ssGraphics.str(),DebugType::VERBOSE);
     std::vector<uint8_t> fileVectorObjset = this->getByteVectorFromFile(objset_filename);
-    std::vector<uint8_t> objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
+    std::vector<uint8_t> objsetUncompressedVec = fileVectorObjset;
+    if (fileVectorObjset.at(0) != 16) {
+        YUtils::printDebug("Archive not compressed, skipping decomp",DebugType::VERBOSE);
+    } else {
+        objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
+    }
 
     auto potentialMagicNumber = YUtils::getUint32FromVec(objsetUncompressedVec,0);
     if (potentialMagicNumber != Constants::OBAR_MAGIC_NUM) {
@@ -784,7 +789,7 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
             uint32_t subSectionSize = subsection.size();
             if (subSectionSize != Constants::PALETTE_SIZE) {
                 std::stringstream ssPltbSize;
-                ssPltbSize << "PLTB data not 0x20/32 bytes! Was instead: " << hex << subSectionSize;
+                ssPltbSize << "PLTB data not 0x20/32 bytes! Was instead: 0x" << hex << subSectionSize;
                 ssPltbSize << ". Only pulling first one.";
                 YUtils::printDebug(ssPltbSize.str(),DebugType::WARNING);
             }
