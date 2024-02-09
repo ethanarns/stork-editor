@@ -196,7 +196,7 @@ void YidsRom::initArm9RomData(std::string fileName) {
 
     this->extractCompressedARM9(romStart9,romSize9);
 
-    bool arm9decompResult = YCompression::blzDecompress(Constants::NEW_BIN_FILE, false);
+    bool arm9decompResult = YCompression::blzDecompress(Constants::NEW_BIN_FILE, true);
     if (!arm9decompResult) {
         YUtils::printDebug("Could not decompress the ARM9 BIN!",DebugType::FATAL);
         exit(EXIT_FAILURE);

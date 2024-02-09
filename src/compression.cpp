@@ -13,7 +13,7 @@
 // Q_UNUSED
 #include <QtGlobal>
 
-const char* BLZ_PATH = "./blz";
+const char* BLZ_PATH = "./lib/blz.py";
 const char* LZSS_PATH = "./lzss";
 const char* ROM_EXTRACT_DIR = "_nds_unpack";
 const char* NDSTOOL_PATH = "./lib/ndstool";
@@ -30,7 +30,7 @@ bool YCompression::blzDecompress(std::string filepath, bool verbose) {
         return false;
     }
     std::string blzPath = BLZ_PATH;
-    std::string blzCmd = blzPath.append(" -d ").append(filepath);
+    std::string blzCmd = blzPath.append(" ").append(filepath);
     if (verbose) cout << "> " << blzCmd << endl;
     // Silence stdout
     if (!verbose) blzCmd.append(" 1> /dev/null");
