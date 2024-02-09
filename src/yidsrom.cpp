@@ -25,8 +25,6 @@
 #include <QtGlobal>
 #include <QByteArray>
 
-using namespace std;
-
 YidsRom::YidsRom() {
     this->filesLoaded = false;
     this->preRenderDataBg2.reserve(180'000); // Found 189280 in 1-1's first IMBZ
@@ -196,7 +194,8 @@ void YidsRom::initArm9RomData(std::string fileName) {
         exit(EXIT_FAILURE);
     }
 
-    this->writeUncompressedARM9(romStart9,romSize9);
+    this->extractCompressedARM9(romStart9,romSize9);
+
     bool arm9decompResult = YCompression::blzDecompress(Constants::NEW_BIN_FILE, false);
     if (!arm9decompResult) {
         YUtils::printDebug("Could not decompress the ARM9 BIN!",DebugType::FATAL);
@@ -271,7 +270,7 @@ void YidsRom::initArm9RomData(std::string fileName) {
     }
 }
 
-void YidsRom::writeUncompressedARM9(Address arm9start_rom, uint32_t arm9length) {
+void YidsRom::extractCompressedARM9(Address arm9start_rom, uint32_t arm9length) {
     if (this->filesLoaded) {
         cout << "ARM9 has already been written and read" << endl;
         return;

@@ -13,8 +13,6 @@
 // Q_UNUSED
 #include <QtGlobal>
 
-using namespace std;
-
 const char* BLZ_PATH = "./blz";
 const char* LZSS_PATH = "./lzss";
 const char* ROM_EXTRACT_DIR = "_nds_unpack";
