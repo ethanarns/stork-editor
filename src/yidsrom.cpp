@@ -209,6 +209,10 @@ void YidsRom::initArm9RomData(std::string fileName) {
     arm9fileUncomped.seekg(0, ios_base::end);
     size_t arm9fileLength = arm9fileUncomped.tellg();
     arm9fileUncomped.seekg(0, ios_base::beg);
+    if (arm9fileLength == 0) {
+        YUtils::printDebug("ARM9 binary empty!", DebugType::FATAL);
+        exit(EXIT_FAILURE);
+    }
 
     // Create buffer to hold arm9fileUncomped
     std::vector<uint8_t> arm9buffer;

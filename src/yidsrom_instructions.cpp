@@ -666,6 +666,10 @@ ObjectFile YidsRom::getMajorObjPltFile(std::string objset_filename, std::map<uin
     ssGraphics << "Loading graphics archive '" << objset_filename << "'";
     YUtils::printDebug(ssGraphics.str(),DebugType::VERBOSE);
     std::vector<uint8_t> fileVectorObjset = this->getByteVectorFromFile(objset_filename);
+    if (fileVectorObjset.size() == 0) {
+        YUtils::printDebug("Graphics archive is empty!",DebugType::FATAL);
+        exit(EXIT_FAILURE);
+    }
     std::vector<uint8_t> objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
 
     auto potentialMagicNumber = YUtils::getUint32FromVec(objsetUncompressedVec,0);
