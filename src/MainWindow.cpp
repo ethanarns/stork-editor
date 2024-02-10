@@ -622,11 +622,16 @@ void MainWindow::objectListClick() {
     QListWidgetItem* selectedItem = selectedItems.at(0);
     auto objectId = (uint16_t)selectedItem->data(GuiObjectList::LEVEL_OBJECT_ID).toUInt();
     auto textData = LevelObject::getObjectTextMetadata(objectId);
-    auto objectUuid = (uint32_t)selectedItem->data(GuiObjectList::LEVEL_OBJECT_UUID).toUInt();
+    uint32_t objectUuid = (uint32_t)selectedItem->data(GuiObjectList::LEVEL_OBJECT_UUID).toUInt();
     std::stringstream ss;
-    ss << "Selected object list object with UUID " << std::hex << objectUuid;
+    ss << "Selected object list object with UUID 0x" << std::hex << objectUuid;
     YUtils::printDebug(ss.str(),DebugType::VERBOSE);
-    //this->rom->printLevelObjects();
+    auto loadedLevelObject = this->rom->getLoadedLevelObjectByUUID(objectUuid);
+    if (loadedLevelObject == nullptr) {
+        YUtils::printDebug("Loaded Level Object with that UUID not found",DebugType::ERROR);
+        return;
+    }
+    this->selectionInfoTable->updateWithLevelObject(*loadedLevelObject);
 }
 
 void MainWindow::displayTableClicked() {
