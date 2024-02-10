@@ -515,7 +515,19 @@ void MainWindow::menuClick_breakdown() {
 }
 
 void MainWindow::menuClick_export() {
-    YUtils::printDebug("Exporting...",DebugType::VERBOSE);
+    auto fileName = QFileDialog::getSaveFileName(this,tr("Export to NDS"),".",tr("NDS files (*.NDS)"));
+    if (fileName.isEmpty()) {
+        YUtils::printDebug("Canceled export dialog",DebugType::VERBOSE);
+    } else {
+        if (!fileName.endsWith(".nds")) {
+            fileName = fileName.append(".nds");
+        }
+        std::stringstream ss;
+        ss << "Exporting to " << fileName.toStdString() << "..." << std::endl;
+        YUtils::printDebug(ss.str(),DebugType::VERBOSE);
+        YCompression::repackRom(fileName.toStdString());
+        YUtils::printDebug("Export complete",DebugType::VERBOSE);
+    }
 }
 
 /****************************
