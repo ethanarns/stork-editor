@@ -32,11 +32,19 @@ void SelectionInfoTable::setText(int x, int y, std::string text, bool editable) 
         // Nothing is here, so lets make a new one and set it!
         QTableWidgetItem *newItem = new QTableWidgetItem();
         newItem->setText(tr(text.c_str()));
-        newItem->setFlags(Qt::ItemIsEnabled);
+        if (editable) {
+            newItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+        } else {
+            newItem->setFlags(Qt::ItemIsEnabled);
+        }
         this->setItem(y,x,newItem);
     } else {
         potentialExisting->setText(tr(text.c_str()));
-        potentialExisting->setFlags(Qt::ItemIsEnabled);
+        if (editable) {
+            potentialExisting->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+        } else {
+            potentialExisting->setFlags(Qt::ItemIsEnabled);
+        }
     }
 }
 

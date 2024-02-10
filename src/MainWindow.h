@@ -83,6 +83,7 @@ private:
     void buttonClick_levelSelect_load();
 
     void objectListClick();
+    void displayTableClicked();
 };
 
 #endif

@@ -196,6 +196,8 @@ void DisplayTable::displayTableClicked(int row, int column) {
 
     if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
         if (!curCell->data(PixelDelegateData::OBJECT_UUID).isNull()) {
+            this->clearSelection();
+            this->selectedObjects.clear();
             auto curUuid = curCell->data(PixelDelegateData::OBJECT_UUID).toInt();
             this->selectItemByUuid(curUuid);
         } else {

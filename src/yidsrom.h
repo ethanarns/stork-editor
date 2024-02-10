@@ -104,7 +104,7 @@ public:
     void getGameLevelsMetaData();
     QByteArray get256Palettes(uint32_t offset);
 
-    void moveObject(int objectUuid, int xOffset, int yOffset);
+    void moveObject(uint32_t objectUuid, int xOffset, int yOffset);
 
     std::string getTextAt(uint32_t position, uint32_t length);
     std::string getTextNullTermAt(uint32_t position_file);
@@ -122,6 +122,9 @@ public:
 
     uint32_t getGreatestCanvasWidth();
     uint32_t getGreatestCanvasHeight();
+
+    LevelObject* getLoadedLevelObjectByUUID(uint32_t uuid);
+    void printLevelObjects();
 
     ~YidsRom();
 private:

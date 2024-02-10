@@ -290,6 +290,7 @@ MainWindow::MainWindow() {
      ********************/
     this->grid = new DisplayTable(this,this->rom);
     centerPanelLayout->addWidget(this->grid);
+    connect(this->grid,&DisplayTable::clicked,this,&MainWindow::displayTableClicked);
 
     /******************
      *** LEFT PANEL ***
@@ -364,7 +365,11 @@ MainWindow::MainWindow() {
     // Remaining qualities //
     this->levelSelectPopup->setWindowTitle("Select a level");
 
+    /*******************
+     *** Connections ***
+     *******************/
     connect(this->guiObjectList,&GuiObjectList::itemSelectionChanged,this,&MainWindow::objectListClick);
+
 }
 
 void MainWindow::LoadRom() {
@@ -617,5 +622,33 @@ void MainWindow::objectListClick() {
     QListWidgetItem* selectedItem = selectedItems.at(0);
     auto objectId = (uint16_t)selectedItem->data(GuiObjectList::LEVEL_OBJECT_ID).toUInt();
     auto textData = LevelObject::getObjectTextMetadata(objectId);
-    YUtils::printDebug(textData.prettyName,DebugType::VERBOSE);
+    auto objectUuid = (uint32_t)selectedItem->data(GuiObjectList::LEVEL_OBJECT_UUID).toUInt();
+    std::stringstream ss;
+    ss << "Selected object list object with UUID " << std::hex << objectUuid;
+    YUtils::printDebug(ss.str(),DebugType::VERBOSE);
+    //this->rom->printLevelObjects();
+}
+
+void MainWindow::displayTableClicked() {
+    if (this->windowEditMode == WindowEditMode::OBJECTS) {
+        auto selectedObjects = this->grid->selectedObjects;
+        if (selectedObjects.size() < 1) {
+            YUtils::printDebug("No objects selected",DebugType::VERBOSE);
+            return;
+        } else if (selectedObjects.size() > 1) {
+            std::stringstream ss;
+            ss << "More than one object selected (" << std::dec << selectedObjects.size() << "), taking first";
+            YUtils::printDebug(ss.str(),DebugType::VERBOSE);
+        }
+        auto selectedObjectUuid = selectedObjects.at(0);
+        std::stringstream ssUuid;
+        ssUuid << "Attempting to find object with UUID 0x" << std::hex << selectedObjectUuid;
+        YUtils::printDebug(ssUuid.str(),DebugType::VERBOSE);
+        LevelObject* lo = this->rom->getLoadedLevelObjectByUUID(selectedObjectUuid);
+        if (lo == nullptr) {
+            YUtils::printDebug("Invalid level object",DebugType::WARNING);
+            return;
+        }
+        this->selectionInfoTable->updateWithLevelObject(*lo);
+    }
 }

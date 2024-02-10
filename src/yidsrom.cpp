@@ -417,6 +417,18 @@ uint32_t YidsRom::getGreatestCanvasHeight() {
     return greatHeight;
 }
 
+LevelObject* YidsRom::getLoadedLevelObjectByUUID(uint32_t uuid) {
+    for (uint32_t i = 0; i < this->loadedLevelObjects.size(); i++) {
+        if (this->loadedLevelObjects.at(i).uuid == uuid) {
+            return &this->loadedLevelObjects.at(i);
+        }
+    }
+    std::stringstream ss;
+    ss << "Loaded level object not found with UUID 0x" << std::hex << uuid;
+    YUtils::printDebug(ss.str(),DebugType::WARNING);
+    return nullptr;
+}
+
 uint32_t YidsRom::getGreatestCanvasWidth() {
     uint32_t greatWidth = 0;
     if (this->canvasWidthBg1 > greatWidth) {
@@ -441,7 +453,7 @@ QByteArray YidsRom::get256Palettes(uint32_t offset) {
     return qbResult;
 }
 
-void YidsRom::moveObject(int objectUuid, int xOffset, int yOffset) {
+void YidsRom::moveObject(uint32_t objectUuid, int xOffset, int yOffset) {
     std::cout << this->loadedLevelObjects.size() << std::endl;
     for (uint32_t currentObjectIndex = 0; currentObjectIndex < this->loadedLevelObjects.size(); currentObjectIndex++) {
         auto curObject = this->loadedLevelObjects.at(currentObjectIndex);
@@ -453,4 +465,10 @@ void YidsRom::moveObject(int objectUuid, int xOffset, int yOffset) {
         }
     }
     YUtils::printDebug("Could not move object, UUID not found",DebugType::WARNING);
+}
+
+void YidsRom::printLevelObjects() {
+    for (uint32_t i = 0; i < this->loadedLevelObjects.size(); i++) {
+        std::cout << this->loadedLevelObjects.at(i).toString() << std::endl;
+    }
 }

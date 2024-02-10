@@ -29,7 +29,10 @@ public:
     bool shouldShowCollision;
 
     LayerSelectMode layerSelectMode = LayerSelectMode::SPRITES_LAYER;
-    std::vector<int> selectedObjects;
+    /**
+     * A list of UUIDs of selected objects, usually LevelObjects
+    */
+    std::vector<uint32_t> selectedObjects;
 
     DisplayTable(QWidget *parent, YidsRom* rom);
     void putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren, uint16_t whichBg);
