@@ -198,7 +198,10 @@ void DisplayTable::displayTableClicked(int row, int column) {
         if (!curCell->data(PixelDelegateData::OBJECT_UUID).isNull()) {
             this->clearSelection();
             this->selectedObjects.clear();
-            auto curUuid = curCell->data(PixelDelegateData::OBJECT_UUID).toInt();
+            uint32_t curUuid = curCell->data(PixelDelegateData::OBJECT_UUID).toUInt();
+            std::stringstream ssSprite;
+            ssSprite << "Selecting cell with Object UUID " << std::hex << curUuid;
+            YUtils::printDebug(ssSprite.str(),DebugType::VERBOSE);
             this->selectItemByUuid(curUuid);
         } else {
             this->clearSelection();
@@ -207,7 +210,7 @@ void DisplayTable::displayTableClicked(int row, int column) {
     }
 }
 
-void DisplayTable::selectItemByUuid(int uuid) {
+void DisplayTable::selectItemByUuid(uint32_t uuid) {
     if (this->layerSelectMode != LayerSelectMode::SPRITES_LAYER) {
         YUtils::printDebug("Items should not be selected when not in SPRITES_LAYER mode",DebugType::ERROR);
         return;
@@ -221,7 +224,7 @@ void DisplayTable::selectItemByUuid(int uuid) {
     for (int i = 0; i < allItems.size(); i++) {
         auto potentialItem = allItems.at(i);
         if (potentialItem != nullptr) {
-            auto foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toInt();
+            uint32_t foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt();
             if (foundUuid == uuid) {
                 this->setItemSelected(potentialItem,true);
             }

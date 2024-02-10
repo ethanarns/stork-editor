@@ -30,7 +30,7 @@ public:
 
     LayerSelectMode layerSelectMode = LayerSelectMode::SPRITES_LAYER;
     /**
-     * A list of UUIDs of selected objects, usually LevelObjects
+     * A list/vector of uint32_t UUIDs of selected objects, usually LevelObjects
     */
     std::vector<uint32_t> selectedObjects;
 
@@ -59,7 +59,7 @@ public:
     int wipeTable();
 
     void wipeObject(int uuid);
-    void selectItemByUuid(int uuid);
+    void selectItemByUuid(uint32_t uuid);
     void moveSprite(int uuid, int xOffset, int yOffset);
     void moveCurrentlySelectedSprites(int xOffset, int yOffset);
 private:
