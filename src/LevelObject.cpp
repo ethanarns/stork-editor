@@ -240,10 +240,25 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
 
 ObjectTextMetadata LevelObject::getObjectTextMetadata(uint16_t levelObjectId) {
     ObjectTextMetadata textData;
+    textData.description = "No description";
     switch(levelObjectId) {
         case 0x0:
             textData.prettyName = "Basic Yellow Coin";
             textData.description = "A basic yellow coin";
+            break;
+        case 0x38:
+            textData.prettyName = "Blue Shy Guy?";
+            break;
+        case 0x39:
+            textData.prettyName = "Red Shy Guy?";
+            break;
+        case 0x3b:
+            textData.prettyName = "Red Coin";
+            textData.description = "A red coin";
+            break;
+        case 0x9a:
+            textData.prettyName = "Red Sign";
+            textData.description = "A red arrow sign";
             break;
         case 0x9f:
             textData.prettyName = "Hint Block";
