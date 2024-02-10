@@ -71,16 +71,19 @@ MainWindow::MainWindow() {
     this->menu_save->setDisabled(true);
     connect(this->menu_save, &QAction::triggered, this, &MainWindow::saveRom);
 
-    this->menu_save_as = new QAction("&Save As...",this);
-    this->menu_save_as->setShortcut(tr("SHIFT+CTRL+S"));
-    this->menu_save_as->setIcon(QIcon::fromTheme("document-save-as"));
-    menu_file->addAction(this->menu_save_as);
-    this->menu_save_as->setDisabled(true);
-    connect(this->menu_save_as, &QAction::triggered, this, &MainWindow::saveRomAs);
+    // Nothing to save as, only export
+    // this->menu_save_as = new QAction("&Save As...",this);
+    // this->menu_save_as->setShortcut(tr("SHIFT+CTRL+S"));
+    // this->menu_save_as->setIcon(QIcon::fromTheme("document-save-as"));
+    // menu_file->addAction(this->menu_save_as);
+    // this->menu_save_as->setDisabled(true);
+    // connect(this->menu_save_as, &QAction::triggered, this, &MainWindow::saveRomAs);
 
     this->menu_export = new QAction("&Export...",this);
     menu_file->addAction(this->menu_export);
     this->menu_export->setDisabled(true);
+    this->menu_export->setShortcut(tr("SHIFT+CTRL+S"));
+    this->menu_export->setIcon(QIcon::fromTheme("document-save-as"));
     connect(this->menu_export, &QAction::triggered, this, &MainWindow::menuClick_export);
 
     menu_file->addSeparator();
@@ -405,15 +408,10 @@ void MainWindow::LoadRom() {
         this->action_viewBg2->setDisabled(false);
         this->action_viewBg3->setDisabled(false);
         this->action_viewObjects->setDisabled(false);
-        this->menu_save->setDisabled(false); // This will just trigger saveAs
-        this->menu_save_as->setDisabled(false);
+        this->menu_save->setDisabled(false);
         this->menu_export->setDisabled(false);
 
         this->guiObjectList->updateList();
-
-        std::string newWindowTitle = Constants::WINDOW_TITLE;
-        newWindowTitle.append(" - *Untitled");
-        this->setWindowTitle(tr(newWindowTitle.c_str()));
     }
 }
 
@@ -518,6 +516,7 @@ void MainWindow::menuClick_breakdown() {
 }
 
 void MainWindow::menuClick_export() {
+    this->saveRom();
     auto fileName = QFileDialog::getSaveFileName(this,tr("Export to NDS"),".",tr("NDS files (*.NDS)"));
     if (fileName.isEmpty()) {
         YUtils::printDebug("Canceled export dialog",DebugType::VERBOSE);
@@ -530,6 +529,7 @@ void MainWindow::menuClick_export() {
         YUtils::printDebug(ss.str(),DebugType::VERBOSE);
         YCompression::repackRom(fileName.toStdString());
         YUtils::printDebug("Export complete",DebugType::VERBOSE);
+        this->setWindowTitle(Constants::WINDOW_TITLE);
     }
 }
 
@@ -586,45 +586,16 @@ void MainWindow::menuClick_viewObjects(bool checked) {
 }
 
 void MainWindow::saveRom() {
-    if (this->currentFileName.empty() || this->currentFileName.compare("") == 0) {
-        this->saveRomAs();
-        return;
-    }
-    std::string newWindowTitle = Constants::WINDOW_TITLE;
-    newWindowTitle.append(" - ").append(this->currentFileName);
-    this->setWindowTitle(tr(newWindowTitle.c_str()));
-    // Do actual saving here //
+    this->setWindowTitle(Constants::WINDOW_TITLE);
     this->menu_save->setDisabled(true);
-}
-
-void MainWindow::saveRomAs() {
-    auto fileName = QFileDialog::getSaveFileName(this,tr("Save ROM"),".",tr("NDS files (*.NDS)"));
-    if (fileName.isEmpty()) {
-        YUtils::printDebug("Cancelled Save As");
-    } else {
-        if (!fileName.endsWith(".nds") && !fileName.endsWith(".NDS")) {
-            fileName = fileName.append(".nds");
-        }
-        this->currentFileName = fileName.toStdString();
-        std::string newWindowTitle = Constants::WINDOW_TITLE;
-        newWindowTitle.append(" - ").append(fileName.toStdString());
-        this->setWindowTitle(tr(newWindowTitle.c_str()));
-        this->saveRom();
-        YCompression::repackRom(fileName.toStdString());
-    }
 }
 
 void MainWindow::markSavableUpdate() {
     YUtils::printDebug("Savable change made",DebugType::VERBOSE);
     this->menu_save->setDisabled(false);
     // Should already be enabled, but just in case
-    this->menu_save_as->setDisabled(false);
     std::string newWindowTitle = Constants::WINDOW_TITLE;
-    if (this->currentFileName.empty() || this->currentFileName.compare("") == 0) {
-        newWindowTitle.append(" - *").append("Untitled");
-    } else {
-        newWindowTitle.append(" - *").append(this->currentFileName);
-    }
+    newWindowTitle.append(" *");
     this->setWindowTitle(tr(newWindowTitle.c_str()));
     // TODO: Delete this
     this->grid->moveCurrentlySelectedSprites(1,1);

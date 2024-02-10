@@ -29,7 +29,6 @@ public:
     void LoadRom();
 
     void saveRom();
-    void saveRomAs();
     void markSavableUpdate();
 
     QLabel* paletteHoverLabel;
@@ -52,7 +51,6 @@ private:
 
     QAction* menu_levelSelect;
     QAction* menu_save;
-    QAction* menu_save_as;
     QAction* menu_export;
     QAction* action_memory;
     QAction* action_breakdown;
