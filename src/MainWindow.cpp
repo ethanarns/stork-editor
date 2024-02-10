@@ -190,6 +190,11 @@ MainWindow::MainWindow() {
     this->action_memory->setDisabled(true);
     connect(this->action_memory, &QAction::triggered, this, &MainWindow::menuClick_memory);
 
+    this->action_breakdown = new QAction("&Levels Breakdown",this);
+    menu_tools->addAction(this->action_breakdown);
+    this->action_breakdown->setDisabled(true);
+    connect(this->action_breakdown, &QAction::triggered, this, &MainWindow::menuClick_breakdown);
+
     auto action_settings = new QAction("&Settings...",this);
     action_settings->setShortcut(tr("CTRL+U"));
     action_settings->setIcon(QIcon::fromTheme("document-properties"));
@@ -388,6 +393,7 @@ void MainWindow::LoadRom() {
 
         // Misc menu items //
         this->action_memory->setDisabled(false);
+        this->action_breakdown->setDisabled(false);
         this->action_showCollision->setDisabled(false);
         this->action_viewBg1->setDisabled(false);
         this->action_viewBg2->setDisabled(false);
@@ -496,6 +502,10 @@ void MainWindow::menuClick_memory() {
     std::cout << "loadedLevelObjects size (count): " << dec << levelObjectCount << std::endl;
 
     std::cout << "--- End Memory Report ---" << std::endl;
+}
+
+void MainWindow::menuClick_breakdown() {
+    this->rom->getGameLevelsMetaData();
 }
 
 /****************************
