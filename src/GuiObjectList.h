@@ -14,6 +14,7 @@ public:
     int wipeList();
 
     const static int LEVEL_OBJECT_UUID = 111;
+    const static int LEVEL_OBJECT_ID = 112;
 private:
     YidsRom* yidsRom;
 };

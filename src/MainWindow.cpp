@@ -362,6 +362,8 @@ MainWindow::MainWindow() {
     
     // Remaining qualities //
     this->levelSelectPopup->setWindowTitle("Select a level");
+
+    connect(this->guiObjectList,&GuiObjectList::itemSelectionChanged,this,&MainWindow::objectListClick);
 }
 
 void MainWindow::LoadRom() {
@@ -599,4 +601,20 @@ void MainWindow::markSavableUpdate() {
     this->setWindowTitle(tr(newWindowTitle.c_str()));
     // TODO: Delete this
     this->grid->moveCurrentlySelectedSprites(1,1);
+}
+
+void MainWindow::objectListClick() {
+    auto selectedItems = this->guiObjectList->selectedItems();
+    if (selectedItems.size() == 0) {
+        YUtils::printDebug("No items selected",DebugType::ERROR);
+        return;
+    }
+    if (selectedItems.size() > 1) {
+        YUtils::printDebug("Multiple items selection not supported",DebugType::WARNING);
+        return;
+    }
+    QListWidgetItem* selectedItem = selectedItems.at(0);
+    auto objectId = (uint16_t)selectedItem->data(GuiObjectList::LEVEL_OBJECT_ID).toUInt();
+    auto textData = LevelObject::getObjectTextMetadata(objectId);
+    YUtils::printDebug(textData.prettyName,DebugType::VERBOSE);
 }

@@ -4,12 +4,15 @@
 
 #include <QtCore>
 #include <QWidget>
+#include <QListWidget>
+#include <QAbstractItemView>
 
 GuiObjectList::GuiObjectList(QWidget* parent, YidsRom* rom) {
     Q_UNUSED(parent);
     this->yidsRom = rom;
 
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
+    this->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
 }
 
 void GuiObjectList::updateList() {
@@ -23,6 +26,7 @@ void GuiObjectList::updateList() {
         ObjectTextMetadata textData = LevelObject::getObjectTextMetadata(objIt->objectId);
         QListWidgetItem* item = new QListWidgetItem(tr(textData.prettyName.c_str()));
         item->setData(GuiObjectList::LEVEL_OBJECT_UUID,objIt->uuid);
+        item->setData(GuiObjectList::LEVEL_OBJECT_ID,objIt->objectId);
         this->addItem(item);
     }
 }

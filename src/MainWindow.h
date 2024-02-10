@@ -79,6 +79,8 @@ private:
 
     void buttonClick_levelSelect_cancel();
     void buttonClick_levelSelect_load();
+
+    void objectListClick();
 };
 
 #endif
