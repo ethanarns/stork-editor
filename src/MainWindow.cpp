@@ -77,6 +77,11 @@ MainWindow::MainWindow() {
     this->menu_save_as->setDisabled(true);
     connect(this->menu_save_as, &QAction::triggered, this, &MainWindow::saveRomAs);
 
+    this->menu_export = new QAction("&Export...",this);
+    menu_file->addAction(this->menu_export);
+    this->menu_export->setDisabled(true);
+    connect(this->menu_export, &QAction::triggered, this, &MainWindow::menuClick_export);
+
     menu_file->addSeparator();
 
     this->menu_levelSelect = new QAction("&Select Level...",this);
@@ -401,6 +406,7 @@ void MainWindow::LoadRom() {
         this->action_viewObjects->setDisabled(false);
         this->menu_save->setDisabled(false); // This will just trigger saveAs
         this->menu_save_as->setDisabled(false);
+        this->menu_export->setDisabled(false);
 
         std::string newWindowTitle = Constants::WINDOW_TITLE;
         newWindowTitle.append(" - *Untitled");
@@ -506,6 +512,10 @@ void MainWindow::menuClick_memory() {
 
 void MainWindow::menuClick_breakdown() {
     this->rom->getGameLevelsMetaData();
+}
+
+void MainWindow::menuClick_export() {
+    YUtils::printDebug("Exporting...",DebugType::VERBOSE);
 }
 
 /****************************
