@@ -641,9 +641,9 @@ void MainWindow::displayTableClicked() {
             YUtils::printDebug(ss.str(),DebugType::VERBOSE);
         }
         auto selectedObjectUuid = selectedObjects.at(0);
-        std::stringstream ssUuid;
-        ssUuid << "Attempting to find object with UUID 0x" << std::hex << selectedObjectUuid;
-        YUtils::printDebug(ssUuid.str(),DebugType::VERBOSE);
+        // std::stringstream ssUuid;
+        // ssUuid << "Attempting to find object with UUID 0x" << std::hex << selectedObjectUuid;
+        // YUtils::printDebug(ssUuid.str(),DebugType::VERBOSE);
         LevelObject* lo = this->rom->getLoadedLevelObjectByUUID(selectedObjectUuid);
         if (lo == nullptr) {
             YUtils::printDebug("Invalid level object",DebugType::WARNING);

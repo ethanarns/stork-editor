@@ -246,6 +246,10 @@ ObjectTextMetadata LevelObject::getObjectTextMetadata(uint16_t levelObjectId) {
             textData.prettyName = "Basic Yellow Coin";
             textData.description = "A basic yellow coin";
             break;
+        case 0x28:
+            textData.prettyName = "Flower Collectible";
+            textData.description = "Collect 5 of these";
+            break;
         case 0x38:
             textData.prettyName = "Blue Shy Guy?";
             break;
