@@ -60,7 +60,7 @@ bool YCompression::lzssRecomp(std::string filepath, bool verbose) {
         return false;
     }
     std::string lzssPath = LZSS_PATH;
-    std::string lzssCmdRecomp = lzssPath.append(" -evn ").append(filepath);
+    std::string lzssCmdRecomp = lzssPath.append(" -c ").append(filepath).append(" --out ").append(filepath);
     if (verbose) cout << "> " << lzssCmdRecomp << endl;
     // Silence stdout?
     if (!verbose) lzssCmdRecomp.append(" 1> /dev/null");

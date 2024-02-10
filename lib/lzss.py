@@ -7,8 +7,13 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument("filename")
 parser.add_argument("-o","--out")
+parser.add_argument("-c","--compress",action='store_true',default=False)
 args = parser.parse_args()
-
-decomressed = ndspy.lz10.decompressFromFile(args.filename)
-with open(args.out, "wb") as decompLz:
-    decompLz.write(decomressed)
+if args.compress == False:
+    decompressed = ndspy.lz10.decompressFromFile(args.filename)
+    with open(args.out, "wb") as decompLz:
+        decompLz.write(decompressed)
+else:
+    compressed = ndspy.lz10.compressFromFile(args.filename)
+    with open(args.out, "wb") as compLz:
+        compLz.write(compressed)

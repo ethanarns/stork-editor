@@ -124,6 +124,8 @@ struct MpbzData : public Instruction {
         ssMpbz << ", whichBg: " << this->whichBg << " }";
         return ssMpbz.str();
     };
+    // Note: the LZ10 will look different than the original, but I checked:
+    // It decompiles again to the exact same!
     std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
         // If either settings aren't zero
