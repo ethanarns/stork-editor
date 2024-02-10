@@ -569,16 +569,16 @@ void DisplayTable::placeObjectTile(
     }
 }
 
-void DisplayTable::wipeObject(int uuid) {
+void DisplayTable::wipeObject(uint32_t uuid) {
     auto allItems = this->findItems("sprite",Qt::MatchExactly);
     if (allItems.size() == 0) {
         YUtils::printDebug("Zero sprites given text data!",DebugType::WARNING);
         return;
     }
-    for (int i = 0; i < allItems.size(); i++) {
+    for (uint32_t i = 0; i < allItems.size(); i++) {
         auto potentialItem = allItems.at(i);
         if (potentialItem != nullptr) {
-            auto foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toInt();
+            uint32_t foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt();
             if (foundUuid == uuid) {
                 potentialItem->setData(PixelDelegateData::OBJECT_TILES,QByteArray());
             }

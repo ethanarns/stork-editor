@@ -58,7 +58,7 @@ public:
     void updateObjects();
     int wipeTable();
 
-    void wipeObject(int uuid);
+    void wipeObject(uint32_t uuid);
     void selectItemByUuid(uint32_t uuid);
     void moveSprite(int uuid, int xOffset, int yOffset);
     void moveCurrentlySelectedSprites(int xOffset, int yOffset);
