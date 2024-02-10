@@ -18,8 +18,8 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     meta.yPixelOffset = 0;
     switch(objectId) {
         case 0x0: { // Basic yellow coin
-            meta.tilesSectorOffset = 0;
-            meta.paletteSectorOffset = 0;
+            meta.tilesSectorOffset = 0x0;
+            meta.paletteSectorOffset = 0x0;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             break;

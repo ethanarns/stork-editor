@@ -51,10 +51,10 @@ void SelectionInfoTable::setText(int x, int y, std::string text, bool editable) 
 void SelectionInfoTable::updateWithLevelObject(LevelObject lo) {
     auto textMetadata = LevelObject::getObjectTextMetadata(lo.objectId);
     std::stringstream s0;
-    s0 << std::hex << lo.objectId;
+    s0 << "0x" << std::hex << lo.objectId;
     this->setText(1,0,s0.str(),false);
     std::stringstream s1;
-    s1 << lo.uuid;
+    s1 << "0x" << std::hex << lo.uuid;
     this->setText(1,1,s1.str(),false);
     this->setText(1,2,textMetadata.prettyName,false);
     this->setText(1,3,textMetadata.description,false);
