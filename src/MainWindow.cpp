@@ -632,6 +632,10 @@ void MainWindow::objectListClick() {
         return;
     }
     this->selectionInfoTable->updateWithLevelObject(*loadedLevelObject);
+    if (this->grid->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+        this->grid->clearSelection();
+        this->grid->selectItemByUuid(objectUuid);
+    }
 }
 
 void MainWindow::displayTableClicked() {
