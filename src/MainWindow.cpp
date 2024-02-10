@@ -305,9 +305,6 @@ MainWindow::MainWindow() {
 
     this->selectionInfoTable = new SelectionInfoTable(this,this->rom);
     leftPanelTopGroupBoxLayout->addWidget(this->selectionInfoTable);
-    // this->paletteHoverLabel = new QLabel;
-    // this->paletteHoverLabel->setText(tr("Palette: 0xF"));
-    // leftPanelTopGroupBoxLayout->addWidget(this->paletteHoverLabel);
     leftPanelTopGroupBox->setLayout(leftPanelTopGroupBoxLayout);
     leftPanelTopGroupBox->setMinimumHeight(300);
 

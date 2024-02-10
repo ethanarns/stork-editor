@@ -33,7 +33,6 @@ public:
     void saveRom();
     void markSavableUpdate();
 
-    QLabel* paletteHoverLabel;
     SelectionInfoTable* selectionInfoTable;
     PaletteTable* paletteTable;
 
