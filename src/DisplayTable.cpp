@@ -424,12 +424,16 @@ void DisplayTable::updateObjects() {
             potentialExisting = new QTableWidgetItem();
         }
         auto objectGraphicsMeta = LevelObject::getObjectGraphicMetadata(*it);
+        auto objectTextMeta = LevelObject::getObjectTextMetadata(it->objectId);
         if (objectGraphicsMeta.tilesCount == 0) {
-            potentialExisting->setData(PixelDelegateData::OBJECT_ID,(int)it->objectId);
+            potentialExisting->setData(PixelDelegateData::OBJECT_ID,(uint32_t)it->objectId);
+            potentialExisting->setData(PixelDelegateData::OBJECT_UUID,it->uuid);
             std::stringstream ss;
-            ss << hex << (int)it->objectId;
-            ss << endl;
-            ss << "Object description goes here";
+            ss << std::hex << (uint32_t)it->objectId;
+            ss << std::endl;
+            ss << objectTextMeta.prettyName;
+            ss << std::endl;
+            ss << objectTextMeta.description;
             potentialExisting->setToolTip(tr(ss.str().c_str()));
         } else {
             this->placeObjectTile(
@@ -575,7 +579,7 @@ void DisplayTable::wipeObject(uint32_t uuid) {
         YUtils::printDebug("Zero sprites given text data!",DebugType::WARNING);
         return;
     }
-    for (uint32_t i = 0; i < allItems.size(); i++) {
+    for (int i = 0; i < allItems.size(); i++) {
         auto potentialItem = allItems.at(i);
         if (potentialItem != nullptr) {
             uint32_t foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt();
