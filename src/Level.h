@@ -148,6 +148,9 @@ struct MpbzData : public Instruction {
     };
 };
 
+/**
+ * A group of instructions, usually split between the backgrounds of a map (MPDZ)
+*/
 struct ScenData : public Instruction {
     uint32_t magicNum = Constants::SCEN_MAGIC_NUM;
     std::vector<Instruction*> minorInstructions;
@@ -168,6 +171,9 @@ struct ScenData : public Instruction {
     }
 };
 
+/**
+ * Color palette data, usually for a background
+ */
 struct PltbData : public Instruction {
     uint32_t magicNum = Constants::PLTB_MAGIC_NUM;
     std::vector<QByteArray> palettes;
@@ -330,6 +336,9 @@ struct CscnEnterIntoMap : public Instruction {
     }
 };
 
+/**
+ * This is within CSCN files
+*/
 struct CscnExitData : public Instruction {
     uint16_t exitLocationX;
     uint16_t exitLocationY;
@@ -381,6 +390,12 @@ enum CscnMusicId {
     WILDLANDS = 0x0F
 };
 
+/**
+ * Links to 1 MPDZ file, plus metadata like
+ * - Entrances
+ * - Exits
+ * - Music
+ */
 struct CscnData : public Instruction {
     // (jump in, fly in from coin running level near growblock, shyguy pipe 1, shyguy pipe 2)
     uint16_t numMapEnters; // 1-1: 0x0004
@@ -436,6 +451,10 @@ struct CscnData : public Instruction {
     };
 };
 
+/**
+ * Level selectable from the world map. For example, 1-1 (as 1-1_D3).
+ * It contains only a list of CSCNs, which are mainly just links to MPDZs
+ */
 struct CrsbData : public Instruction {
     uint32_t mapFileCount;
     std::vector<CscnData> cscnList;
