@@ -17,6 +17,7 @@
 #include "popups/PaletteTable.h"
 #include "SettingsEnum.h"
 #include "popups/LevelSelect.h"
+#include "GuiObjectList.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -43,6 +44,7 @@ private:
     QWidget* levelSelectPopup;
     LevelSelect* levelSelect;
     QComboBox* layerSelectDropdown;
+    GuiObjectList* guiObjectList;
 
     QAction* button_iconPalette;
     QAction* button_iconTiles;

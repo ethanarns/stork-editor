@@ -14,6 +14,7 @@
 #include "utils.h"
 #include "DisplayTable.h"
 #include "compression.h"
+#include "GuiObjectList.h"
 
 #include <QtCore>
 #include <QObject>
@@ -302,11 +303,11 @@ MainWindow::MainWindow() {
     this->paletteHoverLabel->setText(tr("Palette: 0xF"));
     leftPanelTopGroupBoxLayout->addWidget(this->paletteHoverLabel);
     leftPanelTopGroupBox->setLayout(leftPanelTopGroupBoxLayout);
+    leftPanelTopGroupBox->setMinimumHeight(300);
 
-    // Bottom groupbox //
-    QGroupBox* leftPanelBottomGroupBox = new QGroupBox(tr("Objects"));
-    leftPanelBottomGroupBox->setObjectName("groupBox_leftPanel_bottom");
-    leftPanelLayout->addWidget(leftPanelBottomGroupBox);
+    this->guiObjectList = new GuiObjectList(this,this->rom);
+    this->guiObjectList->setObjectName("leftPanel_gui_object_list");
+    leftPanelLayout->addWidget(this->guiObjectList);
 
     /*****************
      *** CHARTILES ***
@@ -407,6 +408,8 @@ void MainWindow::LoadRom() {
         this->menu_save->setDisabled(false); // This will just trigger saveAs
         this->menu_save_as->setDisabled(false);
         this->menu_export->setDisabled(false);
+
+        this->guiObjectList->updateList();
 
         std::string newWindowTitle = Constants::WINDOW_TITLE;
         newWindowTitle.append(" - *Untitled");
