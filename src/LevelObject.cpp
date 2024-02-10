@@ -7,8 +7,6 @@
 
 #include <QByteArray>
 
-using namespace std;
-
 ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     ObjectGraphicMetadata meta;
     auto objectId = lo.objectId;
@@ -237,4 +235,23 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         }
     }
     return meta;
+}
+
+ObjectTextMetadata LevelObject::getObjectTextMetadata(uint16_t levelObjectId) {
+    ObjectTextMetadata textData;
+    switch(levelObjectId) {
+        case 0x0:
+            textData.prettyName = "Basic Yellow Coin";
+            textData.description = "A basic yellow coin";
+            break;
+        case 0x9f:
+            textData.prettyName = "Hint Block";
+            textData.description = "Hit this to get a hint";
+            break;
+        default:
+            textData.prettyName = "Unknown";
+            textData.description = "No description";
+            break;
+    }
+    return textData;
 }

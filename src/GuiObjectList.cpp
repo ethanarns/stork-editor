@@ -1,5 +1,6 @@
 #include "GuiObjectList.h"
 #include "yidsrom.h"
+#include "LevelObject.h"
 
 #include <QtCore>
 #include <QWidget>
@@ -19,7 +20,8 @@ void GuiObjectList::updateList() {
         objIt != this->yidsRom->loadedLevelObjects.end();
         ++objIt
     ) {
-        QListWidgetItem* item = new QListWidgetItem(tr("lol"));
+        ObjectTextMetadata textData = LevelObject::getObjectTextMetadata(objIt->objectId);
+        QListWidgetItem* item = new QListWidgetItem(tr(textData.prettyName.c_str()));
         item->setData(GuiObjectList::LEVEL_OBJECT_UUID,objIt->uuid);
         this->addItem(item);
     }

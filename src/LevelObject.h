@@ -60,6 +60,11 @@ struct ObjectGraphicMetadata {
     std::function<std::vector<RenderInstruction>()> specialRender;
 };
 
+struct ObjectTextMetadata {
+    std::string prettyName;
+    std::string description;
+};
+
 class LevelObject {
 public:
     uint16_t objectId;
@@ -69,6 +74,8 @@ public:
     uint32_t uuid;
     std::vector<uint8_t> settings;
     static ObjectGraphicMetadata getObjectGraphicMetadata(LevelObject lo);
+    static ObjectTextMetadata getObjectTextMetadata(uint16_t levelObjectId);
+
     std::string toString() {
         this->settingsLength = this->settings.size();
         std::stringstream ssLevelObject;
