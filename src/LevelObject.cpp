@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 #include <QByteArray>
 
@@ -249,7 +250,9 @@ ObjectTextMetadata LevelObject::getObjectTextMetadata(uint16_t levelObjectId) {
             textData.description = "Hit this to get a hint";
             break;
         default:
-            textData.prettyName = "Unknown";
+            std::stringstream ss;
+            ss << "Level Object ID " << std::hex << levelObjectId;
+            textData.prettyName = ss.str();
             textData.description = "No description";
             break;
     }

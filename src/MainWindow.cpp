@@ -294,20 +294,24 @@ MainWindow::MainWindow() {
     /******************
      *** LEFT PANEL ***
      ******************/
-    qApp->setStyleSheet("QGroupBox {  border: 1px solid gray;}"); // Debug
+    qApp->setStyleSheet("QGroupBox { border: 1px solid gray;}"); // Debug
 
     // Top groupbox //
     QGroupBox* leftPanelTopGroupBox = new QGroupBox(tr("Tile Info"));
     leftPanelTopGroupBox->setObjectName("groupBox_leftPanel_top");
+    leftPanelTopGroupBox->setStyleSheet("QGroupBox {padding-top: 22px;}");
     leftPanelLayout->addWidget(leftPanelTopGroupBox);
     QVBoxLayout* leftPanelTopGroupBoxLayout = new QVBoxLayout;
 
-    this->paletteHoverLabel = new QLabel;
-    this->paletteHoverLabel->setText(tr("Palette: 0xF"));
-    leftPanelTopGroupBoxLayout->addWidget(this->paletteHoverLabel);
+    this->selectionInfoTable = new SelectionInfoTable(this,this->rom);
+    leftPanelTopGroupBoxLayout->addWidget(this->selectionInfoTable);
+    // this->paletteHoverLabel = new QLabel;
+    // this->paletteHoverLabel->setText(tr("Palette: 0xF"));
+    // leftPanelTopGroupBoxLayout->addWidget(this->paletteHoverLabel);
     leftPanelTopGroupBox->setLayout(leftPanelTopGroupBoxLayout);
     leftPanelTopGroupBox->setMinimumHeight(300);
 
+    // Bottom object list
     this->guiObjectList = new GuiObjectList(this,this->rom);
     this->guiObjectList->setObjectName("leftPanel_gui_object_list");
     leftPanelLayout->addWidget(this->guiObjectList);

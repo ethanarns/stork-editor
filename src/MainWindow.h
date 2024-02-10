@@ -10,6 +10,7 @@
 #include <QAction>
 #include <QLabel>
 #include <QComboBox>
+#include <QTextLayout>
 
 #include "yidsrom.h"
 #include "DisplayTable.h"
@@ -18,6 +19,7 @@
 #include "SettingsEnum.h"
 #include "popups/LevelSelect.h"
 #include "GuiObjectList.h"
+#include "SelectionInfoTable.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -32,6 +34,7 @@ public:
     void markSavableUpdate();
 
     QLabel* paletteHoverLabel;
+    SelectionInfoTable* selectionInfoTable;
     PaletteTable* paletteTable;
 
     std::string currentFileName = "";
