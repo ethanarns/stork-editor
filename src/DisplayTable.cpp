@@ -32,6 +32,8 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
 
     // Drag and Drop //
     this->setMouseTracking(true);
+    this->setDragEnabled(true);
+    this->setDragDropMode(QAbstractItemView::DragDrop);
 
     setItemDelegate(new PixelDelegate);
 
@@ -171,6 +173,16 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
             this->setCursor(Qt::ArrowCursor);
         }
     }
+}
+
+bool DisplayTable::dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action) {
+    std::cout << "Dropping data at (" << column << ", " << row << "):" << std::endl;
+    return false;
+}
+
+void DisplayTable::dragEnterEvent(QDragEnterEvent *event) {
+    std::cout << "dragEnterEvent" << std::endl;
+    QTableWidget::dragEnterEvent(event);
 }
 
 void DisplayTable::displayTableClicked(int row, int column) {

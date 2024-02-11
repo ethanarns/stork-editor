@@ -10,6 +10,8 @@
 
 #include <QtCore>
 #include <QTableWidget>
+#include <QMimeData>
+#include <QDragEnterEvent>
 
 enum LayerSelectMode {
     BG1_LAYER,
@@ -69,6 +71,9 @@ private:
     YidsRom* yidsRom;
 
     void cellEnteredTriggered(int row, int column);
+protected:
+    bool dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
 };
 
 #endif

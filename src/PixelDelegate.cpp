@@ -389,10 +389,6 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 break;
         }
     }
-
-    // if (selected) {
-    //     painter->fillRect(option.rect,selectionColor);
-    // }
 }
 
 void PixelDelegate::drawPixel(QPainter *painter, const QRect &rect, const int x, const int y, const QColor &color) const {
