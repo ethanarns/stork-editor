@@ -236,9 +236,7 @@ def handleSETD(data: bytearray, index: int, stop: int):
         objectCount += 1
     print(ind(2) + "Object count: " + str(objectCount) + " / " + hex(objectCount))
 
-def main():
-    args = parser.parse_args()
-    filename = args.filename
+def handleMpdz(filename):
     mpdz = bytearray(ndspy.lz10.decompressFromFile(filename))
     # Each time, make an decompressed copy
     ndspy.lz10.decompressToFile(open(filename,"rb").read(),str(filename).replace("mpdz","mpdb"))
@@ -266,8 +264,12 @@ def main():
             handleGRAD(mpdz,readIndex+0,readIndex+topLength)
         elif topMagic == "SETD":
             handleSETD(mpdz,readIndex+0,readIndex+topLength)
+        else:
+            print("Unhandled top-length instruction")
         readIndex += topLength
     
 
 if __name__ == "__main__":
-    main()
+    args = parser.parse_args()
+    filename = args.filename
+    handleMpdz(filename)
