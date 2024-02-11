@@ -245,6 +245,7 @@ def handleSETD(data: bytearray, index: int, stop: int):
     print(ind(2) + "Object count: " + str(objectCount) + " / " + hex(objectCount))
 
 def handleMpdz(filename):
+    print(filename)
     mpdz = bytearray(ndspy.lz10.decompressFromFile(filename))
     # Each time, make an decompressed copy
     ndspy.lz10.decompressToFile(open(filename,"rb").read(),str(filename).replace("mpdz","mpdb"))
