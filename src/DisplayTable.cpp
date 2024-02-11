@@ -175,7 +175,7 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
     }
 }
 
-void DisplayTable::dragEnterEvent(QDragEnterEvent *event) {
+void DisplayTable::dragEnterEvent(QDragEnterEvent *deEvent) {
     this->currentlyDraggedItem = 0;
     if (this->layerSelectMode != LayerSelectMode::SPRITES_LAYER) {
         YUtils::printDebug("dragEnterEvent should not fire outside of sprite mode",DebugType::ERROR);
@@ -183,7 +183,7 @@ void DisplayTable::dragEnterEvent(QDragEnterEvent *event) {
     }
     if (this->selectedObjects.size() < 1) {
         YUtils::printDebug("Nothing selected to drag",DebugType::VERBOSE);
-        event->setAccepted(false);
+        deEvent->setAccepted(false);
         return;
     }
     if (this->selectedObjects.size() > 1) {
@@ -194,7 +194,7 @@ void DisplayTable::dragEnterEvent(QDragEnterEvent *event) {
     ssDragEnter << "Dragging sprite with UUID " << std::hex << this->currentlyDraggedItem;
     YUtils::printDebug(ssDragEnter.str(),DebugType::VERBOSE);
     // Do default
-    QTableWidget::dragEnterEvent(event);
+    QTableWidget::dragEnterEvent(deEvent);
 }
 
 bool DisplayTable::dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action) {
