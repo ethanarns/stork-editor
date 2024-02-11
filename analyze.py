@@ -95,15 +95,14 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
                 try:
                     finishedString = strBytes.decode("ascii")
                     print(ind(3) + "IMBZ filename: " + finishedString)
+                    # Padding
+                    while tempIndex % 4 != 0:
+                        tempIndex += 1
                 except UnicodeDecodeError:
                     print("ERROR: Failed to decode:")
                     print(strBytes)
                 except:
                     print("ERROR: Unknown exception when getting IMBZ filename")
-            remaining = index + scenLength - tempIndex
-            if remaining > 0:
-                print(ind(3) + "Remaining bytes: " + str(data[tempIndex:tempIndex+remaining]))
-            tempIndex += remaining
         elif scenMagic == "ANMZ":
             #print(ind(3) + "Decompressing...")
             compressedAnmzBytes = data[tempIndex:tempIndex+scenLength]
