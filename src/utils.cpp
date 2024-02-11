@@ -40,7 +40,7 @@ std::string YUtils::getUppercase(std::string input) {
 }
 
 void YUtils::printSurroundingFiles(std::string path) {
-    for (const auto entry : filesystem::directory_iterator(path)) {
+    for (const auto &entry : filesystem::directory_iterator(path)) {
         std::string curFileName = entry.path().filename().string();
         cout << curFileName << endl;
     }
