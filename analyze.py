@@ -172,10 +172,55 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             pass
 
 def handleGRAD(data: bytearray, index: int, stop: int):
-    pass
+    while index < stop:
+        gradMagic = data[index:index+4].decode("ascii")
+        index += 4
+        gradLength = readUint32(data,index)
+        index += 4
+        print(ind(2) + gradMagic + " (length = " + hex(gradLength) + ")")
+        tempIndex = index + 0 # Just in case it's wrong
+        if gradMagic == "GINF":
+            tempIndex += 1
+            tempIndex += 1
+            tempIndex += 1
+            tempIndex += 1
+            unk1 = readUint16(data,tempIndex)
+            tempIndex += 2
+            print(ind(3) + "Unknown 1: " + hex(unk1))
+            tempIndex += 1
+            tempIndex += 1
+            yOffset = readUint32(data,tempIndex)
+            tempIndex += 4
+            print(ind(3) + "Y Offset: " + hex(yOffset))
+        elif gradMagic == "GCOL":
+            # Uncompressed
+            if gradLength % 2 != 0:
+                print("GCOL MUST BE EVEN")
+            numberOfColorRecords = int(gradLength / 2)
+            print(ind(3) + "Gradient Color Records: " + str(numberOfColorRecords) + " / " + hex(numberOfColorRecords))
+            tempIndex += gradLength
+        else:
+            print("Unknown sub-GRAD")
+        index += gradLength
+        if tempIndex != index:
+            print("Failed to match sub-SCEN length: " + hex(tempIndex) + " vs " + hex(index))
+            pass
 
 def handleSETD(data: bytearray, index: int, stop: int):
-    pass
+    objectCount = 0
+    while index < stop:
+        objectId = readUint16(data,index)
+        index += 2
+        objectLength = readUint16(data,index)
+        index += 2
+        objectXdata = readUint16(data,index)
+        index += 2
+        objectYdata = readUint16(data,index)
+        index += 2
+        # Now skip ahead, length is settings lenth in bytes
+        index += objectLength
+        objectCount += 1
+    print(ind(2) + "Object count: " + str(objectCount) + " / " + hex(objectCount))
 
 def main():
     args = parser.parse_args()
