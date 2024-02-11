@@ -136,6 +136,7 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
                 print("TILES NOT DIVISIBLE BY FRAME COUNT")
             perFrame = int(tilesRemaining / frameCount)
             print(ind(3) + "Tiles per frame: " + str(perFrame) + " (" + hex(perFrame) + ")")
+            tempIndex += scenLength
         elif scenMagic == "IMGB":
             # Uncompressed!
             if scenLength % 0x20 != 0:
@@ -151,15 +152,23 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             print(ind(3) + "Palette count: " + str(pltbPaletteCount) + "/" + hex(pltbPaletteCount))
             tempIndex += scenLength
         elif scenMagic == "COLZ":
-            pass
+            compressedColzBytes = data[tempIndex:tempIndex+scenLength]
+            colz = bytearray(ndspy.lz10.decompress(compressedColzBytes))
+            print(ind(3) + "Decompressed to " + hex(len(colz)) + " collision records")
+            tempIndex += scenLength
         elif scenMagic == "MPBZ":
-            pass
+            compressedMpbzBytes = data[tempIndex:tempIndex+scenLength]
+            mpbz = bytearray(ndspy.lz10.decompress(compressedMpbzBytes))
+            print(ind(3) + "Decompressed to " + hex(len(mpbz)) + " bytes")
+            recordCount = int(len(mpbz) / 2)
+            print(ind(3) + "Map tile records: " + str(recordCount) + "/" + hex(recordCount))
+            tempIndex += scenLength
         else:
             print("Unknown sub-SCEN")
 
         index += scenLength # Jump to next
         if tempIndex != index:
-            #print("Failed to match sub-SCEN length: " + hex(tempIndex) + " vs " + hex(index))
+            print("Failed to match sub-SCEN length: " + hex(tempIndex) + " vs " + hex(index))
             pass
 
 def handleGRAD(data: bytearray, index: int, stop: int):
