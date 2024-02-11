@@ -22,6 +22,8 @@ def ind(indent: int) -> str:
     return result
 
 def handleSCEN(data: bytearray, index: int, stop: int) -> None:
+    # Count debugs
+    instructionsSoFar = []
     while index < stop:
         scenMagic = data[index:index+4].decode("ascii")
         index += 4
@@ -33,6 +35,10 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             index += scenLength # Jump to next
             continue
         tempIndex = index + 0 # Just in case it's wrong
+        if scenMagic in instructionsSoFar and scenMagic != "PLAN":
+            print("ERROR: DUPLICATE INSTRUCTIONS! MULTIPLES OF " + scenMagic)
+        else:
+            instructionsSoFar.append(scenMagic)
         if scenMagic == "INFO":
             layerWidth = readUint16(data,tempIndex)
             tempIndex += 2
@@ -90,10 +96,10 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
                     finishedString = strBytes.decode("ascii")
                     print(ind(3) + "IMBZ filename: " + finishedString)
                 except UnicodeDecodeError:
-                    print("Failed to decode:")
+                    print("ERROR: Failed to decode:")
                     print(strBytes)
                 except:
-                    print("Unknown exception when getting IMBZ filename")
+                    print("ERROR: Unknown exception when getting IMBZ filename")
             remaining = index + scenLength - tempIndex
             if remaining > 0:
                 print(ind(3) + "Remaining bytes: " + str(data[tempIndex:tempIndex+remaining]))
@@ -109,7 +115,7 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             print(ind(3) + "Frame count: " + str(frameCount))
             if frameCount > 5:
                 # It would pass 0xC!
-                print("UNUSUALLY HIGH FRAME COUNT: " + hex(frameCount))
+                print("ERROR: UNUSUALLY HIGH FRAME COUNT: " + hex(frameCount))
             anmzUnk1 = anmz[anmzIndex]
             anmzIndex += 1
             print(ind(3) + "Unknown 1: " + hex(anmzUnk1))
@@ -138,25 +144,25 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             anmzIndex = 0xC
             remainingBytes = len(anmz) - anmzIndex
             if remainingBytes % 0x20 != 0:
-                print("REMAINING BYTES NOT DIVISIBLE BY 0x20: " + hex(remainingBytes))
+                print("ERROR: REMAINING BYTES NOT DIVISIBLE BY 0x20: " + hex(remainingBytes))
             tilesRemaining = int(remainingBytes / 0x20)
             print(ind(3) + "32 Byte Tiles: " + str(tilesRemaining) + " (" + hex(tilesRemaining) + ")")
             if tilesRemaining % frameCount != 0:
-                print("TILES NOT DIVISIBLE BY FRAME COUNT")
+                print("ERROR: TILES NOT DIVISIBLE BY FRAME COUNT")
             perFrame = int(tilesRemaining / frameCount)
             print(ind(3) + "Tiles per frame: " + str(perFrame) + " (" + hex(perFrame) + ")")
             tempIndex += scenLength
         elif scenMagic == "IMGB":
             # Uncompressed!
             if scenLength % 0x20 != 0:
-                print("TILES NOT DIVISIBLE BY 0x20")
+                print("ERROR: TILES NOT DIVISIBLE BY 0x20")
             imgbTileCount = int(scenLength / 0x20)
             print(ind(3) + "32 byte tile count: " + str(imgbTileCount) + "/" + hex(imgbTileCount))
             tempIndex += scenLength
         elif scenMagic == "PLTB":
             # An uncompressed list of palettes, each of which is 0x20
             if scenLength % 0x20 != 0:
-                print("PALETTES NOT DIVISIBLE BY 0x20")
+                print("ERROR: PALETTES NOT DIVISIBLE BY 0x20")
             pltbPaletteCount = int(scenLength / 0x20)
             print(ind(3) + "Palette count: " + str(pltbPaletteCount) + "/" + hex(pltbPaletteCount))
             tempIndex += scenLength
@@ -177,7 +183,7 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             imbz = bytearray(ndspy.lz10.decompress(compressedImbzBytes))
             print(ind(3) + "Decompressed to " + hex(len(imbz)) + " bytes")
             if len(imbz) % 0x20 != 0:
-                print("IMBZ NOT DIVISIBLE BY 0x20")
+                print("ERROR: IMBZ NOT DIVISIBLE BY 0x20")
             characterCount = int(len(imbz) / 0x20)
             print(ind(3) + "4bit character count: " + str(characterCount) + " / " + hex(characterCount))
             tempIndex += scenLength
@@ -187,7 +193,7 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
 
         index += scenLength # Jump to next
         if tempIndex != index:
-            print("Failed to match sub-SCEN length: " + hex(tempIndex) + " vs " + hex(index))
+            print("ERROR: Failed to match sub-SCEN length: " + hex(tempIndex) + " vs " + hex(index))
             pass
 
 def handleGRAD(data: bytearray, index: int, stop: int):
@@ -214,15 +220,15 @@ def handleGRAD(data: bytearray, index: int, stop: int):
         elif gradMagic == "GCOL":
             # Uncompressed
             if gradLength % 2 != 0:
-                print("GCOL MUST BE EVEN")
+                print("ERROR: GCOL MUST BE EVEN")
             numberOfColorRecords = int(gradLength / 2)
             print(ind(3) + "Gradient Color Records: " + str(numberOfColorRecords) + " / " + hex(numberOfColorRecords))
             tempIndex += gradLength
         else:
-            print("Unknown sub-GRAD")
+            print("ERROR: Unknown sub-GRAD")
         index += gradLength
         if tempIndex != index:
-            print("Failed to match sub-SCEN length: " + hex(tempIndex) + " vs " + hex(index))
+            print("ERROR: Failed to match sub-SCEN length: " + hex(tempIndex) + " vs " + hex(index))
             pass
 
 def handleSETD(data: bytearray, index: int, stop: int):
@@ -279,9 +285,9 @@ def handleMpdz(filename):
         readIndex += topLength
     # Not hit!
     if scenCount > 3:
-        print("UNUSUAL SCEN COUNT: " + str(scenCount))
+        print("ERROR: UNUSUAL SCEN COUNT: " + str(scenCount))
     if setdCount > 1:
-        print("UNUSUAL SETD COUNT: " + str(setdCount))
+        print("ERROR: UNUSUAL SETD COUNT: " + str(setdCount))
     
 
 if __name__ == "__main__":
