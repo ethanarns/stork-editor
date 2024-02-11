@@ -653,7 +653,6 @@ SetdObjectData YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& inde
         }
         setdObjectData.levelObjects.push_back(lo);
         this->loadedLevelObjects.push_back(lo);
-        //std::cout << lo.toString() << std::endl;
     }
     return setdObjectData;
 }
