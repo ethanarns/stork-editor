@@ -368,8 +368,21 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 );
                 break;
             }
-            case CollisionDraw::COIN: {
-                painter->drawImage(X_BASE,Y_BASE,COIN_IMAGE);
+            case CollisionDraw::COIN_TOP_LEFT: {
+                painter->drawImage(X_BASE,Y_BASE,COIN_IMAGE,0,0,X_WIDTH*2,Y_HEIGHT*2);
+                break;
+            }
+            case CollisionDraw::COIN_BOTTOM_RIGHT: {
+                painter->drawImage(X_BASE,Y_BASE,COIN_IMAGE,X_WIDTH,Y_HEIGHT,X_WIDTH*2,Y_HEIGHT*2);
+                break;
+            }
+            case CollisionDraw::COIN_TOP_RIGHT: {
+                painter->drawImage(X_BASE,Y_BASE,COIN_IMAGE,X_WIDTH,0,X_WIDTH*2,Y_HEIGHT*2);
+                break;
+            }
+            case CollisionDraw::COIN_BOTTOM_LEFT: {
+                painter->drawImage(X_BASE,Y_BASE,COIN_IMAGE,0,Y_HEIGHT,X_WIDTH*2,Y_HEIGHT*2);
+                break;
             }
             case CollisionDraw::CLEAR:
             default:
