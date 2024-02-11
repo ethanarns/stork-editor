@@ -97,6 +97,9 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             frameCount = anmz[anmzIndex]
             anmzIndex += 1
             print(ind(3) + "Frame count: " + str(frameCount))
+            if frameCount > 5:
+                # It would pass 0xC!
+                print("UNUSUALLY HIGH FRAME COUNT: " + hex(frameCount))
             anmzUnk1 = anmz[anmzIndex]
             anmzIndex += 1
             print(ind(3) + "Unknown 1: " + hex(anmzUnk1))
@@ -120,7 +123,11 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
                 frameHold = anmz[anmzIndex]
                 anmzIndex += 1
                 frameIndex += 1
-                print(ind(3) + "Frame " + str(frameIndex) + " hold length: " + str(frameHold))
+                print(ind(3) + "Frame " + str(frameIndex) + " hold length: " + str(frameHold) + "/" + hex(frameHold))
+            # Now skip to end of padding
+            anmzIndex = 0xC
+            
+            print(ind(3) + "Remaining data: " + hex(len(anmz) - anmzIndex) + " bytes")
         elif scenMagic == "IMGB":
             pass
         elif scenMagic == "PLTB":

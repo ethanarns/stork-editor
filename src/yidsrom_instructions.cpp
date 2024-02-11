@@ -363,9 +363,8 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             //const uint32_t ANMZ_INCREMENT = 0x20;
             const uint32_t ANMZ_HEADER_BASE_LENGTH = 0x8;
             auto animationFrameCount = uncompressedAnmz.at(0);
-            //cout << "Animation Frame Count: " << dec << (int)animationFrameCount << endl;
-            uint32_t anmzFileIndex = ANMZ_HEADER_BASE_LENGTH + animationFrameCount;
-            anmzFileIndex = 0xC;
+            // Always pads out to 0xC regardless of frame count
+            uint32_t anmzFileIndex = 0xC;
             uint32_t currentTileIndex = 0;
             uint32_t anmzSize = uncompressedAnmz.size();
             auto startIndex = YUtils::getUint16FromVec(uncompressedAnmz,4);
