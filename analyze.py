@@ -2,11 +2,16 @@
 import ndspy.lz10
 import argparse
 
+from pkg_resources import UnknownExtra
+
 parser = argparse.ArgumentParser("analyzer")
 parser.add_argument("filename")
 
 def readUint32(data: bytearray, start: int) -> int:
     return (data[start+3] << 24) + (data[start+2] << 16) + (data[start+1] << 8) + data[start]
+
+def readUint16(data: bytearray, start: int) -> int:
+    return (data[start+1] << 8) + data[start]
 
 def ind(indent: int) -> str:
     result = ""
@@ -21,7 +26,86 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
         scenLength = readUint32(data,index)
         index += 4
         print(ind(2) + scenMagic + " (length = " + hex(scenLength) + ")")
-        index += scenLength
+        tempIndex = index + 0 # Just in case it's wrong
+        if scenMagic == "INFO":
+            layerWidth = readUint16(data,tempIndex)
+            tempIndex += 2
+            print(ind(3) + "Layer Width: " + hex(layerWidth) + "/" + str(layerWidth))
+
+            layerHeight = readUint16(data,tempIndex)
+            tempIndex += 2
+            print(ind(3) + "Layer Height: " + hex(layerHeight) + "/" + str(layerHeight))
+            
+            bgYoffset = readUint32(data,tempIndex)
+            tempIndex += 4
+            print(ind(3) + "BG Y Offset: " + hex(bgYoffset))
+
+            xScrollOffset = readUint32(data, tempIndex)
+            tempIndex += 4
+            print(ind(3) + "X Scroll Offset: " + hex(xScrollOffset) + "/" + str(xScrollOffset))
+
+            yScrollOffset = readUint32(data, tempIndex)
+            tempIndex += 4
+            print(ind(3) + "Y Scroll Offset: " + hex(yScrollOffset) + "/" + str(yScrollOffset))
+
+            whichBackground = data[tempIndex]
+            tempIndex += 1
+            print(ind(3) + "Which Background: " + str(whichBackground))
+
+            layerOrder = data[tempIndex]
+            tempIndex += 1
+            print(ind(3) + "Layer Order: " + str(layerOrder))
+
+            unkThird = data[tempIndex]
+            tempIndex += 1
+            print(ind(3) + "Unknown 3rd Byte: " + hex(unkThird))
+
+            screenBaseBlockMaybe = data[tempIndex]
+            tempIndex += 1
+            print(ind(3) + "Base Block (Maybe): " + hex(screenBaseBlockMaybe))
+
+            colorMode = readUint32(data, tempIndex)
+            tempIndex += 4
+            print(ind(3) + "Color Mode (Maybe): " + hex(colorMode))
+
+            #print("temp vs index: " + str(tempIndex) + " / " + str(index + scenLength))
+            if tempIndex == index + scenLength:
+                print(ind(3) + "IMBZ filename: N/A (end reached)")
+            else:
+                foundZero = False
+                strBytes = bytearray()
+                while foundZero == False:
+                    if (data[tempIndex] == 0x0):
+                        foundZero = True
+                    else:
+                        charByte = data[tempIndex]
+                        strBytes.append(charByte)
+                    tempIndex += 1
+                try:
+                    finishedString = strBytes.decode("ascii")
+                    print(ind(3) + "IMBZ filename: " + finishedString)
+                except UnicodeDecodeError:
+                    print("Failed to decode:")
+                    print(strBytes)
+                except:
+                    print("Unknown exception when getting IMBZ filename")
+        elif scenMagic == "ANMZ":
+            pass
+        elif scenMagic == "IMGB":
+            pass
+        elif scenMagic == "PLTB":
+            pass
+        elif scenMagic == "COLZ":
+            pass
+        elif scenMagic == "MPBZ":
+            pass
+        else:
+            print("Unknown sub-SCEN")
+
+        index += scenLength # Jump to next
+        if tempIndex != index:
+            #print("Failed to match sub-SCEN length: " + hex(tempIndex) + " vs " + hex(index))
+            pass
 
 def handleGRAD(data: bytearray, index: int, stop: int):
     pass
