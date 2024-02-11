@@ -89,6 +89,10 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
                     print(strBytes)
                 except:
                     print("Unknown exception when getting IMBZ filename")
+            remaining = index + scenLength - tempIndex
+            if remaining > 0:
+                print(ind(3) + "Remaining bytes: " + str(data[tempIndex:tempIndex+remaining]))
+            tempIndex += remaining
         elif scenMagic == "ANMZ":
             #print(ind(3) + "Decompressing...")
             compressedAnmzBytes = data[tempIndex:tempIndex+scenLength]
@@ -236,7 +240,8 @@ def main():
     args = parser.parse_args()
     filename = args.filename
     mpdz = bytearray(ndspy.lz10.decompressFromFile(filename))
-    # ndspy.lz10.decompressToFile(open(filename,"rb").read(),str(filename).replace("mpdz","mpdb"))
+    # Each time, make an decompressed copy
+    ndspy.lz10.decompressToFile(open(filename,"rb").read(),str(filename).replace("mpdz","mpdb"))
     readIndex = 0
     magicNum = mpdz[readIndex:readIndex+3].decode("ascii")
     if magicNum != "SET":
