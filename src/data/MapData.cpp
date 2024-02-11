@@ -8,16 +8,46 @@
 #include <fstream>
 
 LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    YUtils::printDebug("LayerData loop start",DebugType::VERBOSE);
     while (mpdzIndex < stop) {
         uint32_t subMagic = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 4;
         uint32_t subLength = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 4;
+        uint32_t tempEnd = mpdzIndex + subLength;
         if (subMagic == Constants::INFO_MAGIC_NUM) {
+            YUtils::printDebug("INFO",DebugType::VERBOSE);
             auto info = new ScenInfoData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subScenData.push_back(info);
-        } else {
+        } else if (subMagic == Constants::ANMZ_MAGIC_NUM) {
+            YUtils::printDebug("ANMZ",DebugType::VERBOSE);
             mpdzIndex += subLength;
+        } else if (subMagic == Constants::IMGB_MAGIC_NUM) {
+            YUtils::printDebug("IMGB",DebugType::VERBOSE);
+            mpdzIndex += subLength;
+        } else if (subMagic == Constants::PLTB_MAGIC_NUM) {
+            YUtils::printDebug("PLTB",DebugType::VERBOSE);
+            mpdzIndex += subLength;
+        } else if (subMagic == Constants::COLZ_MAGIC_NUM) {
+            YUtils::printDebug("COLZ",DebugType::VERBOSE);
+            mpdzIndex += subLength;
+        } else if (subMagic == Constants::MPBZ_MAGIC_NUM) {
+            YUtils::printDebug("MPBZ",DebugType::VERBOSE);
+            mpdzIndex += subLength;
+        } else if (subMagic == Constants::IMBZ_MAGIC_NUM) {
+            YUtils::printDebug("IMBZ",DebugType::VERBOSE);
+            mpdzIndex += subLength;
+        } else {
+            std::stringstream unknownMagic;
+            unknownMagic << "Unknown magic number in LayerData: 0x" << std::hex << subMagic;
+            YUtils::printDebug(unknownMagic.str(),DebugType::ERROR);
+            mpdzIndex += subLength;
+        }
+        if (mpdzIndex != tempEnd) {
+            std::stringstream ssEndNotMatch;
+            ssEndNotMatch << "Mismatch in end index. Current Index: " << std::hex;
+            ssEndNotMatch << mpdzIndex << ", Temp End: " << tempEnd;
+            YUtils::printDebug(ssEndNotMatch.str(),DebugType::ERROR);
         }
     }
 }
@@ -66,9 +96,9 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed) {
 
 ScenInfoData::ScenInfoData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     this->layerWidth = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
-    mpdzIndex += 4;
+    mpdzIndex += 2;
     this->layerHeight = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
-    mpdzIndex += 4;
+    mpdzIndex += 2;
     this->bgYoffset = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
     mpdzIndex += 4;
     this->xScrollOffset = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
@@ -84,12 +114,13 @@ ScenInfoData::ScenInfoData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
     this->baseBlockMaybe = mpdzBytes.at(mpdzIndex);
     mpdzIndex++;
     this->colorModeMaybe = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
-    mpdzIndex++;
+    mpdzIndex += 4;
     if (mpdzIndex == stop) {
         YUtils::printDebug("No IMBZ string",DebugType::VERBOSE);
         return;
     }
     auto charFileNoExt = YUtils::getNullTermTextFromVec(mpdzBytes,mpdzIndex);
+    mpdzIndex += charFileNoExt.size() + 1;
     this->imbzFilename = charFileNoExt;
     while (mpdzIndex % 4 != 0) {
         mpdzIndex++;
