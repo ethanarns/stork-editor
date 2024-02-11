@@ -85,7 +85,7 @@ public:
     uint32_t paletteOffsetBg2 = 0;
 
     std::vector<LevelObject> loadedLevelObjects;
-    uint32_t levelObjectLoadIndex = 0; // Instead of UUIDs
+    uint32_t levelObjectLoadIndex = 1; // Instead of UUIDs
 
     uint32_t canvasWidthBg2 = 0;
     uint32_t canvasHeightBg2 = 0;
@@ -105,6 +105,7 @@ public:
     QByteArray get256Palettes(uint32_t offset);
 
     void moveObject(uint32_t objectUuid, int xOffset, int yOffset);
+    void moveObjectTo(uint32_t objectUuid, uint32_t newX, uint32_t newY);
 
     std::string getTextAt(uint32_t position, uint32_t length);
     std::string getTextNullTermAt(uint32_t position_file);
@@ -124,7 +125,6 @@ public:
     uint32_t getGreatestCanvasHeight();
 
     LevelObject* getLoadedLevelObjectByUUID(uint32_t uuid);
-    void printLevelObjects();
 
     ~YidsRom();
 private:

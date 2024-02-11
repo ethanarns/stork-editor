@@ -467,8 +467,16 @@ void YidsRom::moveObject(uint32_t objectUuid, int xOffset, int yOffset) {
     YUtils::printDebug("Could not move object, UUID not found",DebugType::WARNING);
 }
 
-void YidsRom::printLevelObjects() {
-    for (uint32_t i = 0; i < this->loadedLevelObjects.size(); i++) {
-        std::cout << this->loadedLevelObjects.at(i).toString() << std::endl;
+void YidsRom::moveObjectTo(uint32_t objectUuid, uint32_t newX, uint32_t newY) {
+    std::cout << this->loadedLevelObjects.size() << std::endl;
+    for (uint32_t currentObjectIndex = 0; currentObjectIndex < this->loadedLevelObjects.size(); currentObjectIndex++) {
+        auto curObject = this->loadedLevelObjects.at(currentObjectIndex);
+        if (curObject.uuid == objectUuid) {
+            curObject.xPosition = newX;
+            curObject.yPosition = newY;
+            this->loadedLevelObjects.at(currentObjectIndex) = curObject;
+            return;
+        }
     }
+    YUtils::printDebug("Could not move-to object, UUID not found",DebugType::WARNING);
 }
