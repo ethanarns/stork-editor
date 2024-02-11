@@ -19,7 +19,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     switch(objectId) {
         case 0x0: { // Basic yellow coin
             meta.tilesSectorOffset = 0x0;
-            meta.paletteSectorOffset = 0x0;
+            meta.paletteSectorOffset = 0x7e; // 020267c4
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             break;
@@ -78,7 +78,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         }
         case 0x3b: { // Red coin
             meta.tilesSectorOffset = 0;
-            meta.paletteSectorOffset = 0;
+            meta.paletteSectorOffset = 0x7e;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             meta.subTile = 6;
@@ -240,7 +240,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
 
 ObjectTextMetadata LevelObject::getObjectTextMetadata(uint16_t levelObjectId) {
     ObjectTextMetadata textData;
-    textData.description = "No description";
+    textData.description = "";
     switch(levelObjectId) {
         case 0x0:
             textData.prettyName = "Basic Yellow Coin";
@@ -250,15 +250,21 @@ ObjectTextMetadata LevelObject::getObjectTextMetadata(uint16_t levelObjectId) {
             textData.prettyName = "Flower Collectible";
             textData.description = "Collect 5 of these";
             break;
+        case 0x36:
+            textData.prettyName = "Yellow Shy Guy";
+            break;
         case 0x38:
             textData.prettyName = "Blue Shy Guy?";
             break;
         case 0x39:
-            textData.prettyName = "Red Shy Guy?";
+            textData.prettyName = "Red Shy Guy";
             break;
         case 0x3b:
             textData.prettyName = "Red Coin";
             textData.description = "A red coin";
+            break;
+        case 0x54:
+            textData.prettyName = "Crayzee Dayzee";
             break;
         case 0x9a:
             textData.prettyName = "Red Sign";
