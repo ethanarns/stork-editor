@@ -137,7 +137,12 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             perFrame = int(tilesRemaining / frameCount)
             print(ind(3) + "Tiles per frame: " + str(perFrame) + " (" + hex(perFrame) + ")")
         elif scenMagic == "IMGB":
-            pass
+            # Uncompressed!
+            if scenLength % 0x20 != 0:
+                print("TILES NOT DIVISIBLE BY 0x20")
+            imgbTileCount = int(scenLength / 0x20)
+            print(ind(3) + "32 byte tile count: " + str(imgbTileCount) + "/" + hex(imgbTileCount))
+            tempIndex += scenLength
         elif scenMagic == "PLTB":
             pass
         elif scenMagic == "COLZ":
@@ -162,7 +167,7 @@ def main():
     args = parser.parse_args()
     filename = args.filename
     mpdz = bytearray(ndspy.lz10.decompressFromFile(filename))
-    #ndspy.lz10.decompressToFile(open(filename,"rb").read(),str(filename).replace("mpdz","mpd"))
+    # ndspy.lz10.decompressToFile(open(filename,"rb").read(),str(filename).replace("mpdz","mpdb"))
     readIndex = 0
     magicNum = mpdz[readIndex:readIndex+3].decode("ascii")
     if magicNum != "SET":
