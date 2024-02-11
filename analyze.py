@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
+from genericpath import isfile
 from time import perf_counter
 import ndspy.lz10
-import argparse
+import argparse, os
 
 from pkg_resources import UnknownExtra
 
@@ -15,7 +16,7 @@ def readUint16(data: bytearray, start: int) -> int:
     return (data[start+1] << 8) + data[start]
 
 def ind(indent: int) -> str:
-    result = ""
+    result = "  " # pre-pad two spaces
     for _ in range(0,indent):
         result += "  " # two spaces
     return result
@@ -27,6 +28,10 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
         scenLength = readUint32(data,index)
         index += 4
         print(ind(2) + scenMagic + " (length = " + hex(scenLength) + ")")
+        if scenLength == 0:
+            print(ind(3) + "Empty")
+            index += scenLength # Jump to next
+            continue
         tempIndex = index + 0 # Just in case it's wrong
         if scenMagic == "INFO":
             layerWidth = readUint16(data,tempIndex)
@@ -250,7 +255,10 @@ def handleMpdz(filename):
     mpdzLengthUncompressed = readUint32(mpdz,readIndex)
     print(ind(0) + "SET_ (length = " + hex(mpdzLengthUncompressed) + " bytes)")
     readIndex += 4
-    # Start SCEN/GRAD/SETD loop
+    # Start SCEN/GRAD/SETD/etc loop
+    scenCount = 0
+    setdCount = 0
+
     topLoopStop = mpdzLengthUncompressed + readIndex
     while readIndex < topLoopStop:
         topMagic = mpdz[readIndex:readIndex+4].decode("ascii")
@@ -260,16 +268,29 @@ def handleMpdz(filename):
         print(ind(1) + topMagic + " (length = " + hex(topLength) + " bytes)")
         if topMagic == "SCEN":
             handleSCEN(mpdz,readIndex+0,readIndex+topLength)
+            scenCount += 1
         elif topMagic == "GRAD":
             handleGRAD(mpdz,readIndex+0,readIndex+topLength)
         elif topMagic == "SETD":
             handleSETD(mpdz,readIndex+0,readIndex+topLength)
+            setdCount += 1
         else:
             print("Unhandled top-length instruction")
         readIndex += topLength
+    # Not hit!
+    if scenCount > 3:
+        print("UNUSUAL SCEN COUNT: " + str(scenCount))
+    if setdCount > 1:
+        print("UNUSUAL SETD COUNT: " + str(setdCount))
     
 
 if __name__ == "__main__":
     args = parser.parse_args()
     filename = args.filename
-    handleMpdz(filename)
+    if os.path.isfile(filename):
+        handleMpdz(filename)
+    else:
+        for root, dir, files in os.walk(filename):
+            for file in files:
+                if str(file).endswith('.mpdz'):
+                    handleMpdz(root + file)
