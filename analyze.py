@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from time import perf_counter
 import ndspy.lz10
 import argparse
 
@@ -126,8 +127,15 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
                 print(ind(3) + "Frame " + str(frameIndex) + " hold length: " + str(frameHold) + "/" + hex(frameHold))
             # Now skip to end of padding
             anmzIndex = 0xC
-            
-            print(ind(3) + "Remaining data: " + hex(len(anmz) - anmzIndex) + " bytes")
+            remainingBytes = len(anmz) - anmzIndex
+            if remainingBytes % 0x20 != 0:
+                print("REMAINING BYTES NOT DIVISIBLE BY 0x20: " + hex(remainingBytes))
+            tilesRemaining = int(remainingBytes / 0x20)
+            print(ind(3) + "32 Byte Tiles: " + str(tilesRemaining) + " (" + hex(tilesRemaining) + ")")
+            if tilesRemaining % frameCount != 0:
+                print("TILES NOT DIVISIBLE BY FRAME COUNT")
+            perFrame = int(tilesRemaining / frameCount)
+            print(ind(3) + "Tiles per frame: " + str(perFrame) + " (" + hex(perFrame) + ")")
         elif scenMagic == "IMGB":
             pass
         elif scenMagic == "PLTB":
