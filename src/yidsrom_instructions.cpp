@@ -9,6 +9,8 @@
 #include "Level.h"
 #include "FsPacker.h"
 
+#include "data/MapData.h"
+
 #include <iostream>
 #include <vector>
 
@@ -158,6 +160,9 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     YUtils::printDebug(ssMpdzLoad.str(),DebugType::VERBOSE);
     std::string mpdzFileName = fileName_noext.append(Constants::MPDZ_EXTENSION);
     auto fileVector = this->getByteVectorFromFile(mpdzFileName);
+    MapData mapData(fileVector,true);
+    std::cout << "Done" << std::endl;
+    exit(EXIT_SUCCESS);
     // YUtils::writeByteVectorToFile(fileVector,mpdzFileName); // Uncomment to get uncompressed MPDZ
     auto uncompVec = YCompression::lzssVectorDecomp(fileVector,false);
     

@@ -21,21 +21,23 @@ public:
     LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
     std::string toString() {
         std::stringstream ss;
-        ss << "LayerPaletteData { Palette Count: ";
+        ss << "LayerPaletteData { Palette Count: 0x";
+        ss << std::hex << palettes.size() << " / ";
         ss << std::dec << palettes.size();
         ss << " }";
         return ss.str();
     };
     std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
-        // for (size_t i = 0; i < subScenData.size(); i++) {
-        //     auto subCompiled = subScenData.at(i)->compile();
-        //     YUtils::appendVector(result,subCompiled);
-        // }
-        result = FsPacker::packInstruction(Constants::PLTB_MAGIC_NUM,result);
+        for (auto it = this->palettes.cbegin(); it != this->palettes.cend(); it++) {
+            for (uint pIndex = 0; pIndex < Constants::PALETTE_SIZE; pIndex++) {
+                result.push_back((*it)->at(pIndex));
+            }
+        }
+        result = FsPacker::packInstruction(Constants::PLTB_MAGIC_NUM,result,false);
         return result;
     };
-    uint32_t magicNumber = 0;
+    uint32_t magicNumber = Constants::PLTB_MAGIC_NUM;
     std::vector<QByteArray*> palettes;
 };
 
@@ -100,7 +102,7 @@ public:
         result = FsPacker::packInstruction(Constants::SCEN_MAGIC_NUM,result);
         return result;
     };
-    uint32_t magicNumber = 0;
+    uint32_t magicNumber = Constants::SCEN_MAGIC_NUM;
     std::vector<LevelData*> subScenData;
 };
 
