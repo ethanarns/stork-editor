@@ -14,6 +14,21 @@ def ind(indent: int) -> str:
         result += "  " # two spaces
     return result
 
+def handleSCEN(data: bytearray, index: int, stop: int) -> None:
+    while index < stop:
+        scenMagic = data[index:index+4].decode("ascii")
+        index += 4
+        scenLength = readUint32(data,index)
+        index += 4
+        print(ind(2) + scenMagic + " (length = " + hex(scenLength) + ")")
+        index += scenLength
+
+def handleGRAD(data: bytearray, index: int, stop: int):
+    pass
+
+def handleSETD(data: bytearray, index: int, stop: int):
+    pass
+
 def main():
     args = parser.parse_args()
     filename = args.filename
@@ -33,8 +48,17 @@ def main():
     topLoopStop = mpdzLengthUncompressed + readIndex
     while readIndex < topLoopStop:
         topMagic = mpdz[readIndex:readIndex+4].decode("ascii")
-        print(ind(1) + topMagic)
-        exit()
+        readIndex += 4
+        topLength = readUint32(mpdz,readIndex)
+        readIndex += 4
+        print(ind(1) + topMagic + " (length = " + hex(topLength) + " bytes)")
+        if topMagic == "SCEN":
+            handleSCEN(mpdz,readIndex+0,readIndex+topLength)
+        elif topMagic == "GRAD":
+            handleGRAD(mpdz,readIndex+0,readIndex+topLength)
+        elif topMagic == "SETD":
+            handleSETD(mpdz,readIndex+0,readIndex+topLength)
+        readIndex += topLength
     
 
 if __name__ == "__main__":
