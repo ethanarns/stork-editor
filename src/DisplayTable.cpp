@@ -193,7 +193,7 @@ void DisplayTable::dragEnterEvent(QDragEnterEvent *deEvent) {
     std::stringstream ssDragEnter;
     ssDragEnter << "Dragging sprite with UUID " << std::hex << this->currentlyDraggedItem;
     YUtils::printDebug(ssDragEnter.str(),DebugType::VERBOSE);
-    // Do default
+
     QTableWidget::dragEnterEvent(deEvent);
 }
 
@@ -207,6 +207,7 @@ bool DisplayTable::dropMimeData(int row, int column, const QMimeData *data, Qt::
         return false;
     }
     this->moveSpriteTo(this->currentlyDraggedItem,column,row);
+    this->updateObjects();
     return true;
 }
 
@@ -619,8 +620,10 @@ void DisplayTable::wipeObject(uint32_t uuid) {
         if (potentialItem != nullptr) {
             uint32_t foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt();
             if (foundUuid == uuid) {
-                delete potentialItem;
-                potentialItem = new QTableWidgetItem();
+                potentialItem->setData(PixelDelegateData::OBJECT_UUID,QVariant::fromValue(nullptr));
+                potentialItem->setData(PixelDelegateData::OBJECT_ID,QVariant::fromValue(nullptr));
+                potentialItem->setData(PixelDelegateData::OBJECT_PALETTE,QVariant::fromValue(nullptr));
+                potentialItem->setData(PixelDelegateData::OBJECT_TILES,QVariant::fromValue(nullptr));
             }
         }
     }
