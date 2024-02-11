@@ -113,9 +113,6 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             frameCount = anmz[anmzIndex]
             anmzIndex += 1
             print(ind(3) + "Frame count: " + str(frameCount))
-            if frameCount > 5:
-                # It would pass 0xC!
-                print("ERROR: UNUSUALLY HIGH FRAME COUNT: " + hex(frameCount))
             anmzUnk1 = anmz[anmzIndex]
             anmzIndex += 1
             print(ind(3) + "Unknown 1: " + hex(anmzUnk1))
@@ -141,10 +138,11 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
                 frameIndex += 1
                 print(ind(3) + "Frame " + str(frameIndex) + " hold length: " + str(frameHold) + "/" + hex(frameHold))
             # Now skip to end of padding
-            anmzIndex = 0xC
+            if frameCount >= 5:
+                print("FRROR: HIGH FRAME COUNT " + str(frameCount))
             remainingBytes = len(anmz) - anmzIndex
             if remainingBytes % 0x20 != 0:
-                print("ERROR: REMAINING BYTES NOT DIVISIBLE BY 0x20: " + hex(remainingBytes))
+                print("FRROR: REMAINING FRAME BYTES NOT DIVISIBLE BY 0x20: " + hex(remainingBytes))
             tilesRemaining = int(remainingBytes / 0x20)
             print(ind(3) + "32 Byte Tiles: " + str(tilesRemaining) + " (" + hex(tilesRemaining) + ")")
             if tilesRemaining % frameCount != 0:
@@ -162,7 +160,7 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
         elif scenMagic == "PLTB":
             # An uncompressed list of palettes, each of which is 0x20
             if scenLength % 0x20 != 0:
-                print("ERROR: PALETTES NOT DIVISIBLE BY 0x20")
+                print("PRROR: PALETTES NOT DIVISIBLE BY 0x20")
             pltbPaletteCount = int(scenLength / 0x20)
             print(ind(3) + "Palette count: " + str(pltbPaletteCount) + "/" + hex(pltbPaletteCount))
             tempIndex += scenLength
