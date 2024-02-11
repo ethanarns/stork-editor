@@ -275,8 +275,9 @@ void DisplayTable::initCellCollision() {
             this->setCellCollision(y+1,x,  CollisionDraw::DIAG_UP_RIGHT);
             this->setCellCollision(y  ,x+1,CollisionDraw::DIAG_UP_RIGHT);
         } else if (curCol == CollisionType::STATIC_COIN) {
+            this->setCellCollision(y,x,CollisionDraw::COIN);
             // Don't draw, make a coin
-            this->placeObjectTile(x+1,y,0,0,0x7e,2,4,ObjectFileName::OBJSET,ObjectFileName::OBJSET,0,0,this->yidsRom->levelObjectLoadIndex++);
+            //this->placeObjectTile(x+1,y,0,0,0x7e,2,4,ObjectFileName::OBJSET,ObjectFileName::OBJSET,0,0,this->yidsRom->levelObjectLoadIndex++);
         } else if (curCol != 0) { // Unknown, draw temp
             this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT);
             this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);

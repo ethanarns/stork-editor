@@ -55,7 +55,8 @@ enum CollisionDraw {
     CORNER_BOTTOM_RIGHT,
     ZIG_ZAG,
     DIAG_DOWN_RIGHT,
-    DIAG_UP_RIGHT
+    DIAG_UP_RIGHT,
+    COIN
 };
 
 struct ObjectPalette {

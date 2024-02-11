@@ -10,6 +10,7 @@
 #include <QtWidgets>
 #include <QStaticText>
 #include <QColor>
+#include <QImage>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ const int PIXEL_TILE_DIVISIONS = 8;
 const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
 const QColor selectionColor(255,0,0,50);
 const QColor hardSelectionColor(255,255,255,100);
+const QImage COIN_IMAGE("assets/coin.png");
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
     const bool selected = (option.state & QStyle::State_Selected) != 0;
@@ -364,6 +366,10 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                     X_BASE,Y_BASE+Y_HEIGHT,
                     X_BASE+X_WIDTH,Y_BASE
                 );
+                break;
+            }
+            case CollisionDraw::COIN: {
+                painter->drawImage(X_BASE,Y_BASE,COIN_IMAGE);
             }
             case CollisionDraw::CLEAR:
             default:
