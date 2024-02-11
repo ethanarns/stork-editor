@@ -167,7 +167,7 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
     if (curCell == nullptr) {
         return;
     } else {
-        if (curCell->isSelected()) {
+        if (curCell->isSelected() && this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
             this->setCursor(Qt::OpenHandCursor);
         } else {
             this->setCursor(Qt::ArrowCursor);
@@ -175,14 +175,39 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
     }
 }
 
-bool DisplayTable::dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action) {
-    std::cout << "Dropping data at (" << column << ", " << row << "):" << std::endl;
-    return false;
+void DisplayTable::dragEnterEvent(QDragEnterEvent *event) {
+    this->currentlyDraggedItem = 0;
+    if (this->layerSelectMode != LayerSelectMode::SPRITES_LAYER) {
+        YUtils::printDebug("dragEnterEvent should not fire outside of sprite mode",DebugType::ERROR);
+        return;
+    }
+    if (this->selectedObjects.size() < 1) {
+        YUtils::printDebug("Nothing selected to drag",DebugType::VERBOSE);
+        event->setAccepted(false);
+        return;
+    }
+    if (this->selectedObjects.size() > 1) {
+        YUtils::printDebug("Multiple sprite movement not yet supported",DebugType::WARNING);
+    }
+    this->currentlyDraggedItem = this->selectedObjects.at(0);
+    std::stringstream ssDragEnter;
+    ssDragEnter << "Dragging sprite with UUID " << std::hex << this->currentlyDraggedItem;
+    YUtils::printDebug(ssDragEnter.str(),DebugType::VERBOSE);
+    // Do default
+    QTableWidget::dragEnterEvent(event);
 }
 
-void DisplayTable::dragEnterEvent(QDragEnterEvent *event) {
-    std::cout << "dragEnterEvent" << std::endl;
-    QTableWidget::dragEnterEvent(event);
+bool DisplayTable::dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action) {
+    if (this->layerSelectMode != LayerSelectMode::SPRITES_LAYER) {
+        YUtils::printDebug("dropMimeData should not fire outside of sprite mode",DebugType::WARNING);
+        return false;
+    }
+    if (this->currentlyDraggedItem == 0) {
+        YUtils::printDebug("No currentlyDraggedItem was set",DebugType::ERROR);
+        return false;
+    }
+    this->moveSpriteTo(this->currentlyDraggedItem,column,row);
+    return true;
 }
 
 void DisplayTable::displayTableClicked(int row, int column) {
@@ -291,8 +316,6 @@ void DisplayTable::initCellCollision() {
             this->setCellCollision(y+1,x  ,CollisionDraw::COIN_BOTTOM_LEFT);
             this->setCellCollision(y  ,x+1,CollisionDraw::COIN_TOP_RIGHT);
             this->setCellCollision(y+1,x+1,CollisionDraw::COIN_BOTTOM_RIGHT);
-            // Don't draw, make a coin
-            //this->placeObjectTile(x+1,y,0,0,0x7e,2,4,ObjectFileName::OBJSET,ObjectFileName::OBJSET,0,0,this->yidsRom->levelObjectLoadIndex++);
         } else if (curCol != 0) { // Unknown, draw temp
             this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT);
             this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);
@@ -313,16 +336,12 @@ void DisplayTable::updateShowCollision() {
     }
 }
 
-void DisplayTable::moveSprite(int uuid, int xOffset, int yOffset) {
+void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
     this->wipeObject(uuid);
-    this->yidsRom->moveObject(uuid,xOffset,yOffset);
-}
-
-void DisplayTable::moveCurrentlySelectedSprites(int xOffset, int yOffset) {
-    for (auto it = this->selectedObjects.begin(); it != this->selectedObjects.end(); it++) {
-        this->moveSprite(*it, xOffset, yOffset);
-    }
+    this->yidsRom->moveObjectTo(uuid,newX,newY);
     this->updateObjects();
+    this->clearSelection();
+    this->selectItemByUuid(uuid);
 }
 
 void DisplayTable::setLayerDraw(int whichLayer, bool shouldDraw) {
@@ -600,8 +619,10 @@ void DisplayTable::wipeObject(uint32_t uuid) {
         if (potentialItem != nullptr) {
             uint32_t foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt();
             if (foundUuid == uuid) {
-                potentialItem->setData(PixelDelegateData::OBJECT_TILES,QByteArray());
+                delete potentialItem;
+                potentialItem = new QTableWidgetItem();
             }
         }
     }
+    YUtils::printDebug("No object with that UUID was found to be wiped",DebugType::WARNING);
 }

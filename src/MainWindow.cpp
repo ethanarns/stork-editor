@@ -456,21 +456,27 @@ void MainWindow::toolbarClick_toggleCollision() {
 
 void MainWindow::toolbarClick_layerSelect(const QString str) {
     auto strToCompare = str.toStdString();
+    std::stringstream ss;
+    this->grid->setDragEnabled(false);
+    this->grid->setDragDropMode(QAbstractItemView::NoDragDrop);
+    ss << "Layer selected: ";
     if (str.compare("BG1") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::BG1_LAYER;
-        YUtils::printDebug("bg1");
+        ss << "BG1";
     } else if (str.compare("BG2") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::BG2_LAYER;
-        YUtils::printDebug("bg2");
+        ss << "BG2";
     } else if (str.compare("BG3") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::BG3_LAYER;
-        YUtils::printDebug("bg3");
+        ss << "BG3";
     } else if (str.compare("Sprites") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::SPRITES_LAYER;
-        YUtils::printDebug("sprites");
+        this->grid->setDragEnabled(true);
+        this->grid->setDragDropMode(QAbstractItemView::DragDrop);
+        ss << "Sprites";
     } else if (str.compare("Colliders") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::COLLISION_LAYER;
-        YUtils::printDebug("coll");
+        ss << "Colliders";
     } else {
         std::stringstream ssLayerSelect;
         ssLayerSelect << "Unknown layer selected in dropdown: ";
@@ -478,6 +484,7 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
         YUtils::printDebug(ssLayerSelect.str(),DebugType::ERROR);
         return;
     }
+    YUtils::printDebug(ss.str(),DebugType::VERBOSE);
     this->grid->clearSelection();
 }
 
@@ -605,8 +612,6 @@ void MainWindow::markSavableUpdate() {
     std::string newWindowTitle = Constants::WINDOW_TITLE;
     newWindowTitle.append(" *");
     this->setWindowTitle(tr(newWindowTitle.c_str()));
-    // TODO: Delete this
-    this->grid->moveCurrentlySelectedSprites(1,1);
 }
 
 void MainWindow::objectListClick() {
