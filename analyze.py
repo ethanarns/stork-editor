@@ -163,7 +163,17 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             recordCount = int(len(mpbz) / 2)
             print(ind(3) + "Map tile records: " + str(recordCount) + "/" + hex(recordCount))
             tempIndex += scenLength
+        elif scenMagic == "IMBZ":
+            compressedImbzBytes = data[tempIndex:tempIndex+scenLength]
+            imbz = bytearray(ndspy.lz10.decompress(compressedImbzBytes))
+            print(ind(3) + "Decompressed to " + hex(len(imbz)) + " bytes")
+            if len(imbz) % 0x20 != 0:
+                print("IMBZ NOT DIVISIBLE BY 0x20")
+            characterCount = int(len(imbz) / 0x20)
+            print(ind(3) + "4bit character count: " + str(characterCount) + " / " + hex(characterCount))
+            tempIndex += scenLength
         else:
+            tempIndex += scenLength
             print("Unknown sub-SCEN")
 
         index += scenLength # Jump to next
