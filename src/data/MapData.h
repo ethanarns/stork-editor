@@ -7,12 +7,36 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <QByteArray>
 
 class LevelData {
 public:
     virtual std::string toString() = 0;
     virtual std::vector<uint8_t> compile() = 0;
     uint32_t magicNumber = 0;
+};
+
+class LayerPaletteData : public LevelData {
+public:
+    LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    std::string toString() {
+        std::stringstream ss;
+        ss << "LayerPaletteData { Palette Count: ";
+        ss << std::dec << palettes.size();
+        ss << " }";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        // for (size_t i = 0; i < subScenData.size(); i++) {
+        //     auto subCompiled = subScenData.at(i)->compile();
+        //     YUtils::appendVector(result,subCompiled);
+        // }
+        result = FsPacker::packInstruction(Constants::PLTB_MAGIC_NUM,result);
+        return result;
+    };
+    uint32_t magicNumber = 0;
+    std::vector<QByteArray*> palettes;
 };
 
 class ScenInfoData : public LevelData {

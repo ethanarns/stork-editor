@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <fstream>
+#include <QByteArray>
 
 LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     YUtils::printDebug("LayerData loop start",DebugType::VERBOSE);
@@ -16,7 +17,6 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
         mpdzIndex += 4;
         uint32_t tempEnd = mpdzIndex + subLength;
         if (subMagic == Constants::INFO_MAGIC_NUM) {
-            YUtils::printDebug("INFO",DebugType::VERBOSE);
             auto info = new ScenInfoData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subScenData.push_back(info);
         } else if (subMagic == Constants::ANMZ_MAGIC_NUM) {
@@ -26,8 +26,8 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             YUtils::printDebug("IMGB",DebugType::VERBOSE);
             mpdzIndex += subLength;
         } else if (subMagic == Constants::PLTB_MAGIC_NUM) {
-            YUtils::printDebug("PLTB",DebugType::VERBOSE);
-            mpdzIndex += subLength;
+            auto pltb = new LayerPaletteData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subScenData.push_back(pltb);
         } else if (subMagic == Constants::COLZ_MAGIC_NUM) {
             YUtils::printDebug("COLZ",DebugType::VERBOSE);
             mpdzIndex += subLength;
@@ -124,5 +124,17 @@ ScenInfoData::ScenInfoData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
     this->imbzFilename = charFileNoExt;
     while (mpdzIndex % 4 != 0) {
         mpdzIndex++;
+    }
+}
+
+LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    while (mpdzIndex < stop) {
+        auto currentLoadingPalette = new QByteArray();
+        currentLoadingPalette->resize(Constants::PALETTE_SIZE);
+        for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
+            (*currentLoadingPalette)[curPaletteIndex] = mpdzBytes.at(mpdzIndex);
+            mpdzIndex++;
+        }
+        this->palettes.push_back(currentLoadingPalette);
     }
 }
