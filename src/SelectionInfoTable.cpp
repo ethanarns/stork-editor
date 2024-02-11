@@ -15,7 +15,7 @@ SelectionInfoTable::SelectionInfoTable(QWidget* parent, YidsRom* rom) {
 
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
     this->setColumnCount(2);
-    this->setRowCount(4);
+    this->setRowCount(6);
     this->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
@@ -24,6 +24,8 @@ SelectionInfoTable::SelectionInfoTable(QWidget* parent, YidsRom* rom) {
     this->setText(0,1,"UUID",false);
     this->setText(0,2,"Name",false);
     this->setText(0,3,"Description",false);
+    this->setText(0,4,"X Position",false);
+    this->setText(0,5,"Y Position",false);
 }
 
 void SelectionInfoTable::setText(int x, int y, std::string text, bool editable) {
@@ -58,4 +60,10 @@ void SelectionInfoTable::updateWithLevelObject(LevelObject lo) {
     this->setText(1,1,s1.str(),false);
     this->setText(1,2,textMetadata.prettyName,false);
     this->setText(1,3,textMetadata.description,false);
+    std::stringstream sX;
+    sX << "0x" << std::hex << lo.xPosition;
+    std::stringstream sY;
+    sY << "0x" << std::hex << lo.yPosition;
+    this->setText(1,4,sX.str(),true);
+    this->setText(1,5,sY.str(),true);
 }

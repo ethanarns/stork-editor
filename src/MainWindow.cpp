@@ -369,6 +369,7 @@ MainWindow::MainWindow() {
      *** Connections ***
      *******************/
     connect(this->guiObjectList,&GuiObjectList::itemSelectionChanged,this,&MainWindow::objectListClick);
+    connect(this->grid, &DisplayTable::triggerMainWindowUpdate,this,&MainWindow::displayTableUpdate);
 
 }
 
@@ -661,6 +662,27 @@ void MainWindow::displayTableClicked() {
         LevelObject* lo = this->rom->getLoadedLevelObjectByUUID(selectedObjectUuid);
         if (lo == nullptr) {
             YUtils::printDebug("Invalid level object",DebugType::WARNING);
+            return;
+        }
+        this->selectionInfoTable->updateWithLevelObject(*lo);
+    }
+}
+
+void MainWindow::displayTableUpdate(){
+    if (this->windowEditMode == WindowEditMode::OBJECTS) {
+        auto selectedObjects = this->grid->selectedObjects;
+        if (selectedObjects.size() < 1) {
+            YUtils::printDebug("No objects selected",DebugType::VERBOSE);
+            return;
+        } else if (selectedObjects.size() > 1) {
+            std::stringstream ss;
+            ss << "More than one object selected (" << std::dec << selectedObjects.size() << "), taking first";
+            YUtils::printDebug(ss.str(),DebugType::VERBOSE);
+        }
+        auto selectedObjectUuid = selectedObjects.at(0);
+        LevelObject* lo = this->rom->getLoadedLevelObjectByUUID(selectedObjectUuid);
+        if (lo == nullptr) {
+            YUtils::printDebug("Invalid level object",DebugType::ERROR);
             return;
         }
         this->selectionInfoTable->updateWithLevelObject(*lo);

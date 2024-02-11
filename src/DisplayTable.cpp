@@ -191,13 +191,15 @@ void DisplayTable::dragEnterEvent(QDragEnterEvent *deEvent) {
     }
     this->currentlyDraggedItem = this->selectedObjects.at(0);
     std::stringstream ssDragEnter;
-    ssDragEnter << "Dragging sprite with UUID " << std::hex << this->currentlyDraggedItem;
+    ssDragEnter << "Dragging sprite with UUID 0x" << std::hex << this->currentlyDraggedItem;
     YUtils::printDebug(ssDragEnter.str(),DebugType::VERBOSE);
 
     QTableWidget::dragEnterEvent(deEvent);
 }
 
 bool DisplayTable::dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action) {
+    Q_UNUSED(data);
+    Q_UNUSED(action);
     if (this->layerSelectMode != LayerSelectMode::SPRITES_LAYER) {
         YUtils::printDebug("dropMimeData should not fire outside of sprite mode",DebugType::WARNING);
         return false;
@@ -212,14 +214,10 @@ bool DisplayTable::dropMimeData(int row, int column, const QMimeData *data, Qt::
 }
 
 void DisplayTable::displayTableClicked(int row, int column) {
-    cout << hex << row << "," << hex << column << endl;
     QTableWidgetItem* curCell = this->item(row,column);
     if (curCell == nullptr) {
         // Nothing has loaded yet, cancel
         return;
-    }
-    if (!curCell->data(PixelDelegateData::OBJECT_UUID).isNull()) {
-        cout << dec << curCell->data(PixelDelegateData::OBJECT_UUID).toInt() << endl;
     }
     if (!curCell->data(PixelDelegateData::PIXEL_ARRAY_BG2).isNull()) {
         auto pixArray2 = curCell->data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
@@ -238,7 +236,7 @@ void DisplayTable::displayTableClicked(int row, int column) {
             this->selectedObjects.clear();
             uint32_t curUuid = curCell->data(PixelDelegateData::OBJECT_UUID).toUInt();
             std::stringstream ssSprite;
-            ssSprite << "Selecting cell with Object UUID " << std::hex << curUuid;
+            ssSprite << "Selecting cell with Object UUID 0x" << std::hex << curUuid;
             YUtils::printDebug(ssSprite.str(),DebugType::VERBOSE);
             this->selectItemByUuid(curUuid);
         } else {
@@ -342,7 +340,9 @@ void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
     this->yidsRom->moveObjectTo(uuid,newX,newY);
     this->updateObjects();
     this->clearSelection();
+    this->selectedObjects.clear();
     this->selectItemByUuid(uuid);
+    emit this->triggerMainWindowUpdate();
 }
 
 void DisplayTable::setLayerDraw(int whichLayer, bool shouldDraw) {
@@ -627,5 +627,4 @@ void DisplayTable::wipeObject(uint32_t uuid) {
             }
         }
     }
-    YUtils::printDebug("No object with that UUID was found to be wiped",DebugType::WARNING);
 }
