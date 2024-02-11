@@ -97,7 +97,6 @@ void YidsRom::openRom(std::string fileName) {
             YUtils::printDebug(ssLongLen.str(),DebugType::WARNING);
         }
         auto nameStr = this->getTextAt(FILESDIR_BASE_ADDR + fileOffset + 1,len);
-        // cout << "len: " << hex << (int)len << ", id: " << dec << curFileId << ", name: '" << nameStr << "'" << endl;
         // When finding files, it lowercases
         this->fileIdMap[YUtils::getLowercase(nameStr)] = curFileId;
         fileOffset += len + 1; // +1 accounts for length byte
@@ -468,7 +467,6 @@ void YidsRom::moveObject(uint32_t objectUuid, int xOffset, int yOffset) {
 }
 
 void YidsRom::moveObjectTo(uint32_t objectUuid, uint32_t newX, uint32_t newY) {
-    std::cout << this->loadedLevelObjects.size() << std::endl;
     for (uint32_t currentObjectIndex = 0; currentObjectIndex < this->loadedLevelObjects.size(); currentObjectIndex++) {
         auto curObject = this->loadedLevelObjects.at(currentObjectIndex);
         if (curObject.uuid == objectUuid) {

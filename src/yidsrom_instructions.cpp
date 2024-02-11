@@ -525,13 +525,6 @@ ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg, BgCol
         currentTileIndex++;
     }
 
-    // cout << "lol1" << endl;
-    // YUtils::printVector(compressedFileVector);
-    // auto packed = imbzData.compile();
-    // cout << "lol2" << endl;
-    // YUtils::printVector(packed);
-    // exit(EXIT_SUCCESS);
-
     return imbzData;
 }
 
@@ -592,8 +585,6 @@ PathData YidsRom::handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPoint
         pathRec.distance = YUtils::getInt16FromVec(pathVec,pathBase + 2);
         pathRec.startX = YUtils::getUint32FromVec(pathVec,pathBase + 4);
         pathRec.startY = YUtils::getUint32FromVec(pathVec,pathBase + 8);
-        // std::cout << pathRec.toString();
-        // printf("%d\n",pathRec.distance);
         Q_UNUSED(pathRec);
     }
 
