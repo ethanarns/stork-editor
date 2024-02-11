@@ -68,7 +68,6 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             tempIndex += 4
             print(ind(3) + "Color Mode (Maybe): " + hex(colorMode))
 
-            #print("temp vs index: " + str(tempIndex) + " / " + str(index + scenLength))
             if tempIndex == index + scenLength:
                 print(ind(3) + "IMBZ filename: N/A (end reached)")
             else:
@@ -90,7 +89,38 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
                 except:
                     print("Unknown exception when getting IMBZ filename")
         elif scenMagic == "ANMZ":
-            pass
+            #print(ind(3) + "Decompressing...")
+            compressedAnmzBytes = data[tempIndex:tempIndex+scenLength]
+            anmz = bytearray(ndspy.lz10.decompress(compressedAnmzBytes))
+            print(ind(3) + "Decompressed to " + hex(len(anmz)) + " bytes")
+            anmzIndex = 0
+            frameCount = anmz[anmzIndex]
+            anmzIndex += 1
+            print(ind(3) + "Frame count: " + str(frameCount))
+            anmzUnk1 = anmz[anmzIndex]
+            anmzIndex += 1
+            print(ind(3) + "Unknown 1: " + hex(anmzUnk1))
+            anmzUnk2 = readUint16(anmz,anmzIndex)
+            anmzIndex += 2
+            print(ind(3) + "Unknown 2: " + hex(anmzUnk2))
+            anmzVramOffset = readUint16(anmz,anmzIndex)
+            anmzIndex += 2
+            print(ind(3) + "VRAM Offset: " + hex(anmzVramOffset))
+
+            anmzUnknown3 = anmz[anmzIndex]
+            anmzIndex += 1
+            print(ind(3) + "Unknown 3: " + hex(anmzUnknown3))
+
+            anmzUnk4 = anmz[anmzIndex]
+            anmzIndex += 1
+            print(ind(3) + "Unknown 4: " + hex(anmzUnk4))
+
+            frameIndex = 0
+            while frameIndex < frameCount:
+                frameHold = anmz[anmzIndex]
+                anmzIndex += 1
+                frameIndex += 1
+                print(ind(3) + "Frame " + str(frameIndex) + " hold length: " + str(frameHold))
         elif scenMagic == "IMGB":
             pass
         elif scenMagic == "PLTB":
