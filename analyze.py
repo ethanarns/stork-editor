@@ -144,7 +144,12 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             print(ind(3) + "32 byte tile count: " + str(imgbTileCount) + "/" + hex(imgbTileCount))
             tempIndex += scenLength
         elif scenMagic == "PLTB":
-            pass
+            # An uncompressed list of palettes, each of which is 0x20
+            if scenLength % 0x20 != 0:
+                print("PALETTES NOT DIVISIBLE BY 0x20")
+            pltbPaletteCount = int(scenLength / 0x20)
+            print(ind(3) + "Palette count: " + str(pltbPaletteCount) + "/" + hex(pltbPaletteCount))
+            tempIndex += scenLength
         elif scenMagic == "COLZ":
             pass
         elif scenMagic == "MPBZ":
