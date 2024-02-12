@@ -18,11 +18,13 @@ GuiObjectList::GuiObjectList(QWidget* parent, YidsRom* rom) {
 void GuiObjectList::updateList() {
     this->wipeList();
     this->clear();
+    auto loadedLevelObjects = this->yidsRom->mapData->getAllLevelObjects();
     for (
-        auto objIt = this->yidsRom->loadedLevelObjects.begin();
-        objIt != this->yidsRom->loadedLevelObjects.end();
-        ++objIt
+        auto objItP = loadedLevelObjects.begin();
+        objItP != loadedLevelObjects.end();
+        ++objItP
     ) {
+        auto objIt = (*objItP);
         ObjectTextMetadata textData = LevelObject::getObjectTextMetadata(objIt->objectId);
         QListWidgetItem* item = new QListWidgetItem(tr(textData.prettyName.c_str()));
         item->setData(GuiObjectList::LEVEL_OBJECT_UUID,objIt->uuid);

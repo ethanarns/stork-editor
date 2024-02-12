@@ -449,11 +449,13 @@ void DisplayTable::updateBg() {
 }
 
 void DisplayTable::updateObjects() {
-    if (this->yidsRom->loadedLevelObjects.size() == 0) {
+    if (this->yidsRom->mapData->getAllLevelObjects().size() == 0) {
         YUtils::printDebug("No objects loaded, cannot update",DebugType::ERROR);
         return;
     }
-    for (auto it = this->yidsRom->loadedLevelObjects.cbegin(); it != this->yidsRom->loadedLevelObjects.cend(); it++) {
+    auto loadedLevelObjects = this->yidsRom->mapData->getAllLevelObjects();
+    for (auto itp = loadedLevelObjects.cbegin(); itp != loadedLevelObjects.cend(); itp++) {
+        auto it = (*itp); // Convert to normal reference
         auto x = it->xPosition;
         auto y = it->yPosition;
         auto potentialExisting = this->item(y,x);

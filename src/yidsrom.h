@@ -126,8 +126,6 @@ public:
         return container;
     }
 
-    LevelObject* getLoadedLevelObjectByUUID(uint32_t uuid);
-
     ~YidsRom();
 private:
     void initArm9RomData(std::string fileName);

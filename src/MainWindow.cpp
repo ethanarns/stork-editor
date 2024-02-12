@@ -632,7 +632,7 @@ void MainWindow::objectListClick() {
     std::stringstream ss;
     ss << "Selected object list object with UUID 0x" << std::hex << objectUuid;
     YUtils::printDebug(ss.str(),DebugType::VERBOSE);
-    auto loadedLevelObject = this->rom->getLoadedLevelObjectByUUID(objectUuid);
+    auto loadedLevelObject = this->rom->mapData->getLevelObjectByUuid(objectUuid);
     if (loadedLevelObject == nullptr) {
         YUtils::printDebug("Loaded Level Object with that UUID not found",DebugType::ERROR);
         return;
@@ -659,7 +659,7 @@ void MainWindow::displayTableClicked() {
         // std::stringstream ssUuid;
         // ssUuid << "Attempting to find object with UUID 0x" << std::hex << selectedObjectUuid;
         // YUtils::printDebug(ssUuid.str(),DebugType::VERBOSE);
-        LevelObject* lo = this->rom->getLoadedLevelObjectByUUID(selectedObjectUuid);
+        LevelObject* lo = this->rom->mapData->getLevelObjectByUuid(selectedObjectUuid);
         if (lo == nullptr) {
             YUtils::printDebug("Invalid level object",DebugType::WARNING);
             return;
@@ -680,7 +680,7 @@ void MainWindow::displayTableUpdate(){
             YUtils::printDebug(ss.str(),DebugType::VERBOSE);
         }
         auto selectedObjectUuid = selectedObjects.at(0);
-        LevelObject* lo = this->rom->getLoadedLevelObjectByUUID(selectedObjectUuid);
+        LevelObject* lo = this->rom->mapData->getLevelObjectByUuid(selectedObjectUuid);
         if (lo == nullptr) {
             YUtils::printDebug("Invalid level object",DebugType::ERROR);
             return;

@@ -405,18 +405,6 @@ void YidsRom::wipeCrsbData() {
     }
 }
 
-LevelObject* YidsRom::getLoadedLevelObjectByUUID(uint32_t uuid) {
-    for (uint32_t i = 0; i < this->loadedLevelObjects.size(); i++) {
-        if (this->loadedLevelObjects.at(i).uuid == uuid) {
-            return &this->loadedLevelObjects.at(i);
-        }
-    }
-    std::stringstream ss;
-    ss << "Loaded level object not found with UUID 0x" << std::hex << uuid;
-    YUtils::printDebug(ss.str(),DebugType::WARNING);
-    return nullptr;
-}
-
 QByteArray YidsRom::get256Palettes(uint32_t offset) {
     QByteArray qbResult;
     qbResult.resize(256);
