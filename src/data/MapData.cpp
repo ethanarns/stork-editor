@@ -21,8 +21,8 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             auto info = new ScenInfoData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subScenData.push_back(info);
         } else if (subMagic == Constants::ANMZ_MAGIC_NUM) {
-            YUtils::printDebug("ANMZ",DebugType::VERBOSE);
-            mpdzIndex += subLength;
+            auto anmz = new AnimatedMapData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subScenData.push_back(anmz);
         } else if (subMagic == Constants::IMGB_MAGIC_NUM) {
             YUtils::printDebug("IMGB",DebugType::VERBOSE);
             mpdzIndex += subLength;
@@ -169,6 +169,7 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
 AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
     auto anmzData = YCompression::lzssVectorDecomp(compressed);
+    const uint32_t anmzSize = anmzData.size();
     uint32_t anmzIndex = 0;
     this->frameCount = anmzData.at(anmzIndex);
     anmzIndex++;
@@ -190,5 +191,26 @@ AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
     // 4 byte padding
     while (anmzIndex % 4 != 0) {
         anmzIndex++;
+    }
+    uint32_t currentTileIndex = 0;
+    while (anmzIndex < anmzSize) {
+        Chartile curTile;
+        curTile.bgColMode = BgColorMode::MODE_16;
+        curTile.index = currentTileIndex;
+        curTile.tiles.resize(64);
+        for (
+            int currentTileBuildIndex = 0;
+            currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE;
+            currentTileBuildIndex++
+        ) {
+            uint8_t curByte = anmzData.at(anmzIndex);
+            anmzIndex++;
+            uint8_t highBit = curByte >> 4;
+            uint8_t lowBit = curByte % 0x10;
+            int innerPosition = currentTileBuildIndex*2;
+            curTile.tiles[innerPosition+1] = highBit;
+            curTile.tiles[innerPosition+0] = lowBit;
+        }
+        this->chartiles.push_back(curTile);
     }
 }

@@ -3,6 +3,7 @@
 #include "../constants.h"
 #include "../FsPacker.h"
 #include "../utils.h"
+#include "../Chartile.h"
 
 #include <vector>
 #include <string>
@@ -39,6 +40,7 @@ public:
     uint8_t unknown3;
     uint8_t unknown4;
     std::vector<uint8_t> frameTimes;
+    std::vector<Chartile> chartiles;
 };
 
 class MapTilesData : public LevelData {
