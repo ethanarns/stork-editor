@@ -313,3 +313,26 @@ LevelObjectData::LevelObjectData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
         YUtils::printDebug("Mismatch in SETD end address",DebugType::ERROR);
     }
 }
+
+std::vector<LevelObject *> MapData::getAllLevelObjects() {
+    auto potentialSetd = this->getFirstDataByMagic(Constants::SETD_MAGIC_NUM);
+    if (potentialSetd == nullptr) {
+        YUtils::printDebug("SETD record not found, returning empty",DebugType::ERROR);
+        return std::vector<LevelObject *>();
+    }
+    LevelObjectData* setd = static_cast<LevelObjectData*>(potentialSetd);
+    return setd->levelObjects;
+}
+
+LevelData *MapData::getFirstDataByMagic(uint32_t magicNumber) {
+    for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
+        if ( (*it)->getMagic() == magicNumber ) {
+            return (*it);
+        }
+    }
+    std::stringstream ss;
+    ss << "LevelData with magic number ";
+    ss << std::hex << magicNumber << " not found";
+    YUtils::printDebug(ss.str(),DebugType::WARNING);
+    return nullptr;
+}

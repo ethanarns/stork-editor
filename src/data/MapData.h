@@ -15,7 +15,7 @@ class LevelData {
 public:
     virtual std::string toString() = 0;
     virtual std::vector<uint8_t> compile() = 0;
-    uint32_t magicNumber = 0;
+    virtual uint32_t getMagic() { return 0; };
 };
 
 class LevelObjectData : public LevelData {
@@ -32,7 +32,7 @@ public:
         // TODO
         return FsPacker::packInstruction(Constants::SETD_MAGIC_NUM,result,false);
     };
-    uint32_t magicNumber = Constants::SETD_MAGIC_NUM;
+    uint32_t getMagic() { return Constants::SETD_MAGIC_NUM; }
 
     std::vector<LevelObject*> levelObjects;
 private:
@@ -53,7 +53,7 @@ public:
         // TODO
         return FsPacker::packInstruction(Constants::IMGB_MAGIC_NUM,result,false);
     };
-    uint32_t magicNumber = Constants::IMGB_MAGIC_NUM;
+    uint32_t getMagic() { return Constants::IMGB_MAGIC_NUM; }
 
     std::vector<Chartile> chartiles;
 };
@@ -72,7 +72,7 @@ public:
         // 1:1 basically
         return FsPacker::packInstruction(Constants::COLZ_MAGIC_NUM,this->colData,true);
     };
-    uint32_t magicNumber = Constants::COLZ_MAGIC_NUM;
+    uint32_t getMagic() { return Constants::COLZ_MAGIC_NUM; }
 
     std::vector<uint8_t> colData;
 };
@@ -91,7 +91,7 @@ public:
         result = FsPacker::packInstruction(Constants::ANMZ_MAGIC_NUM,result,true);
         return result;
     };
-    uint32_t magicNumber = Constants::ANMZ_MAGIC_NUM;
+    uint32_t getMagic() { return Constants::ANMZ_MAGIC_NUM; }
 
     uint8_t frameCount;
     uint8_t unknown1;
@@ -118,7 +118,7 @@ public:
         result = FsPacker::packInstruction(Constants::MPBZ_MAGIC_NUM,result,true);
         return result;
     };
-    uint32_t magicNumber = Constants::MPBZ_MAGIC_NUM;
+    uint32_t getMagic() { return Constants::MPBZ_MAGIC_NUM; }
 
     uint16_t tileOffset;
     uint16_t bottomTrim;
@@ -146,7 +146,8 @@ public:
         result = FsPacker::packInstruction(Constants::PLTB_MAGIC_NUM,result,false);
         return result;
     };
-    uint32_t magicNumber = Constants::PLTB_MAGIC_NUM;
+    uint32_t getMagic() { return Constants::PLTB_MAGIC_NUM; }
+
     std::vector<QByteArray*> palettes;
 };
 
@@ -177,7 +178,7 @@ public:
         result = FsPacker::packInstruction(Constants::INFO_MAGIC_NUM,result,false);
         return result;
     };
-    uint32_t magicNumber = Constants::INFO_MAGIC_NUM;
+    uint32_t getMagic() { return Constants::INFO_MAGIC_NUM; }
     // Variables
     uint16_t layerWidth;
     uint16_t layerHeight;
@@ -211,7 +212,7 @@ public:
         result = FsPacker::packInstruction(Constants::SCEN_MAGIC_NUM,result);
         return result;
     };
-    uint32_t magicNumber = Constants::SCEN_MAGIC_NUM;
+    uint32_t getMagic() { return Constants::SCEN_MAGIC_NUM; }
     std::vector<LevelData*> subScenData;
 };
 
@@ -230,7 +231,7 @@ public:
         result = FsPacker::packInstruction(Constants::GRAD_MAGIC_NUM,result,false);
         return result;
     };
-    uint32_t magicNumber = Constants::GRAD_MAGIC_NUM;
+    uint32_t getMagic() { return Constants::GRAD_MAGIC_NUM; }
     // Every single time, it's GINF then GCOL. No need to loop
     // GINF //
     uint8_t unknown1;
@@ -241,14 +242,14 @@ public:
     uint8_t unknown6;
     uint8_t unknown7;
     uint32_t yOffset;
-
+    // GCOL //
     std::vector<uint16_t> colors;
 };
 
 class MapData : public LevelData {
 public:
     MapData(std::vector<uint8_t> mpdzBytes, bool compressed = true);
-    uint32_t magicNumber = Constants::MPDZ_MAGIC_NUM;
+    uint32_t getMagic() { return Constants::MPDZ_MAGIC_NUM; }
     std::string toString() {
         std::stringstream ss;
         ss << "MapData { Subdata Count: ";
@@ -267,6 +268,8 @@ public:
     };
     // Others
     LayerData* getScenByBg(int bg);
+    std::vector<LevelObject*> getAllLevelObjects();
 private:    
     std::vector<LevelData*> subData;
+    LevelData* getFirstDataByMagic(uint32_t magicNumber);
 };
