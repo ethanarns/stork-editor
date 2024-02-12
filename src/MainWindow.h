@@ -55,7 +55,6 @@ private:
     QAction* menu_save;
     QAction* menu_export;
     QAction* action_memory;
-    QAction* action_breakdown;
 
     QAction* action_viewBg1;
     QAction* action_viewBg2;
@@ -76,7 +75,6 @@ private:
 
     void menuClick_levelSelect();
     void menuClick_memory();
-    void menuClick_breakdown();
     void menuClick_export();
 
     void buttonClick_levelSelect_cancel();
