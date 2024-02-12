@@ -121,6 +121,38 @@ LevelObject *MapData::getLevelObjectByUuid(uint32_t uuid) {
     return nullptr;
 }
 
+uint32_t MapData::getGreatestCanvasHeight() {
+    uint32_t greatest = 0;
+    for (int i = 1; i <= 3; i++) {
+        auto possibleScen = this->getScenByBg(i);
+        if (possibleScen != nullptr) {
+            auto info = possibleScen->getInfo();
+            if (info != nullptr) {
+                if (info->layerHeight > greatest) {
+                    greatest = info->layerHeight;
+                }
+            }
+        }
+    }
+    return greatest;
+}
+
+uint32_t MapData::getGreatestCanvasWidth() {
+    uint32_t greatest = 0;
+    for (int i = 1; i <= 3; i++) {
+        auto possibleScen = this->getScenByBg(i);
+        if (possibleScen != nullptr) {
+            auto info = possibleScen->getInfo();
+            if (info != nullptr) {
+                if (info->layerWidth > greatest) {
+                    greatest = info->layerWidth;
+                }
+            }
+        }
+    }
+    return greatest;
+}
+
 LevelData *MapData::getFirstDataByMagic(uint32_t magicNumber) {
     for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
         if ( (*it)->getMagic() == magicNumber ) {

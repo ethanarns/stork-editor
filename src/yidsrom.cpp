@@ -405,17 +405,6 @@ void YidsRom::wipeCrsbData() {
     }
 }
 
-uint32_t YidsRom::getGreatestCanvasHeight() {
-    uint32_t greatHeight = 0;
-    if (this->canvasHeightBg1 > greatHeight) {
-        greatHeight = this->canvasHeightBg1;
-    }
-    if (this->canvasHeightBg2 > greatHeight) {
-        greatHeight = this->canvasHeightBg2;
-    }
-    return greatHeight;
-}
-
 LevelObject* YidsRom::getLoadedLevelObjectByUUID(uint32_t uuid) {
     for (uint32_t i = 0; i < this->loadedLevelObjects.size(); i++) {
         if (this->loadedLevelObjects.at(i).uuid == uuid) {
@@ -426,17 +415,6 @@ LevelObject* YidsRom::getLoadedLevelObjectByUUID(uint32_t uuid) {
     ss << "Loaded level object not found with UUID 0x" << std::hex << uuid;
     YUtils::printDebug(ss.str(),DebugType::WARNING);
     return nullptr;
-}
-
-uint32_t YidsRom::getGreatestCanvasWidth() {
-    uint32_t greatWidth = 0;
-    if (this->canvasWidthBg1 > greatWidth) {
-        greatWidth = this->canvasWidthBg1;
-    }
-    if (this->canvasWidthBg2 > greatWidth) {
-        greatWidth = this->canvasWidthBg2;
-    }
-    return greatWidth;
 }
 
 QByteArray YidsRom::get256Palettes(uint32_t offset) {

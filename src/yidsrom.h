@@ -126,9 +126,6 @@ public:
         return container;
     }
 
-    uint32_t getGreatestCanvasWidth();
-    uint32_t getGreatestCanvasHeight();
-
     LevelObject* getLoadedLevelObjectByUUID(uint32_t uuid);
 
     ~YidsRom();

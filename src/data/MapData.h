@@ -282,6 +282,8 @@ public:
     LayerData* getScenByBg(uint8_t bg);
     std::vector<LevelObject*> getAllLevelObjects();
     LevelObject* getLevelObjectByUuid(uint32_t uuid);
+    uint32_t getGreatestCanvasHeight();
+    uint32_t getGreatestCanvasWidth();
 private:    
     std::vector<LevelData*> subData;
     LevelData* getFirstDataByMagic(uint32_t magicNumber);

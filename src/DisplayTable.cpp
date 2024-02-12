@@ -376,14 +376,15 @@ void DisplayTable::setLayerDraw(int whichLayer, bool shouldDraw) {
 }
 
 void DisplayTable::updateBg() {
-    auto newCanvasHeight = this->yidsRom->getGreatestCanvasHeight();
+    YUtils::printDebug("Updating BG",DebugType::VERBOSE);
+    auto newCanvasHeight = this->yidsRom->mapData->getGreatestCanvasHeight();
     if (newCanvasHeight == 0) {
         YUtils::printDebug("Canvas height calculation failed!",DebugType::ERROR);
     } else {
         this->setRowCount(newCanvasHeight);
     }
     
-    auto newCanvasWidth = this->yidsRom->getGreatestCanvasWidth();
+    auto newCanvasWidth = this->yidsRom->mapData->getGreatestCanvasWidth();
     if (newCanvasWidth == 0) {
         YUtils::printDebug("Canvas width calculation failed!",DebugType::ERROR);
     } else {
