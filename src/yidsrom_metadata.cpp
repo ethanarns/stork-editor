@@ -235,7 +235,6 @@ void YidsRom::getGameLevelsMetaData() {
                             }
                             numberOfLevelObjects++;
                             //YUtils::printLevelObject(lo);
-                            //this->loadedLevelObjects.push_back(lo);
                         }
                         cout << "      LevelObjects loaded: " << dec << numberOfLevelObjects << endl;
                     } else if (curInstruction == Constants::ALPH_MAGIC_NUM) {

@@ -513,7 +513,7 @@ void MainWindow::menuClick_memory() {
     auto collisionArraySize = this->rom->collisionTileArray.size();
     auto preRenderDataBg1 = this->rom->preRenderDataBg1.size();
     auto preRenderDataBg2 = this->rom->preRenderDataBg2.size();
-    auto levelObjectCount = this->rom->loadedLevelObjects.size();
+    auto levelObjectCount = this->rom->mapData->getAllLevelObjects().size();
 
     std::cout << "pixelTilesBg1 size (count): " << dec << pixelTilesBg1size << std::endl;
     std::cout << "pixelTilesBg2 size (count): " << dec << pixelTilesBg2size << std::endl;
@@ -522,7 +522,7 @@ void MainWindow::menuClick_memory() {
     std::cout << "preRenderDataBg1 size (bytes): " << dec << preRenderDataBg1*2 << std::endl;
     std::cout << "preRenderDataBg2 size (count): " << dec << preRenderDataBg2 << std::endl;
     std::cout << "preRenderDataBg2 size (bytes): " << dec << preRenderDataBg2*2 << std::endl;
-    std::cout << "loadedLevelObjects size (count): " << dec << levelObjectCount << std::endl;
+    std::cout << "levelObjects size (count): " << dec << levelObjectCount << std::endl;
 
     std::cout << "--- End Memory Report ---" << std::endl;
 }

@@ -378,7 +378,6 @@ std::vector<uint8_t> YidsRom::getByteVectorFromFile(std::string fileName) {
 
 void YidsRom::wipeCrsbData() {
     this->collisionTileArray.clear();
-    this->loadedLevelObjects.clear();
 
     this->canvasHeightBg2 = 0;
     this->canvasWidthBg2 = 0;
@@ -419,13 +418,12 @@ QByteArray YidsRom::get256Palettes(uint32_t offset) {
 }
 
 void YidsRom::moveObject(uint32_t objectUuid, int xOffset, int yOffset) {
-    std::cout << this->loadedLevelObjects.size() << std::endl;
-    for (uint32_t currentObjectIndex = 0; currentObjectIndex < this->loadedLevelObjects.size(); currentObjectIndex++) {
-        auto curObject = this->loadedLevelObjects.at(currentObjectIndex);
-        if (curObject.uuid == objectUuid) {
-            curObject.xPosition += xOffset;
-            curObject.yPosition += yOffset;
-            this->loadedLevelObjects.at(currentObjectIndex) = curObject;
+    auto levelObjects = this->mapData->getAllLevelObjects();
+    for (uint32_t currentObjectIndex = 0; currentObjectIndex < levelObjects.size(); currentObjectIndex++) {
+        auto curObject = levelObjects.at(currentObjectIndex);
+        if (curObject->uuid == objectUuid) {
+            curObject->xPosition += xOffset;
+            curObject->yPosition += yOffset;
             return;
         }
     }
@@ -433,12 +431,12 @@ void YidsRom::moveObject(uint32_t objectUuid, int xOffset, int yOffset) {
 }
 
 void YidsRom::moveObjectTo(uint32_t objectUuid, uint32_t newX, uint32_t newY) {
-    for (uint32_t currentObjectIndex = 0; currentObjectIndex < this->loadedLevelObjects.size(); currentObjectIndex++) {
-        auto curObject = this->loadedLevelObjects.at(currentObjectIndex);
-        if (curObject.uuid == objectUuid) {
-            curObject.xPosition = newX;
-            curObject.yPosition = newY;
-            this->loadedLevelObjects.at(currentObjectIndex) = curObject;
+    auto levelObjects = this->mapData->getAllLevelObjects();
+    for (uint32_t currentObjectIndex = 0; currentObjectIndex < levelObjects.size(); currentObjectIndex++) {
+        auto curObject = levelObjects.at(currentObjectIndex);
+        if (curObject->uuid == objectUuid) {
+            curObject->xPosition = newX;
+            curObject->yPosition = newY;
             return;
         }
     }

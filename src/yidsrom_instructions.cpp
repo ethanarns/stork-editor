@@ -656,7 +656,6 @@ SetdObjectData YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& inde
             indexPointer += len;
         }
         setdObjectData.levelObjects.push_back(lo);
-        this->loadedLevelObjects.push_back(lo);
     }
     return setdObjectData;
 }

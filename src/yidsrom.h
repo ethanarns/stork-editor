@@ -89,7 +89,6 @@ public:
     uint32_t paletteOffsetBg1 = 0;
     uint32_t paletteOffsetBg2 = 0;
 
-    std::vector<LevelObject> loadedLevelObjects;
     uint32_t levelObjectLoadIndex = 1; // Instead of UUIDs
 
     uint32_t canvasWidthBg2 = 0;
