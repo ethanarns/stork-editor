@@ -86,8 +86,6 @@ public:
 
     uint32_t levelObjectLoadIndex = 1; // Instead of UUIDs
 
-    uint32_t canvasWidthBg2 = 0;
-    uint32_t canvasHeightBg2 = 0;
     uint32_t canvasWidthBg1 = 0;
     uint32_t canvasHeightBg1 = 0;
     uint32_t canvasWidthCol = 0;

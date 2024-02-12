@@ -377,9 +377,6 @@ std::vector<uint8_t> YidsRom::getByteVectorFromFile(std::string fileName) {
 }
 
 void YidsRom::wipeCrsbData() {
-    this->canvasHeightBg2 = 0;
-    this->canvasWidthBg2 = 0;
-
     this->canvasHeightBg1 = 0;
     this->canvasWidthBg1 = 0;
 

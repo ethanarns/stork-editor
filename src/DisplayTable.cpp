@@ -399,15 +399,15 @@ void DisplayTable::updateBg() {
     if (preRenderSizeBg2 == 0) {
         YUtils::printDebug("preRenderDataBg2 is empty",DebugType::WARNING);
     }
-    if (this->yidsRom->canvasWidthBg2 == 0) {
+    if (this->yidsRom->mapData->getScenByBg(2)->getInfo()->layerWidth == 0) {
         YUtils::printDebug("Canvas Width for BG2 was never set!",DebugType::ERROR);
         return;
     }
     if (this->yidsRom->pixelTilesBg2.size() < 1) {
         YUtils::printDebug("Cannot update BG2, missing pixelTilesBg2",DebugType::WARNING);
     }
-
-    const uint32_t cutOffBg2 = this->yidsRom->canvasWidthBg2;
+    
+    const uint32_t cutOffBg2 = this->yidsRom->mapData->getScenByBg(2)->getInfo()->layerWidth;;
     uint32_t bg2LeftOffset = 0;
     while (bg2LeftOffset < newCanvasWidth) {
         for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSizeBg2; preRenderIndex++) {

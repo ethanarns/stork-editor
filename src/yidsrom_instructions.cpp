@@ -259,8 +259,6 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
 
             // Only the first one matters for the primary height and width, since BG 2 decides everything
             if (whichBgToWriteTo == 2) {
-                this->canvasHeightBg2 = canvasDimensions >> 0x10;
-                this->canvasWidthBg2 = canvasDimensions % 0x10000;
                 this->colorModeBg2 = whichBgColorModeMaybe;
             } else if (whichBgToWriteTo == 1) {
                 this->canvasHeightBg1 = canvasDimensions >> 0x10;
@@ -348,8 +346,8 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             //this->collisionTileArray = uncompressedColz; // Copy directly
             colzData.colArray = uncompressedColz;
             if (whichBgToWriteTo == 2) {
-                this->canvasWidthCol = this->canvasWidthBg2;
-                this->canvasHeightCol = this->canvasHeightBg2;
+                this->canvasWidthCol = this->mapData->getScenByBg(2)->getInfo()->layerWidth;
+                this->canvasHeightCol = this->mapData->getScenByBg(2)->getInfo()->layerHeight;
             } else if (whichBgToWriteTo == 1) {
                 this->canvasWidthCol = this->canvasWidthBg1;
                 this->canvasHeightCol = this->canvasHeightBg1;
@@ -850,7 +848,7 @@ MpbzData YidsRom::handleMPBZ(std::vector<uint8_t>& uncompressedMpbz, uint16_t wh
 
         // Skip drawing the number of lines specified in offset
         if (whichBg == 2) {
-            offset = offset * this->canvasWidthBg2;
+            offset = offset * (this->mapData->getScenByBg(2)->getInfo()->layerWidth);
         } else if (whichBg == 1) {
             offset = offset * this->canvasWidthBg1;
         }
