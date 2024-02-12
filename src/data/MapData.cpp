@@ -165,3 +165,30 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
         this->tileRenderData.push_back(curShort);
     }
 }
+
+AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
+    auto anmzData = YCompression::lzssVectorDecomp(compressed);
+    uint32_t anmzIndex = 0;
+    this->frameCount = anmzData.at(anmzIndex);
+    anmzIndex++;
+    this->unknown1 = anmzData.at(anmzIndex);
+    anmzIndex++;
+    this->unknown2 = YUtils::getUint16FromVec(anmzData,anmzIndex);
+    anmzIndex += 2;
+    this->vramOffset = YUtils::getUint16FromVec(anmzData,anmzIndex);
+    anmzIndex += 2;
+    this->unknown3 = anmzData.at(anmzIndex);
+    anmzIndex++;
+    this->unknown4 = anmzData.at(anmzIndex);
+    anmzIndex++;
+    this->frameTimes.clear();
+    for (uint32_t i = 0; i < this->frameCount; i++) {
+        this->frameTimes.push_back(anmzData.at(anmzIndex));
+        anmzIndex++;
+    }
+    // 4 byte padding
+    while (anmzIndex % 4 != 0) {
+        anmzIndex++;
+    }
+}

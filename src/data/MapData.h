@@ -16,6 +16,31 @@ public:
     uint32_t magicNumber = 0;
 };
 
+class AnimatedMapData : public LevelData {
+public:
+    AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    std::string toString() {
+        std::stringstream ss;
+        ss << "ANMZ { }";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        // TODO //
+        result = FsPacker::packInstruction(Constants::ANMZ_MAGIC_NUM,result,true);
+        return result;
+    };
+    uint32_t magicNumber = Constants::ANMZ_MAGIC_NUM;
+
+    uint8_t frameCount;
+    uint8_t unknown1;
+    uint16_t unknown2;
+    uint16_t vramOffset;
+    uint8_t unknown3;
+    uint8_t unknown4;
+    std::vector<uint8_t> frameTimes;
+};
+
 class MapTilesData : public LevelData {
 public:
     MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);

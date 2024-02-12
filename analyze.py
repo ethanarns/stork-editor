@@ -137,8 +137,8 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
                 frameIndex += 1
                 print(ind(3) + "Frame " + str(frameIndex) + " hold length: " + str(frameHold) + "/" + hex(frameHold))
             # Now skip to end of padding
-            if frameCount >= 5:
-                print("FRROR: HIGH FRAME COUNT " + str(frameCount))
+            while anmzIndex % 4 != 0:
+                anmzIndex += 1
             remainingBytes = len(anmz) - anmzIndex
             if remainingBytes % 0x20 != 0:
                 print("FRROR: REMAINING FRAME BYTES NOT DIVISIBLE BY 0x20: " + hex(remainingBytes))
