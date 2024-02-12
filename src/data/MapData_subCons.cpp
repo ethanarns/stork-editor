@@ -11,6 +11,7 @@
 
 LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     // YUtils::printDebug("LayerData loop start",DebugType::VERBOSE);
+    ScenInfoData* tempInfo = nullptr;
     while (mpdzIndex < stop) {
         uint32_t subMagic = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 4;
@@ -19,6 +20,7 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
         uint32_t tempEnd = mpdzIndex + subLength;
         if (subMagic == Constants::INFO_MAGIC_NUM) {
             auto info = new ScenInfoData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            tempInfo = info;
             this->subScenData.push_back(info);
         } else if (subMagic == Constants::ANMZ_MAGIC_NUM) {
             auto anmz = new AnimatedMapData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
@@ -33,7 +35,7 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             auto colz = new MapCollisionData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subScenData.push_back(colz);
         } else if (subMagic == Constants::MPBZ_MAGIC_NUM) {
-            auto mpbz = new MapTilesData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            auto mpbz = new MapTilesData(mpdzBytes,mpdzIndex,mpdzIndex+subLength, tempInfo);
             this->subScenData.push_back(mpbz);
         } else if (subMagic == Constants::IMBZ_MAGIC_NUM) {
             YUtils::printDebug("IMBZ",DebugType::VERBOSE);
@@ -100,7 +102,11 @@ LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
 }
 
 // MPBZ
-MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, ScenInfoData* info) {
+    if (info == nullptr) {
+        YUtils::printDebug("INFO not loaded before MapTiles/MPBZ",DebugType::FATAL);
+        exit(EXIT_FAILURE);
+    }
     auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
     auto mpbzData = YCompression::lzssVectorDecomp(compressed);
     if (YUtils::getUint16FromVec(mpdzBytes,mpdzIndex) == 0xffff) {
@@ -118,10 +124,9 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
     while (mpdzIndex < stop) {
         uint16_t curShort = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 2;
-        // TODO
-        // if (bgColMode == BgColorMode::MODE_16) {
-        //     curShort += 0x1000; // 0201c730
-        // }
+        if (info->colorModeMaybe == BgColorMode::MODE_16) {
+            curShort += 0x1000; // 0201c730
+        }
         this->tileRenderData.push_back(curShort);
     }
 }
