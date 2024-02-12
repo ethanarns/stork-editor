@@ -193,6 +193,29 @@ public:
     std::vector<LevelData*> subScenData;
 };
 
+class LevelGradientData : public LevelData {
+public:
+    LevelGradientData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    std::string toString() {
+        std::stringstream ss;
+        ss << "LevelGradientData { Subdata Count: ";
+        ss << std::dec << this->subGradData.size();
+        ss << " }";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        for (size_t i = 0; i < this->subGradData.size(); i++) {
+            auto subCompiled = this->subGradData.at(i)->compile();
+            YUtils::appendVector(result,subCompiled);
+        }
+        result = FsPacker::packInstruction(Constants::GRAD_MAGIC_NUM,result,false);
+        return result;
+    };
+    uint32_t magicNumber = Constants::GRAD_MAGIC_NUM;
+    std::vector<LevelData*> subGradData;
+};
+
 class MapData : public LevelData {
 public:
     MapData(std::vector<uint8_t> mpdzBytes, bool compressed = true);

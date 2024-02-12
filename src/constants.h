@@ -45,6 +45,8 @@ namespace Constants {
     inline constexpr uint32_t OBJZ_MAGIC_NUM{0x5a4a424f}; // "OBJZ" / 4F 42 4A 5a
     inline constexpr uint32_t CSCN_MAGIC_NUM{0x4E435343}; // "CSCN" / 43 53 43 4E
     inline constexpr uint32_t CRSB_MAGIC_NUM{0x42535243}; // "CRSB" / 43 52 53 42
+    inline constexpr uint32_t GINF_MAGIC_NUM{0x464e4947}; // "GINF"
+    inline constexpr uint32_t GCOL_MAGIC_NUM{0x4c4f4347}; // "GCOL"
 
     inline constexpr int PALETTE_SIZE{0x20};
     inline constexpr int CHARTILE_DATA_SIZE{0x20};

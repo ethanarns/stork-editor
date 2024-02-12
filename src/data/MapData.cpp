@@ -76,12 +76,11 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed) {
         uint32_t subLength = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 4;
         if (subMagic == Constants::SCEN_MAGIC_NUM) {
-            //YUtils::printDebug("Handling SCEN",DebugType::VERBOSE);
             auto scen = new LayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subData.push_back(scen);
         } else if (subMagic == Constants::GRAD_MAGIC_NUM) {
-            YUtils::printDebug("Handling GRAD",DebugType::VERBOSE);
-            mpdzIndex += subLength;
+            auto grad = new LevelGradientData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subData.push_back(grad);
         } else if (subMagic == Constants::SETD_MAGIC_NUM) {
             YUtils::printDebug("Handling SETD",DebugType::VERBOSE);
             mpdzIndex += subLength;
@@ -245,5 +244,36 @@ ImgbLayerData::ImgbLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzInde
             curTile.tiles[innerPosition+0] = lowBit;
         }
         this->chartiles.push_back(curTile);
+    }
+}
+
+LevelGradientData::LevelGradientData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    while (mpdzIndex < stop) {
+        uint32_t subMagic = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 4;
+        uint32_t subLength = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 4;
+        uint32_t tempEnd = mpdzIndex + subLength;
+        if (subMagic == Constants::GINF_MAGIC_NUM) {
+            YUtils::printDebug("GINF",DebugType::VERBOSE);
+            mpdzIndex += subLength;
+            // auto info = new ScenInfoData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            // this->subScenData.push_back(info);
+        } else if (subMagic == Constants::GCOL_MAGIC_NUM) {
+            YUtils::printDebug("GCOL",DebugType::VERBOSE);
+            mpdzIndex += subLength;
+        } else {
+            std::stringstream unknownMagic;
+            unknownMagic << "Unknown magic number in LevelGradientData: 0x" << std::hex << subMagic;
+            YUtils::printDebug(unknownMagic.str(),DebugType::ERROR);
+            mpdzIndex += subLength;
+        }
+        if (mpdzIndex != tempEnd) {
+            std::stringstream ssEndNotMatch;
+            ssEndNotMatch << "Mismatch in end index. Current Index: " << std::hex;
+            ssEndNotMatch << mpdzIndex << ", Temp End: " << tempEnd;
+            ssEndNotMatch << ", Magic Number in GRAD: " << std::hex << subMagic;
+            YUtils::printDebug(ssEndNotMatch.str(),DebugType::ERROR);
+        }
     }
 }
