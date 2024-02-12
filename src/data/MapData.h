@@ -17,6 +17,25 @@ public:
     uint32_t magicNumber = 0;
 };
 
+class ImgbLayerData : public LevelData {
+public:
+    ImgbLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    std::string toString() {
+        std::stringstream ss;
+        ss << "IMGB { records: 0x";
+        ss << " }";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        // TODO
+        return FsPacker::packInstruction(Constants::IMGB_MAGIC_NUM,result,false);
+    };
+    uint32_t magicNumber = Constants::IMGB_MAGIC_NUM;
+
+    std::vector<Chartile> chartiles;
+};
+
 class MapCollisionData : public LevelData {
 public:
     MapCollisionData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
@@ -74,7 +93,7 @@ public:
     std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
         // TODO //
-        result = FsPacker::packInstruction(Constants::MPBZ_MAGIC_NUM,result,false);
+        result = FsPacker::packInstruction(Constants::MPBZ_MAGIC_NUM,result,true);
         return result;
     };
     uint32_t magicNumber = Constants::MPBZ_MAGIC_NUM;

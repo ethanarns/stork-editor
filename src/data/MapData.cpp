@@ -24,8 +24,8 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             auto anmz = new AnimatedMapData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subScenData.push_back(anmz);
         } else if (subMagic == Constants::IMGB_MAGIC_NUM) {
-            YUtils::printDebug("IMGB",DebugType::VERBOSE);
-            mpdzIndex += subLength;
+            auto imgb = new ImgbLayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subScenData.push_back(imgb);
         } else if (subMagic == Constants::PLTB_MAGIC_NUM) {
             auto pltb = new LayerPaletteData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subScenData.push_back(pltb);
@@ -118,7 +118,7 @@ ScenInfoData::ScenInfoData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
     this->colorModeMaybe = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
     mpdzIndex += 4;
     if (mpdzIndex == stop) {
-        YUtils::printDebug("No IMBZ string",DebugType::VERBOSE);
+        //YUtils::printDebug("No IMBZ string",DebugType::VERBOSE);
         return;
     }
     auto charFileNoExt = YUtils::getNullTermTextFromVec(mpdzBytes,mpdzIndex);
@@ -222,4 +222,29 @@ MapCollisionData::MapCollisionData(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
     auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
     this->colData = YCompression::lzssVectorDecomp(compressed);
     mpdzIndex += compressed.size();
+}
+
+ImgbLayerData::ImgbLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    uint32_t debugIndex = 0;
+    while (mpdzIndex < stop) {
+        Chartile curTile;
+        curTile.bgColMode = BgColorMode::MODE_16;
+        curTile.index = debugIndex;
+        debugIndex++;
+        curTile.tiles.resize(64);
+        for (
+            int currentTileBuildIndex = 0;
+            currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE;
+            currentTileBuildIndex++
+        ) {
+            uint8_t curByte = mpdzBytes.at(mpdzIndex);
+            mpdzIndex++;
+            uint8_t highBit = curByte >> 4;
+            uint8_t lowBit = curByte % 0x10;
+            int innerPosition = currentTileBuildIndex*2;
+            curTile.tiles[innerPosition+1] = highBit;
+            curTile.tiles[innerPosition+0] = lowBit;
+        }
+        this->chartiles.push_back(curTile);
+    }
 }
