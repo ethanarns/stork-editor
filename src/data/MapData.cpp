@@ -30,8 +30,8 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             auto pltb = new LayerPaletteData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subScenData.push_back(pltb);
         } else if (subMagic == Constants::COLZ_MAGIC_NUM) {
-            YUtils::printDebug("COLZ",DebugType::VERBOSE);
-            mpdzIndex += subLength;
+            auto colz = new MapCollisionData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subScenData.push_back(colz);
         } else if (subMagic == Constants::MPBZ_MAGIC_NUM) {
             auto mpbz = new MapTilesData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subScenData.push_back(mpbz);
@@ -48,6 +48,7 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             std::stringstream ssEndNotMatch;
             ssEndNotMatch << "Mismatch in end index. Current Index: " << std::hex;
             ssEndNotMatch << mpdzIndex << ", Temp End: " << tempEnd;
+            ssEndNotMatch << ", Magic Number: " << std::hex << subMagic;
             YUtils::printDebug(ssEndNotMatch.str(),DebugType::ERROR);
         }
     }
@@ -213,4 +214,12 @@ AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
         }
         this->chartiles.push_back(curTile);
     }
+    // Index was separate
+    mpdzIndex += compressed.size();
+}
+
+MapCollisionData::MapCollisionData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
+    this->colData = YCompression::lzssVectorDecomp(compressed);
+    mpdzIndex += compressed.size();
 }

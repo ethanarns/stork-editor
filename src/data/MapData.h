@@ -17,6 +17,25 @@ public:
     uint32_t magicNumber = 0;
 };
 
+class MapCollisionData : public LevelData {
+public:
+    MapCollisionData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    std::string toString() {
+        std::stringstream ss;
+        ss << "COLZ { records: 0x";
+        ss << std::hex << this->colData.size();
+        ss << " }";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile() {
+        // 1:1 basically
+        return FsPacker::packInstruction(Constants::COLZ_MAGIC_NUM,this->colData,true);
+    };
+    uint32_t magicNumber = Constants::COLZ_MAGIC_NUM;
+
+    std::vector<uint8_t> colData;
+};
+
 class AnimatedMapData : public LevelData {
 public:
     AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
