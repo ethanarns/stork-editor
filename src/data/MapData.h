@@ -269,6 +269,7 @@ public:
     // Others
     LayerData* getScenByBg(int bg);
     std::vector<LevelObject*> getAllLevelObjects();
+    LevelObject* getLevelObjectByUuid(uint32_t uuid);
 private:    
     std::vector<LevelData*> subData;
     LevelData* getFirstDataByMagic(uint32_t magicNumber);

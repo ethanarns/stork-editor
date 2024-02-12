@@ -324,6 +324,20 @@ std::vector<LevelObject *> MapData::getAllLevelObjects() {
     return setd->levelObjects;
 }
 
+LevelObject *MapData::getLevelObjectByUuid(uint32_t uuid) {
+    auto objects = this->getAllLevelObjects();
+    for (auto it = objects.begin(); it != objects.end(); it++) {
+        if ( (*it)->uuid == uuid ) {
+            return (*it);
+        }
+    }
+    std::stringstream ss;
+    ss << "Could not locate LevelObject with UUID 0x";
+    ss << std::hex << uuid;
+    YUtils::printDebug(ss.str(),DebugType::ERROR);
+    return nullptr;
+}
+
 LevelData *MapData::getFirstDataByMagic(uint32_t magicNumber) {
     for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
         if ( (*it)->getMagic() == magicNumber ) {
