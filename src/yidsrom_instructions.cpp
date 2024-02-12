@@ -161,6 +161,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     std::string mpdzFileName = fileName_noext.append(Constants::MPDZ_EXTENSION);
     auto fileVector = this->getByteVectorFromFile(mpdzFileName);
     MapData mapData(fileVector,true);
+    // Delete below to restart loop
     std::cout << "Done" << std::endl;
     exit(EXIT_SUCCESS);
     // YUtils::writeByteVectorToFile(fileVector,mpdzFileName); // Uncomment to get uncompressed MPDZ

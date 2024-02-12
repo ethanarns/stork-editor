@@ -10,7 +10,7 @@
 #include <QByteArray>
 
 LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
-    YUtils::printDebug("LayerData loop start",DebugType::VERBOSE);
+    // YUtils::printDebug("LayerData loop start",DebugType::VERBOSE);
     while (mpdzIndex < stop) {
         uint32_t subMagic = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 4;
@@ -76,10 +76,9 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed) {
         uint32_t subLength = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 4;
         if (subMagic == Constants::SCEN_MAGIC_NUM) {
-            YUtils::printDebug("Handling SCEN",DebugType::VERBOSE);
+            //YUtils::printDebug("Handling SCEN",DebugType::VERBOSE);
             auto scen = new LayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subData.push_back(scen);
-            YUtils::printDebug(scen->toString(),DebugType::VERBOSE);
         } else if (subMagic == Constants::GRAD_MAGIC_NUM) {
             YUtils::printDebug("Handling GRAD",DebugType::VERBOSE);
             mpdzIndex += subLength;
