@@ -160,11 +160,19 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     YUtils::printDebug(ssMpdzLoad.str(),DebugType::VERBOSE);
     std::string mpdzFileName = fileName_noext.append(Constants::MPDZ_EXTENSION);
     auto fileVector = this->getByteVectorFromFile(mpdzFileName);
-    MapData mapData(fileVector,true);
+    this->mapData = new MapData(fileVector,true);
+
     // Delete below to restart loop
-    std::cout << "Done" << std::endl;
-    exit(EXIT_SUCCESS);
+    //auto test = mapData.getAllLevelObjects();
+    //auto test2 = mapData.getLevelObjectByUuid(0x61);
+    // auto layer2 = mapData.getScenByBg(2);
+    // auto palette = mapData.getScenByBg(2)->getPalette();
+    // std::cout << layer2->getInfo()->imbzFilename << std::endl;
+    // std::cout << std::hex << test.size() << std::endl;
+    // std::cout << "Done" << std::endl;
+    // exit(EXIT_SUCCESS);
     // YUtils::writeByteVectorToFile(fileVector,mpdzFileName); // Uncomment to get uncompressed MPDZ
+
     auto uncompVec = YCompression::lzssVectorDecomp(fileVector,false);
     
     uint32_t magic = YUtils::getUint32FromVec(uncompVec,0);

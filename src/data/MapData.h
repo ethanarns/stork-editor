@@ -188,6 +188,10 @@ public:
     uint8_t whichBackground;
     uint8_t layerOrder;
     // Not related to which other SCEN sub-datas present
+    // Switching from 4 to 2 on first 1-1 level causes tiles to fuck up. Vertical lines. Maybe compression related?
+    // Setting that to 3 makes only SOME tiles messed up
+    // Setting it to 1 makes the background stop being transparent, now it's all opaque diagonal lines. Rest screwed up too
+    // Only 1-4 available. Definitely tile related
     uint8_t unkThird;
     uint8_t baseBlockMaybe;
     uint32_t colorModeMaybe;

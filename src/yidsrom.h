@@ -16,6 +16,8 @@
 #include "PixelDelegate.h"
 #include "Level.h"
 
+#include "data/MapData.h"
+
 #include <QByteArray>
 
 // Variable sizes and explanations: http://problemkaputt.de/gbatek.htm#dscartridgeheader
@@ -35,6 +37,9 @@ public:
     std::map<std::string,uint32_t> fileIdMap;
     std::fstream romFile;
     RomMetadata metadata;
+    MapData* mapData;
+
+
     QByteArray currentPalettes[0x20];
     /**
      * @brief "Characters", or the pixel arrangement of tiles. From IMBZ data, for BG2
