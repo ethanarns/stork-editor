@@ -3,6 +3,7 @@
 #include "../utils.h"
 #include "../compression.h"
 #include "../constants.h"
+#include "../Chartile.h"
 
 #include <vector>
 #include <fstream>
@@ -32,8 +33,8 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             YUtils::printDebug("COLZ",DebugType::VERBOSE);
             mpdzIndex += subLength;
         } else if (subMagic == Constants::MPBZ_MAGIC_NUM) {
-            YUtils::printDebug("MPBZ",DebugType::VERBOSE);
-            mpdzIndex += subLength;
+            auto mpbz = new MapTilesData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subScenData.push_back(mpbz);
         } else if (subMagic == Constants::IMBZ_MAGIC_NUM) {
             YUtils::printDebug("IMBZ",DebugType::VERBOSE);
             mpdzIndex += subLength;
@@ -136,5 +137,31 @@ LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
             mpdzIndex++;
         }
         this->palettes.push_back(currentLoadingPalette);
+    }
+}
+
+MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
+    auto mpbzData = YCompression::lzssVectorDecomp(compressed);
+    if (YUtils::getUint16FromVec(mpdzBytes,mpdzIndex) == 0xffff) {
+        mpdzIndex += 2;
+        // Offset is active
+        this->tileOffset = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 2;
+        this->bottomTrim = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 2;
+    } else {
+        this->tileOffset = 0;
+        this->bottomTrim = 0;
+    }
+    // Loop
+    while (mpdzIndex < stop) {
+        uint16_t curShort = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 2;
+        // TODO
+        // if (bgColMode == BgColorMode::MODE_16) {
+        //     curShort += 0x1000; // 0201c730
+        // }
+        this->tileRenderData.push_back(curShort);
     }
 }

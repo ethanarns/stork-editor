@@ -16,6 +16,28 @@ public:
     uint32_t magicNumber = 0;
 };
 
+class MapTilesData : public LevelData {
+public:
+    MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    std::string toString() {
+        std::stringstream ss;
+        ss << "MPBZ { Palette Count: 0x";
+        ss << " }";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        // TODO //
+        result = FsPacker::packInstruction(Constants::MPBZ_MAGIC_NUM,result,false);
+        return result;
+    };
+    uint32_t magicNumber = Constants::MPBZ_MAGIC_NUM;
+
+    uint16_t tileOffset;
+    uint16_t bottomTrim;
+    std::vector<uint16_t> tileRenderData;
+};
+
 class LayerPaletteData : public LevelData {
 public:
     LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
