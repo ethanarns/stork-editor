@@ -261,8 +261,6 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             if (whichBgToWriteTo == 2) {
                 this->colorModeBg2 = whichBgColorModeMaybe;
             } else if (whichBgToWriteTo == 1) {
-                this->canvasHeightBg1 = canvasDimensions >> 0x10;
-                this->canvasWidthBg1 = canvasDimensions % 0x10000;
                 this->colorModeBg1 = whichBgColorModeMaybe;
             } else if (whichBgToWriteTo == 3) {
                 this->colorModeBg3 = whichBgColorModeMaybe;
@@ -349,8 +347,8 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 this->canvasWidthCol = this->mapData->getScenByBg(2)->getInfo()->layerWidth;
                 this->canvasHeightCol = this->mapData->getScenByBg(2)->getInfo()->layerHeight;
             } else if (whichBgToWriteTo == 1) {
-                this->canvasWidthCol = this->canvasWidthBg1;
-                this->canvasHeightCol = this->canvasHeightBg1;
+                this->canvasWidthCol = this->mapData->getScenByBg(1)->getInfo()->layerWidth;
+                this->canvasHeightCol = this->mapData->getScenByBg(1)->getInfo()->layerHeight;
             } else {
                 std::stringstream ssColErr;
                 ssColErr << "Using collision on unsupported BG: " << hex << whichBgToWriteTo;
@@ -850,7 +848,7 @@ MpbzData YidsRom::handleMPBZ(std::vector<uint8_t>& uncompressedMpbz, uint16_t wh
         if (whichBg == 2) {
             offset = offset * (this->mapData->getScenByBg(2)->getInfo()->layerWidth);
         } else if (whichBg == 1) {
-            offset = offset * this->canvasWidthBg1;
+            offset = offset * (this->mapData->getScenByBg(1)->getInfo()->layerWidth);
         }
         
         if (whichBg == 2) {

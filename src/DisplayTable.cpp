@@ -407,7 +407,7 @@ void DisplayTable::updateBg() {
         YUtils::printDebug("Cannot update BG2, missing pixelTilesBg2",DebugType::WARNING);
     }
     
-    const uint32_t cutOffBg2 = this->yidsRom->mapData->getScenByBg(2)->getInfo()->layerWidth;;
+    const uint32_t cutOffBg2 = this->yidsRom->mapData->getScenByBg(2)->getInfo()->layerWidth;
     uint32_t bg2LeftOffset = 0;
     while (bg2LeftOffset < newCanvasWidth) {
         for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSizeBg2; preRenderIndex++) {
@@ -432,7 +432,7 @@ void DisplayTable::updateBg() {
         YUtils::printDebug("preRenderDataBg1 is empty",DebugType::WARNING);
         return;
     }
-    if (this->yidsRom->canvasWidthBg1 == 0) {
+    if (this->yidsRom->mapData->getScenByBg(1)->getInfo()->layerWidth == 0) {
         YUtils::printDebug("Canvas Width for BG1 was never set!",DebugType::ERROR);
         return;
     }
@@ -440,7 +440,7 @@ void DisplayTable::updateBg() {
         YUtils::printDebug("Cannot update BG1, missing pixelTilesBg1",DebugType::WARNING);
         return;
     }
-    const uint32_t cutOffBg1 = this->yidsRom->canvasWidthBg1;
+    const uint32_t cutOffBg1 = this->yidsRom->mapData->getScenByBg(1)->getInfo()->layerWidth;
     for (uint32_t preRenderIndex1 = 0; preRenderIndex1 < preRenderSizeBg1; preRenderIndex1++) {
         uint32_t y = preRenderIndex1 / cutOffBg1;
         uint32_t x = preRenderIndex1 % cutOffBg1;
