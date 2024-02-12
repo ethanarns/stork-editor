@@ -12,6 +12,7 @@
 #include <QTableWidget>
 #include <QMimeData>
 #include <QDragEnterEvent>
+#include <QByteArray>
 
 enum LayerSelectMode {
     BG1_LAYER,
