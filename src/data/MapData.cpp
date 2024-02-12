@@ -27,16 +27,18 @@ LayerPaletteData *LayerData::getPalette() {
     return static_cast<LayerPaletteData*>(potentialPalette);
 }
 
-LevelData* LayerData::getFirstDataByMagic(uint32_t magicNumber) {
+LevelData* LayerData::getFirstDataByMagic(uint32_t magicNumber, bool silentFail) {
     for (auto it = this->subScenData.begin(); it != this->subScenData.end(); it++) {
         if ( (*it)->getMagic() == magicNumber ) {
             return (*it);
         }
     }
-    std::stringstream ss;
-    ss << "Sub-LayerData with magic number ";
-    ss << std::hex << magicNumber << " not found";
-    YUtils::printDebug(ss.str(),DebugType::WARNING);
+    if (!silentFail) {
+        std::stringstream ss;
+        ss << "Sub-LayerData with magic number ";
+        ss << std::hex << magicNumber << " not found";
+        YUtils::printDebug(ss.str(),DebugType::WARNING);
+    }
     return nullptr;
 }
 
@@ -157,7 +159,7 @@ std::vector<uint8_t> MapData::getCollisionArray() {
     for (int i = 1; i <= 3; i++) {
         auto possibleScen = this->getScenByBg(i);
         if (possibleScen != nullptr) {
-            auto possibleColz = possibleScen->getFirstDataByMagic(Constants::COLZ_MAGIC_NUM);
+            auto possibleColz = possibleScen->getFirstDataByMagic(Constants::COLZ_MAGIC_NUM,true);
             if (possibleColz != nullptr) {
                 return static_cast<MapCollisionData*>(possibleColz)->colData;
             }

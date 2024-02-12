@@ -222,7 +222,7 @@ public:
 
     ScenInfoData* getInfo();
     LayerPaletteData* getPalette();
-    LevelData* getFirstDataByMagic(uint32_t magicNumber);
+    LevelData* getFirstDataByMagic(uint32_t magicNumber, bool silentFail = false);
 private:
     std::vector<LevelData*> subScenData;
 };
