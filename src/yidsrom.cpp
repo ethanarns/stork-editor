@@ -28,7 +28,7 @@
 YidsRom::YidsRom() {
     this->filesLoaded = false;
     this->preRenderDataBg2.reserve(180'000); // Found 189280 in 1-1's first IMBZ
-    this->collisionTileArray.reserve(79'000); // Found roughly 79000 in 1-1's first IMBZ
+    //this->collisionTileArray.reserve(79'000); // Found roughly 79000 in 1-1's first IMBZ
 }
 
 void YidsRom::openRom(std::string fileName) {
@@ -377,8 +377,6 @@ std::vector<uint8_t> YidsRom::getByteVectorFromFile(std::string fileName) {
 }
 
 void YidsRom::wipeCrsbData() {
-    this->collisionTileArray.clear();
-
     this->canvasHeightBg2 = 0;
     this->canvasWidthBg2 = 0;
 

@@ -283,13 +283,14 @@ void DisplayTable::initCellCollision() {
         return;
     }
     const uint32_t cutOff = this->yidsRom->canvasWidthCol/2;
-    const int CELL_LIST_SIZE = this->yidsRom->collisionTileArray.size();
+    auto collisionTileArray = this->yidsRom->mapData->getCollisionArray();
+    const int CELL_LIST_SIZE = collisionTileArray.size();
     if (CELL_LIST_SIZE < 1) {
         YUtils::printDebug("Collision Tile Array is empty!",DebugType::ERROR);
         return;
     }
     for (int colIndex = 0; colIndex < CELL_LIST_SIZE; colIndex++) {
-        const auto curCol = this->yidsRom->collisionTileArray.at(colIndex);
+        const auto curCol = collisionTileArray.at(colIndex);
         uint32_t y = (colIndex / cutOff)*2;
         uint32_t x = (colIndex % cutOff)*2;
         if (curCol == CollisionType::SQUARE) {

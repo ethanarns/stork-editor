@@ -504,7 +504,7 @@ void MainWindow::menuClick_memory() {
 
     auto pixelTilesBg1size = this->rom->pixelTilesBg1.size();
     auto pixelTilesBg2size = this->rom->pixelTilesBg2.size();
-    auto collisionArraySize = this->rom->collisionTileArray.size();
+    auto collisionArraySize = this->rom->mapData->getCollisionArray().size();
     auto preRenderDataBg1 = this->rom->preRenderDataBg1.size();
     auto preRenderDataBg2 = this->rom->preRenderDataBg2.size();
     auto levelObjectCount = this->rom->mapData->getAllLevelObjects().size();

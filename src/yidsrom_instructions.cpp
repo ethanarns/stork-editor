@@ -334,10 +334,10 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             mpbzData.bgColorMode = whichBgColorModeMaybe;
             scenData.minorInstructions.push_back(&mpbzData);
         } else if (curSubInstruction == Constants::COLZ_MAGIC_NUM) {
-            if (collisionTileArray.size() > 0) {
-                std::cout << "[ERROR] Attempted to load a second COLZ, only one should ever be loaded" << endl;
-                exit(EXIT_FAILURE);
-            }
+            // if (collisionTileArray.size() > 0) {
+            //     std::cout << "[ERROR] Attempted to load a second COLZ, only one should ever be loaded" << endl;
+            //     exit(EXIT_FAILURE);
+            // }
             ColzData colzData;
             uint32_t colzLength = YUtils::getUint32FromVec(mpdzVec, indexPointer + 4); // First is 0x0b7c
             // Slice out COLZ data
@@ -345,7 +345,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             Address compressedDataEnd = compressedDataStart + colzLength;
             auto colzCompressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
             auto uncompressedColz = YCompression::lzssVectorDecomp(colzCompressedSubArray, false);
-            this->collisionTileArray = uncompressedColz; // Copy directly
+            //this->collisionTileArray = uncompressedColz; // Copy directly
             colzData.colArray = uncompressedColz;
             if (whichBgToWriteTo == 2) {
                 this->canvasWidthCol = this->canvasWidthBg2;

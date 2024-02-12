@@ -74,11 +74,6 @@ public:
      */
     std::vector<uint16_t> preRenderDataBg3;
     BgColorMode colorModeBg3;
-    /**
-     * @brief Collision tiles, each taking up a full 16x16 tile. Also handles 
-     * static normal coins for some reason
-     */
-    std::vector<uint8_t> collisionTileArray;
 
     std::map<uint32_t,ObjectPalette> objsetPalettes;
 

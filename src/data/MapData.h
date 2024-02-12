@@ -284,6 +284,11 @@ public:
     LevelObject* getLevelObjectByUuid(uint32_t uuid);
     uint32_t getGreatestCanvasHeight();
     uint32_t getGreatestCanvasWidth();
+    /**
+     * @brief Collision tiles, each taking up a full 16x16 tile. Also handles 
+     * static normal coins for some reason
+     */
+    std::vector<uint8_t> getCollisionArray();
 private:    
     std::vector<LevelData*> subData;
     LevelData* getFirstDataByMagic(uint32_t magicNumber);
