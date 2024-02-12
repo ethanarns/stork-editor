@@ -54,6 +54,11 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
     }
 }
 
+ScenInfoData* LayerData::getInfo() {
+    // FIXME
+    return nullptr;
+}
+
 MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed) {
     if (compressed) {
         mpdzBytes = YCompression::lzssVectorDecomp(mpdzBytes,false);
@@ -314,7 +319,18 @@ LevelObjectData::LevelObjectData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
     }
 }
 
-std::vector<LevelObject *> MapData::getAllLevelObjects() {
+LayerData* MapData::getScenByBg(int bg) {
+    for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
+        if ( (*it)->getMagic() == Constants::SCEN_MAGIC_NUM ) {
+            LayerData* ld = static_cast<LayerData*>(*it);
+            // FIXME
+        }
+    }
+    return nullptr;
+}
+
+std::vector<LevelObject *> MapData::getAllLevelObjects()
+{
     auto potentialSetd = this->getFirstDataByMagic(Constants::SETD_MAGIC_NUM);
     if (potentialSetd == nullptr) {
         YUtils::printDebug("SETD record not found, returning empty",DebugType::ERROR);

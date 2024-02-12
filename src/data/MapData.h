@@ -213,6 +213,9 @@ public:
         return result;
     };
     uint32_t getMagic() { return Constants::SCEN_MAGIC_NUM; }
+
+    ScenInfoData* getInfo();
+private:
     std::vector<LevelData*> subScenData;
 };
 
