@@ -248,6 +248,7 @@ ImgbLayerData::ImgbLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzInde
 }
 
 LevelGradientData::LevelGradientData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    // It is GINF then GCOL every single time
     while (mpdzIndex < stop) {
         uint32_t subMagic = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 4;
@@ -255,13 +256,23 @@ LevelGradientData::LevelGradientData(std::vector<uint8_t> &mpdzBytes, uint32_t &
         mpdzIndex += 4;
         uint32_t tempEnd = mpdzIndex + subLength;
         if (subMagic == Constants::GINF_MAGIC_NUM) {
-            YUtils::printDebug("GINF",DebugType::VERBOSE);
-            mpdzIndex += subLength;
-            // auto info = new ScenInfoData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
-            // this->subScenData.push_back(info);
+            this->unknown1 = mpdzBytes.at(mpdzIndex++);
+            this->unknown2 = mpdzBytes.at(mpdzIndex++);
+            this->unknown3 = mpdzBytes.at(mpdzIndex++);
+            this->unknown4 = mpdzBytes.at(mpdzIndex++);
+            this->unknown5 = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+            mpdzIndex += 2;
+            this->unknown6 = mpdzBytes.at(mpdzIndex++);
+            this->unknown7 = mpdzBytes.at(mpdzIndex++);
+            this->yOffset = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
+            mpdzIndex += 4;
         } else if (subMagic == Constants::GCOL_MAGIC_NUM) {
-            YUtils::printDebug("GCOL",DebugType::VERBOSE);
-            mpdzIndex += subLength;
+            uint32_t stop = mpdzIndex+subLength;
+            while (mpdzIndex < stop) {
+                auto curColor = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+                mpdzIndex += 2;
+                this->colors.push_back(curColor);
+            }
         } else {
             std::stringstream unknownMagic;
             unknownMagic << "Unknown magic number in LevelGradientData: 0x" << std::hex << subMagic;

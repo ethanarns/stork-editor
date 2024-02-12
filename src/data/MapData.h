@@ -198,22 +198,29 @@ public:
     LevelGradientData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
     std::string toString() {
         std::stringstream ss;
-        ss << "LevelGradientData { Subdata Count: ";
-        ss << std::dec << this->subGradData.size();
+        ss << "LevelGradientData { ";
         ss << " }";
         return ss.str();
     };
     std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
-        for (size_t i = 0; i < this->subGradData.size(); i++) {
-            auto subCompiled = this->subGradData.at(i)->compile();
-            YUtils::appendVector(result,subCompiled);
-        }
+        // TODO
         result = FsPacker::packInstruction(Constants::GRAD_MAGIC_NUM,result,false);
         return result;
     };
     uint32_t magicNumber = Constants::GRAD_MAGIC_NUM;
-    std::vector<LevelData*> subGradData;
+    // Every single time, it's GINF then GCOL. No need to loop
+    // GINF //
+    uint8_t unknown1;
+    uint8_t unknown2;
+    uint8_t unknown3;
+    uint8_t unknown4;
+    uint16_t unknown5;
+    uint8_t unknown6;
+    uint8_t unknown7;
+    uint32_t yOffset;
+
+    std::vector<uint16_t> colors;
 };
 
 class MapData : public LevelData {
