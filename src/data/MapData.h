@@ -4,6 +4,7 @@
 #include "../FsPacker.h"
 #include "../utils.h"
 #include "../Chartile.h"
+#include "../LevelObject.h"
 
 #include <vector>
 #include <string>
@@ -15,6 +16,27 @@ public:
     virtual std::string toString() = 0;
     virtual std::vector<uint8_t> compile() = 0;
     uint32_t magicNumber = 0;
+};
+
+class LevelObjectData : public LevelData {
+public:
+    LevelObjectData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    std::string toString() {
+        std::stringstream ss;
+        ss << "LevelObjectData(SETD) { records: 0x";
+        ss << " }";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        // TODO
+        return FsPacker::packInstruction(Constants::SETD_MAGIC_NUM,result,false);
+    };
+    uint32_t magicNumber = Constants::SETD_MAGIC_NUM;
+
+    std::vector<LevelObject*> levelObjects;
+private:
+    uint32_t uuidIndex = 1;
 };
 
 class ImgbLayerData : public LevelData {

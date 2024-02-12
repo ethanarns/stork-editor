@@ -82,8 +82,8 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed) {
             auto grad = new LevelGradientData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subData.push_back(grad);
         } else if (subMagic == Constants::SETD_MAGIC_NUM) {
-            YUtils::printDebug("Handling SETD",DebugType::VERBOSE);
-            mpdzIndex += subLength;
+            auto setd = new LevelObjectData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subData.push_back(setd);
         } else {
             std::stringstream ssSubNotFound;
             ssSubNotFound << "Unknown MPDZ data: ";
@@ -286,5 +286,30 @@ LevelGradientData::LevelGradientData(std::vector<uint8_t> &mpdzBytes, uint32_t &
             ssEndNotMatch << ", Magic Number in GRAD: " << std::hex << subMagic;
             YUtils::printDebug(ssEndNotMatch.str(),DebugType::ERROR);
         }
+    }
+}
+
+LevelObjectData::LevelObjectData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    while (mpdzIndex < stop) {
+        auto lo = new LevelObject();
+        lo->uuid = this->uuidIndex++;
+        lo->objectId = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 2;
+        lo->settingsLength = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 2;
+        lo->xPosition = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 2;
+        lo->yPosition = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 2;
+        for (uint16_t i = 0; i < lo->settingsLength; i++) {
+            auto curSetByte = mpdzBytes.at(mpdzIndex);
+            mpdzIndex++;
+            lo->settings.push_back(curSetByte);
+        }
+        // Done!
+        this->levelObjects.push_back(lo);
+    }
+    if (mpdzIndex != stop) {
+        YUtils::printDebug("Mismatch in SETD end address",DebugType::ERROR);
     }
 }
