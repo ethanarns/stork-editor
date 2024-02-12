@@ -107,28 +107,37 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
         YUtils::printDebug("INFO not loaded before MapTiles/MPBZ",DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
+    this->tileRenderData.reserve(180'000);
     auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
     auto mpbzData = YCompression::lzssVectorDecomp(compressed);
-    if (YUtils::getUint16FromVec(mpdzBytes,mpdzIndex) == 0xffff) {
-        mpdzIndex += 2;
+    uint32_t mIndex = 0;
+    if (YUtils::getUint16FromVec(mpbzData,mIndex) == 0xffff) {
+        mIndex += 2;
         // Offset is active
-        this->tileOffset = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
-        mpdzIndex += 2;
-        this->bottomTrim = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
-        mpdzIndex += 2;
+        this->tileOffset = YUtils::getUint16FromVec(mpbzData,mIndex);
+        mIndex += 2;
+        this->bottomTrim = YUtils::getUint16FromVec(mpbzData,mIndex);
+        mIndex += 2;
+        uint32_t offset = this->tileOffset * info->layerWidth;
+        for (uint32_t offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
+            this->tileRenderData.push_back(0x0000);
+        } 
+        //mIndex += 3; // 0x0201c714 Huh? This doesn't make sense. Goes ahead 4, but changing to -1 breaks
     } else {
         this->tileOffset = 0;
         this->bottomTrim = 0;
     }
     // Loop
-    while (mpdzIndex < stop) {
-        uint16_t curShort = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
-        mpdzIndex += 2;
+    auto end = mpbzData.size();
+    while (mIndex < end) {
+        uint16_t curShort = YUtils::getUint16FromVec(mpbzData,mIndex);
+        mIndex += 2;
         if (info->colorModeMaybe == BgColorMode::MODE_16) {
             curShort += 0x1000; // 0201c730
         }
         this->tileRenderData.push_back(curShort);
     }
+    mpdzIndex += compressed.size();
 }
 
 AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {

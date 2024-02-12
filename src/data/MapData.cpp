@@ -42,6 +42,16 @@ LevelData* LayerData::getFirstDataByMagic(uint32_t magicNumber, bool silentFail)
     return nullptr;
 }
 
+std::vector<uint16_t> LayerData::getPreRenderData() {
+    auto mpbzMaybe = this->getFirstDataByMagic(Constants::MPBZ_MAGIC_NUM);
+    if (mpbzMaybe == nullptr) {
+        YUtils::printDebug("MPBZ empty, returning empty vector",DebugType::ERROR);
+        return std::vector<uint16_t>();
+    }
+    auto mpbz = static_cast<MapTilesData*>(mpbzMaybe);
+    return mpbz->tileRenderData;
+}
+
 MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed) {
     if (compressed) {
         mpdzBytes = YCompression::lzssVectorDecomp(mpdzBytes,false);
