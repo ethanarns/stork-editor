@@ -12,10 +12,19 @@
 ScenInfoData* LayerData::getInfo() {
     auto potentialInfo = this->getFirstDataByMagic(Constants::INFO_MAGIC_NUM);
     if (potentialInfo == nullptr) {
-        YUtils::printDebug("Failed to find SCEN INFO");
+        YUtils::printDebug("Failed to find SCEN INFO",DebugType::ERROR);
         return nullptr;
     }
     return static_cast<ScenInfoData*>(potentialInfo);
+}
+
+LayerPaletteData *LayerData::getPalette() {
+    auto potentialPalette = this->getFirstDataByMagic(Constants::PLTB_MAGIC_NUM);
+    if (potentialPalette == nullptr) {
+        YUtils::printDebug("Failed to find PLTB info",DebugType::ERROR);
+        return nullptr;
+    }
+    return static_cast<LayerPaletteData*>(potentialPalette);
 }
 
 LevelData* LayerData::getFirstDataByMagic(uint32_t magicNumber) {

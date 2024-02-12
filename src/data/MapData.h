@@ -187,6 +187,7 @@ public:
     uint32_t yScrollOffset;
     uint8_t whichBackground;
     uint8_t layerOrder;
+    // Not related to which other SCEN sub-datas present
     uint8_t unkThird;
     uint8_t baseBlockMaybe;
     uint32_t colorModeMaybe;
@@ -216,6 +217,7 @@ public:
     uint32_t getMagic() { return Constants::SCEN_MAGIC_NUM; }
 
     ScenInfoData* getInfo();
+    LayerPaletteData* getPalette();
     LevelData* getFirstDataByMagic(uint32_t magicNumber);
 private:
     std::vector<LevelData*> subScenData;
