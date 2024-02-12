@@ -12,7 +12,7 @@ src/yidsrom.cpp src/utils.cpp src/compression.cpp src/MainWindow.cpp \
 src/DisplayTable.cpp src/popups/ChartilesTable.cpp src/PixelDelegate.cpp \
 src/popups/PaletteTable.cpp src/yidsrom_instructions.cpp src/yidsrom_metadata.cpp \
 src/popups/LevelSelect.cpp src/LevelObject.cpp src/FsPacker.cpp \
-src/GuiObjectList.cpp src/SelectionInfoTable.cpp src/data/MapData.cpp
+src/GuiObjectList.cpp src/SelectionInfoTable.cpp src/data/MapData.cpp src/data/MapData_subCons.cpp
 HEADERS += src/Chartile.h \
 src/yidsrom.h src/utils.h src/compression.h src/MainWindow.h \
 src/DisplayTable.h src/popups/ChartilesTable.h src/PixelDelegate.h \
