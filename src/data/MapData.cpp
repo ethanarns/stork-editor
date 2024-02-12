@@ -10,7 +10,24 @@
 #include <QByteArray>
 
 ScenInfoData* LayerData::getInfo() {
-    // FIXME
+    auto potentialInfo = this->getFirstDataByMagic(Constants::INFO_MAGIC_NUM);
+    if (potentialInfo == nullptr) {
+        YUtils::printDebug("Failed to find SCEN INFO");
+        return nullptr;
+    }
+    return static_cast<ScenInfoData*>(potentialInfo);
+}
+
+LevelData* LayerData::getFirstDataByMagic(uint32_t magicNumber) {
+    for (auto it = this->subScenData.begin(); it != this->subScenData.end(); it++) {
+        if ( (*it)->getMagic() == magicNumber ) {
+            return (*it);
+        }
+    }
+    std::stringstream ss;
+    ss << "Sub-LayerData with magic number ";
+    ss << std::hex << magicNumber << " not found";
+    YUtils::printDebug(ss.str(),DebugType::WARNING);
     return nullptr;
 }
 
@@ -54,13 +71,20 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed) {
     }
 }
 
-LayerData* MapData::getScenByBg(int bg) {
+LayerData* MapData::getScenByBg(uint8_t bg) {
     for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
         if ( (*it)->getMagic() == Constants::SCEN_MAGIC_NUM ) {
             LayerData* ld = static_cast<LayerData*>(*it);
-            // FIXME
+            auto info = ld->getInfo();
+            if (info->whichBackground == bg) {
+                return ld;
+            }
         }
     }
+    std::stringstream ss;
+    ss << "Failed to get SCEN with BG ";
+    ss << std::hex << (uint16_t)bg;
+    YUtils::printDebug(ss.str(),DebugType::ERROR);
     return nullptr;
 }
 

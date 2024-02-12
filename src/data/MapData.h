@@ -193,6 +193,7 @@ public:
     std::string imbzFilename;
 };
 
+// SCEN
 class LayerData : public LevelData {
 public:
     LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
@@ -215,10 +216,12 @@ public:
     uint32_t getMagic() { return Constants::SCEN_MAGIC_NUM; }
 
     ScenInfoData* getInfo();
+    LevelData* getFirstDataByMagic(uint32_t magicNumber);
 private:
     std::vector<LevelData*> subScenData;
 };
 
+// GRAD
 class LevelGradientData : public LevelData {
 public:
     LevelGradientData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
@@ -270,7 +273,7 @@ public:
         return result;
     };
     // Others
-    LayerData* getScenByBg(int bg);
+    LayerData* getScenByBg(uint8_t bg);
     std::vector<LevelObject*> getAllLevelObjects();
     LevelObject* getLevelObjectByUuid(uint32_t uuid);
 private:    
