@@ -75,7 +75,8 @@ ScenInfoData::ScenInfoData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
     mpdzIndex++;
     this->baseBlockMaybe = mpdzBytes.at(mpdzIndex);
     mpdzIndex++;
-    this->colorModeMaybe = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
+    auto colorMode = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
+    this->colorModeMaybe = colorMode == 0 ? BgColorMode::MODE_16 : BgColorMode::MODE_256;
     mpdzIndex += 4;
     if (mpdzIndex == stop) {
         //YUtils::printDebug("No IMBZ string",DebugType::VERBOSE);

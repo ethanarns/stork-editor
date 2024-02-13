@@ -392,60 +392,47 @@ void DisplayTable::updateBg() {
         this->setColumnCount(newCanvasWidth);
     }
 
-    /******************
-     ** BACKGROUND 2 **
-     ******************/
-    uint32_t preRenderSizeBg2 = this->yidsRom->preRenderDataBg2.size();
-    if (preRenderSizeBg2 == 0) {
-        YUtils::printDebug("preRenderDataBg2 is empty",DebugType::WARNING);
-    }
-    if (this->yidsRom->mapData->getScenByBg(2)->getInfo()->layerWidth == 0) {
-        YUtils::printDebug("Canvas Width for BG2 was never set!",DebugType::ERROR);
-        return;
-    }
-    if (this->yidsRom->pixelTilesBg2.size() < 1) {
-        YUtils::printDebug("Cannot update BG2, missing pixelTilesBg2",DebugType::WARNING);
-    }
-    
-    const uint32_t cutOffBg2 = this->yidsRom->mapData->getScenByBg(2)->getInfo()->layerWidth;
-    uint32_t bg2LeftOffset = 0;
-    while (bg2LeftOffset < newCanvasWidth) {
-        for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSizeBg2; preRenderIndex++) {
-            uint32_t y = preRenderIndex / cutOffBg2;
-            uint32_t x = (preRenderIndex % cutOffBg2) + bg2LeftOffset;
-            // Note: You might need to apply this to other layers later
-            // -1 because if you go the full length, it loops back around. Remember, .length - 1!
-            if (x > newCanvasWidth-1) {
-                continue;
-            }
-            ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg2.at(preRenderIndex),this->yidsRom->colorModeBg2);
-            this->putTileBg(x,y,curShort,2);
+    for (uint8_t bgIndex = 1; bgIndex <= 3; bgIndex++) {
+        // TODO: Support bg 3
+        if (bgIndex == 3) {
+            continue;
         }
-        bg2LeftOffset += cutOffBg2;
-    }
-
-    /******************
-     ** BACKGROUND 1 **
-     ******************/
-    uint32_t preRenderSizeBg1 = this->yidsRom->preRenderDataBg1.size();
-    if (preRenderSizeBg1 == 0) {
-        YUtils::printDebug("preRenderDataBg1 is empty",DebugType::WARNING);
-        return;
-    }
-    if (this->yidsRom->mapData->getScenByBg(1)->getInfo()->layerWidth == 0) {
-        YUtils::printDebug("Canvas Width for BG1 was never set!",DebugType::ERROR);
-        return;
-    }
-    if (this->yidsRom->pixelTilesBg1.size() < 1) {
-        YUtils::printDebug("Cannot update BG1, missing pixelTilesBg1",DebugType::WARNING);
-        return;
-    }
-    const uint32_t cutOffBg1 = this->yidsRom->mapData->getScenByBg(1)->getInfo()->layerWidth;
-    for (uint32_t preRenderIndex1 = 0; preRenderIndex1 < preRenderSizeBg1; preRenderIndex1++) {
-        uint32_t y = preRenderIndex1 / cutOffBg1;
-        uint32_t x = preRenderIndex1 % cutOffBg1;
-        ChartilePreRenderData curShort = YUtils::getCharPreRender(this->yidsRom->preRenderDataBg1.at(preRenderIndex1),this->yidsRom->colorModeBg1);
-        this->putTileBg(x,y,curShort,1);
+        std::cout << "Doing bg " << (uint16_t)bgIndex << std::endl;
+        auto curScen = this->yidsRom->mapData->getScenByBg(bgIndex);
+        if (curScen == nullptr) {
+            std::stringstream ssNoScen;
+            ssNoScen << "No SCEN file for background " << std::hex;
+            ssNoScen << bgIndex << " found";
+            // Handle better?
+            YUtils::printDebug(ssNoScen.str(),DebugType::WARNING);
+            continue; // Proceed to next BG
+        }
+        auto preRenderData = curScen->getPreRenderData();
+        if (preRenderData.size() == 0) {
+            std::stringstream ssEmptyPreRender;
+            ssEmptyPreRender << "No MPBZ file for background " << std::hex;
+            ssEmptyPreRender << bgIndex << " found";
+            YUtils::printDebug(ssEmptyPreRender.str(),DebugType::WARNING);
+            continue; // Proceed to next BG
+        }
+        BgColorMode colorMode = curScen->getInfo()->colorModeMaybe;
+        const uint32_t preRenderSize = preRenderData.size();
+        const uint32_t cutOffBg = curScen->getInfo()->layerWidth;
+        uint32_t bgLeftOffset = 0;
+        while (bgLeftOffset < newCanvasWidth) {
+            for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSize; preRenderIndex++) {
+                uint32_t y = preRenderIndex / cutOffBg;
+                uint32_t x = (preRenderIndex % cutOffBg) + bgLeftOffset;
+                // Note: You might need to apply this to other layers later
+                // -1 because if you go the full length, it loops back around. Remember, .length - 1!
+                if (x > newCanvasWidth-1) {
+                    continue;
+                }
+                ChartilePreRenderData curShort = YUtils::getCharPreRender(preRenderData.at(preRenderIndex),colorMode);
+                this->putTileBg(x,y,curShort,bgIndex);
+            }
+            bgLeftOffset += cutOffBg;
+        }
     }
 }
 

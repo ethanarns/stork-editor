@@ -61,7 +61,7 @@ public:
     // Only 1-4 available. Definitely tile related
     uint8_t unkThird;
     uint8_t baseBlockMaybe;
-    uint32_t colorModeMaybe;
+    BgColorMode colorModeMaybe;
     std::string imbzFilename;
 };
 
