@@ -188,8 +188,6 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     // 8 in order to start it at the first instruction besides SET
     Address mpdzIndex = 8; // Pass this in as a pointer to functions
 
-    this->pixelTilesBg1index = 0;
-
     // TODO: Get rid of this hacky crap
     globalPaletteIndex = 1;
 
@@ -378,16 +376,15 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             uint32_t currentTileIndex = 0;
             uint32_t anmzSize = uncompressedAnmz.size();
             auto startIndex = YUtils::getUint16FromVec(uncompressedAnmz,4);
-
+            Q_UNUSED(startIndex);
             if (whichBgToWriteTo == 1) {
-                this->pixelTilesBg1index = startIndex;
-                currentTileIndex = this->pixelTilesBg1.size(); // Size is last index + 1 already
+                // Do nothing, replaced
             } else if (whichBgToWriteTo == 2) {
-                //Do nothing, replaced
+                // Do nothing, replaced
             } else {
                 YUtils::printDebug("Unhandled BG in ANMZ",DebugType::WARNING);
             }
-            
+
             while(anmzFileIndex < anmzSize) {
                 Chartile curTile;
                 curTile.bgColMode = BgColorMode::MODE_16;
@@ -405,7 +402,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 if (whichBgToWriteTo == 2) {
                     // Do nothing, replaced
                 } else if (whichBgToWriteTo == 1) {
-                    this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
+                    // Do nothing, replaced
                 } else {
                     // warn
                 }
@@ -416,7 +413,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             }
             // Reset the start to 0
             if (whichBgToWriteTo == 1) {
-                this->pixelTilesBg1index = 0;
+                // Do nothing, replaced
             } else if (whichBgToWriteTo == 2) {
                 // Do nothing, replaced
             }
@@ -446,7 +443,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 if (whichBgToWriteTo == 2) {
                     // Do nothing, replaced
                 } else if (whichBgToWriteTo == 1) {
-                    this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
+                    // Do nothing, replaced
                 }
                 
                 // Skip ahead by 0x20
@@ -476,8 +473,6 @@ ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg, BgCol
     ImbzData imbzData;
     imbzData.fileName = fileName_noext;
     imbzData.whichBg = whichBg;
-
-    this->pixelTilesBg1index = 0;
 
     auto compressedFileVector = this->getByteVectorFromFile(fileName_noext.append(".imbz"));
     std::vector uncompressedImbz = YCompression::lzssVectorDecomp(compressedFileVector,false);
@@ -517,7 +512,7 @@ ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg, BgCol
         if (whichBg == 2) {
             // Do nothing, replaced
         } else if (whichBg == 1) {
-            this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
+            // Do nothing, replaced
         }
 
         imbzData.pixelTiles.push_back(curTile);

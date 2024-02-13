@@ -93,8 +93,9 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         
         pal += this->yidsRom->paletteOffsetBg2;
     } else if (whichBg == 1) {
+        auto vramChartiles = this->yidsRom->mapData->getScenByBg(1)->getVramChartiles();
         try {
-            loadedTile = this->yidsRom->pixelTilesBg1.at(pren.tileId);
+            loadedTile = vramChartiles.at(pren.tileId);
         } catch (...) {
             if (pren.tileId != 0) {
                 std::stringstream ssTile;

@@ -74,7 +74,7 @@ void ChartilesTable::refreshLoadedObjectTilesMap() {
 void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
     std::map<uint32_t,Chartile> tilesMap;
     if (whichBg == 1) {
-        tilesMap = this->yidsRom->pixelTilesBg1;
+        tilesMap = this->yidsRom->mapData->getScenByBg(1)->getVramChartiles();
     } else if (whichBg == 2) {
         tilesMap = this->yidsRom->mapData->getScenByBg(2)->getVramChartiles();
     } else {

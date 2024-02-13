@@ -502,13 +502,11 @@ void MainWindow::menuClick_levelSelect() {
 void MainWindow::menuClick_memory() {
     std::cout << "----  Memory Report  ----" << std::endl;
 
-    auto pixelTilesBg1size = this->rom->pixelTilesBg1.size();
     auto collisionArraySize = this->rom->mapData->getCollisionArray().size();
     auto preRenderDataBg1 = this->rom->preRenderDataBg1.size();
     auto preRenderDataBg2 = this->rom->preRenderDataBg2.size();
     auto levelObjectCount = this->rom->mapData->getAllLevelObjects().size();
 
-    std::cout << "pixelTilesBg1 size (count): " << dec << pixelTilesBg1size << std::endl;
     std::cout << "collisionTileArray size (bytes): " << dec << collisionArraySize << std::endl;
     std::cout << "preRenderDataBg1 size (count): " << dec << preRenderDataBg1 << std::endl;
     std::cout << "preRenderDataBg1 size (bytes): " << dec << preRenderDataBg1*2 << std::endl;
