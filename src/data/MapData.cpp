@@ -285,6 +285,20 @@ std::vector<uint8_t> MapData::getCollisionArray() {
     return std::vector<uint8_t>();
 }
 
+uint32_t MapData::getCollisionCanvasWidth() {
+    for (int i = 1; i <= 3; i++) {
+        auto possibleScen = this->getScenByBg(i);
+        if (possibleScen != nullptr) {
+            auto possibleColz = possibleScen->getFirstDataByMagic(Constants::COLZ_MAGIC_NUM,true);
+            if (possibleColz != nullptr) {
+                return possibleScen->getInfo()->layerWidth;
+            }
+        }
+    }
+    YUtils::printDebug("COLZ data not found!",DebugType::ERROR);
+    return 0;
+}
+
 LevelData *MapData::getFirstDataByMagic(uint32_t magicNumber) {
     for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
         if ( (*it)->getMagic() == magicNumber ) {

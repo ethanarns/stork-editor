@@ -280,11 +280,12 @@ void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType) 
 }
 
 void DisplayTable::initCellCollision() {
-    if (this->yidsRom->canvasWidthCol < 1) {
+    auto canvasWidthCol = this->yidsRom->mapData->getCollisionCanvasWidth();
+    if (canvasWidthCol < 1) {
         YUtils::printDebug("Canvas Width for Collision is invalid!",DebugType::ERROR);
         return;
     }
-    const uint32_t cutOff = this->yidsRom->canvasWidthCol/2;
+    const uint32_t cutOff = canvasWidthCol/2;
     auto collisionTileArray = this->yidsRom->mapData->getCollisionArray();
     const int CELL_LIST_SIZE = collisionTileArray.size();
     if (CELL_LIST_SIZE < 1) {

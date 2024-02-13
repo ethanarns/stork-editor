@@ -309,6 +309,10 @@ public:
      * static normal coins for some reason
      */
     std::vector<uint8_t> getCollisionArray();
+    /**
+     * Get the layer width of which SCEN has COLZ data
+    */
+    uint32_t getCollisionCanvasWidth();
 private:    
     std::vector<LevelData*> subData;
     LevelData* getFirstDataByMagic(uint32_t magicNumber);
