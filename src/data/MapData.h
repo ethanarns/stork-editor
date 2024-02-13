@@ -220,12 +220,17 @@ public:
     };
     uint32_t getMagic() { return Constants::SCEN_MAGIC_NUM; }
 
+    // A mirror of the VRAM set aside for this BG
+    std::map<uint32_t,Chartile> pixelTiles;
+
     ScenInfoData* getInfo();
     LayerPaletteData* getPalette();
     LevelData* getFirstDataByMagic(uint32_t magicNumber, bool silentFail = false);
     std::vector<uint16_t> getPreRenderData();
 private:
     std::vector<LevelData*> subScenData;
+    // VRAM index (temporary)
+    uint32_t pixelTileIndex;
 };
 
 // GRAD

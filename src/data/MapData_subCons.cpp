@@ -11,6 +11,7 @@
 
 LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     // YUtils::printDebug("LayerData loop start",DebugType::VERBOSE);
+    this->pixelTileIndex = 0;
     ScenInfoData* tempInfo = nullptr;
     while (mpdzIndex < stop) {
         uint32_t subMagic = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
