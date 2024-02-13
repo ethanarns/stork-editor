@@ -192,8 +192,10 @@ AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
     mpdzIndex += compressed.size();
 }
 
+// COLZ
 MapCollisionData::MapCollisionData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
+    this->colData.reserve(79'000);
     this->colData = YCompression::lzssVectorDecomp(compressed);
     mpdzIndex += compressed.size();
 }

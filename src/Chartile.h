@@ -19,6 +19,7 @@ struct Chartile {
 };
 
 struct ChartilePreRenderData {
+    // Points to a certain pixel tile
     uint32_t tileId;
     uint8_t paletteId;
     bool flipH;
