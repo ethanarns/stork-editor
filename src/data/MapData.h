@@ -33,7 +33,7 @@ public:
         ss << "  Layer Order: 0x" << (uint16_t)this->layerOrder << std::endl;
         ss << "  Unknown 3rd: 0x" << (uint16_t)this->unkThird << std::endl;
         ss << "  Base Block (Maybe): 0x" << (uint16_t)this->baseBlockMaybe << std::endl;
-        ss << "  Color Mode (Maybe): 0x" << this->colorModeMaybe << std::endl;
+        ss << "  Color Mode (Maybe): 0x" << this->colorMode << std::endl;
         if (!this->imbzFilename.empty()) {
             ss << "  IMBZ File: " << this->imbzFilename;
         }
@@ -61,7 +61,7 @@ public:
     // Only 1-4 available. Definitely tile related
     uint8_t unkThird;
     uint8_t baseBlockMaybe;
-    BgColorMode colorModeMaybe;
+    BgColorMode colorMode;
     std::string imbzFilename;
 };
 

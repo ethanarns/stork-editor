@@ -77,7 +77,7 @@ ScenInfoData::ScenInfoData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
     this->baseBlockMaybe = mpdzBytes.at(mpdzIndex);
     mpdzIndex++;
     auto colorMode = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
-    this->colorModeMaybe = colorMode == 0 ? BgColorMode::MODE_16 : BgColorMode::MODE_256;
+    this->colorMode = colorMode == 0 ? BgColorMode::MODE_16 : BgColorMode::MODE_256;
     mpdzIndex += 4;
     if (mpdzIndex == stop) {
         //YUtils::printDebug("No IMBZ string",DebugType::VERBOSE);
@@ -134,7 +134,7 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
     while (mIndex < end) {
         uint16_t curShort = YUtils::getUint16FromVec(mpbzData,mIndex);
         mIndex += 2;
-        if (info->colorModeMaybe == BgColorMode::MODE_16) {
+        if (info->colorMode == BgColorMode::MODE_16) {
             curShort += 0x1000; // 0201c730
         }
         this->tileRenderData.push_back(curShort);
