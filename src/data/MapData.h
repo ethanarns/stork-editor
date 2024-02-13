@@ -11,6 +11,9 @@
 #include <sstream>
 #include <QByteArray>
 
+// Forward declaration
+class LayerData;
+
 class LevelData {
 public:
     virtual std::string toString() = 0;
@@ -18,6 +21,7 @@ public:
     virtual uint32_t getMagic() { return 0; };
 };
 
+// INFO
 class ScenInfoData : public LevelData {
 public:
     ScenInfoData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
@@ -65,6 +69,7 @@ public:
     std::string imbzFilename;
 };
 
+// SETD
 class LevelObjectData : public LevelData {
 public:
     LevelObjectData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
@@ -86,6 +91,7 @@ private:
     uint32_t uuidIndex = 1;
 };
 
+// IMGB
 class ImgbLayerData : public LevelData {
 public:
     ImgbLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
@@ -105,6 +111,7 @@ public:
     std::vector<Chartile> chartiles;
 };
 
+// COLZ
 class MapCollisionData : public LevelData {
 public:
     MapCollisionData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
@@ -124,6 +131,7 @@ public:
     std::vector<uint8_t> colData;
 };
 
+// ANMZ
 class AnimatedMapData : public LevelData {
 public:
     AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
@@ -150,6 +158,7 @@ public:
     std::vector<Chartile> chartiles;
 };
 
+// MPBZ
 class MapTilesData : public LevelData {
 public:
     MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, LayerData* parent);
@@ -172,6 +181,7 @@ public:
     std::vector<uint16_t> tileRenderData;
 };
 
+// PLTB
 class LayerPaletteData : public LevelData {
 public:
     LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
@@ -264,6 +274,7 @@ public:
     std::vector<uint16_t> colors;
 };
 
+// MPDZ
 class MapData : public LevelData {
 public:
     MapData(std::vector<uint8_t> mpdzBytes, bool compressed = true);
