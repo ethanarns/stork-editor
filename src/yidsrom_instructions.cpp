@@ -624,7 +624,7 @@ SetdObjectData YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& inde
     const uint32_t indexEnd = indexPointer + setdLength;
     while (indexPointer < indexEnd) {
         LevelObject lo;
-        lo.uuid = this->levelObjectLoadIndex++;
+        //lo.uuid = this->levelObject-LoadIndex++; No longer used
         lo.objectId = YUtils::getUint16FromVec(mpdzVec, indexPointer + 0);
         lo.settingsLength = YUtils::getUint16FromVec(mpdzVec, indexPointer + 2);
         uint16_t len = lo.settingsLength;
@@ -633,15 +633,15 @@ SetdObjectData YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& inde
             bigObj << "Unusually high object settings length for " << hex << lo.objectId << ": " << hex << len;
             YUtils::printDebug(bigObj.str(),DebugType::WARNING);
         }
-        lo.xPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 4);
-        lo.yPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 6);
+        //lo.xPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 4);
+        //lo.yPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 6);
         
         indexPointer += 8; // This skips to either the settings, or the next object
         if (len > 0) {
             lo.settings = YUtils::subVector(mpdzVec,indexPointer,indexPointer + len);
             indexPointer += len;
         }
-        setdObjectData.levelObjects.push_back(lo);
+        //setdObjectData.levelObjects.push_back(lo);
     }
     return setdObjectData;
 }
