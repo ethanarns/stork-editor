@@ -152,7 +152,7 @@ public:
 
 class MapTilesData : public LevelData {
 public:
-    MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, ScenInfoData* info);
+    MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, LayerData* parent);
     std::string toString() {
         std::stringstream ss;
         ss << "MPBZ { Palette Count: 0x";
