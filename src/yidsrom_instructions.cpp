@@ -343,10 +343,8 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             colzData.colArray = uncompressedColz;
             if (whichBgToWriteTo == 2) {
                 this->canvasWidthCol = this->mapData->getScenByBg(2)->getInfo()->layerWidth;
-                this->canvasHeightCol = this->mapData->getScenByBg(2)->getInfo()->layerHeight;
             } else if (whichBgToWriteTo == 1) {
                 this->canvasWidthCol = this->mapData->getScenByBg(1)->getInfo()->layerWidth;
-                this->canvasHeightCol = this->mapData->getScenByBg(1)->getInfo()->layerHeight;
             } else {
                 std::stringstream ssColErr;
                 ssColErr << "Using collision on unsupported BG: " << hex << whichBgToWriteTo;

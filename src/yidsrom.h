@@ -77,7 +77,6 @@ public:
     uint32_t levelObjectLoadIndex = 1; // Instead of UUIDs
 
     uint32_t canvasWidthCol = 0;
-    uint32_t canvasHeightCol = 0;
     bool filesLoaded = false;
     YidsRom();
     void openRom(std::string fileName);
