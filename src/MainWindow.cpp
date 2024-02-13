@@ -330,7 +330,7 @@ MainWindow::MainWindow() {
     paletteLayout->addLayout(paletteInfoLayout);
     // Data
     auto label_colorShort = new QLabel;
-    label_colorShort->setText(tr("Hover..."));
+    label_colorShort->setText(tr("Click for info"));
     label_colorShort->setObjectName("label_colorShort");
     paletteInfoLayout->addWidget(label_colorShort);
     // Finalize //
