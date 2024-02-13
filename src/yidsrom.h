@@ -42,11 +42,6 @@ public:
 
     QByteArray currentPalettes[0x20];
     /**
-     * @brief "Characters", or the pixel arrangement of tiles. From IMBZ data, for BG2
-     */
-    std::map<uint32_t,Chartile> pixelTilesBg2;
-    uint32_t pixelTilesBg2index = 0;
-    /**
      * @brief "Characters", or the pixel arrangement of tiles. From IMBZ data, for BG1
      */
     std::map<uint32_t,Chartile> pixelTilesBg1;

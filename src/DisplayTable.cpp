@@ -78,12 +78,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     Chartile loadedTile;
     if (whichBg == 2) {
         auto vramChartiles = this->yidsRom->mapData->getScenByBg(2)->getVramChartiles();
-        // std::cout << "Old vs New" << std::endl;
-        // std::cout << std::hex << this->yidsRom->pixelTilesBg2.size() << std::endl;
-        // std::cout << std::hex << vramChartiles.size() << std::endl;
-        // exit(EXIT_FAILURE);
         try {
-            //loadedTile = this->yidsRom->pixelTilesBg2.at(pren.tileId);
             loadedTile = vramChartiles.at(pren.tileId);
         } catch (...) {
             // 0 often just means "empty," but is not consistent

@@ -72,18 +72,18 @@ void ChartilesTable::refreshLoadedObjectTilesMap() {
 }
 
 void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
-    std::map<uint32_t,Chartile>* tilesMap;
+    std::map<uint32_t,Chartile> tilesMap;
     if (whichBg == 1) {
-        tilesMap = &this->yidsRom->pixelTilesBg1;
+        tilesMap = this->yidsRom->pixelTilesBg1;
     } else if (whichBg == 2) {
-        tilesMap = &this->yidsRom->pixelTilesBg2;
+        tilesMap = this->yidsRom->mapData->getScenByBg(2)->getVramChartiles();
     } else {
         return;
     }
-    uint32_t mapSize = tilesMap->size();
+    uint32_t mapSize = tilesMap.size();
     uint32_t indexForOffset = 0;
     for (uint32_t mapIndex = 0; mapIndex < mapSize; mapIndex++) {
-        auto chartile = (*tilesMap)[mapIndex];
+        auto chartile = tilesMap[mapIndex];
         QTableWidgetItem *newItem = new QTableWidgetItem();
         newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,chartile.tiles);
         newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[0]);

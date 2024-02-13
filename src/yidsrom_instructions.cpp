@@ -383,8 +383,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 this->pixelTilesBg1index = startIndex;
                 currentTileIndex = this->pixelTilesBg1.size(); // Size is last index + 1 already
             } else if (whichBgToWriteTo == 2) {
-                this->pixelTilesBg2index = startIndex;
-                currentTileIndex = this->pixelTilesBg2.size();
+                //Do nothing, replaced
             } else {
                 YUtils::printDebug("Unhandled BG in ANMZ",DebugType::WARNING);
             }
@@ -404,8 +403,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                     curTile.tiles[innerPosition+0] = lowBit;
                 }
                 if (whichBgToWriteTo == 2) {
-                    this->pixelTilesBg2[this->pixelTilesBg2index++] = curTile;
-                    //this->pixelTilesBg2.push_back(curTile);
+                    // Do nothing, replaced
                 } else if (whichBgToWriteTo == 1) {
                     this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
                 } else {
@@ -420,7 +418,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             if (whichBgToWriteTo == 1) {
                 this->pixelTilesBg1index = 0;
             } else if (whichBgToWriteTo == 2) {
-                this->pixelTilesBg2index = 0;
+                // Do nothing, replaced
             }
 
             indexPointer += anmzLength + 8; // Go to next
@@ -446,7 +444,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                     curTile.tiles[innerPosition+0] = lowBit;
                 }
                 if (whichBgToWriteTo == 2) {
-                    this->pixelTilesBg2[this->pixelTilesBg2index++] = curTile;
+                    // Do nothing, replaced
                 } else if (whichBgToWriteTo == 1) {
                     this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
                 }
@@ -480,7 +478,6 @@ ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg, BgCol
     imbzData.whichBg = whichBg;
 
     this->pixelTilesBg1index = 0;
-    this->pixelTilesBg2index = 0;
 
     auto compressedFileVector = this->getByteVectorFromFile(fileName_noext.append(".imbz"));
     std::vector uncompressedImbz = YCompression::lzssVectorDecomp(compressedFileVector,false);
@@ -518,7 +515,7 @@ ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg, BgCol
             }
         }
         if (whichBg == 2) {
-            this->pixelTilesBg2[this->pixelTilesBg2index++] = curTile;
+            // Do nothing, replaced
         } else if (whichBg == 1) {
             this->pixelTilesBg1[this->pixelTilesBg1index++] = curTile;
         }

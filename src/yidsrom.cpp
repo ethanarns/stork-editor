@@ -381,7 +381,6 @@ void YidsRom::wipeCrsbData() {
     this->canvasHeightCol = 0;
 
     this->pixelTilesBg1.clear();
-    this->pixelTilesBg2.clear();
 
     this->preRenderDataBg1.clear();
     this->preRenderDataBg2.clear();
