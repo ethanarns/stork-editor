@@ -53,6 +53,17 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
     }
 }
 
+LayerData::~LayerData() {
+    for (auto it = this->subScenData.begin(); it != this->subScenData.end(); ) {
+        delete (*it);
+        it = this->subScenData.erase(it);
+    }
+    this->subScenData.shrink_to_fit();
+    this->cachedImbzTileData.clear();
+    this->cachedImbzTileData.shrink_to_fit();
+    this->cachedVramTiles.clear();
+}
+
 ScenInfoData::ScenInfoData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     this->layerWidth = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
     mpdzIndex += 2;
@@ -99,6 +110,14 @@ LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
     }
 }
 
+LayerPaletteData::~LayerPaletteData() {
+    for (auto it = this->palettes.begin(); it != this->palettes.end(); ) {
+        delete (*it);
+        it = this->palettes.erase(it);
+    }
+    this->palettes.shrink_to_fit();
+}
+
 // MPBZ
 MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, LayerData* parent) {
     auto info = parent->getInfo();
@@ -137,6 +156,11 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
         this->tileRenderData.push_back(curShort);
     }
     mpdzIndex += compressed.size();
+}
+
+MapTilesData::~MapTilesData() {
+    this->tileRenderData.clear();
+    this->tileRenderData.shrink_to_fit();
 }
 
 AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
@@ -190,12 +214,24 @@ AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
     mpdzIndex += compressed.size();
 }
 
+AnimatedMapData::~AnimatedMapData() {
+    this->frameTimes.clear();
+    this->frameTimes.shrink_to_fit();
+    this->chartiles.clear();
+    this->chartiles.shrink_to_fit();
+}
+
 // COLZ
 MapCollisionData::MapCollisionData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
     this->colData.reserve(79'000);
     this->colData = YCompression::lzssVectorDecomp(compressed);
     mpdzIndex += compressed.size();
+}
+
+MapCollisionData::~MapCollisionData() {
+    this->colData.clear();
+    this->colData.shrink_to_fit();
 }
 
 ImgbLayerData::ImgbLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
@@ -221,6 +257,11 @@ ImgbLayerData::ImgbLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzInde
         }
         this->chartiles.push_back(curTile);
     }
+}
+
+ImgbLayerData::~ImgbLayerData() {
+    this->chartiles.clear();
+    this->chartiles.shrink_to_fit();
 }
 
 LevelGradientData::LevelGradientData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
@@ -288,4 +329,12 @@ LevelObjectData::LevelObjectData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
     if (mpdzIndex != stop) {
         YUtils::printDebug("Mismatch in SETD end address",DebugType::ERROR);
     }
+}
+
+LevelObjectData::~LevelObjectData() {
+    for (auto it = this->levelObjects.begin(); it != this->levelObjects.end(); ) {
+        delete (*it);
+        it = this->levelObjects.erase(it);
+    }
+    this->levelObjects.shrink_to_fit();
 }

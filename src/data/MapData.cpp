@@ -198,6 +198,14 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed) {
     }
 }
 
+MapData::~MapData() {
+    for (auto it = this->subData.begin(); it != this->subData.end(); ) {
+        delete (*it);
+        it = this->subData.erase(it);
+    }
+    this->subData.shrink_to_fit();
+}
+
 LayerData* MapData::getScenByBg(uint8_t bg) {
     for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
         if ( (*it)->getMagic() == Constants::SCEN_MAGIC_NUM ) {

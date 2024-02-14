@@ -19,6 +19,7 @@ public:
     virtual std::string toString() = 0;
     virtual std::vector<uint8_t> compile() = 0;
     virtual uint32_t getMagic() { return 0; };
+    virtual ~LevelData() { /* Do stuff */ };
 };
 
 // INFO
@@ -73,6 +74,7 @@ public:
 class LevelObjectData : public LevelData {
 public:
     LevelObjectData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    ~LevelObjectData();
     std::string toString() {
         std::stringstream ss;
         ss << "LevelObjectData(SETD) { records: 0x";
@@ -95,6 +97,7 @@ private:
 class ImgbLayerData : public LevelData {
 public:
     ImgbLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    ~ImgbLayerData();
     std::string toString() {
         std::stringstream ss;
         ss << "IMGB { records: 0x";
@@ -115,6 +118,7 @@ public:
 class MapCollisionData : public LevelData {
 public:
     MapCollisionData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    ~MapCollisionData();
     std::string toString() {
         std::stringstream ss;
         ss << "COLZ { records: 0x";
@@ -135,6 +139,7 @@ public:
 class AnimatedMapData : public LevelData {
 public:
     AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    ~AnimatedMapData();
     std::string toString() {
         std::stringstream ss;
         ss << "ANMZ { }";
@@ -162,6 +167,7 @@ public:
 class MapTilesData : public LevelData {
 public:
     MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, LayerData* parent);
+    ~MapTilesData();
     std::string toString() {
         std::stringstream ss;
         ss << "MPBZ { Palette Count: 0x";
@@ -185,6 +191,7 @@ public:
 class LayerPaletteData : public LevelData {
 public:
     LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    ~LayerPaletteData();
     std::string toString() {
         std::stringstream ss;
         ss << "LayerPaletteData { Palette Count: 0x";
@@ -212,6 +219,7 @@ public:
 class LayerData : public LevelData {
 public:
     LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    ~LayerData();
     std::string toString() {
         std::stringstream ss;
         ss << "LayerData { Subdata Count: ";
@@ -281,6 +289,7 @@ public:
 class MapData : public LevelData {
 public:
     MapData(std::vector<uint8_t> mpdzBytes, bool compressed = true);
+    ~MapData();
     uint32_t getMagic() { return Constants::MPDZ_MAGIC_NUM; }
     std::string toString() {
         std::stringstream ss;
