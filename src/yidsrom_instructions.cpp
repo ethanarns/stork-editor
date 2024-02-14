@@ -735,8 +735,8 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
     YUtils::printDebug(ssGraphics.str(),DebugType::VERBOSE);
     std::vector<uint8_t> fileVectorObjset = this->getByteVectorFromFile(objset_filename);
     std::vector<uint8_t> objsetUncompressedVec = fileVectorObjset;
-    if (fileVectorObjset.at(0) != 16) {
-        YUtils::printDebug("Archive not compressed, skipping decomp",DebugType::VERBOSE);
+    if (fileVectorObjset.at(0) != 0x10) {
+        //YUtils::printDebug("Archive not compressed, skipping decomp",DebugType::VERBOSE);
     } else {
         objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
     }

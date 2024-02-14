@@ -158,7 +158,7 @@ void YCompression::unpackRom(std::string romFileName) {
     YUtils::printDebug(execPath,DebugType::VERBOSE);
     auto result = system(execPath.c_str());
     if (result == 0) {
-        YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
+        //YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
     } else {
         std::stringstream ssUnpackResult;
         ssUnpackResult << "System result: " << result;

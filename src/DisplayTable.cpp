@@ -264,7 +264,8 @@ void DisplayTable::selectItemByUuid(uint32_t uuid) {
         if (potentialItem != nullptr) {
             uint32_t foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt();
             if (foundUuid == uuid) {
-                this->setItemSelected(potentialItem,true);
+                potentialItem->setSelected(true);
+                //this->setItemSelected(potentialItem,true); // Deprecated
             }
         }
     }
