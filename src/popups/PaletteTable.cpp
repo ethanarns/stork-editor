@@ -77,5 +77,10 @@ void PaletteTable::paletteTableClicked(int row, int column) {
 
     // Set label
     auto label = this->parent()->findChild<QLabel*>("label_colorShort");
-    label->setText(colorValueString.c_str());
+    std::stringstream ss;
+    uint16_t index = column + (row * 16);
+    ss << "Data: " << colorValueString << ", Index: 0x" << std::hex << index;
+    uint32_t ramAddress = 0x05000000 + (index * 0x2);
+    ss << ", RAM address: " << ramAddress;
+    label->setText(ss.str().c_str());
 }
