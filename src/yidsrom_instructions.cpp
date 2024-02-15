@@ -160,6 +160,10 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     YUtils::printDebug(ssMpdzLoad.str(),DebugType::VERBOSE);
     std::string mpdzFileName = fileName_noext.append(Constants::MPDZ_EXTENSION);
     auto fileVector = this->getByteVectorFromFile(mpdzFileName);
+    if (this->mapData != nullptr) {
+        YUtils::printDebug("Delete existing MapData pointer",DebugType::VERBOSE);
+        delete this->mapData;
+    }
     this->mapData = new MapData(fileVector,true);
 
     // Delete below to restart loop

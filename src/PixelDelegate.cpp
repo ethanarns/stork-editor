@@ -194,6 +194,8 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                     this->drawPixel(painter, option.rect, x, y, qc);
                 }
             }
+        } else if (whichBgToDraw == 0x0) {
+            /* Do nothing */
         } else {
             std::stringstream ssBgOrderFail;
             ssBgOrderFail << "Unknown whichBgToDraw in PixelDelegate: 0x" << std::hex << (uint16_t)whichBgToDraw;

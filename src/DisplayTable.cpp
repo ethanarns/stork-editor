@@ -249,6 +249,11 @@ void DisplayTable::displayTableClicked(int row, int column) {
         YUtils::printDebug("Pixel Array for BG 1:",DebugType::VERBOSE);
         YUtils::printQbyte(pixArray1);
     }
+    if (!curCell->data(PixelDelegateData::PIXEL_ARRAY_BG3).isNull()) {
+        auto pixArray1 = curCell->data(PixelDelegateData::PIXEL_ARRAY_BG3).toByteArray();
+        YUtils::printDebug("Pixel Array for BG 3:",DebugType::VERBOSE);
+        YUtils::printQbyte(pixArray1);
+    }
 
     if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
         if (!curCell->data(PixelDelegateData::OBJECT_UUID).isNull()) {

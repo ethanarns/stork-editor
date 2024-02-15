@@ -559,6 +559,7 @@ void MainWindow::buttonClick_levelSelect_load() {
     this->rom->loadMpdz(crsb.cscnList.at(0).mpdzFileNoExtension);
     this->levelSelectPopup->close();
     // Visual updates
+    this->grid->firstLayerDrawDone = false;
     this->grid->updateBg();
     this->grid->initCellCollision();
     this->grid->updateObjects();

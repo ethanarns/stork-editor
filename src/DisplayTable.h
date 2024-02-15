@@ -36,6 +36,9 @@ public:
      * A list/vector of uint32_t UUIDs of selected objects, usually LevelObjects
     */
     std::vector<uint32_t> selectedObjects;
+    /// @brief Layer drawing options are present on tiles by default, but you don't
+    // want to do a mass enable outside the user's consent more than once
+    bool firstLayerDrawDone = false;
 
     DisplayTable(QWidget *parent, YidsRom* rom);
     void putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren, uint16_t whichBg);
@@ -70,9 +73,6 @@ private:
     const static int CELL_COUNT_H = 0xff*2;
     YidsRom* yidsRom;
     uint32_t currentlyDraggedItem = 0;
-    /// @brief Layer drawing options are present on tiles by default, but you don't
-    // want to do a mass enable outside the user's consent more than once
-    bool firstLayerDrawDone = false;
 
     void cellEnteredTriggered(int row, int column);
 protected:
