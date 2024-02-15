@@ -100,6 +100,12 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
 
     auto potentialExisting = this->item(y,x);
     auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
+    QByteArray layerDrawOrder = this->yidsRom->mapData->getLayerOrder();
+    if (layerDrawOrder.size() > 3) {
+        YUtils::printDebug("Size error in layer order, should be 3, was:",DebugType::FATAL);
+        YUtils::printQbyte(layerDrawOrder);
+        exit(EXIT_FAILURE);
+    }
     if (potentialExisting == nullptr) {
         // Nothing is here, so lets make a new one and set it!
         QTableWidgetItem *newItem = new QTableWidgetItem();
@@ -130,6 +136,9 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             newItem->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);
             newItem->setData(PixelDelegateData::TILEATTR_BG3,(uint)pren.tileAttr);
         }
+
+        // Things to do for every layer:
+        newItem->setData(PixelDelegateData::LAYER_DRAW_ORDER,layerDrawOrder);
 
         // Only doing collision here because there's no data for it, so create it
         newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
@@ -166,6 +175,8 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             potentialExisting->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);
             potentialExisting->setData(PixelDelegateData::TILEATTR_BG3,(uint)pren.tileAttr);
         }
+        // Things to do for every layer:
+        potentialExisting->setData(PixelDelegateData::LAYER_DRAW_ORDER,layerDrawOrder);
         // Debug
         potentialExisting->setData(PixelDelegateData::DEBUG_DATA,loadedTile.index);
     }

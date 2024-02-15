@@ -5,6 +5,7 @@
 #include "utils.h"
 
 #include <iostream>
+#include <sstream>
 
 #include <QtCore>
 #include <QtWidgets>
@@ -24,109 +25,129 @@ const QImage COIN_IMAGE("assets/coin.png");
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
     const bool selected = (option.state & QStyle::State_Selected) != 0;
 
-    /*****************
-     *** BG2 TILES ***
-     *****************/
-    if (index.data(PixelDelegateData::DRAW_BG2).toBool() == true) {
-        QByteArray byteArrayBg2 = index.data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
-        // Check the byte array size
-        if (byteArrayBg2.size() == 0) {
-            const char testArrayPrimitive[] = {
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-            };
-            byteArrayBg2 = QByteArray::fromRawData(testArrayPrimitive, 64);
-        } else if (byteArrayBg2.size() != PIXEL_TILE_TOTAL) {
-            cerr << "Attempting to paint without " << PIXEL_TILE_TOTAL;
-            cerr << " pixels! Found " << byteArrayBg2.size() << " pixels instead." << endl;
-            return;
-        }
-        auto byteArrayBg2unsigned = (uint8_t*)byteArrayBg2.data();
-        auto paletteBg2 = (uint8_t*)index.data(PixelDelegateData::PALETTE_ARRAY_BG2).toByteArray().data();
-        for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
-            QColor qc;
-            auto whichPalette = byteArrayBg2unsigned[i];
-            if (whichPalette == 0) {
-                // NOTE: Palette index 0 seems to almost always be the transparent
-                //   value. This may not be true, keep this in mind for future bugs
-                continue;
-            }
-
-            auto firstByte = paletteBg2[whichPalette*2];
-            auto secondByte = paletteBg2[whichPalette*2+1];
-            qc = YUtils::getColorFromBytes(
-                firstByte,
-                secondByte
-            );
-
-            int x = i % 8;
-            if (index.data(PixelDelegateData::FLIP_H_BG2).toBool() == true) {
-                x = (8 - x - 1);
-            }
-            int y = i / 8;
-            if (index.data(PixelDelegateData::FLIP_V_BG2).toBool() == true) {
-                y = (8 - y - 1);
-            }
-            this->drawPixel(painter, option.rect, x, y, qc);
-        }
+    QByteArray layerDrawOrder;
+    if (index.data(PixelDelegateData::LAYER_DRAW_ORDER).isNull()) {
+        const char drawOrderPrimitive[] = {1,2,3};
+        layerDrawOrder = QByteArray::fromRawData(drawOrderPrimitive,3);
+    } else {
+        layerDrawOrder = index.data(PixelDelegateData::LAYER_DRAW_ORDER).toByteArray();
     }
 
-    /*****************
-     *** BG1 TILES ***
-     *****************/
-    if (index.data(PixelDelegateData::DRAW_BG1).toBool() == true) {
-        QByteArray byteArrayBg1 = index.data(PixelDelegateData::PIXEL_ARRAY_BG1).toByteArray();
-        // Check the byte array size
-        if (byteArrayBg1.size() == 0) {
-            const char testArrayPrimitive[] = {
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-            };
-            byteArrayBg1 = QByteArray::fromRawData(testArrayPrimitive, 64);
-        } else if (byteArrayBg1.size() != PIXEL_TILE_TOTAL) {
-            cerr << "Attempting to paint without " << PIXEL_TILE_TOTAL;
-            cerr << " pixels! Found " << byteArrayBg1.size() << " pixels instead." << endl;
-            return;
-        }
-        auto byteArrayBg1unsigned = (uint8_t*)byteArrayBg1.data();
-        auto paletteBg1 = (uint8_t*)index.data(PixelDelegateData::PALETTE_ARRAY_BG1).toByteArray().data();
-        for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
-            QColor qc;
-            auto whichPalette = byteArrayBg1unsigned[i];
-            if (whichPalette == 0) {
-                // NOTE: Palette index 0 seems to almost always be the transparent
-                //   value. This may not be true, keep this in mind for future bugs
-                continue;
-            }
-            
-            auto firstByte = paletteBg1[whichPalette*2];
-            auto secondByte = paletteBg1[whichPalette*2+1];
-            qc = YUtils::getColorFromBytes(
-                firstByte,
-                secondByte
-            );
+    for (int layerOrderIndex = 0; layerOrderIndex < layerDrawOrder.size(); layerOrderIndex++) {
+        auto whichBgToDraw = layerDrawOrder.at(layerOrderIndex);
+        if (whichBgToDraw == 1) {
+            /*****************
+             *** BG1 TILES ***
+            *****************/
+            if (index.data(PixelDelegateData::DRAW_BG1).toBool() == true) {
+                QByteArray byteArrayBg1 = index.data(PixelDelegateData::PIXEL_ARRAY_BG1).toByteArray();
+                // Check the byte array size
+                if (byteArrayBg1.size() == 0) {
+                    const char testArrayPrimitive[] = {
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                    };
+                    byteArrayBg1 = QByteArray::fromRawData(testArrayPrimitive, 64);
+                } else if (byteArrayBg1.size() != PIXEL_TILE_TOTAL) {
+                    cerr << "Attempting to paint without " << PIXEL_TILE_TOTAL;
+                    cerr << " pixels! Found " << byteArrayBg1.size() << " pixels instead." << endl;
+                    return;
+                }
+                auto byteArrayBg1unsigned = (uint8_t*)byteArrayBg1.data();
+                auto paletteBg1 = (uint8_t*)index.data(PixelDelegateData::PALETTE_ARRAY_BG1).toByteArray().data();
+                for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
+                    QColor qc;
+                    auto whichPalette = byteArrayBg1unsigned[i];
+                    if (whichPalette == 0) {
+                        // NOTE: Palette index 0 seems to almost always be the transparent
+                        //   value. This may not be true, keep this in mind for future bugs
+                        continue;
+                    }
+                    
+                    auto firstByte = paletteBg1[whichPalette*2];
+                    auto secondByte = paletteBg1[whichPalette*2+1];
+                    qc = YUtils::getColorFromBytes(
+                        firstByte,
+                        secondByte
+                    );
 
-            int x = i % 8;
-            if (index.data(PixelDelegateData::FLIP_H_BG1).toBool() == true) {
-                x = (8 - x - 1);
+                    int x = i % 8;
+                    if (index.data(PixelDelegateData::FLIP_H_BG1).toBool() == true) {
+                        x = (8 - x - 1);
+                    }
+                    int y = i / 8;
+                    if (index.data(PixelDelegateData::FLIP_V_BG1).toBool() == true) {
+                        y = (8 - y - 1);
+                    }
+                    this->drawPixel(painter, option.rect, x, y, qc);
+                }
             }
-            int y = i / 8;
-            if (index.data(PixelDelegateData::FLIP_V_BG1).toBool() == true) {
-                y = (8 - y - 1);
+        } else if (whichBgToDraw == 2) {
+            /*****************
+             *** BG2 TILES ***
+            *****************/
+            if (index.data(PixelDelegateData::DRAW_BG2).toBool() == true) {
+                QByteArray byteArrayBg2 = index.data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
+                // Check the byte array size
+                if (byteArrayBg2.size() == 0) {
+                    const char testArrayPrimitive[] = {
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                        0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                    };
+                    byteArrayBg2 = QByteArray::fromRawData(testArrayPrimitive, 64);
+                } else if (byteArrayBg2.size() != PIXEL_TILE_TOTAL) {
+                    cerr << "Attempting to paint without " << PIXEL_TILE_TOTAL;
+                    cerr << " pixels! Found " << byteArrayBg2.size() << " pixels instead." << endl;
+                    return;
+                }
+                auto byteArrayBg2unsigned = (uint8_t*)byteArrayBg2.data();
+                auto paletteBg2 = (uint8_t*)index.data(PixelDelegateData::PALETTE_ARRAY_BG2).toByteArray().data();
+                for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
+                    QColor qc;
+                    auto whichPalette = byteArrayBg2unsigned[i];
+                    if (whichPalette == 0) {
+                        // NOTE: Palette index 0 seems to almost always be the transparent
+                        //   value. This may not be true, keep this in mind for future bugs
+                        continue;
+                    }
+
+                    auto firstByte = paletteBg2[whichPalette*2];
+                    auto secondByte = paletteBg2[whichPalette*2+1];
+                    qc = YUtils::getColorFromBytes(
+                        firstByte,
+                        secondByte
+                    );
+
+                    int x = i % 8;
+                    if (index.data(PixelDelegateData::FLIP_H_BG2).toBool() == true) {
+                        x = (8 - x - 1);
+                    }
+                    int y = i / 8;
+                    if (index.data(PixelDelegateData::FLIP_V_BG2).toBool() == true) {
+                        y = (8 - y - 1);
+                    }
+                    this->drawPixel(painter, option.rect, x, y, qc);
+                }
             }
-            this->drawPixel(painter, option.rect, x, y, qc);
+        } else if (whichBgToDraw == 3) {
+
+        } else {
+            std::stringstream ssBgOrderFail;
+            ssBgOrderFail << "Unknown whichBgToDraw in PixelDelegate: 0x" << std::hex << (uint16_t)whichBgToDraw;
+            YUtils::printDebug(ssBgOrderFail.str(),DebugType::FATAL);
+            exit(EXIT_FAILURE);
         }
     }
 

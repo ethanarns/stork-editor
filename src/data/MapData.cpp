@@ -348,6 +348,40 @@ bool MapData::wipeBGPcache() {
     return true;
 }
 
+QByteArray MapData::getLayerOrder() {
+    if (this->layerOrderCache.size() > 0) {
+        return this->layerOrderCache;
+    }
+    QByteArray result;
+    result.fill(0,3); // Set result to 3 zeroes
+    for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
+        if ((*it)->getMagic() == Constants::SCEN_MAGIC_NUM) {
+            auto scen = static_cast<LayerData*>((*it));
+            auto orderValueForLayer = scen->getInfo()->layerOrder;
+            // whichBackground value and layerOrder value OFTEN match, but not always
+            // Also, reverse them (4 minus 1 through 3 reverses it), as lower numbers drawn first
+            // Then subtract 1 because indexes start at 0 not 1
+            result[4-orderValueForLayer-1] = scen->getInfo()->whichBackground;
+        }
+    }
+    this->layerOrderCache = result;
+    return result;
+}
+
+bool MapData::wipeLayerOrderCache()
+{
+    if (this->layerOrderCache.size() == 0) {
+        return false;
+    } else if (this->layerOrderCache.size() > 3) {
+        std::stringstream ss;
+        ss << "Layer order cache size greater than 3! Was 0x";
+        ss << std::hex << this->layerOrderCache.size();
+        YUtils::printDebug(ss.str(),DebugType::ERROR);
+    }
+    this->layerOrderCache.clear();
+    return true;
+}
+
 LevelData *MapData::getFirstDataByMagic(uint32_t magicNumber) {
     for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
         if ( (*it)->getMagic() == magicNumber ) {

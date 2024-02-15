@@ -41,7 +41,9 @@ enum PixelDelegateData {
     FLIP_H_BG3 = 121,
     FLIP_V_BG3 = 122,
 
-    DRAW_OBJECTS = 123
+    DRAW_OBJECTS = 123,
+
+    LAYER_DRAW_ORDER = 124
 };
 
 enum CollisionType {

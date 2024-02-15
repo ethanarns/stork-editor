@@ -327,8 +327,12 @@ public:
     /// @brief Wipes the cached of BGP
     /// @return true if there was anything to wipe, false if nothing was wiped
     bool wipeBGPcache();
+
+    QByteArray getLayerOrder();
+    bool wipeLayerOrderCache();
 private:    
     std::vector<LevelData*> subData;
     LevelData* getFirstDataByMagic(uint32_t magicNumber);
     std::vector<QByteArray*> bgPalleteRamCache;
+    QByteArray layerOrderCache;
 };
