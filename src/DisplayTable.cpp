@@ -118,6 +118,16 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             newItem->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
             newItem->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
             newItem->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
+        } else if (whichBg == 3) {
+            newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
+            if (!isColorMode256) {
+                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->currentPalettes[pal]);
+            } else {
+                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(0xf));
+            }
+            newItem->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
+            newItem->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);
+            newItem->setData(PixelDelegateData::TILEATTR_BG3,(uint)pren.tileAttr);
         }
 
         // Only doing collision here because there's no data for it, so create it
@@ -144,6 +154,16 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             potentialExisting->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
             potentialExisting->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
             potentialExisting->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
+        } else if (whichBg == 3) {
+            potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
+            if (!isColorMode256) {
+                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->currentPalettes[pal]);
+            } else {
+                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(0xf));
+            }
+            potentialExisting->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
+            potentialExisting->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);
+            potentialExisting->setData(PixelDelegateData::TILEATTR_BG3,(uint)pren.tileAttr);
         }
         // Debug
         potentialExisting->setData(PixelDelegateData::DEBUG_DATA,loadedTile.index);

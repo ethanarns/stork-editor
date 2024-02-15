@@ -28,7 +28,7 @@ struct ChartilePreRenderData {
     std::string toString() {
         std::stringstream ssChartilePreRend;
         ssChartilePreRend << "ChartilePreRenderData { tileId: " << std::hex << this->tileId;
-        ssChartilePreRend << ", paletteId: " << std::hex << this->paletteId;
+        ssChartilePreRend << ", paletteId: " << std::hex << (uint16_t)this->paletteId;
         ssChartilePreRend << ", flip H/V: " << this->flipH << "/" << this->flipV << " }";
         return ssChartilePreRend.str();
     }
