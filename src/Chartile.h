@@ -22,6 +22,7 @@ struct Chartile {
 };
 
 /// @brief This is a breaking-up of the 2 byte (or 1 byte in 256 color mode) MPBZ data records
+/// @note http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
 struct ChartilePreRenderData {
     /// @brief Points to a certain Chartile in the VRAM
     uint32_t tileId;
@@ -30,9 +31,7 @@ struct ChartilePreRenderData {
     bool flipH;
     bool flipV;
     
-    /// @brief Points to a certain tile. Can also be a 1 byte value in 256 bit color mode,
-    // but this disables palette ID and flip values (256 mode has only 1 palette of 256 colors)
-    /// @note http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
+    /// @brief For debugging. It's the OG value
     uint16_t tileAttr;
     std::string toString() {
         std::stringstream ssChartilePreRend;
