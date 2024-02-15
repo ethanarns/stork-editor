@@ -70,6 +70,9 @@ private:
     const static int CELL_COUNT_H = 0xff*2;
     YidsRom* yidsRom;
     uint32_t currentlyDraggedItem = 0;
+    /// @brief Layer drawing options are present on tiles by default, but you don't
+    // want to do a mass enable outside the user's consent more than once
+    bool firstLayerDrawDone = false;
 
     void cellEnteredTriggered(int row, int column);
 protected:

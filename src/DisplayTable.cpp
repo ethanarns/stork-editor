@@ -14,6 +14,7 @@ using namespace std;
 DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     Q_UNUSED(parent);
     this->shouldShowCollision = true;
+    this->firstLayerDrawDone = false;
 
     this->yidsRom = rom;
 
@@ -442,8 +443,14 @@ void DisplayTable::updateBg() {
             }
             bgLeftOffset += cutOffBg;
         }
-        this->setLayerDraw(bgIndex,true);
+        // We want to put the layer drawing properties ON the tiles initially,
+        // but not to overwrite it repeatedly when updating the BG
+        if (!this->firstLayerDrawDone) {
+            this->setLayerDraw(bgIndex,true);
+        }
     }
+    // You've put the layer draw data on every tile now, no need to do it again
+    this->firstLayerDrawDone = true;
 }
 
 void DisplayTable::updateObjects() {
