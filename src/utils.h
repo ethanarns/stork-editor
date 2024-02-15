@@ -51,6 +51,7 @@ public:
     static std::vector<uint8_t> createInstructionVector(std::vector<uint8_t> &instructionVector, std::vector<uint8_t> &data);
     static std::vector<uint8_t> createInstVecFromNum(uint32_t instCode, std::vector<uint8_t> &data);
     static void printVector(std::vector<uint8_t> &vectorToPrint, int newlineBreak = 0x10);
+    static void printVector16(std::vector<uint16_t> &vectorToPrint, int newlineBreak = 0x10);
     static void writeVectorToFile(std::vector<uint8_t> &dataToWrite,std::string fileOnSystem,uint32_t addressOffset);
     static QByteArray tileVectorToQByteArray(std::vector<uint8_t> tileVector);
 

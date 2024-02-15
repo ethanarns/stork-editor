@@ -235,6 +235,26 @@ void YUtils::printVector(std::vector<uint8_t> &vectorToPrint, int newlineBreak) 
     cout << endl;
 }
 
+void YUtils::printVector16(std::vector<uint16_t> &vectorToPrint, int newlineBreak) {
+    std::cout << "printVector16 start" << std::endl;
+    uint32_t lengthOfVec = vectorToPrint.size();
+    constexpr int INDEX_WIDTH = 6;
+    cout << hex << setw(INDEX_WIDTH) << 0 << " | ";
+    uint32_t printIndex = 0;
+    for (auto it = vectorToPrint.begin(); it != vectorToPrint.end(); it++) {
+        cout << hex << setw(4) << (int)(*it) << " ";
+        if (newlineBreak != 0 && printIndex != 0 && (printIndex + 1) % newlineBreak == 0) {
+            cout << endl;
+            if (printIndex + 1 != lengthOfVec) {
+                cout << hex << setw(INDEX_WIDTH) << (printIndex+1) << " | ";
+            }
+        }
+        printIndex++;
+    }
+    cout << endl;
+    std::cout << "printVector16 end" << std::endl;
+}
+
 void YUtils::writeVectorToFile(std::vector<uint8_t> &dataToWrite,std::string fileOnSystem,uint32_t addressOffset) {
     std::fstream readWriteFile{fileOnSystem,ios::binary | ios::out};
     if (!readWriteFile) {

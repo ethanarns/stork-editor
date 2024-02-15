@@ -157,7 +157,7 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
             this->tileRenderData.push_back(curShort);
         } else {
             uint8_t curShort = mpbzData.at(mIndex);
-            mIndex += 1;
+            mIndex += 2; // The second byte appears to be something that changes the data
             this->tileRenderData.push_back((uint16_t)curShort);
         }
     }
