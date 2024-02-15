@@ -7,6 +7,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++17
 
+RC_ICONS += your_icon.ico
+ICON += your_icon.ico
+
 SOURCES += parasol.cpp \
 src/yidsrom.cpp src/utils.cpp src/compression.cpp src/MainWindow.cpp \
 src/DisplayTable.cpp src/popups/ChartilesTable.cpp src/PixelDelegate.cpp \
