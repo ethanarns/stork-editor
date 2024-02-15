@@ -307,6 +307,47 @@ uint32_t MapData::getCollisionCanvasWidth() {
     return 0;
 }
 
+std::vector<QByteArray *> MapData::getBackgroundPalettes(QByteArray universalPalette) {
+    if (!this->bgPalleteRamCache.empty()) {
+        return this->bgPalleteRamCache;
+    }
+    std::vector<QByteArray *> result;
+    result.push_back(&universalPalette);
+    // Do it in order, like how it's done in the files
+    for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
+        if ((*it)->getMagic() == Constants::SCEN_MAGIC_NUM) {
+            auto scen = static_cast<LayerData*>((*it));
+            if (scen->getInfo()->colorMode == BgColorMode::MODE_256) {
+                YUtils::printDebug("256 Color Mode not supported in BGP, skipping", DebugType::VERBOSE);
+                continue;
+            }
+            auto pltbDataMaybe = scen->getFirstDataByMagic(Constants::PLTB_MAGIC_NUM);
+            if (pltbDataMaybe == nullptr) {
+                YUtils::printDebug("No PLTB data found!",DebugType::ERROR);
+                continue;
+            }
+            auto pltbData = static_cast<LayerPaletteData*>(pltbDataMaybe);
+            for (uint i = 0; i < pltbData->palettes.size(); i++) {
+                result.push_back(pltbData->palettes.at(i));
+            }
+        }
+    }
+    this->bgPalleteRamCache = result;
+    return result;
+}
+
+bool MapData::wipeBGPcache() {
+    if (this->bgPalleteRamCache.empty()) {
+        return false;
+    }
+    // Delete and wipe
+    for (auto it = this->bgPalleteRamCache.begin(); it != this->bgPalleteRamCache.end(); ) {
+        delete (*it);
+        it = this->bgPalleteRamCache.erase(it);
+    }
+    return true;
+}
+
 LevelData *MapData::getFirstDataByMagic(uint32_t magicNumber) {
     for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
         if ( (*it)->getMagic() == magicNumber ) {

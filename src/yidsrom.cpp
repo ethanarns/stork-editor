@@ -260,12 +260,14 @@ void YidsRom::initArm9RomData(std::string fileName) {
 
     // Write universal palette
     this->currentPalettes[0].resize(Constants::PALETTE_SIZE);
+    this->universalPalette.resize(Constants::PALETTE_SIZE);
     Address universalPalette0base = YUtils::conv2xAddrToFileAddr(Constants::UNIVERSAL_PALETTE_0_ADDR);
     for (int univPalIndex = 0; univPalIndex < Constants::PALETTE_SIZE; univPalIndex++) {
         this->romFile.seekg(universalPalette0base + univPalIndex);
         uint8_t container;
         this->romFile.read(reinterpret_cast<char *>(&container), sizeof(container));
         this->currentPalettes[0][univPalIndex] = container;
+        this->universalPalette[univPalIndex] = container;
     }
 }
 

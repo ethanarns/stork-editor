@@ -322,7 +322,13 @@ public:
      * Get the layer width of which SCEN has COLZ data
     */
     uint32_t getCollisionCanvasWidth();
+
+    std::vector<QByteArray*> getBackgroundPalettes(QByteArray universalPalette);
+    /// @brief Wipes the cached of BGP
+    /// @return true if there was anything to wipe, false if nothing was wiped
+    bool wipeBGPcache();
 private:    
     std::vector<LevelData*> subData;
     LevelData* getFirstDataByMagic(uint32_t magicNumber);
+    std::vector<QByteArray*> bgPalleteRamCache;
 };

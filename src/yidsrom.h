@@ -39,6 +39,7 @@ public:
     RomMetadata metadata;
     MapData* mapData;
 
+    QByteArray universalPalette;
 
     QByteArray currentPalettes[0x20];
     /**

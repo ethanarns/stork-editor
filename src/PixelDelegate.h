@@ -33,7 +33,14 @@ enum PixelDelegateData {
     DRAW_BG1 = 32,
     DRAW_BG2 = 31,
     DRAW_BG3 = 30,
-    DRAW_OBJECTS = 111
+    DRAW_OBJECTS = 111,
+
+    // BG3 support
+    PIXEL_ARRAY_BG3 = 112,
+    PALETTE_ARRAY_BG3 = 113,
+    TILEATTR_BG3 = 114,
+    FLIP_H_BG3 = 115,
+    FLIP_V_BG3 = 116
 };
 
 enum CollisionType {
