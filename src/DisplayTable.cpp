@@ -72,6 +72,10 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     auto pal = pren.paletteId;
     Chartile loadedTile;
     auto scen = this->yidsRom->mapData->getScenByBg(whichBg);
+    if (scen == nullptr) {
+        YUtils::printDebug("SCEN for this BG is nullptr, skipping",DebugType::WARNING);
+        return;
+    }
     auto vramChartiles = scen->getVramChartiles();
     try {
         loadedTile = vramChartiles.at(pren.tileId);
@@ -384,7 +388,7 @@ void DisplayTable::updateBg() {
         if (curScen == nullptr) {
             std::stringstream ssNoScen;
             ssNoScen << "No SCEN file for background " << std::hex;
-            ssNoScen << bgIndex << " found";
+            ssNoScen << (uint16_t)bgIndex << " found";
             // Handle better?
             YUtils::printDebug(ssNoScen.str(),DebugType::WARNING);
             continue; // Proceed to next BG

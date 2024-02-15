@@ -38,6 +38,7 @@ PaletteTable::PaletteTable(QWidget* parent, YidsRom* rom) {
 }
 
 void PaletteTable::refreshLoadedTiles() {
+    return; // TODO fix this
     auto bgps = this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette);
     for (int paletteIndex = 0; paletteIndex < 0x10; paletteIndex++) {
         QByteArray curPalette = *bgps.at(paletteIndex);//this->yidsRom->currentPalettes[paletteIndex]; //

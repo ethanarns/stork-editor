@@ -78,7 +78,7 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
 
             colorMode = readUint32(data, tempIndex)
             tempIndex += 4
-            print(ind(3) + "Color Mode (Maybe): " + hex(colorMode))
+            print(ind(3) + "Color Mode: " + hex(colorMode))
 
             if tempIndex == index + scenLength:
                 print(ind(3) + "IMBZ filename: N/A (end reached)")

@@ -219,7 +219,7 @@ LayerData* MapData::getScenByBg(uint8_t bg) {
     std::stringstream ss;
     ss << "Failed to get SCEN with BG ";
     ss << std::hex << (uint16_t)bg;
-    YUtils::printDebug(ss.str(),DebugType::ERROR);
+    YUtils::printDebug(ss.str(),DebugType::WARNING);
     return nullptr;
 }
 
