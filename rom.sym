@@ -1,0 +1,13 @@
+; test
+02005988 copyDataNormally
+02013e64 getDataWriteLocationForInstruction
+02016408 doSwiLz77Decompress
+02005ab8 MI_CpuCopy8
+0201ff84 handleAsciiInstSCEN
+0201cfd0 parseMpdzData
+020129e4 editBgCnts
+020210c0 concatFilePath
+02013438 decompressFile
+020044c4 DC_FlushRange
+02013290 uncompressOpenedLzFile
+020134d0 loadMapFileFromPath
