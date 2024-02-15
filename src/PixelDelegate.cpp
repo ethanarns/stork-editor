@@ -24,10 +24,10 @@ const QImage COIN_IMAGE("assets/coin.png");
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
     const bool selected = (option.state & QStyle::State_Selected) != 0;
 
-    /*********************************
-     *** PRIMARY (BG2) TILE PIXELS ***
-     *********************************/
-    if (index.data(PixelDelegateData::DRAW_BG2).isNull() || index.data(PixelDelegateData::DRAW_BG2).toBool() == true) {
+    /*****************
+     *** BG2 TILES ***
+     *****************/
+    if (index.data(PixelDelegateData::DRAW_BG2).toBool() == true) {
         QByteArray byteArrayBg2 = index.data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
         // Check the byte array size
         if (byteArrayBg2.size() == 0) {
@@ -77,10 +77,10 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         }
     }
 
-    /***********************************
-     *** SECONDARY (BG1) TILE PIXELS ***
-     ***********************************/
-    if (index.data(PixelDelegateData::DRAW_BG1).isNull() || index.data(PixelDelegateData::DRAW_BG1).toBool() == true) {
+    /*****************
+     *** BG1 TILES ***
+     *****************/
+    if (index.data(PixelDelegateData::DRAW_BG1).toBool() == true) {
         QByteArray byteArrayBg1 = index.data(PixelDelegateData::PIXEL_ARRAY_BG1).toByteArray();
         // Check the byte array size
         if (byteArrayBg1.size() == 0) {

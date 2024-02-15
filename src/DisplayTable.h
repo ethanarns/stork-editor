@@ -57,7 +57,7 @@ public:
     void updateBg();
     void initCellCollision();
     void updateShowCollision();
-    void setLayerDraw(int whichLayer, bool shouldDraw);
+    void setLayerDraw(uint whichLayer, bool shouldDraw);
     void updateObjects();
     int wipeTable();
     

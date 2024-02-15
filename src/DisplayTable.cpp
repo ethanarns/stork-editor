@@ -356,7 +356,7 @@ void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
     emit this->triggerMainWindowUpdate();
 }
 
-void DisplayTable::setLayerDraw(int whichLayer, bool shouldDraw) {
+void DisplayTable::setLayerDraw(uint whichLayer, bool shouldDraw) {
     if (whichLayer == 1) {
         this->drawBg1 = shouldDraw;
     } else if (whichLayer == 2) {
@@ -442,6 +442,7 @@ void DisplayTable::updateBg() {
             }
             bgLeftOffset += cutOffBg;
         }
+        this->setLayerDraw(bgIndex,true);
     }
 }
 
