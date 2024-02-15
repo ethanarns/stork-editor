@@ -148,18 +148,12 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
     // Loop
     auto end = mpbzData.size();
     while (mIndex < end) {
+        uint16_t curShort = YUtils::getUint16FromVec(mpbzData,mIndex);
+        mIndex += 2;
         if (info->colorMode == BgColorMode::MODE_16) {
-            uint16_t curShort = YUtils::getUint16FromVec(mpbzData,mIndex);
-            mIndex += 2;
-            //if (info->colorMode == BgColorMode::MODE_16) {
             curShort += 0x1000; // 0201c730
-            //}
-            this->tileRenderData.push_back(curShort);
-        } else {
-            uint8_t curShort = mpbzData.at(mIndex);
-            mIndex += 2; // The second byte appears to be something that changes the data
-            this->tileRenderData.push_back((uint16_t)curShort);
         }
+        this->tileRenderData.push_back(curShort);
     }
     mpdzIndex += compressed.size();
 }

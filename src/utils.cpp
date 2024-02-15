@@ -147,14 +147,10 @@ ChartilePreRenderData YUtils::getCharPreRender(uint16_t tileAttr, BgColorMode bg
         res.tileId = tileAttr & 0b1111111111;
         return res;
     } else if (bgColorMode == BgColorMode::MODE_256) {
-        if (tileAttr > 0b11111111) {
-            YUtils::printDebug("tileAttr is too big! Only 1 byte",DebugType::FATAL);
-            exit(EXIT_FAILURE);
-        }
         res.flipH = false;
         res.flipV = false;
         res.paletteId = 0;
-        res.tileId = tileAttr;
+        res.tileId = tileAttr & 0b11111111; // 1 byte, the only thing that actaully goes to the render engine
         return res;
     } else {
         std::stringstream ssCharPreRenErr;
