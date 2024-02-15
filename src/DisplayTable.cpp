@@ -57,11 +57,6 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         YUtils::printDebug(ssBadBg.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
-    // NOTE: Remove me once BG3 is supported
-    if (whichBg == 3) {
-        YUtils::printDebug("BG 3 tile placement is not yet supported",DebugType::WARNING);
-        return;
-    }
     if (x > (uint32_t)this->columnCount()) {
         std::stringstream ssXvaluHigh;
         ssXvaluHigh << "X value too high: " << hex << x;
@@ -76,42 +71,27 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     }
     auto pal = pren.paletteId;
     Chartile loadedTile;
-    if (whichBg == 2) {
-        auto vramChartiles = this->yidsRom->mapData->getScenByBg(2)->getVramChartiles();
-        try {
-            loadedTile = vramChartiles.at(pren.tileId);
-        } catch (...) {
-            // 0 often just means "empty," but is not consistent
-            // Use this as a fallback until you find out
-            if (pren.tileId != 0) {
-                std::stringstream ssTile;
-                ssTile << "Could not get certain tileId for BG2: " << std::hex << pren.tileId;
-                YUtils::printDebug(ssTile.str(),DebugType::ERROR);
-            }
-            return;
+    auto vramChartiles = this->yidsRom->mapData->getScenByBg(whichBg)->getVramChartiles();
+    try {
+        loadedTile = vramChartiles.at(pren.tileId);
+    } catch (...) {
+        // 0 often just means "empty," but is not consistent
+        // Use this as a fallback until you find out
+        if (pren.tileId != 0) {
+            std::stringstream ssTile;
+            ssTile << "Could not get certain tileId for BG" << whichBg << ": " << std::hex << pren.tileId;
+            YUtils::printDebug(ssTile.str(),DebugType::ERROR);
         }
-        
-        pal += this->yidsRom->paletteOffsetBg2;
-    } else if (whichBg == 1) {
-        auto vramChartiles = this->yidsRom->mapData->getScenByBg(1)->getVramChartiles();
-        try {
-            loadedTile = vramChartiles.at(pren.tileId);
-        } catch (...) {
-            if (pren.tileId != 0) {
-                std::stringstream ssTile;
-                ssTile << "Could not get certain tileId for BG1: " << std::hex << pren.tileId;
-                YUtils::printDebug(ssTile.str(),DebugType::ERROR);
-            }
-            return;
-        }
-
-        pal += this->yidsRom->paletteOffsetBg1;
-    } else {
-        std::stringstream ssbg;
-        ssbg << "Unsupported BG: " << hex << whichBg;
-        YUtils::printDebug(ssbg.str(),DebugType::ERROR);
         return;
     }
+    if (whichBg == 1) {
+        pal += this->yidsRom->paletteOffsetBg1;
+    } else if (whichBg == 2) {
+        pal += this->yidsRom->paletteOffsetBg2;
+    } else if (whichBg == 3) {
+        // ??
+    }
+
     auto potentialExisting = this->item(y,x);
     if (potentialExisting == nullptr) {
         // Nothing is here, so lets make a new one and set it!
@@ -397,10 +377,6 @@ void DisplayTable::updateBg() {
     }
 
     for (uint8_t bgIndex = 1; bgIndex <= 3; bgIndex++) {
-        // TODO: Support bg 3
-        if (bgIndex == 3) {
-            continue;
-        }
         std::cout << "Doing bg " << (uint16_t)bgIndex << std::endl;
         auto curScen = this->yidsRom->mapData->getScenByBg(bgIndex);
         if (curScen == nullptr) {
