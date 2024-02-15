@@ -236,7 +236,7 @@ void YUtils::printVector(std::vector<uint8_t> &vectorToPrint, int newlineBreak) 
 }
 
 void YUtils::writeVectorToFile(std::vector<uint8_t> &dataToWrite,std::string fileOnSystem,uint32_t addressOffset) {
-    std::fstream readWriteFile{fileOnSystem,ios::binary | ios::in | ios::out};
+    std::fstream readWriteFile{fileOnSystem,ios::binary | ios::out};
     if (!readWriteFile) {
         cerr << "[ERROR] Failed to write vector to file '" << fileOnSystem << "'" << endl;
         exit(EXIT_FAILURE);
