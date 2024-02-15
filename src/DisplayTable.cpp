@@ -243,6 +243,9 @@ void DisplayTable::displayTableClicked(int row, int column) {
         auto pixArray2 = curCell->data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
         YUtils::printDebug("Pixel Array for BG 2:",DebugType::VERBOSE);
         YUtils::printQbyte(pixArray2);
+        std::stringstream ssBg2;
+        ssBg2 << "Tile attr BG2: 0x" << std::hex << curCell->data(PixelDelegateData::TILEATTR_BG2).toUInt();
+        YUtils::printDebug(ssBg2.str(),DebugType::VERBOSE);
     }
     if (!curCell->data(PixelDelegateData::PIXEL_ARRAY_BG1).isNull()) {
         auto pixArray1 = curCell->data(PixelDelegateData::PIXEL_ARRAY_BG1).toByteArray();
@@ -253,6 +256,9 @@ void DisplayTable::displayTableClicked(int row, int column) {
         auto pixArray1 = curCell->data(PixelDelegateData::PIXEL_ARRAY_BG3).toByteArray();
         YUtils::printDebug("Pixel Array for BG 3:",DebugType::VERBOSE);
         YUtils::printQbyte(pixArray1);
+        std::stringstream ssBg3;
+        ssBg3 << "Tile attr BG3: 0x" << std::hex << curCell->data(PixelDelegateData::TILEATTR_BG3).toUInt();
+        YUtils::printDebug(ssBg3.str(),DebugType::VERBOSE);
     }
 
     if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
@@ -454,8 +460,8 @@ void DisplayTable::updateBg() {
                     std::cout << "X too big (x vs width): " << std::hex << x << " vs " << std::hex << (canvasWidth-1) << std::endl;
                     continue;
                 }
-                ChartilePreRenderData curShort = YUtils::getCharPreRender(preRenderData.at(preRenderIndex),colorMode);
-                this->putTileBg(x,y,curShort,bgIndex);
+                ChartilePreRenderData curPren = YUtils::getCharPreRender(preRenderData.at(preRenderIndex),colorMode);
+                this->putTileBg(x,y,curPren,bgIndex);
             }
             bgLeftOffset += cutOffBg;
         }
