@@ -425,13 +425,16 @@ void DisplayTable::updateBg() {
         const uint32_t preRenderSize = preRenderData.size();
         const uint32_t cutOffBg = curScen->getInfo()->layerWidth;
         uint32_t bgLeftOffset = 0;
-        while (bgLeftOffset < newCanvasWidth) {
+        // This previously used newCanvasWidth
+        uint32_t canvasWidth = this->yidsRom->mapData->getScenByBg(bgIndex)->getInfo()->layerWidth;
+        while (bgLeftOffset < canvasWidth) {
             for (uint32_t preRenderIndex = 0; preRenderIndex < preRenderSize; preRenderIndex++) {
                 uint32_t y = preRenderIndex / cutOffBg;
                 uint32_t x = (preRenderIndex % cutOffBg) + bgLeftOffset;
                 // Note: You might need to apply this to other layers later
                 // -1 because if you go the full length, it loops back around. Remember, .length - 1!
-                if (x > newCanvasWidth-1) {
+                if (x > canvasWidth-1) {
+                    std::cout << "X too big (x vs width): " << std::hex << x << " vs " << std::hex << (canvasWidth-1) << std::endl;
                     continue;
                 }
                 ChartilePreRenderData curShort = YUtils::getCharPreRender(preRenderData.at(preRenderIndex),colorMode);

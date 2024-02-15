@@ -380,7 +380,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             } else if (whichBgToWriteTo == 2) {
                 // Do nothing, replaced
             } else {
-                YUtils::printDebug("Unhandled BG in ANMZ",DebugType::WARNING);
+                //YUtils::printDebug("Unhandled BG in ANMZ",DebugType::WARNING);
             }
 
             while(anmzFileIndex < anmzSize) {

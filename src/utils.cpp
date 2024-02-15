@@ -139,6 +139,7 @@ std::vector<uint8_t> YUtils::subVector(std::vector<uint8_t> &inVec, uint32_t sta
 ChartilePreRenderData YUtils::getCharPreRender(uint16_t tileAttr, BgColorMode bgColorMode) {
     ChartilePreRenderData res;
     res.tileAttr = tileAttr;
+    // See: http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
     if (bgColorMode == BgColorMode::MODE_16) {
         res.flipV = ((tileAttr >> 11) % 2) == 1;
         res.flipH = ((tileAttr >> 10) % 2) == 1;
@@ -146,6 +147,10 @@ ChartilePreRenderData YUtils::getCharPreRender(uint16_t tileAttr, BgColorMode bg
         res.tileId = tileAttr & 0b1111111111;
         return res;
     } else if (bgColorMode == BgColorMode::MODE_256) {
+        if (tileAttr > 0b11111111) {
+            YUtils::printDebug("tileAttr is too big! Only 1 byte",DebugType::FATAL);
+            exit(EXIT_FAILURE);
+        }
         res.flipH = false;
         res.flipV = false;
         res.paletteId = 0;

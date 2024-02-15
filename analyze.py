@@ -141,7 +141,7 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
                 anmzIndex += 1
             remainingBytes = len(anmz) - anmzIndex
             if remainingBytes % 0x20 != 0:
-                print("FRROR: REMAINING FRAME BYTES NOT DIVISIBLE BY 0x20: " + hex(remainingBytes))
+                print("ERROR: REMAINING FRAME BYTES NOT DIVISIBLE BY 0x20: " + hex(remainingBytes))
             tilesRemaining = int(remainingBytes / 0x20)
             print(ind(3) + "32 Byte Tiles: " + str(tilesRemaining) + " (" + hex(tilesRemaining) + ")")
             if tilesRemaining % frameCount != 0:
