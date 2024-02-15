@@ -190,6 +190,7 @@ AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
         anmzIndex++;
     }
     uint32_t currentTileIndex = 0;
+    uint32_t byteCount = anmzSize - anmzIndex;
     while (anmzIndex < anmzSize) {
         Chartile curTile;
         curTile.bgColMode = BgColorMode::MODE_16;
@@ -209,6 +210,9 @@ AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
             curTile.tiles[innerPosition+0] = lowBit;
         }
         this->chartiles.push_back(curTile);
+    }
+    if (this->chartiles.size() != (byteCount / Constants::CHARTILE_DATA_SIZE)) {
+        YUtils::printDebug("Something has gone wrong with the ANMZ chartile generation size",DebugType::ERROR);
     }
     // Index was separate
     mpdzIndex += compressed.size();
