@@ -5,6 +5,10 @@
 #include <QStyledItemDelegate>
 
 enum PixelDelegateData {
+    DRAW_BG1 = 32,
+    DRAW_BG2 = 31,
+    DRAW_BG3 = 30,
+
     PIXEL_ARRAY_BG2 = 101,
     PALETTE_ARRAY_BG2 = 102,
     TILEATTR_BG2 = 103,
@@ -30,17 +34,14 @@ enum PixelDelegateData {
     OBJECT_TILES = 116,
     OBJECT_UUID = 117,
 
-    DRAW_BG1 = 32,
-    DRAW_BG2 = 31,
-    DRAW_BG3 = 30,
-    DRAW_OBJECTS = 111,
-
     // BG3 support
-    PIXEL_ARRAY_BG3 = 112,
-    PALETTE_ARRAY_BG3 = 113,
-    TILEATTR_BG3 = 114,
-    FLIP_H_BG3 = 115,
-    FLIP_V_BG3 = 116
+    PIXEL_ARRAY_BG3 = 118,
+    PALETTE_ARRAY_BG3 = 119,
+    TILEATTR_BG3 = 120,
+    FLIP_H_BG3 = 121,
+    FLIP_V_BG3 = 122,
+
+    DRAW_OBJECTS = 123
 };
 
 enum CollisionType {
