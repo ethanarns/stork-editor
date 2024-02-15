@@ -257,11 +257,11 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
 
             // Only the first one matters for the primary height and width, since BG 2 decides everything
             if (whichBgToWriteTo == 2) {
-                this->colorModeBg2 = whichBgColorModeMaybe;
+                //this->colorModeBg2 = whichBgColorModeMaybe;
             } else if (whichBgToWriteTo == 1) {
-                this->colorModeBg1 = whichBgColorModeMaybe;
+                //this->colorModeBg1 = whichBgColorModeMaybe;
             } else if (whichBgToWriteTo == 3) {
-                this->colorModeBg3 = whichBgColorModeMaybe;
+                //this->colorModeBg3 = whichBgColorModeMaybe;
             }
 
             if (infoLength > 0x18) {

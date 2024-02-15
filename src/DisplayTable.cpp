@@ -71,7 +71,8 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     }
     auto pal = pren.paletteId;
     Chartile loadedTile;
-    auto vramChartiles = this->yidsRom->mapData->getScenByBg(whichBg)->getVramChartiles();
+    auto scen = this->yidsRom->mapData->getScenByBg(whichBg);
+    auto vramChartiles = scen->getVramChartiles();
     try {
         loadedTile = vramChartiles.at(pren.tileId);
     } catch (...) {
@@ -93,12 +94,13 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     }
 
     auto potentialExisting = this->item(y,x);
+    auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
     if (potentialExisting == nullptr) {
         // Nothing is here, so lets make a new one and set it!
         QTableWidgetItem *newItem = new QTableWidgetItem();
         if (whichBg == 2) {
             newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
-            if (this->yidsRom->colorModeBg2 == BgColorMode::MODE_16) {
+            if (!isColorMode256) {
                 newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
             } else {
                 newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(this->yidsRom->paletteOffsetBg2 + 1));
@@ -124,7 +126,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         // There is already an item here, lets just update it
         if (whichBg == 2) {
             potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
-            if (this->yidsRom->colorModeBg2 == BgColorMode::MODE_16) {
+            if (!isColorMode256) {
                 potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
             } else {
                 potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(this->yidsRom->paletteOffsetBg2 + 1));

@@ -53,18 +53,15 @@ public:
      * Corresponds with collision the most
      */
     std::vector<uint16_t> preRenderDataBg2;
-    BgColorMode colorModeBg2;
     /**
      * @brief BG 1's tile data. Animated foreground for the most part, 
      * no collision (seen so far)
      */
     std::vector<uint16_t> preRenderDataBg1;
-    BgColorMode colorModeBg1;
     /**
      * @brief BG 3's tile data. Animated bg?
      */
     std::vector<uint16_t> preRenderDataBg3;
-    BgColorMode colorModeBg3;
 
     std::map<uint32_t,ObjectPalette> objsetPalettes;
 
