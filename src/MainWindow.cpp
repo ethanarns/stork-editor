@@ -332,7 +332,12 @@ MainWindow::MainWindow() {
     auto label_colorShort = new QLabel;
     label_colorShort->setText(tr("Click for info"));
     label_colorShort->setObjectName("label_colorShort");
+    label_colorShort->setFixedWidth(1000);
     paletteInfoLayout->addWidget(label_colorShort);
+    // Buttons
+    QPushButton* nextPalettebutton = new QPushButton("&Next Palette",this);
+    nextPalettebutton->setObjectName("button_nextPalette");
+    paletteInfoLayout->addWidget(nextPalettebutton);
     // Finalize //
     this->palettePopup->setLayout(paletteLayout);
 
