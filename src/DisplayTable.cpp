@@ -95,7 +95,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     } else if (whichBg == 2) {
         pal += this->yidsRom->paletteOffsetBg2;
     } else if (whichBg == 3) {
-        // ??
+        pal += this->yidsRom->paletteOffsetBg3;
     }
 
     auto potentialExisting = this->item(y,x);
@@ -169,7 +169,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             if (!isColorMode256) {
                 potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->currentPalettes[pal]);
             } else {
-                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(0xf));
+                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(this->yidsRom->paletteOffsetBg3 + 1));
             }
             potentialExisting->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
             potentialExisting->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);

@@ -71,6 +71,7 @@ public:
 
     uint32_t paletteOffsetBg1 = 0;
     uint32_t paletteOffsetBg2 = 0;
+    uint32_t paletteOffsetBg3 = 0;
 
     bool filesLoaded = false;
     YidsRom();

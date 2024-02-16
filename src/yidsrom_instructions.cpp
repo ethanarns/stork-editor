@@ -292,6 +292,8 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 this->paletteOffsetBg2 = globalPaletteIndex-1; // Starts at 1
             } else if (whichBgToWriteTo == 1) {
                 this->paletteOffsetBg1 = globalPaletteIndex-1;
+            } else if (whichBgToWriteTo == 3) {
+                this->paletteOffsetBg3 = globalPaletteIndex-1;
             }
 
             while (pltbReadIndex < indexPointer) {
