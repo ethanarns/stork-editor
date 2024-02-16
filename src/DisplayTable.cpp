@@ -153,6 +153,9 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             if (!isColorMode256) {
                 potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
             } else {
+                // Note: the 256 palettes thing does not always start at 0x10 (including the +1)
+                // 1-3, there's a palette missing from the palette screen that made this start at 0xf
+                // this will be moot if you separate the 256 palette
                 potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(this->yidsRom->paletteOffsetBg2 + 1));
             }
             potentialExisting->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
@@ -169,6 +172,9 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             if (!isColorMode256) {
                 potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->currentPalettes[pal]);
             } else {
+                // Note: the 256 palettes thing does not always start at 0x10 (including the +1)
+                // 1-3, there's a palette missing from the palette screen
+                // this will be moot if you separate the 256 palette
                 potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(this->yidsRom->paletteOffsetBg3 + 1));
             }
             potentialExisting->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
