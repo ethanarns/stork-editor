@@ -14,7 +14,7 @@ It uses the USA version 1.0. Do NOT use 1.1 or "rev 1." SHA256 Sum: c75bf32c31f7
 4. Run defaultRun.sh
 
 ### Todo:
-- Drag and drop objects
-- Display object info
 - Line following implementation
+- Gradient BG support
+- Export
 - Windows support

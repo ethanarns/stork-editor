@@ -190,7 +190,6 @@ AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
         anmzIndex++;
     }
     uint32_t currentTileIndex = 0;
-    uint32_t byteCount = anmzSize - anmzIndex;
     while (anmzIndex < anmzSize) {
         Chartile curTile;
         curTile.index = currentTileIndex;
