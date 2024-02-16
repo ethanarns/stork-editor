@@ -35,7 +35,7 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             auto mpbz = new MapTilesData(mpdzBytes,mpdzIndex,mpdzIndex+subLength, this);
             this->subScenData.push_back(mpbz);
         } else if (subMagic == Constants::IMBZ_MAGIC_NUM) {
-            YUtils::printDebug("IMBZ",DebugType::VERBOSE);
+            YUtils::printDebug("Unhandled IMBZ",DebugType::WARNING);
             mpdzIndex += subLength;
         } else {
             std::stringstream unknownMagic;
