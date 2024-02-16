@@ -20,7 +20,7 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             auto info = new ScenInfoData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subScenData.push_back(info);
         } else if (subMagic == Constants::ANMZ_MAGIC_NUM) {
-            auto anmz = new AnimatedMapData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            auto anmz = new AnimatedMapData(mpdzBytes,mpdzIndex,mpdzIndex+subLength,this->getInfo()->colorMode);
             this->subScenData.push_back(anmz);
         } else if (subMagic == Constants::IMGB_MAGIC_NUM) {
             auto imgb = new ImgbLayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
@@ -163,7 +163,7 @@ MapTilesData::~MapTilesData() {
     this->tileRenderData.shrink_to_fit();
 }
 
-AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, BgColorMode &colorMode) {
     auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
     auto anmzData = YCompression::lzssVectorDecomp(compressed);
     const uint32_t anmzSize = anmzData.size();
@@ -193,26 +193,38 @@ AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
     uint32_t byteCount = anmzSize - anmzIndex;
     while (anmzIndex < anmzSize) {
         Chartile curTile;
-        curTile.bgColMode = BgColorMode::MODE_16;
         curTile.index = currentTileIndex;
         curTile.tiles.resize(64);
-        for (
-            int currentTileBuildIndex = 0;
-            currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE;
-            currentTileBuildIndex++
-        ) {
-            uint8_t curByte = anmzData.at(anmzIndex);
-            anmzIndex++;
-            uint8_t highBit = curByte >> 4;
-            uint8_t lowBit = curByte % 0x10;
-            int innerPosition = currentTileBuildIndex*2;
-            curTile.tiles[innerPosition+1] = highBit;
-            curTile.tiles[innerPosition+0] = lowBit;
+        if (colorMode == BgColorMode::MODE_16) {
+            curTile.bgColMode = BgColorMode::MODE_16;
+            for (
+                int currentTileBuildIndex = 0;
+                currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE;
+                currentTileBuildIndex++
+            ) {
+                uint8_t curByte = anmzData.at(anmzIndex);
+                anmzIndex++;
+                uint8_t highBit = curByte >> 4;
+                uint8_t lowBit = curByte % 0x10;
+                int innerPosition = currentTileBuildIndex*2;
+                curTile.tiles[innerPosition+1] = highBit;
+                curTile.tiles[innerPosition+0] = lowBit;
+            }
+        } else {
+            curTile.bgColMode = BgColorMode::MODE_256;
+            // Instead of being split, each pixel is a full byte
+            // Meaning 64 places
+            for (
+                int currentTileBuildIndex = 0;
+                currentTileBuildIndex < 64;
+                currentTileBuildIndex++
+            ) {
+                uint8_t curByte = anmzData.at(anmzIndex);
+                anmzIndex++;
+                curTile.tiles[currentTileBuildIndex] = curByte;
+            }
         }
         this->chartiles.push_back(curTile);
-    }
-    if (this->chartiles.size() != (byteCount / Constants::CHARTILE_DATA_SIZE)) {
-        YUtils::printDebug("Something has gone wrong with the ANMZ chartile generation size",DebugType::ERROR);
     }
     // Index was separate
     mpdzIndex += compressed.size();

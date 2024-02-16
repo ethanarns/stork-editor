@@ -138,7 +138,7 @@ public:
 // ANMZ
 class AnimatedMapData : public LevelData {
 public:
-    AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, BgColorMode &colorMode);
     ~AnimatedMapData();
     std::string toString() {
         std::stringstream ss;
