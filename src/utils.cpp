@@ -137,27 +137,15 @@ std::vector<uint8_t> YUtils::subVector(std::vector<uint8_t> &inVec, uint32_t sta
 }
 
 ChartilePreRenderData YUtils::getCharPreRender(uint16_t mapTileAttr, BgColorMode bgColorMode) {
+    Q_UNUSED(bgColorMode);
     ChartilePreRenderData res;
     res.tileAttr = mapTileAttr;
     // See: http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
-    if (bgColorMode == BgColorMode::MODE_16) {
-        res.flipV = ((mapTileAttr >> 11) % 2) == 1;
-        res.flipH = ((mapTileAttr >> 10) % 2) == 1;
-        res.paletteId = mapTileAttr >> 12;
-        res.tileId = mapTileAttr & 0b1111111111;
-        return res;
-    } else if (bgColorMode == BgColorMode::MODE_256) {
-        res.flipH = false;
-        res.flipV = false;
-        res.paletteId = 0;
-        res.tileId = mapTileAttr & 0b11111111; // 1 byte, the only thing that actaully goes to the render engine
-        return res;
-    } else {
-        std::stringstream ssCharPreRenErr;
-        ssCharPreRenErr << "Unknown BgColorMode used in getCharPreRender: " << bgColorMode;
-        YUtils::printDebug(ssCharPreRenErr.str(),DebugType::ERROR);
-        return res;
-    }
+    res.flipV = ((mapTileAttr >> 11) % 2) == 1;
+    res.flipH = ((mapTileAttr >> 10) % 2) == 1;
+    res.paletteId = mapTileAttr >> 12;
+    res.tileId = mapTileAttr & 0b1111111111;
+    return res;
 }
 
 /**
