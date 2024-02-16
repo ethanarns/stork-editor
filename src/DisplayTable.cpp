@@ -436,8 +436,8 @@ void DisplayTable::updateBg() {
             YUtils::printDebug(ssNoScen.str(),DebugType::WARNING);
             continue; // Proceed to next BG
         }
-        auto preRenderData = curScen->getPreRenderData();
-        if (preRenderData.size() == 0) {
+        auto mapTiles = curScen->getMapTiles();
+        if (mapTiles.size() == 0) {
             std::stringstream ssEmptyPreRender;
             ssEmptyPreRender << "No MPBZ file for background " << std::hex;
             ssEmptyPreRender << bgIndex << " found";
@@ -445,7 +445,7 @@ void DisplayTable::updateBg() {
             continue; // Proceed to next BG
         }
         BgColorMode colorMode = curScen->getInfo()->colorMode;
-        const uint32_t preRenderSize = preRenderData.size();
+        const uint32_t preRenderSize = mapTiles.size();
         const uint32_t cutOffBg = curScen->getInfo()->layerWidth;
         uint32_t bgLeftOffset = 0;
         // This previously used newCanvasWidth
@@ -460,7 +460,7 @@ void DisplayTable::updateBg() {
                     std::cout << "X too big (x vs width): " << std::hex << x << " vs " << std::hex << (canvasWidth-1) << std::endl;
                     continue;
                 }
-                ChartilePreRenderData curPren = YUtils::getCharPreRender(preRenderData.at(preRenderIndex),colorMode);
+                ChartilePreRenderData curPren = YUtils::getCharPreRender(mapTiles.at(preRenderIndex),colorMode);
                 this->putTileBg(x,y,curPren,bgIndex);
             }
             bgLeftOffset += cutOffBg;

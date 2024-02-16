@@ -244,7 +244,9 @@ public:
     ScenInfoData* getInfo();
     LayerPaletteData* getPalette();
     LevelData* getFirstDataByMagic(uint32_t magicNumber, bool silentFail = false);
-    std::vector<uint16_t> getPreRenderData();
+    /// @brief Return the two-byte map tile vector representing the VRAM
+    /// @return Vector of uint16s representing ROM map tiles (see Map Address in No$GBA)
+    std::vector<uint16_t> getMapTiles();
     std::vector<Chartile> parseImbzFromFile(std::string filename_noExt, BgColorMode bgColMode = BgColorMode::MODE_16);
 private:
     std::vector<LevelData*> subScenData;

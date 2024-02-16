@@ -83,7 +83,7 @@ LevelData* LayerData::getFirstDataByMagic(uint32_t magicNumber, bool silentFail)
     return nullptr;
 }
 
-std::vector<uint16_t> LayerData::getPreRenderData() {
+std::vector<uint16_t> LayerData::getMapTiles() {
     auto mpbzMaybe = this->getFirstDataByMagic(Constants::MPBZ_MAGIC_NUM);
     if (mpbzMaybe == nullptr) {
         YUtils::printDebug("MPBZ empty, returning empty vector",DebugType::ERROR);
