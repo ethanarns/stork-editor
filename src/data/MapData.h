@@ -47,8 +47,31 @@ public:
     };
     virtual std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
-        result = FsPacker::packInstruction(Constants::INFO_MAGIC_NUM,result,false);
-        return result;
+        auto layerWidth = YUtils::uint16toVec(this->layerWidth);
+        YUtils::appendVector(result,layerWidth);
+        auto layerHeight = YUtils::uint16toVec(this->layerHeight);
+        YUtils::appendVector(result,layerHeight);
+        auto bgYoffset = YUtils::uint32toVec(this->bgYoffset);
+        YUtils::appendVector(result,bgYoffset);
+        auto xScrollOffset = YUtils::uint32toVec(this->xScrollOffset);
+        YUtils::appendVector(result,xScrollOffset);
+        auto yScrollOffset = YUtils::uint32toVec(this->yScrollOffset);
+        YUtils::appendVector(result,yScrollOffset);
+        // Single bytes
+        result.push_back(this->whichBackground);
+        result.push_back(this->layerOrder);
+        result.push_back(this->unkThird);
+        result.push_back(this->baseBlockMaybe);
+        auto colorMode = YUtils::uint32toVec((uint32_t)this->colorMode);
+        YUtils::appendVector(result,colorMode);
+        if (!this->imbzFilename.empty()) {
+            auto imbzFilenameVec = YUtils::stringToVector(this->imbzFilename);
+            YUtils::appendVector(result,imbzFilenameVec);
+            while (result.size() % 4 != 0) {
+                result.push_back(0x0);
+            }
+        }
+        return FsPacker::packInstruction(Constants::INFO_MAGIC_NUM,result,false);
     };
     uint32_t getMagic() { return Constants::INFO_MAGIC_NUM; }
     // Variables
