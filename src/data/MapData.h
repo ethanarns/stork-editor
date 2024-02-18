@@ -267,8 +267,32 @@ public:
         return ss.str();
     };
     std::vector<uint8_t> compile() {
-        std::vector<uint8_t> result;
-        // TODO
+        // GINF
+        std::vector<uint8_t> result = YUtils::uint32toVec(Constants::GINF_MAGIC_NUM);
+        uint32_t len = 12;
+        auto lenVec = YUtils::uint32toVec(len);
+        YUtils::appendVector(result,lenVec);
+        result.push_back(this->unknown1);
+        result.push_back(this->unknown2);
+        result.push_back(this->unknown3);
+        result.push_back(this->unknown4);
+        auto unk5 = YUtils::uint16toVec(this->unknown5);
+        YUtils::appendVector(result,unk5);
+        result.push_back(this->unknown6);
+        result.push_back(this->unknown7);
+        auto yOffset = YUtils::uint32toVec(this->yOffset);
+        YUtils::appendVector(result,yOffset);
+        // GCOL
+        auto gcol = YUtils::uint32toVec(Constants::GCOL_MAGIC_NUM);
+        YUtils::appendVector(result,gcol);
+        uint32_t gcolLength = this->colors.size() * 2;
+        auto gcolLengthVec = YUtils::uint32toVec(gcolLength);
+        YUtils::appendVector(result,gcolLengthVec);
+        std::cout << "b" << std::endl;
+        for (auto it = this->colors.begin(); it != this->colors.end(); it++) {
+            auto curColor = YUtils::uint16toVec(*it);
+            YUtils::appendVector(result,curColor);
+        }
         result = FsPacker::packInstruction(Constants::GRAD_MAGIC_NUM,result,false);
         return result;
     };
@@ -303,10 +327,12 @@ public:
     std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
         for (size_t i = 0; i < subData.size(); i++) {
+            std::cout << "Compiling subData: " << std::hex << subData.at(i)->getMagic() << std::endl;
             auto subCompiled = subData.at(i)->compile();
+            std::cout << "Compiled" << std::endl;
             YUtils::appendVector(result,subCompiled);
         }
-        result = FsPacker::packInstruction(Constants::MPDZ_MAGIC_NUM,result);
+        result = FsPacker::packInstruction(Constants::MPDZ_MAGIC_NUM,result,true);
         return result;
     };
     // Others
@@ -332,9 +358,10 @@ public:
 
     QByteArray getLayerOrder();
     bool wipeLayerOrderCache();
+
+    LevelData* getFirstDataByMagic(uint32_t magicNumber);
 private:    
     std::vector<LevelData*> subData;
-    LevelData* getFirstDataByMagic(uint32_t magicNumber);
     std::vector<QByteArray*> bgPalleteRamCache;
     QByteArray layerOrderCache;
 };

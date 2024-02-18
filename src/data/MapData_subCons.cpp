@@ -279,6 +279,7 @@ ImgbLayerData::~ImgbLayerData() {
     this->chartiles.shrink_to_fit();
 }
 
+// GRAD
 LevelGradientData::LevelGradientData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     // It is GINF then GCOL every single time
     while (mpdzIndex < stop) {
