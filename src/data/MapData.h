@@ -83,7 +83,11 @@ public:
     };
     std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
-        // TODO
+        for (auto it = this->levelObjects.begin(); it != this->levelObjects.end(); it++) {
+            LevelObject obj = *(*it);
+            auto objVec = YUtils::compileObject(obj);
+            YUtils::appendVector(result,objVec);
+        }
         return FsPacker::packInstruction(Constants::SETD_MAGIC_NUM,result,false);
     };
     uint32_t getMagic() { return Constants::SETD_MAGIC_NUM; }

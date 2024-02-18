@@ -267,6 +267,18 @@ void YUtils::printLevelObject(LevelObject lo) {
         ", y: " << hex << setw(3) << lo.yPosition << " }" << endl;
 }
 
+std::vector<uint8_t> YUtils::compileObject(LevelObject lo) {
+    std::vector<uint8_t> result = YUtils::uint16toVec(lo.objectId);
+    auto length = YUtils::uint16toVec(lo.settingsLength);
+    YUtils::appendVector(result,length);
+    auto xpos = YUtils::uint16toVec(lo.xPosition);
+    YUtils::appendVector(result,xpos);
+    auto ypos = YUtils::uint16toVec(lo.yPosition);
+    YUtils::appendVector(result,ypos);
+    YUtils::appendVector(result,lo.settings);
+    return result;
+}
+
 QByteArray YUtils::tileVectorToQByteArray(std::vector<uint8_t> tileVector) {
     QByteArray qb;
     const uint32_t tileVectorSize = tileVector.size();
