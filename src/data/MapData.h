@@ -158,7 +158,35 @@ public:
     };
     std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
-        // TODO //
+        result.push_back(this->frameCount);
+        result.push_back(this->unknown1);
+        auto unknown2 = YUtils::uint16toVec(this->unknown2);
+        YUtils::appendVector(result, unknown2);
+        auto vramOffset = YUtils::uint16toVec(this->vramOffset);
+        YUtils::appendVector(result, vramOffset);
+        result.push_back(this->unknown3);
+        result.push_back(this->unknown4);
+        YUtils::appendVector(result,this->frameTimes);
+        while(result.size() % 4 != 0) {
+            result.push_back(0x0);
+        }
+        // Now do it like IMGB
+        for (auto it = this->chartiles.begin(); it != this->chartiles.end(); it++) {
+            auto tiles = it->tiles;
+            BgColorMode colMode = it->bgColMode;
+            if (colMode == BgColorMode::MODE_16) {
+                for (int i = 0; i < tiles.size(); i += 2) {
+                    auto tile0 = tiles.at(i);
+                    auto tile1 = tiles.at(i+1);
+                    result.push_back((tile1 << 4) + tile0);
+                }
+            } else {
+                //256 mode
+                for (int i = 0; i < tiles.size(); i++) {
+                    result.push_back(tiles.at(i));
+                }
+            }
+        }
         result = FsPacker::packInstruction(Constants::ANMZ_MAGIC_NUM,result,true);
         return result;
     };
