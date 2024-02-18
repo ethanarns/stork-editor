@@ -110,7 +110,14 @@ public:
     };
     std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
-        // TODO
+        for (auto it = this->chartiles.begin(); it != this->chartiles.end(); it++) {
+            auto tiles = it->tiles;
+            for (int i = 0; i < tiles.size(); i += 2) {
+                auto tile0 = tiles.at(i);
+                auto tile1 = tiles.at(i+1);
+                result.push_back((tile1 << 4) + tile0);
+            }
+        }
         return FsPacker::packInstruction(Constants::IMGB_MAGIC_NUM,result,false);
     };
     uint32_t getMagic() { return Constants::IMGB_MAGIC_NUM; }
