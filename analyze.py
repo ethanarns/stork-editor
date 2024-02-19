@@ -95,9 +95,6 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
                 try:
                     finishedString = strBytes.decode("ascii")
                     print(ind(3) + "IMBZ filename: " + finishedString)
-                    # Padding
-                    while tempIndex % 4 != 0:
-                        tempIndex += 1
                 except UnicodeDecodeError:
                     print("ERROR: Failed to decode:")
                     print(strBytes)
@@ -225,7 +222,7 @@ def handleGRAD(data: bytearray, index: int, stop: int):
             print("ERROR: Unknown sub-GRAD")
         index += gradLength
         if tempIndex != index:
-            print("ERROR: Failed to match sub-SCEN length: " + hex(tempIndex) + " vs " + hex(index))
+            print("ERROR: Failed to match sub-GRAD length: " + hex(tempIndex) + " vs " + hex(index))
             pass
 
 def handleSETD(data: bytearray, index: int, stop: int):
