@@ -412,7 +412,7 @@ public:
             std::cout << "Compiled" << std::endl;
             YUtils::appendVector(result,subCompiled);
         }
-        result = FsPacker::packInstruction(Constants::MPDZ_MAGIC_NUM,result,true);
+        result = FsPacker::packInstruction(Constants::MPDZ_MAGIC_NUM,result,false);
         return result;
     };
     // Others
