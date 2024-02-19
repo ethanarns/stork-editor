@@ -418,9 +418,7 @@ public:
     std::vector<uint8_t> compile(ScenInfoData &info) {
         std::vector<uint8_t> result;
         for (size_t i = 0; i < subData.size(); i++) {
-            std::cout << "Compiling subData: " << std::hex << subData.at(i)->getMagic() << std::endl;
             auto subCompiled = subData.at(i)->compile(info);
-            std::cout << "Compiled" << std::endl;
             YUtils::appendVector(result,subCompiled);
         }
         result = FsPacker::packInstruction(Constants::MPDZ_MAGIC_NUM,result,false);

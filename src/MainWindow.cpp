@@ -532,7 +532,7 @@ void MainWindow::menuClick_export() {
             fileName = fileName.append(".nds");
         }
         std::stringstream ss;
-        ss << "Exporting to " << fileName.toStdString() << "..." << std::endl;
+        ss << "Exporting to " << fileName.toStdString() << "...";
         YUtils::printDebug(ss.str(),DebugType::VERBOSE);
         YCompression::repackRom(fileName.toStdString());
         YUtils::printDebug("Export complete",DebugType::VERBOSE);
@@ -608,6 +608,7 @@ void MainWindow::saveRom() {
     outFile << "_nds_unpack" << "/data/file/" << this->rom->mapData->filename;
     std::stringstream ssSave;
     ssSave << "Saving map file '" << this->rom->mapData->filename << "' with size 0x" << std::hex << finalOut.size();
+    ssSave << " / " << std::dec << finalOut.size();
     ssSave << " to location " << outFile.str();
     YUtils::printDebug(ssSave.str(),DebugType::VERBOSE);
     // Check if it exists already for debug purposes

@@ -197,13 +197,13 @@ void YCompression::repackRom(std::string outputFileName) {
     execPath = execPath.append(" -y ").append(ROM_EXTRACT_DIR).append("/overlay");
     execPath = execPath.append(" -t ").append(ROM_EXTRACT_DIR).append("/banner.bin");
     if (!windows) execPath.append(" 1> /dev/null");
-    YUtils::printDebug(execPath,DebugType::VERBOSE);
+    //YUtils::printDebug(execPath,DebugType::VERBOSE);
     auto result = system(execPath.c_str());
     if (result == 0) {
-        YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
+        //YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
     } else {
         std::stringstream ssUnpackResult;
         ssUnpackResult << "System result: " << result;
-        YUtils::printDebug(ssUnpackResult.str(),DebugType::VERBOSE);
+        YUtils::printDebug(ssUnpackResult.str(),DebugType::ERROR);
     }
 }
