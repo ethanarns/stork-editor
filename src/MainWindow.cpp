@@ -614,7 +614,7 @@ void MainWindow::saveRom() {
     // Check if it exists already for debug purposes
     std::filesystem::path existing = outFile.str();
     if (std::filesystem::exists(existing)) {
-        YUtils::printDebug("Overwriting existing file",DebugType::VERBOSE);
+        //YUtils::printDebug("Overwriting existing file",DebugType::VERBOSE);
     } else {
         YUtils::printDebug("No existing file found, creating new",DebugType::VERBOSE);
     }

@@ -430,7 +430,7 @@ void DisplayTable::updateBg() {
     }
 
     for (uint8_t bgIndex = 1; bgIndex <= 3; bgIndex++) {
-        std::cout << "Doing bg " << (uint16_t)bgIndex << std::endl;
+        //std::cout << "Doing bg " << (uint16_t)bgIndex << std::endl;
         auto curScen = this->yidsRom->mapData->getScenByBg(bgIndex);
         if (curScen == nullptr) {
             std::stringstream ssNoScen;
