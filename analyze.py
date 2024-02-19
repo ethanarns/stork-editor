@@ -245,7 +245,7 @@ def handleMpdz(filename):
     print(filename)
     mpdz = bytearray(ndspy.lz10.decompressFromFile(filename))
     # Each time, make an decompressed copy
-    ndspy.lz10.decompressToFile(open(filename,"rb").read(),str(filename).replace("mpdz","mpdb"))
+    #ndspy.lz10.decompressToFile(open(filename,"rb").read(),str(filename).replace("mpdz","mpdb"))
     readIndex = 0
     magicNum = mpdz[readIndex:readIndex+3].decode("ascii")
     if magicNum != "SET":
