@@ -238,7 +238,15 @@ public:
     };
     std::vector<uint8_t> compile() {
         std::vector<uint8_t> result;
-        // TODO //
+        if (this->tileOffset > 0 || this->bottomTrim > 0) {
+            result.push_back(0xff);
+            result.push_back(0xff);
+            auto tileOffsetVec = YUtils::uint16toVec(this->tileOffset);
+            YUtils::appendVector(result,tileOffsetVec);
+            auto bottomTrimVec = YUtils::uint16toVec(this->bottomTrim);
+            YUtils::appendVector(result,bottomTrimVec);
+            // Padding header built
+        }
         result = FsPacker::packInstruction(Constants::MPBZ_MAGIC_NUM,result,true);
         return result;
     };
