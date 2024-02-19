@@ -451,6 +451,7 @@ public:
     bool wipeLayerOrderCache();
 
     LevelData* getFirstDataByMagic(uint32_t magicNumber);
+    std::string filename;
 private:    
     std::vector<LevelData*> subData;
     std::vector<QByteArray*> bgPalleteRamCache;

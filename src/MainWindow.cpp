@@ -34,6 +34,7 @@
 #include <QComboBox>
 
 #include <iostream>
+#include <filesystem>
 using namespace std;
 
 MainWindow::MainWindow() {
@@ -593,12 +594,30 @@ void MainWindow::menuClick_viewObjects(bool checked) {
 }
 
 void MainWindow::saveRom() {
+    if (this->rom->mapData->filename.empty()) {
+        // Saving a rom pre-load should be impossible
+        YUtils::printDebug("No filename for MapData saved",DebugType::FATAL);
+        exit(EXIT_FAILURE);
+    }
     this->setWindowTitle(Constants::WINDOW_TITLE);
     this->menu_save->setDisabled(true);
     ScenInfoData info; // Fake info
     auto outVec = this->rom->mapData->compile(info);
     auto finalOut = YCompression::lzssVectorRecomp(outVec);
-    YUtils::writeByteVectorToFile(finalOut,"test_generated.mpdz");
+    std::stringstream outFile;
+    outFile << "_nds_unpack" << "/data/file/" << this->rom->mapData->filename;
+    std::stringstream ssSave;
+    ssSave << "Saving map file '" << this->rom->mapData->filename << "' with size 0x" << std::hex << finalOut.size();
+    ssSave << " to location " << outFile.str();
+    YUtils::printDebug(ssSave.str(),DebugType::VERBOSE);
+    // Check if it exists already for debug purposes
+    std::filesystem::path existing = outFile.str();
+    if (std::filesystem::exists(existing)) {
+        YUtils::printDebug("Overwriting existing file",DebugType::VERBOSE);
+    } else {
+        YUtils::printDebug("No existing file found, creating new",DebugType::VERBOSE);
+    }
+    YUtils::writeByteVectorToFile(finalOut,outFile.str());
 }
 
 void MainWindow::markSavableUpdate() {
