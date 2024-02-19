@@ -595,6 +595,10 @@ void MainWindow::menuClick_viewObjects(bool checked) {
 void MainWindow::saveRom() {
     this->setWindowTitle(Constants::WINDOW_TITLE);
     this->menu_save->setDisabled(true);
+    ScenInfoData info; // Fake info
+    auto outVec = this->rom->mapData->compile(info);
+    auto finalOut = YCompression::lzssVectorRecomp(outVec);
+    YUtils::writeByteVectorToFile(finalOut,"test_generated.mpdz");
 }
 
 void MainWindow::markSavableUpdate() {

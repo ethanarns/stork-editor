@@ -13,11 +13,12 @@
 
 // Forward declaration
 class LayerData;
+class ScenInfoData;
 
 class LevelData {
 public:
     virtual std::string toString() = 0;
-    virtual std::vector<uint8_t> compile() = 0;
+    virtual std::vector<uint8_t> compile(ScenInfoData &info) = 0;
     virtual uint32_t getMagic() { return 0; };
     virtual ~LevelData() { /* Do stuff */ };
 };
@@ -26,6 +27,7 @@ public:
 class ScenInfoData : public LevelData {
 public:
     ScenInfoData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    ScenInfoData();
     virtual std::string toString() {
         std::stringstream ss;
         ss << "ScenInfoData {" << std::hex << std::endl;
@@ -45,7 +47,8 @@ public:
         ss << "}";
         return ss.str();
     };
-    virtual std::vector<uint8_t> compile() {
+    virtual std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
         std::vector<uint8_t> result;
         auto layerWidth = YUtils::uint16toVec(this->layerWidth);
         YUtils::appendVector(result,layerWidth);
@@ -104,7 +107,8 @@ public:
         ss << " }";
         return ss.str();
     };
-    std::vector<uint8_t> compile() {
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
         std::vector<uint8_t> result;
         for (auto it = this->levelObjects.begin(); it != this->levelObjects.end(); it++) {
             LevelObject obj = *(*it);
@@ -131,7 +135,8 @@ public:
         ss << " }";
         return ss.str();
     };
-    std::vector<uint8_t> compile() {
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
         std::vector<uint8_t> result;
         for (auto it = this->chartiles.begin(); it != this->chartiles.end(); it++) {
             auto tiles = it->tiles;
@@ -160,7 +165,8 @@ public:
         ss << " }";
         return ss.str();
     };
-    std::vector<uint8_t> compile() {
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
         // 1:1 basically
         return FsPacker::packInstruction(Constants::COLZ_MAGIC_NUM,this->colData,true);
     };
@@ -179,7 +185,8 @@ public:
         ss << "ANMZ { }";
         return ss.str();
     };
-    std::vector<uint8_t> compile() {
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
         std::vector<uint8_t> result;
         result.push_back(this->frameCount);
         result.push_back(this->unknown1);
@@ -236,7 +243,8 @@ public:
         ss << " }";
         return ss.str();
     };
-    std::vector<uint8_t> compile() {
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
         std::vector<uint8_t> result;
         if (this->tileOffset > 0 || this->bottomTrim > 0) {
             result.push_back(0xff);
@@ -270,7 +278,8 @@ public:
         ss << " }";
         return ss.str();
     };
-    std::vector<uint8_t> compile() {
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
         std::vector<uint8_t> result;
         for (auto it = this->palettes.cbegin(); it != this->palettes.cend(); it++) {
             for (uint pIndex = 0; pIndex < Constants::PALETTE_SIZE; pIndex++) {
@@ -297,10 +306,11 @@ public:
         ss << " }";
         return ss.str();
     };
-    std::vector<uint8_t> compile() {
+    std::vector<uint8_t> compile(ScenInfoData &info) {
         std::vector<uint8_t> result;
         for (size_t i = 0; i < subScenData.size(); i++) {
-            auto subCompiled = subScenData.at(i)->compile();
+            auto tempInfo = this->getInfo();
+            auto subCompiled = subScenData.at(i)->compile(*tempInfo);
             YUtils::appendVector(result,subCompiled);
         }
         result = FsPacker::packInstruction(Constants::SCEN_MAGIC_NUM,result);
@@ -336,7 +346,8 @@ public:
         ss << " }";
         return ss.str();
     };
-    std::vector<uint8_t> compile() {
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
         // GINF
         std::vector<uint8_t> result = YUtils::uint32toVec(Constants::GINF_MAGIC_NUM);
         uint32_t len = 12;
@@ -358,7 +369,6 @@ public:
         uint32_t gcolLength = this->colors.size() * 2;
         auto gcolLengthVec = YUtils::uint32toVec(gcolLength);
         YUtils::appendVector(result,gcolLengthVec);
-        std::cout << "b" << std::endl;
         for (auto it = this->colors.begin(); it != this->colors.end(); it++) {
             auto curColor = YUtils::uint16toVec(*it);
             YUtils::appendVector(result,curColor);
@@ -394,11 +404,11 @@ public:
         ss << " }";
         return ss.str();
     };
-    std::vector<uint8_t> compile() {
+    std::vector<uint8_t> compile(ScenInfoData &info) {
         std::vector<uint8_t> result;
         for (size_t i = 0; i < subData.size(); i++) {
             std::cout << "Compiling subData: " << std::hex << subData.at(i)->getMagic() << std::endl;
-            auto subCompiled = subData.at(i)->compile();
+            auto subCompiled = subData.at(i)->compile(info);
             std::cout << "Compiled" << std::endl;
             YUtils::appendVector(result,subCompiled);
         }
