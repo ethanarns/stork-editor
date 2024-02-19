@@ -10,8 +10,6 @@
 #include <QTableWidget>
 #include <QHeaderView>
 
-using namespace std;
-
 ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
     Q_UNUSED(parent);
     this->yidsRom = rom;
@@ -49,7 +47,7 @@ void ChartilesTable::refreshLoadedObjectTilesMap() {
             if (end > chartilesVectorSize) {
                 indexForOffset++;
                 // This is likely it trying to get crap from other areas
-                //cout << "End too big: " << hex << end << ", versus size: " << hex << chartilesVectorSize << endl;
+                //cout << "End too big: " << std::hex << end << ", versus size: " << std::hex << chartilesVectorSize << endl;
                 continue;
             }
             auto currentSubSection = YUtils::subVector(chartilesVector,start,end);
@@ -112,7 +110,7 @@ void ChartilesTable::wipeTiles() {
 }
 
 void ChartilesTable::chartilesTableClicked(int row, int column) {
-    std::cout << "Row: " << hex << row << ", column: " << hex << column << std::endl;
+    std::cout << "Row: " << std::hex << row << ", column: " << std::hex << column << std::endl;
     auto potentialItem = this->item(row,column);
     if (potentialItem == nullptr) {
         std::cout << "No item in location" << std::endl;

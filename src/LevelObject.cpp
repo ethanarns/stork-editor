@@ -182,7 +182,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                 }
                 default: {
                     std::stringstream ssUnhandledRedSign;
-                    ssUnhandledRedSign << "Unhandled red arrow sign type: " << hex << firstSettingsByte;
+                    ssUnhandledRedSign << "Unhandled red arrow sign type: " << std::hex << firstSettingsByte;
                     YUtils::printDebug(ssUnhandledRedSign.str(),DebugType::WARNING);
                     break;
                 }

@@ -35,7 +35,6 @@
 
 #include <iostream>
 #include <filesystem>
-using namespace std;
 
 MainWindow::MainWindow() {
     this->setObjectName("mainWindow");
@@ -505,6 +504,7 @@ void MainWindow::menuClick_levelSelect() {
 }
 
 void MainWindow::menuClick_memory() {
+    using namespace std;
     std::cout << "----  Memory Report  ----" << std::endl;
 
     auto collisionArraySize = this->rom->mapData->getCollisionArray().size();

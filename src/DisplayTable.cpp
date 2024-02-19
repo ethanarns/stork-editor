@@ -9,8 +9,6 @@
 #include <iostream>
 #include <sstream>
 
-using namespace std;
-
 DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     Q_UNUSED(parent);
     this->shouldShowCollision = true;
@@ -60,13 +58,13 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     }
     if (x > (uint32_t)this->columnCount()) {
         std::stringstream ssXvaluHigh;
-        ssXvaluHigh << "X value too high: " << hex << x;
+        ssXvaluHigh << "X value too high: " << std::hex << x;
         YUtils::printDebug(ssXvaluHigh.str(),DebugType::ERROR);
         return;
     }
     if (y > (uint32_t)this->rowCount()) {
         std::stringstream ssYvaluHigh;
-        ssYvaluHigh << "Y value too high: " << hex << y;
+        ssYvaluHigh << "Y value too high: " << std::hex << y;
         YUtils::printDebug(ssYvaluHigh.str(),DebugType::ERROR);
         return;
     }
@@ -608,8 +606,8 @@ void DisplayTable::placeObjectTile(
             uint32_t subEnd = tileStart + Constants::CHARTILE_DATA_SIZE;
             if (tileStart+Constants::CHARTILE_DATA_SIZE > subLength) {
                 std::stringstream ssChunk;
-                ssChunk << "Tried to get too big a chunk! Wanted " << hex << subEnd;
-                ssChunk << ", only had " << hex << subLength;
+                ssChunk << "Tried to get too big a chunk! Wanted " << std::hex << subEnd;
+                ssChunk << ", only had " << std::hex << subLength;
                 YUtils::printDebug(ssChunk.str(),DebugType::WARNING);
             } else {
                 uint32_t tileOffsetIndex = 0;

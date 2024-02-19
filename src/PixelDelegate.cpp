@@ -13,8 +13,6 @@
 #include <QColor>
 #include <QImage>
 
-using namespace std;
-
 // A single drawn tile is 8x8
 const int PIXEL_TILE_DIVISIONS = 8;
 const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
@@ -23,6 +21,7 @@ const QColor hardSelectionColor(255,255,255,100);
 const QImage COIN_IMAGE("assets/coin.png");
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
+    using namespace std;
     const bool selected = (option.state & QStyle::State_Selected) != 0;
 
     QByteArray layerDrawOrder;

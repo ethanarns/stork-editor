@@ -12,8 +12,6 @@
 #include <QHeaderView>
 #include <QLabel>
 
-using namespace std;
-
 PaletteTable::PaletteTable(QWidget* parent, YidsRom* rom) {
     Q_UNUSED(parent);
     this->yidsRom = rom;
@@ -75,7 +73,7 @@ void PaletteTable::paletteTableClicked(int row, int column) {
     uint8_t secondByte = this->yidsRom->currentPalettes[row][column*2+1];
     uint16_t colorBytes = (secondByte << 8) + firstByte;
     std::stringstream ssColorShort;
-    ssColorShort << std::setfill('0') << std::setw(4) << hex << colorBytes;
+    ssColorShort << std::setfill('0') << std::setw(4) << std::hex << colorBytes;
     std::string colorValueString = YUtils::getUppercase(ssColorShort.str());
 
     // Set label

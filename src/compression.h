@@ -5,8 +5,6 @@
 #include <filesystem>
 #include <vector>
 
-using namespace std;
-
 class YCompression {
 public:
     static bool blzDecompress(std::string filepath, bool verbose = false);

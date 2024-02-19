@@ -32,7 +32,7 @@ YidsRom::YidsRom() {
 }
 
 void YidsRom::openRom(std::string fileName) {
-    this->romFile.open(fileName, ios::binary | ios::in);
+    this->romFile.open(fileName, std::ios::binary | std::ios::in);
     if (!romFile) {
         std::stringstream ssNoRom;
         ssNoRom << "ERROR: ROM file could not be opened: '" << fileName << "'. ";
@@ -93,7 +93,7 @@ void YidsRom::openRom(std::string fileName) {
         uint8_t len = this->getNumberAt<uint8_t>(FILESDIR_BASE_ADDR + fileOffset);
         if (len > 0x20) {
             std::stringstream ssLongLen;
-            ssLongLen << "Long length: " << hex << (int)len << " at " << hex << (FILESDIR_BASE_ADDR + fileOffset);
+            ssLongLen << "Long length: " << std::hex << (int)len << " at " << std::hex << (FILESDIR_BASE_ADDR + fileOffset);
             YUtils::printDebug(ssLongLen.str(),DebugType::WARNING);
         }
         auto nameStr = this->getTextAt(FILESDIR_BASE_ADDR + fileOffset + 1,len);
@@ -138,7 +138,7 @@ std::string YidsRom::getTextNullTermAt(Address position_file) {
     this->romFile.read(&container, sizeof(container));
     if (container == NULL_TERM) {
         std::stringstream nullTermSs;
-        nullTermSs << "Found empty string at position " << hex << position_file;
+        nullTermSs << "Found empty string at position " << std::hex << position_file;
         YUtils::printDebug(nullTermSs.str(),DebugType::ERROR);
         return result;
     }
@@ -169,7 +169,7 @@ void YidsRom::initArm9RomData(std::string fileName) {
     if (Constants::ARM9_ROM_OFFSET != romStart9) {
         std::stringstream ssRomOffset;
         ssRomOffset << "Found ARM9 ROM offset not equal to ";
-        ssRomOffset << hex << Constants::ARM9_ROM_OFFSET;
+        ssRomOffset << std::hex << Constants::ARM9_ROM_OFFSET;
         YUtils::printDebug(ssRomOffset.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
@@ -187,8 +187,8 @@ void YidsRom::initArm9RomData(std::string fileName) {
     this->romFile.read(reinterpret_cast<char *>(&endAddressMagicNumber),sizeof(endAddressMagicNumber));
     if (endAddressMagicNumber != Constants::SDK_NITROCODE_BE) {
         std::stringstream ssMn;
-        ssMn << "SDK_NITROCODE_BG magic number '" << hex << Constants::SDK_NITROCODE_BE << "' not found. ";
-        ssMn << "Instead found " << hex << endAddressMagicNumber;
+        ssMn << "SDK_NITROCODE_BG magic number '" << std::hex << Constants::SDK_NITROCODE_BE << "' not found. ";
+        ssMn << "Instead found " << std::hex << endAddressMagicNumber;
         YUtils::printDebug(ssMn.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
@@ -201,12 +201,12 @@ void YidsRom::initArm9RomData(std::string fileName) {
         exit(EXIT_FAILURE);
     }
     std::ifstream arm9fileUncomped;
-    arm9fileUncomped.open(Constants::NEW_BIN_FILE, ios::binary);
+    arm9fileUncomped.open(Constants::NEW_BIN_FILE, std::ios::binary);
 
     // Get arm9fileUncomped's length
-    arm9fileUncomped.seekg(0, ios_base::end);
+    arm9fileUncomped.seekg(0, std::ios_base::end);
     size_t arm9fileLength = arm9fileUncomped.tellg();
-    arm9fileUncomped.seekg(0, ios_base::beg);
+    arm9fileUncomped.seekg(0, std::ios_base::beg);
     if (arm9fileLength == 0) {
         YUtils::printDebug("ARM9 binary empty!", DebugType::FATAL);
         exit(EXIT_FAILURE);
@@ -229,7 +229,7 @@ void YidsRom::initArm9RomData(std::string fileName) {
 
     // Change romFile to new one
     this->romFile.close();
-    this->romFile.open(Constants::NEW_ROM_FILE, ios::binary | ios::in | ios::out);
+    this->romFile.open(Constants::NEW_ROM_FILE, std::ios::binary | std::ios::in | std::ios::out);
     this->romFile.seekp(Constants::ARM9_ROM_OFFSET + 0x4000);
     this->romFile.write(reinterpret_cast<char *>(arm9buffer.data()),arm9fileLength);
     arm9fileUncomped.close();
@@ -253,7 +253,7 @@ void YidsRom::initArm9RomData(std::string fileName) {
     }
 
     // Delete the old file (Consider streaming to memory instead)
-    filesystem::remove(Constants::NEW_ROM_FILE);
+    std::filesystem::remove(Constants::NEW_ROM_FILE);
 
     // It worked! Report them as loaded successfully
     this->filesLoaded = true;
@@ -273,7 +273,7 @@ void YidsRom::initArm9RomData(std::string fileName) {
 
 void YidsRom::extractCompressedARM9(Address arm9start_rom, uint32_t arm9length) {
     if (this->filesLoaded) {
-        cout << "ARM9 has already been written and read" << endl;
+        std::cout << "ARM9 has already been written and read" << std::endl;
         return;
     }
 
@@ -301,11 +301,11 @@ void YidsRom::extractCompressedARM9(Address arm9start_rom, uint32_t arm9length) 
  */
 std::string YidsRom::getLevelFileNameFromMapIndex(uint32_t worldIndex, uint32_t levelIndex) {
     if (worldIndex + 1 > 5) {
-        cerr << "ERROR: World 5 is the highest world level there is" << endl;
+        std::cerr << "ERROR: World 5 is the highest world level there is" << std::endl;
         return "";
     }
     if (levelIndex + 1 > 10) {
-        cerr << "ERROR: There are only 10 levels per world" << endl;
+        std::cerr << "ERROR: There are only 10 levels per world" << std::endl;
         return "";
     }
     const uint32_t levelId = worldIndex * 10 + levelIndex + 1;
@@ -369,7 +369,7 @@ std::vector<uint8_t> YidsRom::getByteVectorFromFile(std::string fileName) {
     std::vector<uint8_t> vec;
     std::string UNPACKED_FILE_LOCATION = "_nds_unpack/data/file/";
     fileName = UNPACKED_FILE_LOCATION.append(fileName);
-    std::ifstream inputFile{fileName, ios::binary};
+    std::ifstream inputFile{fileName, std::ios::binary};
     std::copy(
         std::istreambuf_iterator<char>(inputFile),
         std::istreambuf_iterator<char>(),

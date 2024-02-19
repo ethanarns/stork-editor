@@ -14,8 +14,6 @@
 #include <QColor>
 #include <QByteArray>
 
-using namespace std;
-
 enum DebugType {
     VERBOSE,
     WARNING,

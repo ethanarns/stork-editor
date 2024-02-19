@@ -25,6 +25,7 @@ const char* NDSTOOL_PATH = "./lib/ndstool";
  * @return True if succeeded, false if failed
  */
 bool YCompression::blzDecompress(std::string filepath, bool verbose) {
+    using namespace std;
     if (filepath.size() == 0 || filepath.compare("/") == 0) {
         cerr << "Invalid filepath: " << filepath << endl;
         return false;
@@ -40,6 +41,7 @@ bool YCompression::blzDecompress(std::string filepath, bool verbose) {
 }
 
 bool YCompression::lzssDecomp(std::string filepath, bool verbose) {
+    using namespace std;
     if (filepath.size() == 0 || filepath.compare("/") == 0) {
         cerr << "Invalid filepath: " << filepath << endl;
         return false;
@@ -55,6 +57,7 @@ bool YCompression::lzssDecomp(std::string filepath, bool verbose) {
 }
 
 bool YCompression::lzssRecomp(std::string filepath, bool verbose) {
+    using namespace std;
     if (filepath.size() == 0 || filepath.compare("/") == 0) {
         cerr << "Invalid filepath: " << filepath << endl;
         return false;
@@ -74,13 +77,13 @@ std::vector<uint8_t> YCompression::lzssVectorDecomp(std::vector<uint8_t>& inputV
     YUtils::writeByteVectorToFile(inputVec,tempName);
     bool decompResult = YCompression::lzssDecomp(tempName, verbose);
     if (!decompResult) {
-        cerr << "Failed to extract LZ77 file" << endl;
+        std::cerr << "Failed to extract LZ77 file" << std::endl;
         exit(EXIT_FAILURE);
     }
 
-    std::ifstream uncomped{tempName, ios::binary};
+    std::ifstream uncomped{tempName, std::ios::binary};
     if (!uncomped) {
-        cerr << "Failed to load uncompressed file '" << tempName << "'" << endl;
+        std::cerr << "Failed to load uncompressed file '" << tempName << "'" << std::endl;
         exit(EXIT_FAILURE);
     }
 
@@ -103,13 +106,13 @@ std::vector<uint8_t> YCompression::lzssVectorRecomp(std::vector<uint8_t>& uncomp
     YUtils::writeByteVectorToFile(uncompressedVec,tempName);
     bool recompResult = YCompression::lzssRecomp(tempName, verbose);
     if (!recompResult) {
-        cerr << "Failed to recompress to LZ77 file" << endl;
+        std::cerr << "Failed to recompress to LZ77 file" << std::endl;
         exit(EXIT_FAILURE);
     }
 
-    std::ifstream recomped{tempName, ios::binary};
+    std::ifstream recomped{tempName, std::ios::binary};
     if (!recomped) {
-        cerr << "Failed to load recompressed file '" << tempName << "'" << endl;
+        std::cerr << "Failed to load recompressed file '" << tempName << "'" << std::endl;
         exit(EXIT_FAILURE);
     }
 

@@ -14,9 +14,8 @@
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
 CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
+    using namespace std;
     CrsbData crsbData;
 
     fileName_noext = YUtils::getLowercase(fileName_noext);
@@ -154,6 +153,7 @@ CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
 int globalPaletteIndex = 1;
 
 void YidsRom::loadMpdz(std::string fileName_noext) {
+    using namespace std;
     MapFile mf;
     std::stringstream ssMpdzLoad;
     ssMpdzLoad << "Loading MPDZ (Map) '" << fileName_noext << "'";
@@ -184,7 +184,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     if (magic != Constants::MPDZ_MAGIC_NUM) {
         std::stringstream ssNoMagicNum;
         ssNoMagicNum << "MPDZ Magic number not found! Expected " << hex << Constants::MPDZ_MAGIC_NUM;
-        ssNoMagicNum << ", got " << hex << magic << " instead.";
+        ssNoMagicNum << ", got " << std::hex << magic << " instead.";
         YUtils::printDebug(ssNoMagicNum.str(),DebugType::ERROR);
         return;
     }
@@ -213,7 +213,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
             this->handleALPH(uncompVec,mpdzIndex);
         } else {
             std::stringstream ssUnkInstScen;
-            ssUnkInstScen << "Instruction besides SCEN used: " << hex << curInstruction;
+            ssUnkInstScen << "Instruction besides SCEN used: " << std::hex << curInstruction;
             YUtils::printDebug(ssUnkInstScen.str(),DebugType::ERROR);
             return;
         }
@@ -227,6 +227,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
  * @param indexPointer Reference to Address, pointing at the current SCEN instruction
  */
 ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointer) {
+    using namespace std;
     ScenData scenData;
     
     uint16_t whichBgToWriteTo = 0;
@@ -354,7 +355,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                 // No longer need collision width from here
             } else {
                 std::stringstream ssColErr;
-                ssColErr << "Using collision on unsupported BG: " << hex << whichBgToWriteTo;
+                ssColErr << "Using collision on unsupported BG: " << std::hex << whichBgToWriteTo;
                 YUtils::printDebug(ssColErr.str(),DebugType::WARNING);
             }
 
@@ -467,7 +468,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             YUtils::printDebug("Found SCEN instruction, overflowed!",DebugType::ERROR);
             return scenData;
         } else {
-            std::cout << "Unknown inter-SCEN instruction: " << hex << curSubInstruction << endl;
+            std::cout << "Unknown inter-SCEN instruction: " << std::hex << curSubInstruction << std::endl;
             return scenData;
         }
     }
@@ -637,7 +638,7 @@ SetdObjectData YidsRom::handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& inde
         uint16_t len = lo.settingsLength;
         if (len > 0x20) {
             std::stringstream bigObj;
-            bigObj << "Unusually high object settings length for " << hex << lo.objectId << ": " << hex << len;
+            bigObj << "Unusually high object settings length for " << std::hex << lo.objectId << ": " << std::hex << len;
             YUtils::printDebug(bigObj.str(),DebugType::WARNING);
         }
         //lo.xPosition = YUtils::getUint16FromVec(mpdzVec, indexPointer + 4);
@@ -669,7 +670,7 @@ ObjectFile YidsRom::getMajorObjPltFile(std::string objset_filename, std::map<uin
 
     auto potentialMagicNumber = YUtils::getUint32FromVec(objsetUncompressedVec,0);
     if (potentialMagicNumber != Constants::OBAR_MAGIC_NUM) {
-        cerr << "[ERROR] OBAR magic number not found in file '" << objset_filename << "'! Found instead: " << hex << potentialMagicNumber << endl;
+        std::cerr << "[ERROR] OBAR magic number not found in file '" << objset_filename << "'! Found instead: " << std::hex << potentialMagicNumber << std::endl;
         exit(EXIT_FAILURE);
     }
     auto fullObjsetLength = YUtils::getUint32FromVec(objsetUncompressedVec,4);
@@ -701,7 +702,7 @@ ObjectFile YidsRom::getMajorObjPltFile(std::string objset_filename, std::map<uin
             uint32_t subSectionSize = subsection.size();
             if (subSectionSize != Constants::PALETTE_SIZE) {
                 std::stringstream ssPltbSize;
-                ssPltbSize << "PLTB data not 0x20/32 bytes! Was instead: 0x" << hex << subSectionSize;
+                ssPltbSize << "PLTB data not 0x20/32 bytes! Was instead: 0x" << std::hex << subSectionSize;
                 ssPltbSize << ". Only pulling first one.";
                 YUtils::printDebug(ssPltbSize.str(),DebugType::WARNING);
             }
@@ -718,7 +719,7 @@ ObjectFile YidsRom::getMajorObjPltFile(std::string objset_filename, std::map<uin
             objFileData.objectPalettes[curTileStartOffset] = currentLoadingPalette;
         } else {
             std::cerr << "[ERROR] Known objset magic number not found! Instead found ";
-            std::cerr << hex << instructionCheck << " at " << hex << (indexObjset - 4) << std::endl;
+            std::cerr << std::hex << instructionCheck << " at " << std::hex << (indexObjset - 4) << std::endl;
             exit(EXIT_FAILURE);
         }
         curTileStartOffset++;
@@ -734,6 +735,7 @@ ObjectFile YidsRom::getMajorObjPltFile(std::string objset_filename, std::map<uin
 }
 
 ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
+    using namespace std;
     ObjectFile objFileData;
     objFileData.objectFileName = objset_filename;
     
@@ -784,7 +786,7 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
             uint32_t subSectionSize = subsection.size();
             if (subSectionSize != Constants::PALETTE_SIZE) {
                 std::stringstream ssPltbSize;
-                ssPltbSize << "PLTB data not 0x20/32 bytes! Was instead: 0x" << hex << subSectionSize;
+                ssPltbSize << "PLTB data not 0x20/32 bytes! Was instead: 0x" << std::hex << subSectionSize;
                 ssPltbSize << ". Only pulling first one.";
                 YUtils::printDebug(ssPltbSize.str(),DebugType::WARNING);
             }
@@ -799,7 +801,7 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
             objFileData.objectPalettes[curTileStartOffset] = currentLoadingPalette;
         } else {
             std::cerr << "[ERROR] Known objset magic number not found! Instead found ";
-            std::cerr << hex << instructionCheck << " at " << hex << (indexObjset - 4) << std::endl;
+            std::cerr << hex << instructionCheck << " at " << std::hex << (indexObjset - 4) << std::endl;
             exit(EXIT_FAILURE);
         }
         curTileStartOffset++;

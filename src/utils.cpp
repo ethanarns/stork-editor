@@ -15,8 +15,6 @@
 #include <QtCore>
 #include <QColor>
 
-using namespace std;
-
 /**
  * @brief I am amazed this is not in STD
  * 
@@ -40,6 +38,7 @@ std::string YUtils::getUppercase(std::string input) {
 }
 
 void YUtils::printSurroundingFiles(std::string path) {
+    using namespace std;
     for (const auto &entry : filesystem::directory_iterator(path)) {
         std::string curFileName = entry.path().filename().string();
         cout << curFileName << endl;
@@ -54,6 +53,7 @@ void YUtils::printSurroundingFiles(std::string path) {
  * @return true if success, false if failure
  */
 bool YUtils::writeByteVectorToFile(std::vector<uint8_t> &bytes, std::string filename) {
+    using namespace std;
     std::ofstream outfile(filename, ios::out | ios::binary);
     outfile.write((const char*)&bytes[0], bytes.size());
     outfile.close();
@@ -88,6 +88,7 @@ int16_t YUtils::getInt16FromVec(std::vector<uint8_t> &bytes, uint32_t location) 
 }
 
 size_t YUtils::getStreamLength(std::ifstream& buffer) {
+    using namespace std;
     uint32_t priorPos = buffer.tellg();
     buffer.seekg(0, ios_base::end);
     size_t result = buffer.tellg();
@@ -103,7 +104,7 @@ std::string YUtils::getNullTermTextFromVec(std::vector<uint8_t> &bytes, uint32_t
     
     if (bytes.at(location) == NULL_TERM) {
         std::stringstream ssEmpty;
-        ssEmpty << "Found empty string at position " << hex << location;
+        ssEmpty << "Found empty string at position " << std::hex << location;
         YUtils::printDebug(ssEmpty.str(),DebugType::WARNING);
         return result;
     }
@@ -174,7 +175,7 @@ void YUtils::appendVector(std::vector<uint8_t> &baseVec, std::vector<uint8_t> &a
 
 std::vector<uint8_t> YUtils::createInstructionVector(std::vector<uint8_t> &instructionVector, std::vector<uint8_t> &data) {
     if (instructionVector.size() != 4) {
-        cerr << "[ERROR] Instruction vector was not 4 bytes! Instead got " << hex << instructionVector.size() << endl;
+        std::cerr << "[ERROR] Instruction vector was not 4 bytes! Instead got " << std::hex << instructionVector.size() << std::endl;
         exit(EXIT_FAILURE);
     }
     uint32_t sizeOfData = data.size();
@@ -202,6 +203,7 @@ std::vector<uint8_t> YUtils::createInstVecFromNum(uint32_t instCode, std::vector
 }
 
 void YUtils::printVector(std::vector<uint8_t> &vectorToPrint, int newlineBreak) {
+    using namespace std;
     uint32_t lengthOfVec = vectorToPrint.size();
     constexpr int INDEX_WIDTH = 6;
     cout << hex << setw(INDEX_WIDTH) << 0 << " | ";
@@ -220,6 +222,7 @@ void YUtils::printVector(std::vector<uint8_t> &vectorToPrint, int newlineBreak) 
 }
 
 void YUtils::printVector16(std::vector<uint16_t> &vectorToPrint, int newlineBreak) {
+    using namespace std;
     std::cout << "printVector16 start" << std::endl;
     uint32_t lengthOfVec = vectorToPrint.size();
     constexpr int INDEX_WIDTH = 6;
@@ -240,6 +243,7 @@ void YUtils::printVector16(std::vector<uint16_t> &vectorToPrint, int newlineBrea
 }
 
 void YUtils::writeVectorToFile(std::vector<uint8_t> &dataToWrite,std::string fileOnSystem,uint32_t addressOffset) {
+    using namespace std;
     std::fstream readWriteFile{fileOnSystem,ios::binary | ios::out};
     if (!readWriteFile) {
         cerr << "[ERROR] Failed to write vector to file '" << fileOnSystem << "'" << endl;
@@ -262,6 +266,7 @@ Address YUtils::conv2xAddrToFileAddr(AddressMemory x2address) {
 }
 
 void YUtils::printLevelObject(LevelObject lo) {
+    using namespace std;
     cout << "{ id: " << hex << setw(3) << lo.objectId << ", len: " << hex << setw(2) <<
         lo.settingsLength << ", x: " << hex << setw(3) << lo.xPosition <<
         ", y: " << hex << setw(3) << lo.yPosition << " }" << endl;
@@ -283,7 +288,7 @@ QByteArray YUtils::tileVectorToQByteArray(std::vector<uint8_t> tileVector) {
     QByteArray qb;
     const uint32_t tileVectorSize = tileVector.size();
     if (tileVectorSize != Constants::CHARTILE_DATA_SIZE) {
-        std::cerr << "[ERROR] input vector not 0x20 in length: " << hex << tileVectorSize << endl;
+        std::cerr << "[ERROR] input vector not 0x20 in length: " << std::hex << tileVectorSize << std::endl;
         return qb;
     }
     qb.resize(64);
@@ -366,6 +371,7 @@ std::vector<uint8_t> YUtils::stringToVector(std::string &inputString) {
 }
 
 void YUtils::printQbyte(QByteArray& qb, int newlineBreak) {
+    using namespace std;
     uint32_t lengthOfQ = qb.size();
     auto qbArray = (uint8_t*)qb.data();
     constexpr int INDEX_WIDTH = 6;

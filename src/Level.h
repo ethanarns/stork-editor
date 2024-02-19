@@ -23,8 +23,6 @@
 #include "Chartile.h"
 #include "compression.h"
 
-using namespace std;
-
 class Instruction {
 public:
     virtual std::string toString() = 0;
@@ -61,10 +59,10 @@ struct PathRecord {
     std::string toString() {
         std::stringstream ssPathRecord;
         ssPathRecord << "PathRecord { start x/y: ";
-        ssPathRecord << setw(8) << setfill('0') << hex << this->startX << "/";
-        ssPathRecord << hex << setw(8) << setfill('0') << this->startY;
-        ssPathRecord << ", distance: " << setw(4) << hex << this->distance;
-        ssPathRecord << ", angle: " << setw(4) << hex << this->angle;
+        ssPathRecord << std::setw(8) << std::setfill('0') << std::hex << this->startX << "/";
+        ssPathRecord << std::hex << std::setw(8) << std::setfill('0') << this->startY;
+        ssPathRecord << ", distance: " << std::setw(4) << std::hex << this->distance;
+        ssPathRecord << ", angle: " << std::setw(4) << std::hex << this->angle;
         ssPathRecord << " } ";
         return ssPathRecord.str();
     }
@@ -91,7 +89,7 @@ struct ColzData : public Instruction {
     std::string toString() {
         std::stringstream ssColz;
         ssColz << "ColzData { ";
-        ssColz << "colArray: " << hex << this->colArray.size();
+        ssColz << "colArray: " << std::hex << this->colArray.size();
         ssColz << " }";
         return ssColz.str();
     };
@@ -118,9 +116,9 @@ struct MpbzData : public Instruction {
     uint16_t whichBg;
     std::string toString() {
         std::stringstream ssMpbz;
-        ssMpbz << "MpbzData { tiles: " << hex << this->tileRenderData.size();
-        ssMpbz << ", tileOffset: " << hex << this->tileOffset;
-        ssMpbz << ", bottomTrim: " << hex << this->bottomTrim;
+        ssMpbz << "MpbzData { tiles: " << std::hex << this->tileRenderData.size();
+        ssMpbz << ", tileOffset: " << std::hex << this->tileOffset;
+        ssMpbz << ", bottomTrim: " << std::hex << this->bottomTrim;
         ssMpbz << ", whichBg: " << this->whichBg << " }";
         return ssMpbz.str();
     };
@@ -159,7 +157,7 @@ struct ScenData : public Instruction {
     std::string toString() {
         std::stringstream ssScen;
         ssScen << "ScenData { minorInstructions: ";
-        ssScen << dec << minorInstructions.size() << " }";
+        ssScen << std::dec << minorInstructions.size() << " }";
         return ssScen.str();
     }
     std::vector<uint8_t> compile() {
@@ -206,7 +204,7 @@ struct ImbzData : public Instruction {
         std::stringstream ssImbz;
         ssImbz << "ImbzData { fileName: " << this->fileName;
         ssImbz << ", whichBg: " << this->whichBg;
-        ssImbz << ", pixelTiles: " << hex << pixelTiles.size();
+        ssImbz << ", pixelTiles: " << std::hex << pixelTiles.size();
         ssImbz << " }";
         return ssImbz.str();
     };
@@ -240,6 +238,7 @@ struct InfoData : public Instruction {
     uint32_t colorModeData;
     ImbzData tileGraphics;
     std::string toString() {
+        using namespace std;
         std::stringstream ssInfo;
         ssInfo << "InfoData { height/width: " << hex << this->layerHeight;
         ssInfo << "/" << this->layerWidth << ", bg: " << (int)this->whichBg;
@@ -410,7 +409,7 @@ struct CscnData : public Instruction {
     std::vector<CscnExitData> exits;
     std::string toString() {
         std::stringstream ssCscn;
-        ssCscn << "CscnData { exit count: " << hex << this->numMapEnters << ", ";
+        ssCscn << "CscnData { exit count: " << std::hex << this->numMapEnters << ", ";
         ssCscn << "mpdz filename: " << this->mpdzFileNoExtension << " }";
         return ssCscn.str();
     };
@@ -462,8 +461,8 @@ struct CrsbData : public Instruction {
     std::vector<CscnData> cscnList;
     std::string toString() {
         std::stringstream ssCrsb;
-        ssCrsb << "CrsbData { map count value: " << hex << this->mapFileCount << ", ";
-        ssCrsb << "loaded maps: " << hex << cscnList.size();
+        ssCrsb << "CrsbData { map count value: " << std::hex << this->mapFileCount << ", ";
+        ssCrsb << "loaded maps: " << std::hex << cscnList.size();
         ssCrsb << " }";
         return ssCrsb.str();
     };
