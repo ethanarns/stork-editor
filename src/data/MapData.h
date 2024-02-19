@@ -244,8 +244,8 @@ public:
         return ss.str();
     };
     std::vector<uint8_t> compile(ScenInfoData &info) {
-        Q_UNUSED(info);
         std::vector<uint8_t> result;
+        uint32_t startOffset = 0;
         if (this->tileOffset > 0 || this->bottomTrim > 0) {
             result.push_back(0xff);
             result.push_back(0xff);
@@ -253,7 +253,17 @@ public:
             YUtils::appendVector(result,tileOffsetVec);
             auto bottomTrimVec = YUtils::uint16toVec(this->bottomTrim);
             YUtils::appendVector(result,bottomTrimVec);
+            startOffset = this->tileOffset * info.layerWidth;
             // Padding header built
+        }
+        bool isColorMode16 = info.colorMode == BgColorMode::MODE_16;
+        for (uint i = startOffset; i < this->tileRenderData.size(); i++) {
+            uint16_t curShort = this->tileRenderData.at(i);
+            if (isColorMode16) {
+                curShort -= 0x1000;
+            }
+            auto vec = YUtils::uint16toVec(curShort);
+            YUtils::appendVector(result,vec);
         }
         result = FsPacker::packInstruction(Constants::MPBZ_MAGIC_NUM,result,true);
         return result;
@@ -307,6 +317,7 @@ public:
         return ss.str();
     };
     std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
         std::vector<uint8_t> result;
         for (size_t i = 0; i < subScenData.size(); i++) {
             auto tempInfo = this->getInfo();
