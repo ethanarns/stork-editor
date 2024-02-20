@@ -88,13 +88,11 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         }
         return;
     }
-    if (whichBg == 1) {
-        pal += this->yidsRom->paletteOffsetBg1;
-    } else if (whichBg == 2) {
-        pal += this->yidsRom->paletteOffsetBg2;
-    } else if (whichBg == 3) {
-        pal += this->yidsRom->paletteOffsetBg3;
-    }
+
+    // if (whichBg == 1) {
+    //     pal += this->yidsRom->paletteOffsetBg1;
+    // } else if (whichBg == 2) { ...
+    pal += scen->paletteStartOffset - 1; // -1 is likely because of universal palette
 
     auto potentialExisting = this->item(y,x);
     auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
@@ -110,7 +108,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         if (whichBg == 2) {
             newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
             if (!isColorMode256) {
-                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
+                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
             } else {
                 newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(this->yidsRom->paletteOffsetBg2 + 1));
             }
@@ -119,14 +117,14 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             newItem->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
         } else if (whichBg == 1) {
             newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
-            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[pal]);
+            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
             newItem->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
             newItem->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
             newItem->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
         } else if (whichBg == 3) {
             newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
             if (!isColorMode256) {
-                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->currentPalettes[pal]);
+                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
             } else {
                 newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(0xf));
             }
@@ -149,7 +147,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         if (whichBg == 2) {
             potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
             if (!isColorMode256) {
-                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->currentPalettes[pal]);
+                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
             } else {
                 // Note: the 256 palettes thing does not always start at 0x10 (including the +1)
                 // 1-3, there's a palette missing from the palette screen that made this start at 0xf
@@ -161,14 +159,14 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             potentialExisting->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
         } else if (whichBg == 1) {
             potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
-            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[pal]);
+            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
             potentialExisting->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
             potentialExisting->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
             potentialExisting->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
         } else if (whichBg == 3) {
             potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
             if (!isColorMode256) {
-                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->currentPalettes[pal]);
+                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
             } else {
                 // Note: the 256 palettes thing does not always start at 0x10 (including the +1)
                 // 1-3, there's a palette missing from the palette screen

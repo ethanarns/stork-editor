@@ -278,7 +278,7 @@ public:
 // PLTB
 class LayerPaletteData : public LevelData {
 public:
-    LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, uint32_t &globalPaletteIndex);
     ~LayerPaletteData();
     std::string toString() {
         std::stringstream ss;
@@ -307,7 +307,7 @@ public:
 // SCEN
 class LayerData : public LevelData {
 public:
-    LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, uint32_t &globalPaletteIndex);
     ~LayerData();
     std::string toString() {
         std::stringstream ss;
@@ -339,6 +339,8 @@ public:
     /// @return Vector of uint16s representing ROM map tiles (see Map Address in No$GBA)
     std::vector<uint16_t> getMapTiles();
     std::vector<Chartile> parseImbzFromFile(std::string filename_noExt, BgColorMode bgColMode = BgColorMode::MODE_16);
+
+    uint32_t paletteStartOffset;
 private:
     std::vector<LevelData*> subScenData;
 
@@ -440,10 +442,7 @@ public:
     */
     uint32_t getCollisionCanvasWidth();
 
-    std::vector<QByteArray*> getBackgroundPalettes(QByteArray universalPalette);
-    /// @brief Wipes the cached of BGP
-    /// @return true if there was anything to wipe, false if nothing was wiped
-    bool wipeBGPcache();
+    std::vector<QByteArray> getBackgroundPalettes(QByteArray universalPalette);
 
     QByteArray getLayerOrder();
     bool wipeLayerOrderCache();
@@ -452,6 +451,6 @@ public:
     std::string filename;
 private:    
     std::vector<LevelData*> subData;
-    std::vector<QByteArray*> bgPalleteRamCache;
     QByteArray layerOrderCache;
+    uint32_t paletteRamIndex;
 };

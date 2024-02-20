@@ -159,6 +159,7 @@ std::vector<Chartile> LayerData::parseImbzFromFile(std::string filename_noExt, B
 }
 
 MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed) {
+    this->paletteRamIndex = 1;
     if (compressed) {
         mpdzBytes = YCompression::lzssVectorDecomp(mpdzBytes,false);
     }
@@ -180,7 +181,7 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed) {
         uint32_t subLength = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 4;
         if (subMagic == Constants::SCEN_MAGIC_NUM) {
-            auto scen = new LayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            auto scen = new LayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength,this->paletteRamIndex);
             this->subData.push_back(scen);
         } else if (subMagic == Constants::GRAD_MAGIC_NUM) {
             auto grad = new LevelGradientData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
@@ -307,45 +308,19 @@ uint32_t MapData::getCollisionCanvasWidth() {
     return 0;
 }
 
-std::vector<QByteArray *> MapData::getBackgroundPalettes(QByteArray universalPalette) {
-    if (!this->bgPalleteRamCache.empty()) {
-        return this->bgPalleteRamCache;
-    }
-    std::vector<QByteArray *> result;
-    result.push_back(&universalPalette);
-    // Do it in order, like how it's done in the files
-    for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
-        if ((*it)->getMagic() == Constants::SCEN_MAGIC_NUM) {
-            auto scen = static_cast<LayerData*>((*it));
-            if (scen->getInfo()->colorMode == BgColorMode::MODE_256) {
-                YUtils::printDebug("256 Color Mode not supported in BGP, skipping", DebugType::VERBOSE);
-                continue;
-            }
-            auto pltbDataMaybe = scen->getFirstDataByMagic(Constants::PLTB_MAGIC_NUM);
-            if (pltbDataMaybe == nullptr) {
-                YUtils::printDebug("No PLTB data found!",DebugType::ERROR);
-                continue;
-            }
-            auto pltbData = static_cast<LayerPaletteData*>(pltbDataMaybe);
-            for (uint i = 0; i < pltbData->palettes.size(); i++) {
-                result.push_back(pltbData->palettes.at(i));
+std::vector<QByteArray> MapData::getBackgroundPalettes(QByteArray universalPalette) {
+    std::vector<QByteArray> result;
+    result.push_back(universalPalette);
+    for (auto subit = this->subData.begin(); subit != this->subData.end(); subit++) {
+        if ((*subit)->getMagic() == Constants::SCEN_MAGIC_NUM) {
+            auto scen = static_cast<LayerData*>(*subit);
+            auto curPalettes = scen->getPalette()->palettes;
+            for (uint i = 0; i < curPalettes.size(); i++) {
+                result.push_back(*curPalettes.at(i));
             }
         }
     }
-    this->bgPalleteRamCache = result;
     return result;
-}
-
-bool MapData::wipeBGPcache() {
-    if (this->bgPalleteRamCache.empty()) {
-        return false;
-    }
-    // Delete and wipe
-    for (auto it = this->bgPalleteRamCache.begin(); it != this->bgPalleteRamCache.end(); ) {
-        delete (*it);
-        it = this->bgPalleteRamCache.erase(it);
-    }
-    return true;
 }
 
 QByteArray MapData::getLayerOrder() {

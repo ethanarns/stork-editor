@@ -9,7 +9,7 @@
 #include <fstream>
 #include <QByteArray>
 
-LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, uint32_t &globalPaletteIndex) {
     while (mpdzIndex < stop) {
         uint32_t subMagic = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 4;
@@ -26,7 +26,8 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             auto imgb = new ImgbLayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subScenData.push_back(imgb);
         } else if (subMagic == Constants::PLTB_MAGIC_NUM) {
-            auto pltb = new LayerPaletteData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->paletteStartOffset = globalPaletteIndex;
+            auto pltb = new LayerPaletteData(mpdzBytes,mpdzIndex,mpdzIndex+subLength,globalPaletteIndex);
             this->subScenData.push_back(pltb);
         } else if (subMagic == Constants::COLZ_MAGIC_NUM) {
             auto colz = new MapCollisionData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
@@ -102,7 +103,7 @@ ScenInfoData::ScenInfoData() {
     YUtils::printDebug("Creating empty ScenInfoData",DebugType::VERBOSE);
 }
 
-LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, uint32_t &globalPaletteIndex) {
     while (mpdzIndex < stop) {
         auto currentLoadingPalette = new QByteArray();
         currentLoadingPalette->resize(Constants::PALETTE_SIZE);
@@ -111,6 +112,7 @@ LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
             mpdzIndex++;
         }
         this->palettes.push_back(currentLoadingPalette);
+        globalPaletteIndex++;
     }
 }
 
