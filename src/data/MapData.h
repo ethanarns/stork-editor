@@ -407,7 +407,7 @@ public:
 // MPDZ
 class MapData : public LevelData {
 public:
-    MapData(std::vector<uint8_t> mpdzBytes, bool compressed = true);
+    MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray backgroundPalettesRef[0x20]);
     ~MapData();
     uint32_t getMagic() { return Constants::MPDZ_MAGIC_NUM; }
     std::string toString() {

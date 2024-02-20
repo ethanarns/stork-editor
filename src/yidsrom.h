@@ -42,6 +42,9 @@ public:
     QByteArray universalPalette;
 
     QByteArray currentPalettes[0x20];
+    // Replace above with below
+    QByteArray backgroundPalettes[0x20];
+
     /**
      * @brief "Characters", or the pixel arrangement of tiles. From OBJ data, for OAM
      */

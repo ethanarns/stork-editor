@@ -112,7 +112,8 @@ LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
             mpdzIndex++;
         }
         this->palettes.push_back(currentLoadingPalette);
-        globalPaletteIndex++;
+        Q_UNUSED(globalPaletteIndex);
+        //globalPaletteIndex++;
     }
 }
 

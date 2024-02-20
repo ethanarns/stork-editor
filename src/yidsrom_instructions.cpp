@@ -159,7 +159,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     YUtils::printDebug(ssMpdzLoad.str(),DebugType::VERBOSE);
     std::string mpdzFileName = fileName_noext.append(Constants::MPDZ_EXTENSION);
     auto fileVector = this->getByteVectorFromFile(mpdzFileName);
-    this->mapData = new MapData(fileVector,true);
+    this->mapData = new MapData(fileVector,true,this->backgroundPalettes);
     this->mapData->filename = mpdzFileName;
 
     // Delete below to restart loop
@@ -286,10 +286,13 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
 
             // BGs have offsets
             if (whichBgToWriteTo == 2) {
+                //std::cout << "bg2: globalPaletteIndex-1 is " << std::hex << (globalPaletteIndex-1) << std::endl;
                 this->paletteOffsetBg2 = globalPaletteIndex-1; // Starts at 1
             } else if (whichBgToWriteTo == 1) {
+                //std::cout << "bg1: globalPaletteIndex-1 is " << std::hex << (globalPaletteIndex-1) << std::endl;
                 this->paletteOffsetBg1 = globalPaletteIndex-1;
             } else if (whichBgToWriteTo == 3) {
+                //std::cout << "bg3: globalPaletteIndex-1 is " << std::hex << (globalPaletteIndex-1) << std::endl;
                 this->paletteOffsetBg3 = globalPaletteIndex-1;
             }
 

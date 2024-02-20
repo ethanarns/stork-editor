@@ -268,6 +268,8 @@ void YidsRom::initArm9RomData(std::string fileName) {
 
     // Write universal palette
     this->currentPalettes[0].resize(Constants::PALETTE_SIZE);
+    // Replace above with below
+    this->backgroundPalettes[0].resize(Constants::PALETTE_SIZE);
     this->universalPalette.resize(Constants::PALETTE_SIZE);
     Address universalPalette0base = YUtils::conv2xAddrToFileAddr(Constants::UNIVERSAL_PALETTE_0_ADDR);
     for (int univPalIndex = 0; univPalIndex < Constants::PALETTE_SIZE; univPalIndex++) {
@@ -275,6 +277,8 @@ void YidsRom::initArm9RomData(std::string fileName) {
         uint8_t container;
         this->romFile.read(reinterpret_cast<char *>(&container), sizeof(container));
         this->currentPalettes[0][univPalIndex] = container;
+        // Replace above with below
+        this->backgroundPalettes[0][univPalIndex] = container;
         this->universalPalette[univPalIndex] = container;
     }
 }
@@ -406,7 +410,7 @@ QByteArray YidsRom::get256Palettes(uint32_t offset) {
     int qbIndex = 0;
     for (int whichPaletteIndex = offset; whichPaletteIndex < 0x20; whichPaletteIndex++) {
         for (int whichColorIndex = 0; whichColorIndex < 0x20; whichColorIndex++) {
-            qbResult[qbIndex] = this->currentPalettes[whichPaletteIndex].at(whichColorIndex);
+            qbResult[qbIndex] = this->backgroundPalettes[whichPaletteIndex].at(whichColorIndex);
             qbIndex++;
         }
     }
