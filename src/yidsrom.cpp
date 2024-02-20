@@ -3,6 +3,7 @@
 #include "compression.h"
 #include "Chartile.h"
 #include "constants.h"
+#include "data/LevelSelectData.h"
 
 // std::cerr, std::endl, std::ios
 #include <iostream>
@@ -15,9 +16,6 @@
 
 // std::vector
 #include <vector>
-
-// std::tolower
-#include <cctype>
 
 #include <filesystem>
 
@@ -112,6 +110,16 @@ void YidsRom::openRom(std::string fileName) {
 
     std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,0);
     auto crsb = this->loadCrsb(crsbFileName);
+
+    // New way
+    auto fileNameCrsb_noext = YUtils::getLowercase(crsbFileName);
+    auto crsbFilename = fileNameCrsb_noext.append(".crsb");
+    auto crsbFileVector = this->getByteVectorFromFile(crsbFilename);
+    auto levelSelectData = new LevelSelectData(crsbFileVector);
+    Q_UNUSED(levelSelectData);
+    std::cout << "Finished loading CRSB" << std::endl;
+    //exit(EXIT_SUCCESS);
+
     this->loadMpdz(crsb.cscnList.at(0).mpdzFileNoExtension);
 }
 

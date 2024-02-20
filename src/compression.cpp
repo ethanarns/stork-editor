@@ -6,17 +6,16 @@
 // filesystem::current_path
 #include <filesystem>
 // std::tolower
-#include <cctype>
 
 #include <vector>
 
 // Q_UNUSED
 #include <QtGlobal>
 
-const char* BLZ_PATH = "./lib/blz.py";
-const char* LZSS_PATH = "./lib/lzss.py";
+const char* BLZ_PATH = "/home/ethan/Projects/stork-editor/lib/blz.py";
+const char* LZSS_PATH = "/home/ethan/Projects/stork-editor/lib/lzss.py";
 const char* ROM_EXTRACT_DIR = "_nds_unpack";
-const char* NDSTOOL_PATH = "./lib/ndstool";
+const char* NDSTOOL_PATH = "/home/ethan/Projects/stork-editor/lib/ndstool";
 
 /**
  * @brief Modifies the file in place with Backwards Decompression (BLZ)

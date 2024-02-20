@@ -26,3 +26,8 @@ src/GuiObjectList.h src/SelectionInfoTable.h src/data/MapData.h \
 src/data/LevelSelectData.h
 
 QT += core gui widgets
+
+DISTFILES += \
+    lib/blz.py \
+    lib/lzss.py \
+    lib/ndstool

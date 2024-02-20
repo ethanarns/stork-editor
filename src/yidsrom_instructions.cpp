@@ -7,7 +7,6 @@
 #include "PixelDelegate.h"
 #include "popups/PaletteTable.h"
 #include "Level.h"
-#include "FsPacker.h"
 
 #include "data/MapData.h"
 
