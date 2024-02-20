@@ -36,29 +36,28 @@ PaletteTable::PaletteTable(QWidget* parent, YidsRom* rom) {
 }
 
 void PaletteTable::refreshLoadedTiles() {
-    // auto curPalettes = this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette);
-    // for (uint paletteIndex = 0; paletteIndex < curPalettes.size(); paletteIndex++) {
-    //     QByteArray curPalette = *curPalettes.at(paletteIndex);//this->yidsRom->currentPalettes[paletteIndex]; //
-    //     for (uint colorIndex = 0; colorIndex < PaletteTable::PALETTE_TABLE_WIDTH; colorIndex++) {
-    //         QByteArray fill;
-    //         fill.resize(64);
-    //         for (int i = 0; i < 64; i++) {
-    //             fill[i] = colorIndex;
-    //         }
-    //         auto tileItem = this->item(paletteIndex,colorIndex);
-    //         if (tileItem == nullptr) {
-    //             tileItem = new QTableWidgetItem();
-    //             tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,fill);
-    //             tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,curPalette);
-    //             tileItem->setData(PixelDelegateData::DRAW_BG2,true);
-    //             this->setItem(paletteIndex,colorIndex,tileItem);
-    //         } else {
-    //             tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,fill);
-    //             tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,curPalette);
-    //             tileItem->setData(PixelDelegateData::DRAW_BG2,true);
-    //         }
-    //     }
-    // }
+    for (uint paletteIndex = 0; paletteIndex < 0x20; paletteIndex++) {
+        QByteArray curPalette = this->yidsRom->currentPalettes[paletteIndex];
+        for (uint colorIndex = 0; colorIndex < PaletteTable::PALETTE_TABLE_WIDTH; colorIndex++) {
+            QByteArray fill;
+            fill.resize(64);
+            for (int i = 0; i < 64; i++) {
+                fill[i] = colorIndex;
+            }
+            auto tileItem = this->item(paletteIndex,colorIndex);
+            if (tileItem == nullptr) {
+                tileItem = new QTableWidgetItem();
+                tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,fill);
+                tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,curPalette);
+                tileItem->setData(PixelDelegateData::DRAW_BG2,true);
+                this->setItem(paletteIndex,colorIndex,tileItem);
+            } else {
+                tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,fill);
+                tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,curPalette);
+                tileItem->setData(PixelDelegateData::DRAW_BG2,true);
+            }
+        }
+    }
 }
 
 void PaletteTable::paletteTableClicked(int row, int column) {
