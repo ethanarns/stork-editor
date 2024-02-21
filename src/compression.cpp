@@ -75,14 +75,9 @@ std::vector<uint8_t> YCompression::lzssVectorRecomp(std::vector<uint8_t>& uncomp
 }
 
 std::filesystem::path YCompression::getAbsoluteRomPart(std::string dataName) {
-    std::string dataPath = "./";
+    std::string dataPath = "./"; // "." means current directory, even within a greater path
     dataPath = dataPath.append(ROM_EXTRACT_DIR).append("/").append(dataName);
     std::filesystem::path result = std::filesystem::absolute(dataPath);
-    if (!std::filesystem::exists(dataPath)) {
-        std::stringstream ss;
-        ss << "Data path does not exist: " << result.string();
-        YUtils::printDebug(ss.str(),DebugType::ERROR);
-    }
     return result;
 }
 
