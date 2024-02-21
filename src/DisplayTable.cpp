@@ -241,26 +241,30 @@ void DisplayTable::displayTableClicked(int row, int column) {
         // Nothing has loaded yet, cancel
         return;
     }
-    if (!curCell->data(PixelDelegateData::PIXEL_ARRAY_BG2).isNull()) {
-        auto pixArray2 = curCell->data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
-        YUtils::printDebug("Pixel Array for BG 2:",DebugType::VERBOSE);
-        YUtils::printQbyte(pixArray2);
-        std::stringstream ssBg2;
-        ssBg2 << "Tile attr BG2: 0x" << std::hex << curCell->data(PixelDelegateData::TILEATTR_BG2).toUInt();
-        YUtils::printDebug(ssBg2.str(),DebugType::VERBOSE);
-    }
+    YUtils::printDebug("*** Printing Tile Information ***",DebugType::VERBOSE);
     if (!curCell->data(PixelDelegateData::PIXEL_ARRAY_BG1).isNull()) {
+        std::stringstream ssBg1;
+        ssBg1 << "Tile attr BG1: 0x" << std::hex << curCell->data(PixelDelegateData::TILEATTR_BG1).toUInt();
+        YUtils::printDebug(ssBg1.str(),DebugType::VERBOSE);
         auto pixArray1 = curCell->data(PixelDelegateData::PIXEL_ARRAY_BG1).toByteArray();
         YUtils::printDebug("Pixel Array for BG 1:",DebugType::VERBOSE);
         YUtils::printQbyte(pixArray1);
     }
+    if (!curCell->data(PixelDelegateData::PIXEL_ARRAY_BG2).isNull()) {
+        std::stringstream ssBg2;
+        ssBg2 << "Tile attr BG2: 0x" << std::hex << curCell->data(PixelDelegateData::TILEATTR_BG2).toUInt();
+        YUtils::printDebug(ssBg2.str(),DebugType::VERBOSE);
+        auto pixArray2 = curCell->data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
+        YUtils::printDebug("Pixel Array for BG 2:",DebugType::VERBOSE);
+        YUtils::printQbyte(pixArray2);
+    }
     if (!curCell->data(PixelDelegateData::PIXEL_ARRAY_BG3).isNull()) {
-        auto pixArray1 = curCell->data(PixelDelegateData::PIXEL_ARRAY_BG3).toByteArray();
-        YUtils::printDebug("Pixel Array for BG 3:",DebugType::VERBOSE);
-        YUtils::printQbyte(pixArray1);
         std::stringstream ssBg3;
         ssBg3 << "Tile attr BG3: 0x" << std::hex << curCell->data(PixelDelegateData::TILEATTR_BG3).toUInt();
         YUtils::printDebug(ssBg3.str(),DebugType::VERBOSE);
+        auto pixArray1 = curCell->data(PixelDelegateData::PIXEL_ARRAY_BG3).toByteArray();
+        YUtils::printDebug("Pixel Array for BG 3:",DebugType::VERBOSE);
+        YUtils::printQbyte(pixArray1);
     }
 
     if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
@@ -277,6 +281,7 @@ void DisplayTable::displayTableClicked(int row, int column) {
             this->selectedObjects.clear();
         }
     }
+    YUtils::printDebug("**Tile info print complete**",DebugType::VERBOSE);
 }
 
 void DisplayTable::selectItemByUuid(uint32_t uuid) {
