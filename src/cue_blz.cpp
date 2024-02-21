@@ -168,7 +168,7 @@ void BLZ_Decode(char *filename) {
   unsigned int   pak_len, raw_len, len, pos, inc_len, hdr_len, enc_len, dec_len;
   unsigned char  flags, mask;
 
-  printf("- decoding '%s'", filename);
+  //printf("- decoding '%s'", filename);
 
   pak_buffer = LoadBlz(filename, &pak_len, BLZ_MINIM, BLZ_MAXIM);
 
@@ -239,7 +239,7 @@ void BLZ_Decode(char *filename) {
   free(raw_buffer);
   free(pak_buffer);
 
-  printf("\n");
+  //printf("\n");
 }
 
 /*----------------------------------------------------------------------------*/

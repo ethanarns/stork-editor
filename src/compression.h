@@ -8,9 +8,7 @@
 class YCompression {
 public:
     static bool blzDecompress(std::string filepath);
-    //static bool lzssDecomp(std::string filepath, bool verbose = false);
     static bool lzssRecomp(std::string filepath);
-    //static std::vector<uint8_t> lzssVectorDecomp(std::vector<uint8_t>& inputVec, bool verbose = false);
     static std::vector<uint8_t> lzssVectorRecomp(std::vector<uint8_t>& uncompressedVec);
     static void unpackRom(std::string romFileName);
     static void repackRom(std::string outputFileName);

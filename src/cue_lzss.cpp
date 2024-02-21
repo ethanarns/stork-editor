@@ -200,7 +200,7 @@ void LZS_Decode(char *filename) {
   unsigned int   pak_len, raw_len, header, len, pos;
   unsigned char  flags, mask;
 
-  printf("- decoding '%s'", filename);
+  //printf("- decoding '%s'", filename);
 
   pak_buffer = Load(filename, &pak_len, LZS_MINIM, LZS_MAXIM);
 
@@ -253,7 +253,7 @@ void LZS_Decode(char *filename) {
   free(raw_buffer);
   free(pak_buffer);
 
-  printf("\n");
+  //printf("\n");
 }
 
 /*----------------------------------------------------------------------------*/
@@ -263,7 +263,7 @@ void LZS_Encode(char *filename, int mode) {
 
   lzs_vram = mode & 0xF;
 
-  printf("- encoding '%s'", filename);
+  //printf("- encoding '%s'", filename);
 
   raw_buffer = Load(filename, &raw_len, RAW_MINIM, RAW_MAXIM);
 
@@ -287,7 +287,7 @@ void LZS_Encode(char *filename, int mode) {
   free(pak_buffer);
   free(raw_buffer);
 
-  printf("\n");
+  //printf("\n");
 }
 
 /*----------------------------------------------------------------------------*/
