@@ -162,6 +162,8 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     this->mapData = new MapData(fileVector,true,this->backgroundPalettes);
     this->mapData->filename = mpdzFileName;
 
+    return; // Remove all below eventually
+
     // Delete below to restart loop
     //auto test = mapData.getAllLevelObjects();
     //auto test2 = mapData.getLevelObjectByUuid(0x61);
