@@ -15,7 +15,7 @@
 #include <QtGlobal>
 
 const char* ROM_EXTRACT_DIR = "_nds_unpack";
-const char* NDSTOOL_PATH = "/home/ethan/Projects/stork-editor/lib/ndstool";
+const char* NDSTOOL_PATH = "./lib/ndstool";
 
 /**
  * @brief Modifies the file in place with Backwards Decompression (BLZ)
@@ -78,9 +78,10 @@ void YCompression::unpackRom(std::string romFileName) {
     bool windows = false;
 
     std::string execPath = NDSTOOL_PATH;
-    if (windows) {
+    #ifdef _WIN32
+        YUtils::printDebug("Switching NDSTool to Windows mode");
         execPath = execPath.append(".exe");
-    }
+    #endif
     if (!std::filesystem::exists(execPath)) {
         YUtils::printDebug("NDSTool not found",DebugType::FATAL);
         exit(EXIT_FAILURE);
@@ -117,9 +118,10 @@ void YCompression::repackRom(std::string outputFileName) {
     bool windows = false;
 
     std::string execPath = NDSTOOL_PATH;
-    if (windows) {
+    #ifdef _WIN32
+        YUtils::printDebug("Switching NDSTool to Windows mode");
         execPath = execPath.append(".exe");
-    }
+    #endif
     if (!std::filesystem::exists(execPath)) {
         YUtils::printDebug("NDSTool not found",DebugType::FATAL);
         exit(EXIT_FAILURE);

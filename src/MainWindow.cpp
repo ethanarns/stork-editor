@@ -373,7 +373,7 @@ MainWindow::MainWindow() {
 }
 
 void MainWindow::LoadRom() {
-    auto fileName = QFileDialog::getOpenFileName(this,tr("Open ROM"),".",tr("NDS files (*.nds)"));
+    auto fileName = QFileDialog::getOpenFileName(this,tr("Open ROM"),".",tr("NDS files (*.nds *.NDS)"));
     if (fileName.isEmpty()) {
         YUtils::printDebug("Canceled file dialog",DebugType::VERBOSE);
     } else {
@@ -525,7 +525,7 @@ void MainWindow::menuClick_memory() {
 
 void MainWindow::menuClick_export() {
     this->saveRom();
-    auto fileName = QFileDialog::getSaveFileName(this,tr("Export to NDS"),".",tr("NDS files (*.NDS)"));
+    auto fileName = QFileDialog::getSaveFileName(this,tr("Export to NDS"),".",tr("NDS files (*.nds *.NDS)"));
     if (fileName.isEmpty()) {
         YUtils::printDebug("Canceled export dialog",DebugType::VERBOSE);
     } else {

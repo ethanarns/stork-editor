@@ -17,6 +17,11 @@
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
+    if (!std::filesystem::exists("./lib/")) {
+        YUtils::printDebug("lib/ not found",DebugType::FATAL);
+        exit(EXIT_FAILURE);
+    }
+
     // This class is the real main
     MainWindow window;
     window.resize(1280, 1024);
