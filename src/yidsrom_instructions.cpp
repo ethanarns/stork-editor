@@ -306,7 +306,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
                     YUtils::printDebug("More than 0x20 palettes attempted to be added",DebugType::WARNING);
                     break;
                 } else {
-                    this->currentPalettes[globalPaletteIndex] = currentLoadingPalette;
+                    //this->currentPalettes[globalPaletteIndex] = currentLoadingPalette;
                     globalPaletteIndex++;
                 }
                 pltbData.palettes.push_back(currentLoadingPalette);

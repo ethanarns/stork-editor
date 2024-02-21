@@ -267,8 +267,6 @@ void YidsRom::initArm9RomData(std::string fileName) {
     this->filesLoaded = true;
 
     // Write universal palette
-    this->currentPalettes[0].resize(Constants::PALETTE_SIZE);
-    // Replace above with below
     this->backgroundPalettes[0].resize(Constants::PALETTE_SIZE);
     this->universalPalette.resize(Constants::PALETTE_SIZE);
     Address universalPalette0base = YUtils::conv2xAddrToFileAddr(Constants::UNIVERSAL_PALETTE_0_ADDR);
@@ -276,8 +274,6 @@ void YidsRom::initArm9RomData(std::string fileName) {
         this->romFile.seekg(universalPalette0base + univPalIndex);
         uint8_t container;
         this->romFile.read(reinterpret_cast<char *>(&container), sizeof(container));
-        this->currentPalettes[0][univPalIndex] = container;
-        // Replace above with below
         this->backgroundPalettes[0][univPalIndex] = container;
         this->universalPalette[univPalIndex] = container;
     }
@@ -390,18 +386,21 @@ std::vector<uint8_t> YidsRom::getByteVectorFromFile(std::string fileName) {
     return vec;
 }
 
-void YidsRom::wipeCrsbData() {
+void YidsRom::wipeLevelData() {
     this->preRenderDataBg1.clear();
     this->preRenderDataBg2.clear();
+    this->preRenderDataBg3.clear();
 
     // 1: Skip the universal palette at index 0
     for (uint32_t palDelIndex = 1; palDelIndex < 0x20; palDelIndex++) {
         // 0x10 * 2: Each color is 2 bytes
         for (uint32_t colDelIndex = 0; colDelIndex < (0x10*2); colDelIndex++) {
             // palDelIndex + 1: create a "rainbow" to debug target
-            this->currentPalettes[palDelIndex][colDelIndex] = palDelIndex + 1;
+            //this->currentPalettes[palDelIndex][colDelIndex] = palDelIndex + 1;
+            this->backgroundPalettes[palDelIndex][colDelIndex] = palDelIndex + 1;
         }
     }
+    delete this->mapData;
 }
 
 QByteArray YidsRom::get256Palettes(uint32_t offset) {

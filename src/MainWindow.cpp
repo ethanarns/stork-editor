@@ -556,7 +556,7 @@ void MainWindow::buttonClick_levelSelect_load() {
         return;
     }
     this->grid->wipeTable();
-    this->rom->wipeCrsbData();
+    this->rom->wipeLevelData();
     auto loadingCrsb = potentialItemCrsb.toString().toStdString();
     std::stringstream ssLevelLoad;
     ssLevelLoad << "Loading CRSB (Level) '" << loadingCrsb << "'";

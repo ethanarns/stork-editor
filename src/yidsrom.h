@@ -41,8 +41,6 @@ public:
 
     QByteArray universalPalette;
 
-    QByteArray currentPalettes[0x20];
-    // Replace above with below
     QByteArray backgroundPalettes[0x20];
 
     /**
@@ -83,7 +81,7 @@ public:
     std::string getLevelFileNameFromMapIndex(uint32_t worldIndex, uint32_t levelIndex);
     CrsbData loadCrsb(std::string fileName_noext);
     void loadMpdz(std::string fileName_noext);
-    void wipeCrsbData();
+    void wipeLevelData();
     QByteArray get256Palettes(uint32_t offset);
 
     void moveObject(uint32_t objectUuid, int xOffset, int yOffset);
