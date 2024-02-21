@@ -11,8 +11,6 @@
 
 #include <QApplication>
 
-#include <iostream>
-
 #include "src/MainWindow.h"
 #include "src/constants.h"
 
