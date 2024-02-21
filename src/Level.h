@@ -30,6 +30,12 @@ public:
     uint32_t magicNum = 0;
 };
 
+struct ObjectPalette {
+    QByteArray paletteData;
+    uint32_t index;
+    uint32_t address;
+};
+
 /**
  * @brief MPDZ file
  */

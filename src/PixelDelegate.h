@@ -72,12 +72,6 @@ enum CollisionDraw {
     COIN_BOTTOM_RIGHT
 };
 
-struct ObjectPalette {
-    QByteArray paletteData;
-    uint32_t index;
-    uint32_t address;
-};
-
 class PixelDelegate : public QStyledItemDelegate {
     Q_OBJECT
 public:
