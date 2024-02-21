@@ -53,7 +53,7 @@ void ChartilesTable::refreshLoadedObjectTilesMap() {
             auto currentSubSection = YUtils::subVector(chartilesVector,start,end);
             auto qArray = YUtils::tileVectorToQByteArray(currentSubSection);
             newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,qArray);
-            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[0]);
+            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
             newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
             newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
             newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);
@@ -84,7 +84,7 @@ void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
         auto chartile = tilesMap[mapIndex];
         QTableWidgetItem *newItem = new QTableWidgetItem();
         newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,chartile.tiles);
-        newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->currentPalettes[0]);
+        newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
         newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
         newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
         newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);

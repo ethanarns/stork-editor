@@ -430,6 +430,7 @@ void MainWindow::toolbarClick_palette() {
     if (this->palettePopup->isVisible()) {
         this->palettePopup->close();
     } else {
+        this->palettePopup->resize(550,660);
         this->palettePopup->show();
     }
 }

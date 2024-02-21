@@ -158,7 +158,7 @@ std::vector<Chartile> LayerData::parseImbzFromFile(std::string filename_noExt, B
     return result;
 }
 
-MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray currentPalettesRef[0x20]) {
+MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgPalettesRef[0x20]) {
     this->paletteRamIndex = 1;
     if (compressed) {
         mpdzBytes = YCompression::lzssVectorDecomp(mpdzBytes,false);
@@ -185,7 +185,7 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray cur
             auto pltb = scen->getPalette()->palettes;
             for (auto plit = pltb.begin(); plit != pltb.end(); plit++) {
                 auto curPal = (*plit);
-                currentPalettesRef[this->paletteRamIndex] = *curPal;
+                bgPalettesRef[this->paletteRamIndex] = *curPal;
                 this->paletteRamIndex++;
             }
             this->subData.push_back(scen);

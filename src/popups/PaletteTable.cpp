@@ -37,7 +37,7 @@ PaletteTable::PaletteTable(QWidget* parent, YidsRom* rom) {
 
 void PaletteTable::refreshLoadedTiles() {
     for (uint paletteIndex = 0; paletteIndex < 0x20; paletteIndex++) {
-        QByteArray curPalette = this->yidsRom->currentPalettes[paletteIndex];
+        QByteArray curPalette = this->yidsRom->backgroundPalettes[paletteIndex];
         for (uint colorIndex = 0; colorIndex < PaletteTable::PALETTE_TABLE_WIDTH; colorIndex++) {
             QByteArray fill;
             fill.resize(64);
@@ -68,8 +68,8 @@ void PaletteTable::paletteTableClicked(int row, int column) {
     }
 
     // Color WORD
-    uint8_t firstByte = this->yidsRom->currentPalettes[row][column*2];
-    uint8_t secondByte = this->yidsRom->currentPalettes[row][column*2+1];
+    uint8_t firstByte = this->yidsRom->backgroundPalettes[row][column*2];
+    uint8_t secondByte = this->yidsRom->backgroundPalettes[row][column*2+1];
     uint16_t colorBytes = (secondByte << 8) + firstByte;
     std::stringstream ssColorShort;
     ssColorShort << std::setfill('0') << std::setw(4) << std::hex << colorBytes;

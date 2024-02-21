@@ -549,7 +549,7 @@ void DisplayTable::placeObjectTile(
     uint32_t yPixelOffset,
     uint32_t uuid
 ) {
-    auto objectPalette = this->yidsRom->currentPalettes[0]; // Default
+    auto objectPalette = this->yidsRom->backgroundPalettes[0]; // Default
     if (paletteFile == ObjectFileName::OBJSET) {
         objectPalette = this->yidsRom->objsetPalettes[paletteOffset].paletteData;
     } else if (paletteFile == ObjectFileName::OBJEFFECT) {
