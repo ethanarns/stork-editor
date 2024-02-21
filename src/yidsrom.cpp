@@ -405,11 +405,11 @@ void YidsRom::wipeLevelData() {
 
 QByteArray YidsRom::get256Palettes(uint32_t offset) {
     QByteArray qbResult;
-    qbResult.resize(0x200);
+    qbResult.resize(256*2);
     int qbIndex = 0;
-    for (int whichPaletteIndex = offset; whichPaletteIndex < 0x20; whichPaletteIndex++) {
+    for (int whichPaletteIndex = 0; whichPaletteIndex < 0x10; whichPaletteIndex++) {
         for (int whichColorIndex = 0; whichColorIndex < Constants::PALETTE_SIZE; whichColorIndex++) {
-            qbResult[qbIndex] = this->backgroundPalettes[whichPaletteIndex].at(whichColorIndex);
+            qbResult[qbIndex] = this->backgroundPalettes[whichPaletteIndex+offset].at(whichColorIndex);
             qbIndex++;
         }
     }
