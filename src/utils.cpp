@@ -76,6 +76,9 @@ int16_t YUtils::getInt16FromVec(std::vector<uint8_t> &bytes, uint32_t location) 
         firstS = static_cast<int16_t>(first);
     } else if (first >= INT16_MIN) {
         firstS = static_cast<int16_t>(first - INT16_MIN) + INT16_MIN;
+    } else {
+        YUtils::printDebug("Range error 1 in getInt16FromVec",DebugType::ERROR);
+        return 0;
     }
     uint16_t second = bytes.at(location);
     int16_t secondS;
@@ -83,6 +86,9 @@ int16_t YUtils::getInt16FromVec(std::vector<uint8_t> &bytes, uint32_t location) 
         secondS = static_cast<int16_t>(second);
     } else if (second >= INT16_MIN) {
         secondS = static_cast<int16_t>(second - INT16_MIN) + INT16_MIN;
+    } else {
+        YUtils::printDebug("Range error 1 in getInt16FromVec",DebugType::ERROR);
+        return 0;
     }
     return firstS + secondS;
 }
