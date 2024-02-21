@@ -289,13 +289,13 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             // BGs have offsets
             if (whichBgToWriteTo == 2) {
                 //std::cout << "bg2: globalPaletteIndex-1 is " << std::hex << (globalPaletteIndex-1) << std::endl;
-                this->paletteOffsetBg2 = globalPaletteIndex-1; // Starts at 1
+                //this->paletteOffsetBg2 = globalPaletteIndex-1; // Starts at 1
             } else if (whichBgToWriteTo == 1) {
                 //std::cout << "bg1: globalPaletteIndex-1 is " << std::hex << (globalPaletteIndex-1) << std::endl;
-                this->paletteOffsetBg1 = globalPaletteIndex-1;
+                //this->paletteOffsetBg1 = globalPaletteIndex-1;
             } else if (whichBgToWriteTo == 3) {
                 //std::cout << "bg3: globalPaletteIndex-1 is " << std::hex << (globalPaletteIndex-1) << std::endl;
-                this->paletteOffsetBg3 = globalPaletteIndex-1;
+                //this->paletteOffsetBg3 = globalPaletteIndex-1;
             }
 
             while (pltbReadIndex < indexPointer) {
@@ -847,19 +847,19 @@ MpbzData YidsRom::handleMPBZ(std::vector<uint8_t>& uncompressedMpbz, uint16_t wh
         
         if (whichBg == 2) {
             for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
-                this->preRenderDataBg2.push_back(0x0000);
+                //this->preRenderDataBg2.push_back(0x0000);
             } 
             mpbzIndex += 3; // 0x0201c714
         } else if (whichBg == 1) {
             // Potentially collapse me later, could probably be merged into above
             for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
-                this->preRenderDataBg1.push_back(0x0000);
+                //this->preRenderDataBg1.push_back(0x0000);
             } 
             mpbzIndex += 3; // 0x0201c714
         } else if (whichBg == 3) {
             // Potentially collapse me later, could probably be merged into above
             for (int offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
-                this->preRenderDataBg3.push_back(0x0000);
+                //this->preRenderDataBg3.push_back(0x0000);
             } 
             mpbzIndex += 3; // 0x0201c714
         } else {
@@ -882,11 +882,11 @@ MpbzData YidsRom::handleMPBZ(std::vector<uint8_t>& uncompressedMpbz, uint16_t wh
         }
         mpbzData.tileRenderData.push_back(curShort);
         if (whichBg == 2) {
-            this->preRenderDataBg2.push_back(curShort);
+            //this->preRenderDataBg2.push_back(curShort);
         } else if (whichBg == 1) {
-            this->preRenderDataBg1.push_back(curShort);
+            //this->preRenderDataBg1.push_back(curShort);
         } else if (whichBg == 3) {
-            this->preRenderDataBg3.push_back(curShort);
+            //this->preRenderDataBg3.push_back(curShort);
         } else {
             std::stringstream ssUnhandledBg;
             ssUnhandledBg << "Writing to unhandled BG " << whichBg;

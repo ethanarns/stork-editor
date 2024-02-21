@@ -25,7 +25,7 @@
 
 YidsRom::YidsRom() {
     this->filesLoaded = false;
-    this->preRenderDataBg2.reserve(180'000); // Found 189280 in 1-1's first IMBZ
+    //this->preRenderDataBg2.reserve(180'000); // Found 189280 in 1-1's first IMBZ
     //this->collisionTileArray.reserve(79'000); // Found roughly 79000 in 1-1's first IMBZ
 }
 
@@ -116,7 +116,7 @@ void YidsRom::openRom(std::string fileName) {
     auto crsbFilename = fileNameCrsb_noext.append(".crsb");
     auto crsbFileVector = this->getByteVectorFromFile(crsbFilename);
     auto levelSelectData = new LevelSelectData(crsbFileVector);
-    
+
     this->loadMpdz(levelSelectData->levels.at(0)->mpdzFileNoExtension);
 }
 
@@ -381,10 +381,6 @@ std::vector<uint8_t> YidsRom::getByteVectorFromFile(std::string fileName) {
 }
 
 void YidsRom::wipeLevelData() {
-    this->preRenderDataBg1.clear();
-    this->preRenderDataBg2.clear();
-    this->preRenderDataBg3.clear();
-
     // 1: Skip the universal palette at index 0
     for (uint32_t palDelIndex = 1; palDelIndex < 0x20; palDelIndex++) {
         // 0x10 * 2: Each color is 2 bytes

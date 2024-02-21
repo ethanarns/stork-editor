@@ -49,20 +49,9 @@ public:
     std::map<uint32_t,std::vector<uint8_t>> objsetPixelTiles;
     //std::map<uint32_t,std::vector<ObjectDrawInstruction>> pixelTilesObj;
     
-    /**
-     * @brief BG 2's tile attr data, and the main source of level design. 
-     * Corresponds with collision the most
-     */
-    std::vector<uint16_t> preRenderDataBg2;
-    /**
-     * @brief BG 1's tile data. Animated foreground for the most part, 
-     * no collision (seen so far)
-     */
-    std::vector<uint16_t> preRenderDataBg1;
-    /**
-     * @brief BG 3's tile data. Animated bg?
-     */
-    std::vector<uint16_t> preRenderDataBg3;
+    // std::vector<uint16_t> preRenderDataBg2;
+    // std::vector<uint16_t> preRenderDataBg1;
+    // std::vector<uint16_t> preRenderDataBg3;
 
     std::map<uint32_t,ObjectPalette> objsetPalettes;
 
@@ -70,9 +59,9 @@ public:
     std::map<uint32_t,ObjectPalette> effectPalettes;
     std::map<uint32_t,ObjectFile> objectFiles;
 
-    uint32_t paletteOffsetBg1 = 0;
-    uint32_t paletteOffsetBg2 = 0;
-    uint32_t paletteOffsetBg3 = 0;
+    // uint32_t paletteOffsetBg1 = 0;
+    // uint32_t paletteOffsetBg2 = 0;
+    // uint32_t paletteOffsetBg3 = 0;
 
     bool filesLoaded = false;
     YidsRom();
