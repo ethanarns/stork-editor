@@ -1,5 +1,6 @@
 #include "compression.h"
 #include "utils.h"
+#include "cue_lzss.h"
 
 // std::cerr, std::endl, std::ios
 #include <iostream>
@@ -61,13 +62,16 @@ bool YCompression::lzssRecomp(std::string filepath, bool verbose) {
         cerr << "Invalid filepath: " << filepath << endl;
         return false;
     }
-    std::string lzssPath = LZSS_PATH;
-    std::string lzssCmdRecomp = lzssPath.append(" -c ").append(filepath).append(" --out ").append(filepath);
-    if (verbose) cout << "> " << lzssCmdRecomp << endl;
-    // Silence stdout?
-    if (!verbose) lzssCmdRecomp.append(" 1> /dev/null");
-    auto result = system(lzssCmdRecomp.c_str());
-    if (verbose) cout << "System result: " << result << endl;
+    auto inFile = filepath.c_str();
+    Lzss::encode(const_cast<char*>(inFile));
+    // std::string lzssPath = LZSS_PATH;
+    // std::string lzssCmdRecomp = lzssPath.append(" -c ").append(filepath).append(" --out ").append(filepath);
+    // if (verbose) cout << "> " << lzssCmdRecomp << endl;
+    // // Silence stdout?
+    // if (!verbose) lzssCmdRecomp.append(" 1> /dev/null");
+    // auto result = system(lzssCmdRecomp.c_str());
+    // if (verbose) cout << "System result: " << result << endl;
+
     return true;
 }
 
