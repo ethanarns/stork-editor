@@ -8,7 +8,7 @@
 
 // CRSB, go over this again at some point
 LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
-    std::cout << "LevelSelectData" << std::endl;
+    //std::cout << "LevelSelectData" << std::endl;
     uint32_t crsbIndex = 0;
     auto magic = YUtils::getUint32FromVec(crsbBytes,crsbIndex);
     crsbIndex += 4;
@@ -68,7 +68,7 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
         while (crsbIndex % 4 != 0) {
             crsbIndex++;
         }
-        std::cout << "Current offset inside CRSB: " << std::hex << crsbIndex << std::endl;
+        //std::cout << "Current offset inside CRSB: " << std::hex << crsbIndex << std::endl;
         uint exitIndex = 0;
         // This is exactly 8 bytes, no need to pad
         while (exitIndex < exitPortalCount) {

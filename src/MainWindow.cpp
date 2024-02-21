@@ -15,6 +15,7 @@
 #include "DisplayTable.h"
 #include "compression.h"
 #include "GuiObjectList.h"
+#include "data/LevelSelectData.h"
 
 #include <QtCore>
 #include <QObject>
@@ -191,13 +192,6 @@ MainWindow::MainWindow() {
 
     // Tools menu //
     QMenu* menu_tools = menuBar()->addMenu("&Tools");
-
-    this->action_memory = new QAction("&Memory Info",this);
-    this->action_memory->setShortcut(tr("CTRL+M"));
-    //this->action_memory->setIcon(QIcon::fromTheme("document-properties"));
-    menu_tools->addAction(this->action_memory);
-    this->action_memory->setDisabled(true);
-    connect(this->action_memory, &QAction::triggered, this, &MainWindow::menuClick_memory);
 
     auto action_settings = new QAction("&Settings...",this);
     action_settings->setShortcut(tr("CTRL+U"));
@@ -409,7 +403,6 @@ void MainWindow::LoadRom() {
         this->grid->updateObjects();
 
         // Misc menu items //
-        this->action_memory->setDisabled(false);
         this->action_showCollision->setDisabled(false);
         this->action_viewBg1->setDisabled(false);
         this->action_viewBg2->setDisabled(false);
@@ -504,25 +497,6 @@ void MainWindow::menuClick_levelSelect() {
     this->levelSelect->updateList();
 }
 
-void MainWindow::menuClick_memory() {
-    using namespace std;
-    std::cout << "----  Memory Report  ----" << std::endl;
-
-    auto collisionArraySize = this->rom->mapData->getCollisionArray().size();
-    auto preRenderDataBg1 = this->rom->preRenderDataBg1.size();
-    auto preRenderDataBg2 = this->rom->preRenderDataBg2.size();
-    auto levelObjectCount = this->rom->mapData->getAllLevelObjects().size();
-
-    std::cout << "collisionTileArray size (bytes): " << dec << collisionArraySize << std::endl;
-    std::cout << "preRenderDataBg1 size (count): " << dec << preRenderDataBg1 << std::endl;
-    std::cout << "preRenderDataBg1 size (bytes): " << dec << preRenderDataBg1*2 << std::endl;
-    std::cout << "preRenderDataBg2 size (count): " << dec << preRenderDataBg2 << std::endl;
-    std::cout << "preRenderDataBg2 size (bytes): " << dec << preRenderDataBg2*2 << std::endl;
-    std::cout << "levelObjects size (count): " << dec << levelObjectCount << std::endl;
-
-    std::cout << "--- End Memory Report ---" << std::endl;
-}
-
 void MainWindow::menuClick_export() {
     this->saveRom();
     auto fileName = QFileDialog::getSaveFileName(this,tr("Export to NDS"),".",tr("NDS files (*.nds *.NDS)"));
@@ -561,8 +535,14 @@ void MainWindow::buttonClick_levelSelect_load() {
     std::stringstream ssLevelLoad;
     ssLevelLoad << "Loading CRSB (Level) '" << loadingCrsb << "'";
     YUtils::printDebug(ssLevelLoad.str(),DebugType::VERBOSE);
-    auto crsb = this->rom->loadCrsb(loadingCrsb);
-    this->rom->loadMpdz(crsb.cscnList.at(0).mpdzFileNoExtension);
+
+    auto fileNameCrsb_noext = YUtils::getLowercase(loadingCrsb);
+    auto crsbFilename = fileNameCrsb_noext.append(".crsb");
+    auto crsbFileVector = this->rom->getByteVectorFromFile(crsbFilename);
+    auto crsbData = new LevelSelectData(crsbFileVector);
+
+    auto firstMapName = crsbData->levels.at(0)->mpdzFileNoExtension;
+    this->rom->loadMpdz(firstMapName);
     this->levelSelectPopup->close();
     // Visual updates
     this->grid->firstLayerDrawDone = false;

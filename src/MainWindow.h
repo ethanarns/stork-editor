@@ -54,7 +54,6 @@ private:
     QAction* menu_levelSelect;
     QAction* menu_save;
     QAction* menu_export;
-    QAction* action_memory;
 
     QAction* action_viewBg1;
     QAction* action_viewBg2;
@@ -74,7 +73,6 @@ private:
     void toolbarClick_layerSelect(const QString str);
 
     void menuClick_levelSelect();
-    void menuClick_memory();
     void menuClick_export();
 
     void buttonClick_levelSelect_cancel();
