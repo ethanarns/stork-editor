@@ -175,7 +175,7 @@ void YidsRom::loadMpdz(std::string fileName_noext) {
     // exit(EXIT_SUCCESS);
     // YUtils::writeByteVectorToFile(fileVector,mpdzFileName); // Uncomment to get uncompressed MPDZ
 
-    auto uncompVec = YCompression::lzssVectorDecomp(fileVector,false);
+    auto uncompVec = YCompression::lz10decomp(fileVector);
     
     uint32_t magic = YUtils::getUint32FromVec(uncompVec,0);
     if (magic != Constants::MPDZ_MAGIC_NUM) {
@@ -327,7 +327,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             Address compressedDataEnd = compressedDataStart + mpbzLength;
             auto compressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
             // Decompress MPBZ data
-            auto uncompressedMpbz = YCompression::lzssVectorDecomp(compressedSubArray, false);
+            auto uncompressedMpbz = YCompression::lz10decomp(compressedSubArray);
 
             indexPointer += mpbzLength + 8; // Skip ahead main pointer to next
 
@@ -346,7 +346,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             Address compressedDataStart = indexPointer + 8;
             Address compressedDataEnd = compressedDataStart + colzLength;
             auto colzCompressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
-            auto uncompressedColz = YCompression::lzssVectorDecomp(colzCompressedSubArray, false);
+            auto uncompressedColz = YCompression::lz10decomp(colzCompressedSubArray);
             //this->collisionTileArray = uncompressedColz; // Copy directly
             colzData.colArray = uncompressedColz;
             if (whichBgToWriteTo == 2) {
@@ -367,12 +367,7 @@ ScenData YidsRom::handleSCEN(std::vector<uint8_t>& mpdzVec, Address& indexPointe
             Address compressedDataStart = indexPointer + 8;
             Address compressedDataEnd = compressedDataStart + anmzLength;
             auto compressedSubArray = YUtils::subVector(mpdzVec, compressedDataStart, compressedDataEnd);
-            auto uncompressedAnmz = YCompression::lzssVectorDecomp(compressedSubArray, false);
-
-            // Uncomment to get decompressed ANMZ
-            // YUtils::writeByteVectorToFile(uncompressedAnmz,"test2.anmz");
-            // bool decompResult = YCompression::lzssDecomp("test2.anmz");
-            // exit(EXIT_SUCCESS);
+            auto uncompressedAnmz = YCompression::lz10decomp(compressedSubArray);
 
             //const uint32_t ANMZ_INCREMENT = 0x20;
             auto animationFrameCount = uncompressedAnmz.at(0);
@@ -481,7 +476,7 @@ ImbzData YidsRom::handleImbz(std::string fileName_noext, uint16_t whichBg, BgCol
     imbzData.whichBg = whichBg;
 
     auto compressedFileVector = this->getByteVectorFromFile(fileName_noext.append(".imbz"));
-    std::vector uncompressedImbz = YCompression::lzssVectorDecomp(compressedFileVector,false);
+    std::vector uncompressedImbz = YCompression::lz10decomp(compressedFileVector);
     compressedFileVector.clear();
 
     // Use ints since they're natural and not stored excessively anyway

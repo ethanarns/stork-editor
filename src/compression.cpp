@@ -1,6 +1,7 @@
 #include "compression.h"
 #include "utils.h"
 #include "cue_lzss.h"
+#include "cue_blz.h"
 
 // std::cerr, std::endl, std::ios
 #include <iostream>
@@ -13,8 +14,8 @@
 // Q_UNUSED
 #include <QtGlobal>
 
-const char* BLZ_PATH = "/home/ethan/Projects/stork-editor/lib/blz.py";
-const char* LZSS_PATH = "/home/ethan/Projects/stork-editor/lib/lzss.py";
+// const char* BLZ_PATH = "/home/ethan/Projects/stork-editor/lib/blz.py";
+// const char* LZSS_PATH = "/home/ethan/Projects/stork-editor/lib/lzss.py";
 const char* ROM_EXTRACT_DIR = "_nds_unpack";
 const char* NDSTOOL_PATH = "/home/ethan/Projects/stork-editor/lib/ndstool";
 
@@ -24,39 +25,41 @@ const char* NDSTOOL_PATH = "/home/ethan/Projects/stork-editor/lib/ndstool";
  * @param filepath File to be modified
  * @return True if succeeded, false if failed
  */
-bool YCompression::blzDecompress(std::string filepath, bool verbose) {
+bool YCompression::blzDecompress(std::string filepath) {
     using namespace std;
     if (filepath.size() == 0 || filepath.compare("/") == 0) {
         cerr << "Invalid filepath: " << filepath << endl;
         return false;
     }
-    std::string blzPath = BLZ_PATH;
-    std::string blzCmd = blzPath.append(" ").append(filepath);
-    if (verbose) cout << "> " << blzCmd << endl;
-    // Silence stdout
-    if (!verbose) blzCmd.append(" 1> /dev/null");
-    auto result = system(blzCmd.c_str());
-    if (verbose) cout << "System result: " << result << endl;
+    // std::string blzPath = BLZ_PATH;
+    // std::string blzCmd = blzPath.append(" ").append(filepath);
+    // if (verbose) cout << "> " << blzCmd << endl;
+    // // Silence stdout
+    // if (!verbose) blzCmd.append(" 1> /dev/null");
+    // auto result = system(blzCmd.c_str());
+    // if (verbose) cout << "System result: " << result << endl;
+    auto inFile = filepath.c_str();
+    Blz::decode(const_cast<char*>(inFile));
     return true;
 }
 
-bool YCompression::lzssDecomp(std::string filepath, bool verbose) {
-    using namespace std;
-    if (filepath.size() == 0 || filepath.compare("/") == 0) {
-        cerr << "Invalid filepath: " << filepath << endl;
-        return false;
-    }
-    std::string lzssPath = LZSS_PATH;
-    std::string lzssCmd = lzssPath.append(" ").append(filepath).append(" --out ").append(filepath);
-    if (verbose) cout << "> " << lzssCmd << endl;
-    // Silence stdout?
-    if (!verbose) lzssCmd.append(" 1> /dev/null");
-    auto result = system(lzssCmd.c_str());
-    if (verbose) cout << "System result: " << result << endl;
-    return true;
-}
+// bool YCompression::lzssDecomp(std::string filepath, bool verbose) {
+//     using namespace std;
+//     if (filepath.size() == 0 || filepath.compare("/") == 0) {
+//         cerr << "Invalid filepath: " << filepath << endl;
+//         return false;
+//     }
+//     std::string lzssPath = LZSS_PATH;
+//     std::string lzssCmd = lzssPath.append(" ").append(filepath).append(" --out ").append(filepath);
+//     if (verbose) cout << "> " << lzssCmd << endl;
+//     // Silence stdout?
+//     if (!verbose) lzssCmd.append(" 1> /dev/null");
+//     auto result = system(lzssCmd.c_str());
+//     if (verbose) cout << "System result: " << result << endl;
+//     return true;
+// }
 
-bool YCompression::lzssRecomp(std::string filepath, bool verbose) {
+bool YCompression::lzssRecomp(std::string filepath) {
     using namespace std;
     if (filepath.size() == 0 || filepath.compare("/") == 0) {
         cerr << "Invalid filepath: " << filepath << endl;
@@ -75,41 +78,41 @@ bool YCompression::lzssRecomp(std::string filepath, bool verbose) {
     return true;
 }
 
-std::vector<uint8_t> YCompression::lzssVectorDecomp(std::vector<uint8_t>& inputVec, bool verbose) {
-    YUtils::printDebug("Disabled");
-    exit(EXIT_SUCCESS);
-    const std::string tempName = "TEMP.lz10";
-    YUtils::writeByteVectorToFile(inputVec,tempName);
-    bool decompResult = YCompression::lzssDecomp(tempName, verbose);
-    if (!decompResult) {
-        std::cerr << "Failed to extract LZ77 file" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+// std::vector<uint8_t> YCompression::lzssVectorDecomp(std::vector<uint8_t>& inputVec, bool verbose) {
+//     YUtils::printDebug("Disabled");
+//     exit(EXIT_SUCCESS);
+//     const std::string tempName = "TEMP.lz10";
+//     YUtils::writeByteVectorToFile(inputVec,tempName);
+//     bool decompResult = YCompression::lzssDecomp(tempName, verbose);
+//     if (!decompResult) {
+//         std::cerr << "Failed to extract LZ77 file" << std::endl;
+//         exit(EXIT_FAILURE);
+//     }
 
-    std::ifstream uncomped{tempName, std::ios::binary};
-    if (!uncomped) {
-        std::cerr << "Failed to load uncompressed file '" << tempName << "'" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+//     std::ifstream uncomped{tempName, std::ios::binary};
+//     if (!uncomped) {
+//         std::cerr << "Failed to load uncompressed file '" << tempName << "'" << std::endl;
+//         exit(EXIT_FAILURE);
+//     }
 
-    size_t uncomped_length = YUtils::getStreamLength(uncomped);
-    std::vector<uint8_t> uncompVec;
-    uncompVec.reserve(uncomped_length);
-    std::copy(
-        std::istreambuf_iterator<char>(uncomped),
-        std::istreambuf_iterator<char>(),
-        std::back_inserter(uncompVec)
-    );
-    // Cleanup
-    uncomped.close();
-    std::filesystem::remove(tempName);
-    return uncompVec;
-}
+//     size_t uncomped_length = YUtils::getStreamLength(uncomped);
+//     std::vector<uint8_t> uncompVec;
+//     uncompVec.reserve(uncomped_length);
+//     std::copy(
+//         std::istreambuf_iterator<char>(uncomped),
+//         std::istreambuf_iterator<char>(),
+//         std::back_inserter(uncompVec)
+//     );
+//     // Cleanup
+//     uncomped.close();
+//     std::filesystem::remove(tempName);
+//     return uncompVec;
+// }
 
-std::vector<uint8_t> YCompression::lzssVectorRecomp(std::vector<uint8_t>& uncompressedVec, bool verbose) {
+std::vector<uint8_t> YCompression::lzssVectorRecomp(std::vector<uint8_t>& uncompressedVec) {
     const std::string tempName = "TEMP_RECOMP.lz10";
     YUtils::writeByteVectorToFile(uncompressedVec,tempName);
-    bool recompResult = YCompression::lzssRecomp(tempName, verbose);
+    bool recompResult = YCompression::lzssRecomp(tempName);
     if (!recompResult) {
         std::cerr << "Failed to recompress to LZ77 file" << std::endl;
         exit(EXIT_FAILURE);
