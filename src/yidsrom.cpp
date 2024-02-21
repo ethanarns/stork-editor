@@ -109,18 +109,15 @@ void YidsRom::openRom(std::string fileName) {
     this->objectFiles[ObjectFileName::OBJSBBLOCK] = this->getObjPltFile("objsbblock.arc");
 
     std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,0);
-    auto crsb = this->loadCrsb(crsbFileName);
+    //auto crsb = this->loadCrsb(crsbFileName);
 
     // New way
     auto fileNameCrsb_noext = YUtils::getLowercase(crsbFileName);
     auto crsbFilename = fileNameCrsb_noext.append(".crsb");
     auto crsbFileVector = this->getByteVectorFromFile(crsbFilename);
     auto levelSelectData = new LevelSelectData(crsbFileVector);
-    Q_UNUSED(levelSelectData);
-    std::cout << "Finished loading CRSB" << std::endl;
-    //exit(EXIT_SUCCESS);
-
-    this->loadMpdz(crsb.cscnList.at(0).mpdzFileNoExtension);
+    
+    this->loadMpdz(levelSelectData->levels.at(0)->mpdzFileNoExtension);
 }
 
 std::string YidsRom::getTextAt(Address position_file, uint32_t length) {

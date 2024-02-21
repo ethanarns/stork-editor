@@ -79,7 +79,7 @@ public:
     void openRom(std::string fileName);
 
     std::string getLevelFileNameFromMapIndex(uint32_t worldIndex, uint32_t levelIndex);
-    CrsbData loadCrsb(std::string fileName_noext);
+    //CrsbData loadCrsb(std::string fileName_noext);
     void loadMpdz(std::string fileName_noext);
     void wipeLevelData();
     QByteArray get256Palettes(uint32_t offset);

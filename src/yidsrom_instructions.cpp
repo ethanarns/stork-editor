@@ -13,140 +13,140 @@
 #include <iostream>
 #include <vector>
 
-CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
-    using namespace std;
-    CrsbData crsbData;
+// CrsbData YidsRom::loadCrsb(std::string fileName_noext) {
+//     using namespace std;
+//     CrsbData crsbData;
 
-    fileName_noext = YUtils::getLowercase(fileName_noext);
-    auto fileName = fileName_noext.append(".crsb");
-    auto fileId = this->fileIdMap[fileName];
-    if (fileId == 0) {
-        cerr << "Failed to load level: " << fileName << endl;
-        return crsbData;
-    }
-    // x8 because each record of ranges is 8 bytes. 4 + 4
-    Address rangesAddr = this->metadata.fatOffsets + fileId * 8;
-    Address startAddr = this->getNumberAt<uint32_t>(rangesAddr + 0);
-    Address endAddr = this->getNumberAt<uint32_t>(rangesAddr + 4);
-    uint32_t length = endAddr - startAddr;
-    // 0x08 is from device capacity. Understand this better
-    uint32_t MAX_SIZE = 1U << (17 + 0x08);
-    if (length > MAX_SIZE) {
-        cerr << "File is too big! File size: " << dec << length << ", max size: " << dec << MAX_SIZE << endl;
-        return crsbData;
-    }
+//     fileName_noext = YUtils::getLowercase(fileName_noext);
+//     auto fileName = fileName_noext.append(".crsb");
+//     auto fileId = this->fileIdMap[fileName];
+//     if (fileId == 0) {
+//         cerr << "Failed to load level: " << fileName << endl;
+//         return crsbData;
+//     }
+//     // x8 because each record of ranges is 8 bytes. 4 + 4
+//     Address rangesAddr = this->metadata.fatOffsets + fileId * 8;
+//     Address startAddr = this->getNumberAt<uint32_t>(rangesAddr + 0);
+//     Address endAddr = this->getNumberAt<uint32_t>(rangesAddr + 4);
+//     uint32_t length = endAddr - startAddr;
+//     // 0x08 is from device capacity. Understand this better
+//     uint32_t MAX_SIZE = 1U << (17 + 0x08);
+//     if (length > MAX_SIZE) {
+//         cerr << "File is too big! File size: " << dec << length << ", max size: " << dec << MAX_SIZE << endl;
+//         return crsbData;
+//     }
     
-    std::string magicText = this->getTextAt(startAddr + 0,4);
-    if (magicText.compare(Constants::CRSB_MAGIC) != 0) {
-        cerr << "Magic header text " << Constants::CRSB_MAGIC << " not found! Found '" << magicText << "' instead." << endl;
-        exit(EXIT_FAILURE);
-    }
+//     std::string magicText = this->getTextAt(startAddr + 0,4);
+//     if (magicText.compare(Constants::CRSB_MAGIC) != 0) {
+//         cerr << "Magic header text " << Constants::CRSB_MAGIC << " not found! Found '" << magicText << "' instead." << endl;
+//         exit(EXIT_FAILURE);
+//     }
 
-    auto mapFileCount = this->getNumberAt<uint32_t>(startAddr + 8);
-    if (mapFileCount == 0) {
-        YUtils::printDebug("mapFileCount in CRSB was 0",DebugType::ERROR);
-        return crsbData;
-    }
-    crsbData.mapFileCount = mapFileCount;
+//     auto mapFileCount = this->getNumberAt<uint32_t>(startAddr + 8);
+//     if (mapFileCount == 0) {
+//         YUtils::printDebug("mapFileCount in CRSB was 0",DebugType::ERROR);
+//         return crsbData;
+//     }
+//     crsbData.mapFileCount = mapFileCount;
 
-    uint32_t crsbIndex = startAddr + 0x0C; // All important data retrieved, jump to the first CSCN
+//     uint32_t crsbIndex = startAddr + 0x0C; // All important data retrieved, jump to the first CSCN
 
-    uint32_t mapFileIndex = 0;
-    while (mapFileIndex < mapFileCount) {
-        CscnData curCscnData;
+//     uint32_t mapFileIndex = 0;
+//     while (mapFileIndex < mapFileCount) {
+//         CscnData curCscnData;
 
-        // Check that the magic text is there, at index 0
-        std::string magicTextCscn = this->getTextAt(crsbIndex + 0, 4);
-        if (magicTextCscn.compare(Constants::CSCN_MAGIC) != 0) {
-            std::stringstream cscnMagic;
-            cscnMagic << "Magic header text " << Constants::CSCN_MAGIC << " not found! Found '" << magicTextCscn << "' instead.";
-            YUtils::printDebug(cscnMagic.str(),DebugType::ERROR);
-            return crsbData;
-        }
+//         // Check that the magic text is there, at index 0
+//         std::string magicTextCscn = this->getTextAt(crsbIndex + 0, 4);
+//         if (magicTextCscn.compare(Constants::CSCN_MAGIC) != 0) {
+//             std::stringstream cscnMagic;
+//             cscnMagic << "Magic header text " << Constants::CSCN_MAGIC << " not found! Found '" << magicTextCscn << "' instead.";
+//             YUtils::printDebug(cscnMagic.str(),DebugType::ERROR);
+//             return crsbData;
+//         }
 
-        uint32_t cscnLength = this->getNumberAt<uint32_t>(crsbIndex + 4);
+//         uint32_t cscnLength = this->getNumberAt<uint32_t>(crsbIndex + 4);
 
-        uint32_t trueDataStart = crsbIndex + 8;
-        curCscnData.numMapEnters = this->getNumberAt<uint16_t>(crsbIndex + 8);
-        curCscnData.numExitsInScene = this->getNumberAt<uint8_t>(crsbIndex + 10);
-        // Is 1 bytem but Enums are 4 bytes
-        curCscnData.musicId = (CscnMusicId)this->getNumberAt<uint8_t>(crsbIndex + 11);
-        auto mpdzText = this->getTextNullTermAt(crsbIndex + 12);
-        curCscnData.mpdzFileNoExtension = mpdzText;
+//         uint32_t trueDataStart = crsbIndex + 8;
+//         curCscnData.numMapEnters = this->getNumberAt<uint16_t>(crsbIndex + 8);
+//         curCscnData.numExitsInScene = this->getNumberAt<uint8_t>(crsbIndex + 10);
+//         // Is 1 bytem but Enums are 4 bytes
+//         curCscnData.musicId = (CscnMusicId)this->getNumberAt<uint8_t>(crsbIndex + 11);
+//         auto mpdzText = this->getTextNullTermAt(crsbIndex + 12);
+//         curCscnData.mpdzFileNoExtension = mpdzText;
 
-        // Yes, that's a hard coded 0x14
-        uint32_t postStringIndex = (trueDataStart + 0x14); // 02033224
+//         // Yes, that's a hard coded 0x14
+//         uint32_t postStringIndex = (trueDataStart + 0x14); // 02033224
 
-        uint32_t entrancesIndex = 0;
-        uint32_t entrancesAddress = postStringIndex;
-        while (entrancesIndex < curCscnData.numMapEnters) {
-            auto xEntry = this->getNumberAt<uint16_t>(entrancesAddress+0);
-            auto yEntry = this->getNumberAt<uint16_t>(entrancesAddress+2);
-            auto returnAnimAndScreen = this->getNumberAt<uint16_t>(entrancesAddress+4);
+//         uint32_t entrancesIndex = 0;
+//         uint32_t entrancesAddress = postStringIndex;
+//         while (entrancesIndex < curCscnData.numMapEnters) {
+//             auto xEntry = this->getNumberAt<uint16_t>(entrancesAddress+0);
+//             auto yEntry = this->getNumberAt<uint16_t>(entrancesAddress+2);
+//             auto returnAnimAndScreen = this->getNumberAt<uint16_t>(entrancesAddress+4);
             
-            CscnEnterIntoMap curRet;
-            curRet.entranceX = xEntry;
-            curRet.entranceY = yEntry;
+//             CscnEnterIntoMap curRet;
+//             curRet.entranceX = xEntry;
+//             curRet.entranceY = yEntry;
 
-            // NOTE: Those 0x8000 ones: do >> 14 and check if its equal to 2 (0b10)
-            //   if it is 2, Yoshi starts on the bottom screen. Anything else, he starts on the top
-            //   This is why there are so many that start with 0x8nnn
-            curRet.screen = returnAnimAndScreen >> 14;
-            curRet.enterMapAnimation = (ExitAnimation)(returnAnimAndScreen % 0x1000);
+//             // NOTE: Those 0x8000 ones: do >> 14 and check if its equal to 2 (0b10)
+//             //   if it is 2, Yoshi starts on the bottom screen. Anything else, he starts on the top
+//             //   This is why there are so many that start with 0x8nnn
+//             curRet.screen = returnAnimAndScreen >> 14;
+//             curRet.enterMapAnimation = (ExitAnimation)(returnAnimAndScreen % 0x1000);
 
-            curCscnData.entrances.push_back(curRet);
+//             curCscnData.entrances.push_back(curRet);
 
-            entrancesAddress += 6; // Length of total is 6 bytes
-            entrancesIndex++;
-        }
+//             entrancesAddress += 6; // Length of total is 6 bytes
+//             entrancesIndex++;
+//         }
 
-        // The following instructions are done at 02033238-02033240
-        // Unsure where 3 and FF..FC is from, but its hard coded so can't do much
-        uint16_t finalExitsOffset = ((6 * curCscnData.numMapEnters) + 3) & 0xFFFFFFFC;
-        postStringIndex += finalExitsOffset;
+//         // The following instructions are done at 02033238-02033240
+//         // Unsure where 3 and FF..FC is from, but its hard coded so can't do much
+//         uint16_t finalExitsOffset = ((6 * curCscnData.numMapEnters) + 3) & 0xFFFFFFFC;
+//         postStringIndex += finalExitsOffset;
         
-        uint32_t exitsIndex = 0;
-        while (exitsIndex < curCscnData.numExitsInScene) {
-            auto exitTargetX = this->getNumberAt<uint16_t>(postStringIndex+0);
-            auto exitTargetY = this->getNumberAt<uint16_t>(postStringIndex+2);
-            auto exitStartType = this->getNumberAt<uint16_t>(postStringIndex+4);
-            auto whichMap = this->getNumberAt<uint8_t>(postStringIndex+6);
-            auto whichEntrance = this->getNumberAt<uint8_t>(postStringIndex+7);
+//         uint32_t exitsIndex = 0;
+//         while (exitsIndex < curCscnData.numExitsInScene) {
+//             auto exitTargetX = this->getNumberAt<uint16_t>(postStringIndex+0);
+//             auto exitTargetY = this->getNumberAt<uint16_t>(postStringIndex+2);
+//             auto exitStartType = this->getNumberAt<uint16_t>(postStringIndex+4);
+//             auto whichMap = this->getNumberAt<uint8_t>(postStringIndex+6);
+//             auto whichEntrance = this->getNumberAt<uint8_t>(postStringIndex+7);
 
-            CscnExitData curExit;
-            curExit.exitLocationX = exitTargetX;
-            curExit.exitLocationY = exitTargetY;
-            curExit.exitStartType = (ExitStartType)exitStartType;
-            curExit.whichMapTo = whichMap;
-            curExit.whichEntranceTo = whichEntrance;
+//             CscnExitData curExit;
+//             curExit.exitLocationX = exitTargetX;
+//             curExit.exitLocationY = exitTargetY;
+//             curExit.exitStartType = (ExitStartType)exitStartType;
+//             curExit.whichMapTo = whichMap;
+//             curExit.whichEntranceTo = whichEntrance;
 
-            curCscnData.exits.push_back(curExit);
+//             curCscnData.exits.push_back(curExit);
 
-            postStringIndex += 8; // It's 8 bytes
-            exitsIndex++;
-        }
+//             postStringIndex += 8; // It's 8 bytes
+//             exitsIndex++;
+//         }
 
-        // Finally, add it to the parent object
-        crsbData.cscnList.push_back(curCscnData);
+//         // Finally, add it to the parent object
+//         crsbData.cscnList.push_back(curCscnData);
 
-        // +8 because the length doesn't factor in magic hex and length
-        crsbIndex += cscnLength + 0x8;
+//         // +8 because the length doesn't factor in magic hex and length
+//         crsbIndex += cscnLength + 0x8;
 
-        mapFileIndex++;
-    }
+//         mapFileIndex++;
+//     }
 
-    if (crsbData.cscnList.size() == 0) {
-        YUtils::printDebug("CRSB pulled 0 CSCN records",DebugType::FATAL);
-        exit(EXIT_FAILURE);
-    }
+//     if (crsbData.cscnList.size() == 0) {
+//         YUtils::printDebug("CRSB pulled 0 CSCN records",DebugType::FATAL);
+//         exit(EXIT_FAILURE);
+//     }
 
-    if (crsbData.cscnList.size() != crsbData.mapFileCount) {
-        YUtils::printDebug("CRSB mismatch between CSCN record count and mapFileCount",DebugType::FATAL);
-        exit(EXIT_FAILURE);
-    }
+//     if (crsbData.cscnList.size() != crsbData.mapFileCount) {
+//         YUtils::printDebug("CRSB mismatch between CSCN record count and mapFileCount",DebugType::FATAL);
+//         exit(EXIT_FAILURE);
+//     }
 
-    return crsbData;
-}
+//     return crsbData;
+// }
 
 // TODO: Get rid of this hacky crap
 int globalPaletteIndex = 1;

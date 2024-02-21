@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <sstream>
 
+// CRSB, go over this again at some point
 LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
     std::cout << "LevelSelectData" << std::endl;
     uint32_t crsbIndex = 0;
@@ -85,5 +86,6 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
             levelMeta->exits.push_back(curExit);
             exitIndex++; // Loop increment
         }
+        this->levels.push_back(levelMeta);
     }
 }
