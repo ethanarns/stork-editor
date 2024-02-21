@@ -110,7 +110,7 @@ std::vector<Chartile> LayerData::parseImbzFromFile(std::string filename_noExt, B
         std::back_inserter(vec)
     );
     // Decompress that vector
-    std::vector uncompressedImbz = YCompression::lzssVectorDecomp(vec,false);
+    std::vector uncompressedImbz = YCompression::lz10decomp(vec);
     // Use ints since they're natural and not stored excessively anyway
     int currentTileIndex = 0; // The index of the tile within list of tiles
     int imbzIndex = 0; // Goes up by 0x20/32 each time, offset it
@@ -161,7 +161,7 @@ std::vector<Chartile> LayerData::parseImbzFromFile(std::string filename_noExt, B
 MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgPalettesRef[0x20]) {
     this->paletteRamIndex = 1;
     if (compressed) {
-        mpdzBytes = YCompression::lzssVectorDecomp(mpdzBytes,false);
+        mpdzBytes = YCompression::lz10decomp(mpdzBytes);
     }
     uint32_t mpdzIndex = 0;
     uint32_t magic = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);

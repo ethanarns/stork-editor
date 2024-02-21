@@ -134,7 +134,7 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
     }
     this->tileRenderData.reserve(180'000);
     auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
-    auto mpbzData = YCompression::lzssVectorDecomp(compressed);
+    auto mpbzData = YCompression::lz10decomp(compressed);
     uint32_t mIndex = 0;
     if (YUtils::getUint16FromVec(mpbzData,mIndex) == 0xffff) {
         mIndex += 2;
@@ -172,7 +172,7 @@ MapTilesData::~MapTilesData() {
 
 AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, BgColorMode &colorMode) {
     auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
-    auto anmzData = YCompression::lzssVectorDecomp(compressed);
+    auto anmzData = YCompression::lz10decomp(compressed);
     const uint32_t anmzSize = anmzData.size();
     uint32_t anmzIndex = 0;
     this->frameCount = anmzData.at(anmzIndex);
@@ -247,7 +247,7 @@ AnimatedMapData::~AnimatedMapData() {
 MapCollisionData::MapCollisionData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
     this->colData.reserve(79'000);
-    this->colData = YCompression::lzssVectorDecomp(compressed);
+    this->colData = YCompression::lz10decomp(compressed);
     mpdzIndex += compressed.size();
 }
 

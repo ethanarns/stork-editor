@@ -666,7 +666,7 @@ ObjectFile YidsRom::getMajorObjPltFile(std::string objset_filename, std::map<uin
         YUtils::printDebug("Graphics archive is empty!",DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
-    std::vector<uint8_t> objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
+    std::vector<uint8_t> objsetUncompressedVec = YCompression::lz10decomp(fileVectorObjset);
 
     auto potentialMagicNumber = YUtils::getUint32FromVec(objsetUncompressedVec,0);
     if (potentialMagicNumber != Constants::OBAR_MAGIC_NUM) {
@@ -747,7 +747,7 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
     if (fileVectorObjset.at(0) != 0x10) {
         //YUtils::printDebug("Archive not compressed, skipping decomp",DebugType::VERBOSE);
     } else {
-        objsetUncompressedVec = YCompression::lzssVectorDecomp(fileVectorObjset,false);
+        objsetUncompressedVec = YCompression::lz10decomp(fileVectorObjset);
     }
 
     auto potentialMagicNumber = YUtils::getUint32FromVec(objsetUncompressedVec,0);
@@ -776,7 +776,7 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
              *** OBJB/Z ***
              **************/
             if (instructionCheck == Constants::OBJZ_MAGIC_NUM) {
-                subsection = YCompression::lzssVectorDecomp(subsection,false);
+                subsection = YCompression::lz10decomp(subsection);
             }
             objFileData.objectPixelTiles[curTileStartOffset] = subsection;
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {

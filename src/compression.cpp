@@ -72,6 +72,8 @@ bool YCompression::lzssRecomp(std::string filepath, bool verbose) {
 }
 
 std::vector<uint8_t> YCompression::lzssVectorDecomp(std::vector<uint8_t>& inputVec, bool verbose) {
+    YUtils::printDebug("Disabled");
+    exit(EXIT_SUCCESS);
     const std::string tempName = "TEMP.lz10";
     YUtils::writeByteVectorToFile(inputVec,tempName);
     bool decompResult = YCompression::lzssDecomp(tempName, verbose);
@@ -204,5 +206,53 @@ void YCompression::repackRom(std::string outputFileName) {
         std::stringstream ssUnpackResult;
         ssUnpackResult << "System result: " << result;
         YUtils::printDebug(ssUnpackResult.str(),DebugType::ERROR);
+    }
+}
+
+// http://problemkaputt.de/gbatek.htm#lzdecompressionfunctions
+std::vector<uint8_t> YCompression::lz10decomp(std::vector<uint8_t> data) {
+    if (data.at(0) != 0x10) {
+        YUtils::printDebug("Not LZ10 compressed",DebugType::ERROR);
+        return std::vector<uint8_t>();
+    }
+    // Header size is 3 bytes, skipping first which is 0x10
+    uint32_t size = YUtils::getUint32FromVec(data,0) >> 8;
+    uint32_t src = 4;
+    uint32_t dst = 0;
+
+    std::vector<uint8_t> result;
+    for (uint x = 0; x < size; x++) {
+        result.push_back(0x0);
+    }
+
+    while (true) {
+        if (dst >= size)
+            return result;
+        // Flags for next 8 sections
+        uint16_t flags = data.at(src++);
+
+        for (uint32_t i = 0; i < 8; i++) {
+            if (dst >= size)
+                return result;
+
+            // Get the next flag
+            if ((flags <<= 1) & (1 << (8))) {
+                // This is still kinda confusing...
+                uint8_t val1 = data.at(src++);
+                uint8_t val2 = data.at(src++);
+                uint8_t size = 3 + ((val1 >> 4) & 0xF);
+                uint16_t offset = 1 + ((val1 & 0xF) << 8) + val2;
+
+                // Repeat
+                for (uint32_t j = 0; j < size; j++) {
+                    uint8_t value = result.at(dst - offset);
+                    result[dst++] = value;
+                }
+            } else {
+                // Copy from src to dest
+                uint8_t value = data.at(src++);
+                result[dst++] = value;
+            }
+        }
     }
 }

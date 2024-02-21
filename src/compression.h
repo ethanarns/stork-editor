@@ -14,6 +14,8 @@ public:
     static std::vector<uint8_t> lzssVectorRecomp(std::vector<uint8_t>& uncompressedVec, bool verbose = false);
     static void unpackRom(std::string romFileName);
     static void repackRom(std::string outputFileName);
+
+    static std::vector<uint8_t> lz10decomp(std::vector<uint8_t> data);
 };
 
 #endif
