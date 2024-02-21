@@ -427,7 +427,7 @@ public:
         return result;
     };
     // Others
-    LayerData* getScenByBg(uint8_t bg);
+    LayerData* getScenByBg(uint8_t bg, bool silentFail = false);
     std::vector<LevelObject*> getAllLevelObjects();
     LevelObject* getLevelObjectByUuid(uint32_t uuid);
     uint32_t getGreatestCanvasHeight();

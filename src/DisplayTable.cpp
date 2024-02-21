@@ -70,7 +70,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
     }
     auto pal = pren.paletteId;
     Chartile loadedTile;
-    auto scen = this->yidsRom->mapData->getScenByBg(whichBg);
+    auto scen = this->yidsRom->mapData->getScenByBg(whichBg,false);
     if (scen == nullptr) {
         YUtils::printDebug("SCEN for this BG is nullptr, skipping",DebugType::WARNING);
         return;
@@ -434,7 +434,7 @@ void DisplayTable::updateBg() {
 
     for (uint8_t bgIndex = 1; bgIndex <= 3; bgIndex++) {
         //std::cout << "Doing bg " << (uint16_t)bgIndex << std::endl;
-        auto curScen = this->yidsRom->mapData->getScenByBg(bgIndex);
+        auto curScen = this->yidsRom->mapData->getScenByBg(bgIndex, true);
         if (curScen == nullptr) {
             std::stringstream ssNoScen;
             ssNoScen << "No SCEN file for background " << std::hex;

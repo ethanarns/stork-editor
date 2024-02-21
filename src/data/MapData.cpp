@@ -213,7 +213,7 @@ MapData::~MapData() {
     this->subData.shrink_to_fit();
 }
 
-LayerData* MapData::getScenByBg(uint8_t bg) {
+LayerData* MapData::getScenByBg(uint8_t bg, bool silentFail) {
     for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
         if ( (*it)->getMagic() == Constants::SCEN_MAGIC_NUM ) {
             LayerData* ld = static_cast<LayerData*>(*it);
@@ -223,10 +223,12 @@ LayerData* MapData::getScenByBg(uint8_t bg) {
             }
         }
     }
-    std::stringstream ss;
-    ss << "Failed to get SCEN with BG ";
-    ss << std::hex << (uint16_t)bg;
-    YUtils::printDebug(ss.str(),DebugType::WARNING);
+    if (!silentFail) {
+        std::stringstream ss;
+        ss << "Failed to get SCEN with BG ";
+        ss << std::hex << (uint16_t)bg;
+        YUtils::printDebug(ss.str(),DebugType::WARNING);
+    }
     return nullptr;
 }
 
