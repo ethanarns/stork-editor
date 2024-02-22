@@ -30,21 +30,12 @@ YidsRom::YidsRom() {
 }
 
 void YidsRom::openRom(std::string fileName) {
-    // this->romFile.open(fileName, std::ios::binary | std::ios::in);
-    // if (!romFile) {
-    //     std::stringstream ssNoRom;
-    //     ssNoRom << "ERROR: ROM file could not be opened: '" << fileName << "'. ";
-    //     ssNoRom << "Reported load error code: " << errno;
-    //     YUtils::printDebug(ssNoRom.str(),DebugType::FATAL);
-    //     return;
-    // }
     auto compRom = YUtils::getUint8VectorFromFile(fileName);
     this->filesLoaded = false;
 
     /************************
      *** METADATA/HEADERS ***
      ************************/
-    //std::string romCode = this->getTextAt(0x0c,4);
     std::string romCode = YUtils::getFixedTextFromVec(compRom,0x0c,4);
     if (romCode.compare(YidsRom::GAME_CODE) != 0) {
         std::stringstream ssGameCode;
@@ -73,7 +64,7 @@ void YidsRom::openRom(std::string fileName) {
     uint8_t subdirTypeAndNameLength = this->getNumberAt<uint8_t>(fileSubDirectory);
     uint8_t subdirNameLength = subdirTypeAndNameLength % 0x10;
     // +1 because the text name starts at 1
-    auto subdirName = this->getTextAt(fileSubDirectory + 1,subdirNameLength);
+    auto subdirName = YUtils::getFixedTextFromVec(this->uncompedRomVector,fileSubDirectory + 1,subdirNameLength);
     const std::string SUBDIR_NAME = "file";
     if (subdirName.compare(SUBDIR_NAME) != 0) {
         std::stringstream ssFailSub;
@@ -96,7 +87,7 @@ void YidsRom::openRom(std::string fileName) {
             ssLongLen << "Long length: " << std::hex << (int)len << " at " << std::hex << (FILESDIR_BASE_ADDR + fileOffset);
             YUtils::printDebug(ssLongLen.str(),DebugType::WARNING);
         }
-        auto nameStr = this->getTextAt(FILESDIR_BASE_ADDR + fileOffset + 1,len);
+        auto nameStr = YUtils::getFixedTextFromVec(this->uncompedRomVector,FILESDIR_BASE_ADDR + fileOffset + 1,len);
         // When finding files, it lowercases
         this->fileIdMap[YUtils::getLowercase(nameStr)] = curFileId;
         fileOffset += len + 1; // +1 accounts for length byte
@@ -122,46 +113,46 @@ void YidsRom::openRom(std::string fileName) {
     this->loadMpdz(levelSelectData->levels.at(0)->mpdzFileNoExtension);
 }
 
-std::string YidsRom::getTextAt(Address position_file, uint32_t length) {
-    this->romFile.seekg(position_file);
-    char* readChars = new char[length];
-    this->romFile.read(readChars,length);
-    std::string ret = readChars;
-    // Cut out garbage data
-    ret = ret.substr(0,length);
-    delete[] readChars;
-    return ret;
-}
+// std::string YidsRom::getTextAt(Address position_file, uint32_t length) {
+//     this->romFile.seekg(position_file);
+//     char* readChars = new char[length];
+//     this->romFile.read(readChars,length);
+//     std::string ret = readChars;
+//     // Cut out garbage data
+//     ret = ret.substr(0,length);
+//     delete[] readChars;
+//     return ret;
+// }
 
-std::string YidsRom::getTextNullTermAt(Address position_file) {
-    uint8_t offset = 0;
-    constexpr uint8_t MAX_STRING_LENGTH = 0xff;
-    uint8_t killOffset = 0;
-    std::string result = "";
+// std::string YidsRom::getTextNullTermAt(Address position_file) {
+//     uint8_t offset = 0;
+//     constexpr uint8_t MAX_STRING_LENGTH = 0xff;
+//     uint8_t killOffset = 0;
+//     std::string result = "";
 
-    this->romFile.seekg(position_file + offset);
-    char container;
-    const uint8_t NULL_TERM = 0x00;
-    this->romFile.read(&container, sizeof(container));
-    if (container == NULL_TERM) {
-        std::stringstream nullTermSs;
-        nullTermSs << "Found empty string at position " << std::hex << position_file;
-        YUtils::printDebug(nullTermSs.str(),DebugType::ERROR);
-        return result;
-    }
-    // Increment then return offset. 2 birds, meet 1 stone
-    while (killOffset < MAX_STRING_LENGTH) {
-        // ++ afterwards returns the original value THEN increments
-        this->romFile.seekg(position_file + offset++);
-        this->romFile.read(&container, sizeof(container));
-        if (container == NULL_TERM) {
-            return result;
-        }
-        result += container;
-        killOffset++;
-    }
-    return "STRING LONGER THAN 0xFF";
-}
+//     this->romFile.seekg(position_file + offset);
+//     char container;
+//     const uint8_t NULL_TERM = 0x00;
+//     this->romFile.read(&container, sizeof(container));
+//     if (container == NULL_TERM) {
+//         std::stringstream nullTermSs;
+//         nullTermSs << "Found empty string at position " << std::hex << position_file;
+//         YUtils::printDebug(nullTermSs.str(),DebugType::ERROR);
+//         return result;
+//     }
+//     // Increment then return offset. 2 birds, meet 1 stone
+//     while (killOffset < MAX_STRING_LENGTH) {
+//         // ++ afterwards returns the original value THEN increments
+//         this->romFile.seekg(position_file + offset++);
+//         this->romFile.read(&container, sizeof(container));
+//         if (container == NULL_TERM) {
+//             return result;
+//         }
+//         result += container;
+//         killOffset++;
+//     }
+//     return "STRING LONGER THAN 0xFF";
+// }
 
 YidsRom::~YidsRom() {
     // delete/delete[] things here

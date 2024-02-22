@@ -77,8 +77,8 @@ public:
     void moveObject(uint32_t objectUuid, int xOffset, int yOffset);
     void moveObjectTo(uint32_t objectUuid, uint32_t newX, uint32_t newY);
 
-    std::string getTextAt(uint32_t position, uint32_t length);
-    std::string getTextNullTermAt(uint32_t position_file);
+    //std::string getTextAt(uint32_t position, uint32_t length);
+    //std::string getTextNullTermAt(uint32_t position_file);
     Address getAddrFromAddrPtr(Address pointerAddress_file);
 
     std::vector<uint8_t> getByteVectorFromFile(std::string fileName);
