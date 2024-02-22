@@ -255,17 +255,19 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
     this->romFile.write(reinterpret_cast<char *>(arm9buffer.data()),arm9fileLength);
     arm9fileUncomped.close();
 
+    this->uncompedRomVector = YUtils::getUint8VectorFromFile(Constants::NEW_ROM_FILE);
+
     // Test it
     const Address TEST_POSITION = 0xe9e6e;
     const auto TEST_TEXT = "1-1_D3";
-    auto testText1 = this->getTextAt(TEST_POSITION,6);
+    auto testText1 = YUtils::getFixedTextFromVec(this->uncompedRomVector,TEST_POSITION,6);
     if (testText1.compare(TEST_TEXT) != 0) {
         std::stringstream ssTestText1;
         ssTestText1 << "Test looked for '" << TEST_TEXT << "' with getTextAt, found '" << testText1 << "'";
         YUtils::printDebug(ssTestText1.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
-    auto testText2 = this->getTextNullTermAt(TEST_POSITION);
+    auto testText2 = YUtils::getNullTermTextFromVec(this->uncompedRomVector,TEST_POSITION);
     if (testText2.compare(TEST_TEXT) != 0) {
         std::stringstream ssTestText2;
         ssTestText2 << "Test looked for '" << TEST_TEXT << "' with getTextNullTermAt, found '" << testText2 << "'";
@@ -281,11 +283,15 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
     this->universalPalette.resize(Constants::PALETTE_SIZE);
     Address universalPalette0base = YUtils::conv2xAddrToFileAddr(Constants::UNIVERSAL_PALETTE_0_ADDR);
     for (int univPalIndex = 0; univPalIndex < Constants::PALETTE_SIZE; univPalIndex++) {
-        this->romFile.seekg(universalPalette0base + univPalIndex);
-        uint8_t container;
-        this->romFile.read(reinterpret_cast<char *>(&container), sizeof(container));
-        this->backgroundPalettes[0][univPalIndex] = container;
-        this->universalPalette[univPalIndex] = container;
+        uint32_t seekPos = universalPalette0base + univPalIndex;
+        // this->romFile.seekg(universalPalette0base + univPalIndex);
+        // uint8_t container;
+        // this->romFile.read(reinterpret_cast<char *>(&container), sizeof(container));
+        // std::cout << (uint16_t)container << std::endl;
+        // std::cout << (uint16_t)this->uncompedRomVector.at(seekPos) << std::endl;
+        // exit(EXIT_SUCCESS);
+        this->backgroundPalettes[0][univPalIndex] = this->uncompedRomVector.at(seekPos);
+        this->universalPalette[univPalIndex] = this->uncompedRomVector.at(seekPos);
     }
 }
 
