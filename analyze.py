@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from genericpath import isfile
 from time import perf_counter
+from tkinter import Toplevel
 import ndspy.lz10
 import argparse, os
 
@@ -241,6 +242,19 @@ def handleSETD(data: bytearray, index: int, stop: int):
         objectCount += 1
     print(ind(2) + "Object count: " + str(objectCount) + " / " + hex(objectCount))
 
+def handleArea(data: bytearray, index: int, stop: int):
+    objectIndex = 0
+    while index < stop:
+        leftX = readUint16(data,index)
+        index += 2
+        topY = readUint16(data,index)
+        index += 2
+        rightX = readUint16(data,index)
+        index += 2
+        bottomY = readUint16(data,index)
+        index += 2
+        print(ind(2) + "TriggerBox { index: " + str(objectIndex) + "")
+
 def handleMpdz(filename):
     print(filename)
     mpdz = bytearray(ndspy.lz10.decompressFromFile(filename))
@@ -275,6 +289,8 @@ def handleMpdz(filename):
         elif topMagic == "SETD":
             handleSETD(mpdz,readIndex+0,readIndex+topLength)
             setdCount += 1
+        elif topMagic == "AREA":
+            handleArea(mpdz,readIndex+0,readIndex+topLength)
         else:
             print("Unhandled top-length instruction")
         readIndex += topLength
