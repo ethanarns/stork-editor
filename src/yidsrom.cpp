@@ -207,10 +207,12 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
 
     auto arm9toolPath = std::filesystem::absolute("./_nds_unpack/arm9.bin");
     auto newBinFilePath = std::filesystem::absolute(Constants::NEW_BIN_FILE);
-    std::filesystem::copy(
-        arm9toolPath, newBinFilePath,
-        std::filesystem::copy_options::overwrite_existing
-    );
+    if (!std::filesystem::exists(newBinFilePath)) {
+        std::filesystem::copy(
+            arm9toolPath, newBinFilePath,
+            std::filesystem::copy_options::overwrite_existing
+            );
+    }
     std::filesystem::resize_file(newBinFilePath,romSize9);
 
     bool arm9decompResult = YCompression::blzDecompress(Constants::NEW_BIN_FILE);
