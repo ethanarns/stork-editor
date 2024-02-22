@@ -58,19 +58,18 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                     cerr << " pixels! Found " << byteArrayBg1.size() << " pixels instead." << endl;
                     return;
                 }
-                auto byteArrayBg1unsigned = (uint8_t*)byteArrayBg1.data();
-                auto paletteBg1 = (uint8_t*)index.data(PixelDelegateData::PALETTE_ARRAY_BG1).toByteArray().data();
+                auto paletteBg1 = index.data(PixelDelegateData::PALETTE_ARRAY_BG1).toByteArray();
                 for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
                     QColor qc;
-                    auto whichPalette = byteArrayBg1unsigned[i];
+                    auto whichPalette = (uint8_t)byteArrayBg1.at(i);
                     if (whichPalette == 0) {
                         // NOTE: Palette index 0 seems to almost always be the transparent
                         //   value. This may not be true, keep this in mind for future bugs
                         continue;
                     }
                     
-                    auto firstByte = paletteBg1[whichPalette*2];
-                    auto secondByte = paletteBg1[whichPalette*2+1];
+                    auto firstByte = (uint8_t)paletteBg1[whichPalette*2];
+                    auto secondByte = (uint8_t)paletteBg1[whichPalette*2+1];
                     qc = YUtils::getColorFromBytes(
                         firstByte,
                         secondByte
@@ -111,19 +110,18 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                     cerr << " pixels! Found " << byteArrayBg2.size() << " pixels instead." << endl;
                     return;
                 }
-                auto byteArrayBg2unsigned = (uint8_t*)byteArrayBg2.data();
-                auto paletteBg2 = (uint8_t*)index.data(PixelDelegateData::PALETTE_ARRAY_BG2).toByteArray().data();
+                auto paletteBg2 = index.data(PixelDelegateData::PALETTE_ARRAY_BG2).toByteArray();
                 for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
                     QColor qc;
-                    auto whichPalette = byteArrayBg2unsigned[i];
+                    auto whichPalette = (uint8_t)byteArrayBg2.at(i);
                     if (whichPalette == 0) {
                         // NOTE: Palette index 0 seems to almost always be the transparent
                         //   value. This may not be true, keep this in mind for future bugs
                         continue;
                     }
 
-                    auto firstByte = paletteBg2[whichPalette*2];
-                    auto secondByte = paletteBg2[whichPalette*2+1];
+                    auto firstByte = (uint8_t)paletteBg2[whichPalette*2];
+                    auto secondByte = (uint8_t)paletteBg2[whichPalette*2+1];
                     qc = YUtils::getColorFromBytes(
                         firstByte,
                         secondByte
@@ -164,19 +162,18 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                     cerr << " pixels! Found " << byteArrayBg3.size() << " pixels instead." << endl;
                     return;
                 }
-                auto byteArrayBg3unsigned = (uint8_t*)byteArrayBg3.data();
-                auto paletteBg3 = (uint8_t*)index.data(PixelDelegateData::PALETTE_ARRAY_BG3).toByteArray().data();
+                auto paletteBg3 = index.data(PixelDelegateData::PALETTE_ARRAY_BG3).toByteArray();
                 for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
                     QColor qc;
-                    auto whichPalette = byteArrayBg3unsigned[i];
+                    auto whichPalette = (uint8_t)byteArrayBg3.at(i);
                     if (whichPalette == 0) {
                         // NOTE: Palette index 0 seems to almost always be the transparent
                         //   value. This may not be true, keep this in mind for future bugs
                         continue;
                     }
                     
-                    auto firstByte = paletteBg3[whichPalette*2];
-                    auto secondByte = paletteBg3[whichPalette*2+1];
+                    auto firstByte = (uint8_t)paletteBg3[whichPalette*2];
+                    auto secondByte = (uint8_t)paletteBg3[whichPalette*2+1];
                     qc = YUtils::getColorFromBytes(
                         firstByte,
                         secondByte

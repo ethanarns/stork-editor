@@ -14,6 +14,7 @@ public:
     static void repackRom(std::string outputFileName);
 
     static std::vector<uint8_t> lz10decomp(std::vector<uint8_t> data);
+    static std::filesystem::path getAbsoluteRomPart(std::string dataName);
 };
 
 #endif

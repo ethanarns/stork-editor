@@ -260,9 +260,6 @@ void YidsRom::initArm9RomData(std::string fileName) {
         exit(EXIT_FAILURE);
     }
 
-    // Delete the old file (Consider streaming to memory instead)
-    std::filesystem::remove(Constants::NEW_ROM_FILE);
-
     // It worked! Report them as loaded successfully
     this->filesLoaded = true;
 

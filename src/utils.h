@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <filesystem>
 
 #include <QtCore>
 #include <QColor>

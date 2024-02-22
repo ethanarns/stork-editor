@@ -74,12 +74,26 @@ std::vector<uint8_t> YCompression::lzssVectorRecomp(std::vector<uint8_t>& uncomp
     return recompVec;
 }
 
+std::filesystem::path YCompression::getAbsoluteRomPart(std::string dataName) {
+    std::string dataPath = "./";
+    dataPath = dataPath.append(ROM_EXTRACT_DIR).append("/").append(dataName);
+    std::filesystem::path result = std::filesystem::absolute(dataPath);
+    if (!std::filesystem::exists(dataPath)) {
+        std::stringstream ss;
+        ss << "Data path does not exist: " << result.string();
+        YUtils::printDebug(ss.str(),DebugType::ERROR);
+    }
+    return result;
+}
+
 void YCompression::unpackRom(std::string romFileName) {
     std::string execPath = NDSTOOL_PATH;
     #ifdef _WIN32
         YUtils::printDebug("Switching NDSTool to Windows mode");
         execPath = execPath.append(".exe");
     #endif
+
+    execPath = std::filesystem::absolute(execPath).string();
     if (!std::filesystem::exists(execPath)) {
         YUtils::printDebug("NDSTool not found",DebugType::FATAL);
         exit(EXIT_FAILURE);
@@ -92,14 +106,29 @@ void YCompression::unpackRom(std::string romFileName) {
         std::filesystem::create_directory(ROM_EXTRACT_DIR);
     }
     execPath = execPath.append(" -x ").append(romFileName);
-    execPath = execPath.append(" -9 ").append(ROM_EXTRACT_DIR).append("/arm9.bin");
-    execPath = execPath.append(" -y9 ").append(ROM_EXTRACT_DIR).append("/y9.bin");
-    execPath = execPath.append(" -d ").append(ROM_EXTRACT_DIR).append("/data");
-    execPath = execPath.append(" -h ").append(ROM_EXTRACT_DIR).append("/header.bin");
-    execPath = execPath.append(" -7 ").append(ROM_EXTRACT_DIR).append("/arm7.bin");
-    execPath = execPath.append(" -y7 ").append(ROM_EXTRACT_DIR).append("/y7.bin");
-    execPath = execPath.append(" -y ").append(ROM_EXTRACT_DIR).append("/overlay");
-    execPath = execPath.append(" -t ").append(ROM_EXTRACT_DIR).append("/banner.bin");
+    auto arm9 = YCompression::getAbsoluteRomPart("arm9.bin");
+    execPath = execPath.append(" -9 ").append(arm9.string());
+
+    auto y9 = YCompression::getAbsoluteRomPart("y9.bin");
+    execPath = execPath.append(" -y9 ").append(y9.string());
+
+    auto dataDir = YCompression::getAbsoluteRomPart("data/");
+    execPath = execPath.append(" -d ").append(dataDir.string());
+
+    auto header = YCompression::getAbsoluteRomPart("header.bin");
+    execPath = execPath.append(" -h ").append(header.string());
+
+    auto arm7 = YCompression::getAbsoluteRomPart("arm7.bin");
+    execPath = execPath.append(" -7 ").append(arm7.string());
+
+    auto y7 = YCompression::getAbsoluteRomPart("y7.bin");
+    execPath = execPath.append(" -y7 ").append(y7.string());
+
+    auto overlays = YCompression::getAbsoluteRomPart("overlay/");
+    execPath = execPath.append(" -y ").append(overlays.string());
+
+    auto banner = YCompression::getAbsoluteRomPart("banner.bin");
+    execPath = execPath.append(" -t ").append(banner.string());
 #ifdef _WIN32
     std::stringstream psCommand;
     psCommand << "powershell -command \"";
@@ -125,6 +154,8 @@ void YCompression::repackRom(std::string outputFileName) {
         YUtils::printDebug("Switching NDSTool to Windows mode");
         execPath = execPath.append(".exe");
     #endif
+
+    execPath = std::filesystem::absolute(execPath).string();
     if (!std::filesystem::exists(execPath)) {
         YUtils::printDebug("NDSTool not found",DebugType::FATAL);
         exit(EXIT_FAILURE);
