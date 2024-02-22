@@ -35,6 +35,7 @@ public:
 
     SelectionInfoTable* selectionInfoTable;
     PaletteTable* paletteTable;
+    QLabel* statusLabel;
 
     std::string currentFileName = "";
 private:
