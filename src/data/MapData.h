@@ -404,6 +404,35 @@ public:
     std::vector<uint16_t> colors;
 };
 
+struct TriggerBox {
+    uint16_t leftX;
+    uint16_t topY;
+    uint16_t rightX;
+    uint16_t bottomY;
+};
+
+// AREA
+class TriggerBoxData : public LevelData {
+public:
+    TriggerBoxData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    uint32_t getMagic() { return Constants::AREA_MAGIC_NUM; }
+    std::string toString() {
+        std::stringstream ss;
+        ss << "TriggerBoxData { TriggerBox count: ";
+        ss << std::dec << this->triggers.size();
+        ss << " }";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
+        std::vector<uint8_t> result;
+        // TODO
+        return result;
+    }
+
+    std::vector<TriggerBox*> triggers;
+};
+
 // MPDZ
 class MapData : public LevelData {
 public:

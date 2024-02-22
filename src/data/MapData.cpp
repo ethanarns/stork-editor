@@ -195,6 +195,9 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
         } else if (subMagic == Constants::SETD_MAGIC_NUM) {
             auto setd = new LevelObjectData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subData.push_back(setd);
+        } else if (subMagic == Constants::AREA_MAGIC_NUM) {
+            auto area = new TriggerBoxData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subData.push_back(area);
         } else {
             std::stringstream ssSubNotFound;
             ssSubNotFound << "Unknown MPDZ data: ";

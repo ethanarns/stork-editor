@@ -361,3 +361,21 @@ LevelObjectData::~LevelObjectData() {
     }
     this->levelObjects.shrink_to_fit();
 }
+
+TriggerBoxData::TriggerBoxData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    while (mpdzIndex < stop) {
+        auto triggerBox = new TriggerBox();
+        triggerBox->leftX = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 2;
+        triggerBox->topY = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 2;
+        triggerBox->rightX = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 2;
+        triggerBox->bottomY = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+        mpdzIndex += 2;
+        this->triggers.push_back(triggerBox);
+    }
+    if (mpdzIndex != stop) {
+        YUtils::printDebug("MPDZ index did not match stop value in TriggerBoxData",DebugType::ERROR);
+    }
+}
