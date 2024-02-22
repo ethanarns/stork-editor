@@ -420,7 +420,6 @@ void DisplayTable::setLayerDraw(uint whichLayer, bool shouldDraw) {
 }
 
 void DisplayTable::updateBg() {
-    YUtils::printDebug("Updating BG",DebugType::VERBOSE);
     auto newCanvasHeight = this->yidsRom->mapData->getGreatestCanvasHeight();
     if (newCanvasHeight == 0) {
         YUtils::printDebug("Canvas height calculation failed!",DebugType::ERROR);
@@ -438,7 +437,11 @@ void DisplayTable::updateBg() {
     }
 
     for (uint8_t bgIndex = 1; bgIndex <= 3; bgIndex++) {
-        //std::cout << "Doing bg " << (uint16_t)bgIndex << std::endl;
+        std::stringstream ssDoBg;
+        ssDoBg << "Updating background " << (uint16_t)bgIndex;
+        YUtils::printDebug(ssDoBg.str(),DebugType::VERBOSE);
+        // Update the main window
+        // TODO
         auto curScen = this->yidsRom->mapData->getScenByBg(bgIndex, true);
         if (curScen == nullptr) {
             std::stringstream ssNoScen;

@@ -41,9 +41,17 @@
 #include <cstdio>
 
 MainWindow::MainWindow() {
-    YUtils::printDebug("Moving STDOUT and STDERR to stork.log",DebugType::VERBOSE);
-    (void)!std::freopen("stork.log", "w", stdout);
-    (void)!std::freopen("stork.log", "w", stderr);
+    YUtils::printDebug("Moving STDOUT and STDERR to stork-out/error.log",DebugType::VERBOSE);
+    if (std::filesystem::exists("stork-out.log")) {
+        std::filesystem::remove("stork-out.log");
+    }
+    if (std::filesystem::exists("stork-error.log")) {
+        std::filesystem::remove("stork-error.log");
+    }
+    // (void)! is to handle a pointless warning
+    (void)!std::freopen("stork-out.log", "w", stdout);
+    (void)!std::freopen("stork-error.log", "w", stderr);
+    YUtils::printDebug("** Launching Stork Editor **",DebugType::VERBOSE);
 
     if (!std::filesystem::exists("./lib/")) {
         std::stringstream ss;
@@ -399,6 +407,7 @@ void MainWindow::LoadRom() {
         YUtils::printDebug("Canceled file dialog",DebugType::VERBOSE);
     } else {
         this->statusLabel->setText(tr("Unpacking ROM..."));
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
         YCompression::unpackRom(fileName.toStdString());
         this->currentFileName = ""; // Don't save to same rom file
         this->rom->openRom(fileName.toStdString());

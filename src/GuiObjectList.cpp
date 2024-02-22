@@ -16,6 +16,7 @@ GuiObjectList::GuiObjectList(QWidget* parent, YidsRom* rom) {
 }
 
 void GuiObjectList::updateList() {
+    YUtils::printDebug("Updating GUI sprite list",DebugType::VERBOSE);
     this->wipeList();
     this->clear();
     auto loadedLevelObjects = this->yidsRom->mapData->getAllLevelObjects();
