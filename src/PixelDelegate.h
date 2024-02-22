@@ -43,7 +43,9 @@ enum PixelDelegateData {
 
     DRAW_OBJECTS = 123,
 
-    LAYER_DRAW_ORDER = 124
+    LAYER_DRAW_ORDER = 124,
+
+    DRAW_TRIGGERS = 125
 };
 
 enum CollisionType {

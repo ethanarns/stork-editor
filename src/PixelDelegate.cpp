@@ -459,6 +459,24 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 break;
         }
     }
+    /********************
+     *** TRIGGERBOXES ***
+     ********************/
+    auto triggerData = index.data(PixelDelegateData::DRAW_TRIGGERS);
+    if (!triggerData.isNull()) {
+        // QColor boxColor(255, 0, 0, (20*triggerData.toUInt()) );
+        // const int X_WIDTH = option.rect.width();
+        // const int Y_HEIGHT = option.rect.height();
+        // const int X_BASE = option.rect.x();
+        // const int Y_BASE = option.rect.y();
+        // painter->fillRect(
+        //     X_BASE,
+        //     Y_BASE,
+        //     X_WIDTH,
+        //     Y_HEIGHT,
+        //     boxColor
+        // );
+    }
 }
 
 void PixelDelegate::drawPixel(QPainter *painter, const QRect &rect, const int x, const int y, const QColor &color) const {
