@@ -211,15 +211,17 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
         std::filesystem::copy(
             arm9toolPath, newBinFilePath,
             std::filesystem::copy_options::overwrite_existing
-            );
+        );
+        std::filesystem::resize_file(newBinFilePath,romSize9);
+        bool arm9decompResult = YCompression::blzDecompress(Constants::NEW_BIN_FILE);
+        if (!arm9decompResult) {
+            YUtils::printDebug("Could not decompress the ARM9 BIN!",DebugType::FATAL);
+            exit(EXIT_FAILURE);
+        }
+    } else {
+        YUtils::printDebug("Decompressed ARM9 Binary already present, skipping decompress");
     }
-    std::filesystem::resize_file(newBinFilePath,romSize9);
 
-    bool arm9decompResult = YCompression::blzDecompress(Constants::NEW_BIN_FILE);
-    if (!arm9decompResult) {
-        YUtils::printDebug("Could not decompress the ARM9 BIN!",DebugType::FATAL);
-        exit(EXIT_FAILURE);
-    }
     std::ifstream arm9fileUncomped;
     arm9fileUncomped.open(Constants::NEW_BIN_FILE, std::ios::binary);
 

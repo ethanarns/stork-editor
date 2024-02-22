@@ -11,8 +11,8 @@ namespace Constants {
     // Universal Palette 0: 0x020d6f40
     inline constexpr uint32_t UNIVERSAL_PALETTE_0_ADDR{ 0x020d6f40};
 
-    inline const char* NEW_BIN_FILE{"bin9.bin"};
-    inline const char* NEW_ROM_FILE{"rom_uncomp.nds"};
+    inline const char* NEW_BIN_FILE{"bin9_decomp_temp.bin"};
+    inline const char* NEW_ROM_FILE{"rom_uncomp_temp.nds"};
     inline const char* CRSB_MAGIC{"CRSB"};
     inline const char* CRSB_EXTENSION{".crsb"};
     inline const char* CSCN_MAGIC{"CSCN"};
