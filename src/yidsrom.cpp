@@ -241,10 +241,12 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
     );
 
     // Open uncomped rom file
-    this->romFile.open(Constants::NEW_ROM_FILE, std::ios::binary | std::ios::in | std::ios::out);
-    this->romFile.seekp(Constants::ARM9_ROM_OFFSET + 0x4000);
-    this->romFile.write(reinterpret_cast<char *>(arm9buffer.data()),arm9fileLength);
+    std::fstream romFile;
+    romFile.open(Constants::NEW_ROM_FILE, std::ios::binary | std::ios::in | std::ios::out);
+    romFile.seekp(Constants::ARM9_ROM_OFFSET + 0x4000);
+    romFile.write(reinterpret_cast<char *>(arm9buffer.data()),arm9fileLength);
     arm9fileUncomped.close();
+    romFile.close();
 
     this->uncompedRomVector = YUtils::getUint8VectorFromFile(Constants::NEW_ROM_FILE);
 

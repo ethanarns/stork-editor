@@ -35,7 +35,7 @@ class YidsRom {
 public:
     const char* GAME_CODE = "AYWE";
     std::map<std::string,uint32_t> fileIdMap;
-    std::fstream romFile;
+    //std::fstream romFile;
     std::vector<uint8_t> uncompedRomVector;
     RomMetadata metadata;
     MapData* mapData;
