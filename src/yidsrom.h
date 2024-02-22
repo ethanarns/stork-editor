@@ -83,13 +83,13 @@ public:
 
     std::vector<uint8_t> getByteVectorFromFile(std::string fileName);
 
-    template<typename T>
-    T getNumberAt(Address addr){
-        T container;
-        this->romFile.seekg(addr);
-        this->romFile.read(reinterpret_cast<char *>(&container), sizeof(container));
-        return container;
-    }
+    // template<typename T>
+    // T getNumberAt(Address addr){
+    //     T container;
+    //     this->romFile.seekg(addr);
+    //     this->romFile.read(reinterpret_cast<char *>(&container), sizeof(container));
+    //     return container;
+    // }
 
     ~YidsRom();
 private:

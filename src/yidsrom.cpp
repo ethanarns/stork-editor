@@ -59,9 +59,9 @@ void YidsRom::openRom(std::string fileName) {
      *************************/
 
     // http://problemkaputt.de/gbatek.htm#dscartridgenitroromandnitroarcfilesystems
-    uint32_t offsetToFirstSubTable = this->getNumberAt<uint32_t>(this->metadata.fatTableOffset + 0);
+    uint32_t offsetToFirstSubTable = YUtils::getUint32FromVec(this->uncompedRomVector,this->metadata.fatTableOffset + 0);
     Address fileSubDirectory = offsetToFirstSubTable + this->metadata.fatTableOffset;
-    uint8_t subdirTypeAndNameLength = this->getNumberAt<uint8_t>(fileSubDirectory);
+    uint8_t subdirTypeAndNameLength = this->uncompedRomVector.at(fileSubDirectory);
     uint8_t subdirNameLength = subdirTypeAndNameLength % 0x10;
     // +1 because the text name starts at 1
     auto subdirName = YUtils::getFixedTextFromVec(this->uncompedRomVector,fileSubDirectory + 1,subdirNameLength);
@@ -81,7 +81,7 @@ void YidsRom::openRom(std::string fileName) {
     uint32_t fileOffset = 0;
     uint32_t curFileId = FIRST_FILE_ID;
     while (FILESDIR_BASE_ADDR + fileOffset < FAT_TABLE_END) {
-        uint8_t len = this->getNumberAt<uint8_t>(FILESDIR_BASE_ADDR + fileOffset);
+        uint8_t len = this->uncompedRomVector.at(FILESDIR_BASE_ADDR + fileOffset);
         if (len > 0x20) {
             std::stringstream ssLongLen;
             ssLongLen << "Long length: " << std::hex << (int)len << " at " << std::hex << (FILESDIR_BASE_ADDR + fileOffset);
