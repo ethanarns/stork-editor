@@ -41,6 +41,7 @@ void YidsRom::openRom(std::string fileName) {
         std::stringstream ssGameCode;
         ssGameCode << "Game code AYWE not found! Got '" << romCode << "' instead. Wrong ROM?";
         YUtils::printDebug(ssGameCode.str(),DebugType::FATAL);
+        YUtils::popupAlert(ssGameCode.str());
         exit(EXIT_FAILURE);
     }
 
@@ -206,7 +207,7 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
         std::filesystem::resize_file(newBinFilePath,romSize9);
         bool arm9decompResult = YCompression::blzDecompress(Constants::NEW_BIN_FILE);
         if (!arm9decompResult) {
-            YUtils::printDebug("Could not decompress the ARM9 BIN!",DebugType::FATAL);
+            YUtils::popupAlert("Could not BLZ decompress the ARM9 binary");
             exit(EXIT_FAILURE);
         }
     } else {
@@ -221,7 +222,7 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
     size_t arm9fileLength = arm9fileUncomped.tellg();
     arm9fileUncomped.seekg(0, std::ios_base::beg);
     if (arm9fileLength == 0) {
-        YUtils::printDebug("ARM9 binary empty!", DebugType::FATAL);
+        YUtils::popupAlert("ARM9 binary loaded empty");
         exit(EXIT_FAILURE);
     }
 
@@ -261,6 +262,7 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
         std::stringstream ssTestText1;
         ssTestText1 << "Test looked for '" << TEST_TEXT << "' with getFixedTextFromVec, found '" << testText1 << "'";
         YUtils::printDebug(ssTestText1.str(),DebugType::FATAL);
+        YUtils::popupAlert(ssTestText1.str());
         exit(EXIT_FAILURE);
     }
     auto testText2 = YUtils::getNullTermTextFromVec(this->uncompedRomVector,TEST_POSITION);
@@ -268,6 +270,7 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
         std::stringstream ssTestText2;
         ssTestText2 << "Test looked for '" << TEST_TEXT << "' with getNullTermTextFromVec, found '" << testText2 << "'";
         YUtils::printDebug(ssTestText2.str(),DebugType::FATAL);
+        YUtils::popupAlert(ssTestText2.str());
         exit(EXIT_FAILURE);
     }
 
@@ -436,6 +439,9 @@ void YidsRom::moveObject(uint32_t objectUuid, int xOffset, int yOffset) {
         }
     }
     YUtils::printDebug("Could not move object, UUID not found",DebugType::WARNING);
+    std::stringstream ssMove;
+    ssMove << "Could not move object, UUID not found: 0x" << std::hex << objectUuid;
+    YUtils::popupAlert(ssMove.str());
 }
 
 void YidsRom::moveObjectTo(uint32_t objectUuid, uint32_t newX, uint32_t newY) {
@@ -449,4 +455,7 @@ void YidsRom::moveObjectTo(uint32_t objectUuid, uint32_t newX, uint32_t newY) {
         }
     }
     YUtils::printDebug("Could not move-to object, UUID not found",DebugType::WARNING);
+    std::stringstream ssMove;
+    ssMove << "Could not move-to object, UUID not found: 0x" << std::hex << objectUuid;
+    YUtils::popupAlert(ssMove.str());
 }

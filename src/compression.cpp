@@ -50,13 +50,13 @@ std::vector<uint8_t> YCompression::lzssVectorRecomp(std::vector<uint8_t>& uncomp
     YUtils::writeByteVectorToFile(uncompressedVec,tempName);
     bool recompResult = YCompression::lzssRecomp(tempName);
     if (!recompResult) {
-        std::cerr << "Failed to recompress to LZ77 file" << std::endl;
+        YUtils::popupAlert("Failed to recompress to LZ77 vector");
         exit(EXIT_FAILURE);
     }
 
     std::ifstream recomped{tempName, std::ios::binary};
     if (!recomped) {
-        std::cerr << "Failed to load recompressed file '" << tempName << "'" << std::endl;
+        YUtils::popupAlert("Failed to load LZ77 recompression file");
         exit(EXIT_FAILURE);
     }
 

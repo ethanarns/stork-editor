@@ -423,6 +423,7 @@ void DisplayTable::updateBg() {
     auto newCanvasHeight = this->yidsRom->mapData->getGreatestCanvasHeight();
     if (newCanvasHeight == 0) {
         YUtils::printDebug("Canvas height calculation failed!",DebugType::ERROR);
+        YUtils::popupAlert("Max canvas height calculation failed");
     } else {
         this->setRowCount(newCanvasHeight);
     }
@@ -430,6 +431,7 @@ void DisplayTable::updateBg() {
     auto newCanvasWidth = this->yidsRom->mapData->getGreatestCanvasWidth();
     if (newCanvasWidth == 0) {
         YUtils::printDebug("Canvas width calculation failed!",DebugType::ERROR);
+        YUtils::popupAlert("Max canvas width calculation failed");
     } else {
         this->setColumnCount(newCanvasWidth);
     }
