@@ -38,6 +38,8 @@ public:
     QLabel* statusLabel;
 
     std::string currentFileName = "";
+
+    void setWindowStatus(std::string status);
 private:
     DisplayTable* grid;
     QWidget* chartilesPopup;

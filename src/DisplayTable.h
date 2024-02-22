@@ -80,6 +80,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
 signals:
     int triggerMainWindowUpdate();
+    void updateMainWindowStatus(std::string newStatus);
 };
 
 #endif

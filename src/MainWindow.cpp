@@ -398,7 +398,7 @@ MainWindow::MainWindow() {
      *******************/
     connect(this->guiObjectList,&GuiObjectList::itemSelectionChanged,this,&MainWindow::objectListClick);
     connect(this->grid, &DisplayTable::triggerMainWindowUpdate,this,&MainWindow::displayTableUpdate);
-
+    connect(this->grid,&DisplayTable::updateMainWindowStatus,this,&MainWindow::setWindowStatus);
 }
 
 void MainWindow::LoadRom() {
@@ -647,6 +647,12 @@ void MainWindow::markSavableUpdate() {
     std::string newWindowTitle = Constants::WINDOW_TITLE;
     newWindowTitle.append(" *");
     this->setWindowTitle(tr(newWindowTitle.c_str()));
+}
+
+void MainWindow::setWindowStatus(std::string status) {
+    this->statusLabel->setText(tr(status.c_str()));
+    // In times of heavy processing, it may not redraw, so it doesn't get shown
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
 void MainWindow::objectListClick() {

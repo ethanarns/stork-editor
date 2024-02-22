@@ -441,7 +441,7 @@ void DisplayTable::updateBg() {
         ssDoBg << "Updating background " << (uint16_t)bgIndex;
         YUtils::printDebug(ssDoBg.str(),DebugType::VERBOSE);
         // Update the main window
-        // TODO
+        emit this->updateMainWindowStatus(ssDoBg.str());
         auto curScen = this->yidsRom->mapData->getScenByBg(bgIndex, true);
         if (curScen == nullptr) {
             std::stringstream ssNoScen;
