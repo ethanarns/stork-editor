@@ -34,11 +34,23 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QStatusBar>
+#include <QMessageBox>
 
 #include <iostream>
 #include <filesystem>
 
 MainWindow::MainWindow() {
+    if (!std::filesystem::exists("./lib/")) {
+        std::stringstream ss;
+        ss << "lib/ directory not found, was looking in '";
+        ss << std::filesystem::current_path().string() << "'";
+        YUtils::printDebug(ss.str(),DebugType::FATAL);
+        QMessageBox::information( 
+            this, 
+            tr("Stork Editor"), 
+            tr(ss.str().c_str()) );
+        exit(EXIT_FAILURE);
+    }
     this->setObjectName("mainWindow");
     QWidget* centralWidget = new QWidget;
     centralWidget->setObjectName("centralWidget");
@@ -381,6 +393,7 @@ void MainWindow::LoadRom() {
     if (fileName.isEmpty()) {
         YUtils::printDebug("Canceled file dialog",DebugType::VERBOSE);
     } else {
+        this->statusLabel->setText(tr("Unpacking ROM..."));
         YCompression::unpackRom(fileName.toStdString());
         this->currentFileName = ""; // Don't save to same rom file
         this->rom->openRom(fileName.toStdString());
@@ -422,6 +435,7 @@ void MainWindow::LoadRom() {
         this->menu_export->setDisabled(false);
 
         this->guiObjectList->updateList();
+        this->statusLabel->setText(tr("ROM Loaded"));
     }
 }
 
