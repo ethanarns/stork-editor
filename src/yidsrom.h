@@ -92,7 +92,7 @@ public:
 
     ~YidsRom();
 private:
-    void initArm9RomData(std::string fileName);
+    void initArm9RomData(std::string fileName, std::vector<uint8_t> &compedRom);
     void extractCompressedARM9(uint32_t arm9start_rom, uint32_t arm9length);
     ScenData handleSCEN(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     MpbzData handleMPBZ(std::vector<uint8_t>& uncompressedMpbz, uint16_t whichBg, BgColorMode bgColMode = BgColorMode::MODE_16);

@@ -174,7 +174,7 @@ void BLZ_Decode(char *filename) {
 
   inc_len = *(unsigned int *)(pak_buffer + pak_len - 4);
   if (!inc_len) {
-    printf(", WARNING: not coded file!");
+    printf("WARNING: not coded file!\n");
     enc_len = 0;
     dec_len = pak_len;
     pak_len = 0;

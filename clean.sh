@@ -6,3 +6,4 @@ rm .qmake.stash
 rm moc_*
 rm bin9.bin
 rm -r _nds_unpack
+rm rom_uncomp.nds

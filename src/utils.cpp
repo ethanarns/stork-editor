@@ -139,7 +139,6 @@ std::string YUtils::getNullTermTextFromVec(std::vector<uint8_t> &bytes, uint32_t
 }
 
 std::string YUtils::getFixedTextFromVec(std::vector<uint8_t> &bytes, uint32_t location, uint32_t length) {
-    char* readChars = new char[length];
     std::stringstream ss;
     for (uint i = 0; i < length; i++) {
         ss << bytes.at(i+location);

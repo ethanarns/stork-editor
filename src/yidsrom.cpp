@@ -61,7 +61,7 @@ void YidsRom::openRom(std::string fileName) {
     this->metadata.fatSize = YUtils::getUint32FromVec(compRom,0x4c);
 
     // Decompress the ARM9 ROM
-    this->initArm9RomData(fileName);
+    this->initArm9RomData(fileName, compRom);
 
     /*************************
      *** FILE MANIPULATION ***
@@ -167,40 +167,51 @@ YidsRom::~YidsRom() {
     // delete/delete[] things here
 }
 
-void YidsRom::initArm9RomData(std::string fileName) {
+void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &compedRom) {
     // Start of ARM9 ROM data, aka "MainRomOffset"
-    this->romFile.seekg(0x20);
-    Address romStart9;
-    this->romFile.read(reinterpret_cast<char *>(&romStart9),sizeof(romStart9));
+    // this->romFile.seekg(0x20);
+    // Address romStart9;
+    // this->romFile.read(reinterpret_cast<char *>(&romStart9),sizeof(romStart9));
 
-    if (Constants::ARM9_ROM_OFFSET != romStart9) {
-        std::stringstream ssRomOffset;
-        ssRomOffset << "Found ARM9 ROM offset not equal to ";
-        ssRomOffset << std::hex << Constants::ARM9_ROM_OFFSET;
-        YUtils::printDebug(ssRomOffset.str(),DebugType::FATAL);
-        exit(EXIT_FAILURE);
-    }
+    // if (Constants::ARM9_ROM_OFFSET != romStart9) {
+    //     std::stringstream ssRomOffset;
+    //     ssRomOffset << "Found ARM9 ROM offset not equal to ";
+    //     ssRomOffset << std::hex << Constants::ARM9_ROM_OFFSET;
+    //     YUtils::printDebug(ssRomOffset.str(),DebugType::FATAL);
+    //     exit(EXIT_FAILURE);
+    // }
 
-    // Size of ARM9 ROM data, aka "MainSize"
-    this->romFile.seekg(0x2c);
-    uint32_t romSize9;
-    this->romFile.read(reinterpret_cast<char *>(&romSize9),sizeof(romSize9));
+    // // Size of ARM9 ROM data, aka "MainSize"
+    // this->romFile.seekg(0x2c);
+    // uint32_t romSize9;
+    // this->romFile.read(reinterpret_cast<char *>(&romSize9),sizeof(romSize9));
 
-    // End of ARM9 ROM (exclusive)
-    Address endAddress = romStart9 + romSize9;
+    // // End of ARM9 ROM (exclusive)
+    // Address endAddress = romStart9 + romSize9;
 
-    this->romFile.seekg(endAddress);
-    uint32_t endAddressMagicNumber;
-    this->romFile.read(reinterpret_cast<char *>(&endAddressMagicNumber),sizeof(endAddressMagicNumber));
-    if (endAddressMagicNumber != Constants::SDK_NITROCODE_BE) {
-        std::stringstream ssMn;
-        ssMn << "SDK_NITROCODE_BG magic number '" << std::hex << Constants::SDK_NITROCODE_BE << "' not found. ";
-        ssMn << "Instead found " << std::hex << endAddressMagicNumber;
-        YUtils::printDebug(ssMn.str(),DebugType::FATAL);
-        exit(EXIT_FAILURE);
-    }
+    // this->romFile.seekg(endAddress);
+    // uint32_t endAddressMagicNumber;
+    // this->romFile.read(reinterpret_cast<char *>(&endAddressMagicNumber),sizeof(endAddressMagicNumber));
+    // if (endAddressMagicNumber != Constants::SDK_NITROCODE_BE) {
+    //     std::stringstream ssMn;
+    //     ssMn << "SDK_NITROCODE_BG magic number '" << std::hex << Constants::SDK_NITROCODE_BE << "' not found. ";
+    //     ssMn << "Instead found " << std::hex << endAddressMagicNumber;
+    //     YUtils::printDebug(ssMn.str(),DebugType::FATAL);
+    //     exit(EXIT_FAILURE);
+    // }
+    uint32_t romSize9 = YUtils::getUint32FromVec(compedRom,0x2c);
 
-    this->extractCompressedARM9(romStart9,romSize9);
+    // Writes to "bin9.bin"
+    // arm9.bin from NDSTool just has 12 extra bytes
+    //this->extractCompressedARM9(romStart9,romSize9);
+
+    auto arm9toolPath = std::filesystem::absolute("./_nds_unpack/arm9.bin");
+    auto newBinFilePath = std::filesystem::absolute(Constants::NEW_BIN_FILE);
+    std::filesystem::copy(
+        arm9toolPath, newBinFilePath,
+        std::filesystem::copy_options::overwrite_existing
+    );
+    std::filesystem::resize_file(newBinFilePath,romSize9);
 
     bool arm9decompResult = YCompression::blzDecompress(Constants::NEW_BIN_FILE);
     if (!arm9decompResult) {
