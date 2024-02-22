@@ -75,8 +75,6 @@ std::vector<uint8_t> YCompression::lzssVectorRecomp(std::vector<uint8_t>& uncomp
 }
 
 void YCompression::unpackRom(std::string romFileName) {
-    bool windows = false;
-
     std::string execPath = NDSTOOL_PATH;
     #ifdef _WIN32
         YUtils::printDebug("Switching NDSTool to Windows mode");
@@ -102,7 +100,14 @@ void YCompression::unpackRom(std::string romFileName) {
     execPath = execPath.append(" -y7 ").append(ROM_EXTRACT_DIR).append("/y7.bin");
     execPath = execPath.append(" -y ").append(ROM_EXTRACT_DIR).append("/overlay");
     execPath = execPath.append(" -t ").append(ROM_EXTRACT_DIR).append("/banner.bin");
-    if (!windows) execPath.append(" 1> /dev/null");
+#ifdef _WIN32
+    std::stringstream psCommand;
+    psCommand << "powershell -command \"";
+    psCommand << execPath << "\"";
+    execPath = psCommand.str();
+#else
+    execPath.append(" 1> /dev/null");
+#endif
     YUtils::printDebug(execPath,DebugType::VERBOSE);
     auto result = system(execPath.c_str());
     if (result == 0) {
@@ -115,8 +120,6 @@ void YCompression::unpackRom(std::string romFileName) {
 }
 
 void YCompression::repackRom(std::string outputFileName) {
-    bool windows = false;
-
     std::string execPath = NDSTOOL_PATH;
     #ifdef _WIN32
         YUtils::printDebug("Switching NDSTool to Windows mode");
@@ -142,7 +145,9 @@ void YCompression::repackRom(std::string outputFileName) {
     execPath = execPath.append(" -y7 ").append(ROM_EXTRACT_DIR).append("/y7.bin");
     execPath = execPath.append(" -y ").append(ROM_EXTRACT_DIR).append("/overlay");
     execPath = execPath.append(" -t ").append(ROM_EXTRACT_DIR).append("/banner.bin");
-    if (!windows) execPath.append(" 1> /dev/null");
+#ifdef _WIN32
+    execPath.append(" 1> /dev/null");
+#endif
     //YUtils::printDebug(execPath,DebugType::VERBOSE);
     auto result = system(execPath.c_str());
     if (result == 0) {

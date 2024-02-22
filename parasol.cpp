@@ -10,6 +10,7 @@
  */
 
 #include <QApplication>
+#include <sstream>
 
 #include "src/MainWindow.h"
 #include "src/constants.h"
@@ -18,7 +19,10 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     if (!std::filesystem::exists("./lib/")) {
-        YUtils::printDebug("lib/ not found",DebugType::FATAL);
+        std::stringstream ss;
+        ss << "lib/ directory not found, was looking in ";
+        ss << std::filesystem::current_path().string();
+        YUtils::printDebug(ss.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
 
