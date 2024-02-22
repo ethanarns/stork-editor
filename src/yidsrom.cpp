@@ -250,6 +250,9 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
 
     this->uncompedRomVector = YUtils::getUint8VectorFromFile(Constants::NEW_ROM_FILE);
 
+    std::filesystem::remove(Constants::NEW_ROM_FILE);
+    std::filesystem::remove(newBinFilePath);
+
     // Test it
     const Address TEST_POSITION = 0xe9e6e;
     const auto TEST_TEXT = "1-1_D3";
