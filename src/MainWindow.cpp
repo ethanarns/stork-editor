@@ -560,6 +560,7 @@ void MainWindow::buttonClick_levelSelect_load() {
         return;
     }
     this->grid->wipeTable();
+    this->guiObjectList->wipeList();
     this->rom->wipeLevelData();
     auto loadingCrsb = potentialItemCrsb.toString().toStdString();
     std::stringstream ssLevelLoad;
@@ -582,6 +583,7 @@ void MainWindow::buttonClick_levelSelect_load() {
     this->chartilesTable->wipeTiles();
     this->chartilesTable->refreshLoadedMapTilesMap(2);
     this->paletteTable->refreshLoadedTiles();
+    this->guiObjectList->updateList();
 }
 
 void MainWindow::buttonClick_levelSelect_cancel() {
@@ -724,6 +726,7 @@ void MainWindow::displayTableUpdate(){
             return;
         }
         this->selectionInfoTable->updateWithLevelObject(*lo);
+        this->guiObjectList->updateList();
     }
     this->markSavableUpdate();
 }
