@@ -339,6 +339,7 @@ int16_t YUtils::roundI16Down(int16_t unrounded, int16_t multiple) {
     return (unrounded) - multiple - remainder;
 }
 
+#ifdef _WIN32
 // Global, but only for this file
 std::ofstream logFile("stork.log", std::ios::app);
 void YUtils::printDebug(std::string msg, DebugType dt) {
@@ -362,6 +363,28 @@ void YUtils::printDebug(std::string msg, DebugType dt) {
     }
     //logFile.close();
 }
+#else
+void YUtils::printDebug(std::string msg, DebugType dt) {
+    switch(dt) {
+        case DebugType::VERBOSE: {
+            std::cout << "[INFO] " << msg << std::endl;
+            break;
+        }
+        case DebugType::WARNING: {
+            std::cout << "[WARN] " << msg << std::endl;
+            break;
+        }
+        case DebugType::ERROR: {
+            std::cerr << "[ERROR] " << msg << std::endl;
+            break;
+        }
+        case DebugType::FATAL: {
+            std::cerr << "[FATAL] " << msg << std::endl;
+            break;
+        }
+    }
+}
+#endif
 
 std::vector<uint8_t> YUtils::uint32toVec(uint32_t inputInt) {
     std::vector<uint8_t> result;
