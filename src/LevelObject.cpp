@@ -275,6 +275,10 @@ ObjectTextMetadata LevelObject::getObjectTextMetadata(uint16_t levelObjectId) {
         case 0x54:
             textData.prettyName = "Crayzee Dayzee";
             break;
+        case 0x94:
+            textData.prettyName = "Event-Breakable Dirt Block";
+            textData.description = "Can be broken by giant tap tap in 1-3";
+            break;
         case 0x9a:
             textData.prettyName = "Red Sign";
             textData.description = "A red arrow sign";

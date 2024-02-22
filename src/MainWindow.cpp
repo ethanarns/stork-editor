@@ -427,6 +427,7 @@ void MainWindow::LoadRom() {
 
         // Objects //
         this->grid->updateObjects();
+        this->grid->setLayerDraw(4,true); // 4 here means objects
 
         // Misc menu items //
         this->action_showCollision->setDisabled(false);
@@ -580,6 +581,7 @@ void MainWindow::buttonClick_levelSelect_load() {
     this->grid->updateBg();
     this->grid->initCellCollision();
     this->grid->updateObjects();
+    this->grid->setLayerDraw(4,true);
     this->chartilesTable->wipeTiles();
     this->chartilesTable->refreshLoadedMapTilesMap(2);
     this->paletteTable->refreshLoadedTiles();

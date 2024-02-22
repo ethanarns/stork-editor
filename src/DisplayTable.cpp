@@ -396,8 +396,11 @@ void DisplayTable::setLayerDraw(uint whichLayer, bool shouldDraw) {
         this->drawBg2 = shouldDraw;
     } else if (whichLayer == 3) {
         this->drawBg3 = shouldDraw;
-    } else {
+    } else if (whichLayer == 4) { // Use 4 for objects
         this->drawObjects = shouldDraw;
+    } else {
+        YUtils::printDebug("Unknown layer to draw used",DebugType::ERROR);
+        return;
     }
     const int ROW_COUNT = this->rowCount();
     const int COLUMN_COUNT = this->columnCount();
@@ -411,7 +414,7 @@ void DisplayTable::setLayerDraw(uint whichLayer, bool shouldDraw) {
                     potentialItem->setData(PixelDelegateData::DRAW_BG2,this->drawBg2);
                 } else if (whichLayer == 3) {
                     potentialItem->setData(PixelDelegateData::DRAW_BG3,this->drawBg3);
-                } else {
+                } else if (whichLayer == 4) {
                     potentialItem->setData(PixelDelegateData::DRAW_OBJECTS,this->drawObjects);
                 }
             }
