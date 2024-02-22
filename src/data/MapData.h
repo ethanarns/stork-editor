@@ -409,6 +409,19 @@ struct TriggerBox {
     uint16_t topY;
     uint16_t rightX;
     uint16_t bottomY;
+    // This is only for rendering purposes
+    uint32_t uuid;
+    std::string toString() {
+        std::stringstream ss;
+        ss << "TriggerBox { UUID: 0x";
+        ss << std::hex << this->uuid;
+        ss << ", leftX: " << this->leftX;
+        ss << ", topY: " << this->topY;
+        ss << ", rightX: " << this->rightX;
+        ss << ", bottomY: " << this->bottomY;
+        ss << " }";
+        return ss.str();
+    };
 };
 
 // AREA

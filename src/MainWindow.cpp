@@ -429,6 +429,9 @@ void MainWindow::LoadRom() {
         this->grid->updateObjects();
         this->grid->setLayerDraw(4,true); // 4 here means objects
 
+        // Triggers //
+        this->grid->updateTriggerBoxes();
+
         // Misc menu items //
         this->action_showCollision->setDisabled(false);
         this->action_viewBg1->setDisabled(false);
@@ -586,6 +589,7 @@ void MainWindow::buttonClick_levelSelect_load() {
     this->chartilesTable->refreshLoadedMapTilesMap(2);
     this->paletteTable->refreshLoadedTiles();
     this->guiObjectList->updateList();
+    this->grid->updateTriggerBoxes();
 }
 
 void MainWindow::buttonClick_levelSelect_cancel() {

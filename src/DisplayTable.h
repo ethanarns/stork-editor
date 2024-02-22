@@ -60,6 +60,7 @@ public:
     void updateBg();
     void initCellCollision();
     void updateShowCollision();
+    void updateTriggerBoxes();
     void setLayerDraw(uint whichLayer, bool shouldDraw);
     void updateObjects();
     int wipeTable();

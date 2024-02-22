@@ -379,6 +379,41 @@ void DisplayTable::updateShowCollision() {
     }
 }
 
+void DisplayTable::updateTriggerBoxes() {
+    YUtils::printDebug("Updating TriggerBoxes",DebugType::VERBOSE);
+    auto triggerBoxDataMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::AREA_MAGIC_NUM);
+    if (triggerBoxDataMaybe == nullptr) {
+        YUtils::printDebug("No TriggerBoxes (AREA) for this map",DebugType::VERBOSE);
+        return;
+    }
+    auto triggerBoxData = static_cast<TriggerBoxData*>(triggerBoxDataMaybe);
+    auto triggerBoxes = triggerBoxData->triggers;
+    for (auto tit = triggerBoxes.begin(); tit != triggerBoxes.end(); tit++) {
+        auto tb = (*tit);
+        auto leftX = tb->leftX;
+        auto topY = tb->topY;
+        auto rightX = tb->rightX;
+        auto bottomY = tb->bottomY;
+        std::cout << tb->toString() << std::endl;
+
+        for (uint x = leftX; x < rightX; x++) {
+            for (uint y = topY; y < bottomY; y++) {
+                auto curItem = this->item(y,x);
+                if (curItem == nullptr) {
+                    YUtils::printDebug("Current item in trigger box loop is null",DebugType::WARNING);
+                    return;
+                }
+                auto itemArray = curItem->data(PixelDelegateData::DRAW_TRIGGERS).toByteArray();
+                if (itemArray.isNull()) {
+                    itemArray = QByteArray();
+                }
+                itemArray.push_back((uint8_t)tb->uuid);
+                curItem->setData(PixelDelegateData::DRAW_TRIGGERS,itemArray);
+            }
+        }
+    }
+}
+
 void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
     this->wipeObject(uuid);
     this->yidsRom->moveObjectTo(uuid,newX,newY);

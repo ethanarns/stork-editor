@@ -463,19 +463,20 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
      *** TRIGGERBOXES ***
      ********************/
     auto triggerData = index.data(PixelDelegateData::DRAW_TRIGGERS);
-    if (!triggerData.isNull()) {
-        // QColor boxColor(255, 0, 0, (20*triggerData.toUInt()) );
-        // const int X_WIDTH = option.rect.width();
-        // const int Y_HEIGHT = option.rect.height();
-        // const int X_BASE = option.rect.x();
-        // const int Y_BASE = option.rect.y();
-        // painter->fillRect(
-        //     X_BASE,
-        //     Y_BASE,
-        //     X_WIDTH,
-        //     Y_HEIGHT,
-        //     boxColor
-        // );
+    if (!triggerData.toByteArray().isNull()) {
+        auto triggerCount = triggerData.toByteArray().size();
+        QColor boxColor(255, 0, 0, (30*triggerCount) );
+        const int X_WIDTH = option.rect.width();
+        const int Y_HEIGHT = option.rect.height();
+        const int X_BASE = option.rect.x();
+        const int Y_BASE = option.rect.y();
+        painter->fillRect(
+            X_BASE,
+            Y_BASE,
+            X_WIDTH,
+            Y_HEIGHT,
+            boxColor
+        );
     }
 }
 
