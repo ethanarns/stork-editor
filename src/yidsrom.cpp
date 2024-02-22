@@ -118,7 +118,7 @@ void YidsRom::openRom(std::string fileName) {
     auto crsbFilename = fileNameCrsb_noext.append(".crsb");
     auto crsbFileVector = this->getByteVectorFromFile(crsbFilename);
     auto levelSelectData = new LevelSelectData(crsbFileVector);
-
+    //TODO: this->romFile.close();
     this->loadMpdz(levelSelectData->levels.at(0)->mpdzFileNoExtension);
 }
 
@@ -245,8 +245,7 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
         std::filesystem::copy_options::overwrite_existing
     );
 
-    // Change romFile to new one
-    this->romFile.close();
+    // Open uncomped rom file
     this->romFile.open(Constants::NEW_ROM_FILE, std::ios::binary | std::ios::in | std::ios::out);
     this->romFile.seekp(Constants::ARM9_ROM_OFFSET + 0x4000);
     this->romFile.write(reinterpret_cast<char *>(arm9buffer.data()),arm9fileLength);
@@ -286,24 +285,24 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
     }
 }
 
-void YidsRom::extractCompressedARM9(Address arm9start_rom, uint32_t arm9length) {
-    if (this->filesLoaded) {
-        std::cout << "ARM9 has already been written and read" << std::endl;
-        return;
-    }
+// void YidsRom::extractCompressedARM9(Address arm9start_rom, uint32_t arm9length) {
+//     if (this->filesLoaded) {
+//         std::cout << "ARM9 has already been written and read" << std::endl;
+//         return;
+//     }
 
-    std::vector<uint8_t> outvec(arm9length,0xfe);
-    for (uint32_t arm9copyindexoffset = 0; arm9copyindexoffset < arm9length; arm9copyindexoffset++) {
-        Address romLocation = arm9copyindexoffset + arm9start_rom;
-        // Don't use this->getNumberAt yet, not loaded
-        this->romFile.seekg(romLocation);
-        uint8_t ret;
-        this->romFile.read(reinterpret_cast<char *>(&ret),sizeof(ret));
-        outvec.at(arm9copyindexoffset) = ret;
-    }
+//     std::vector<uint8_t> outvec(arm9length,0xfe);
+//     for (uint32_t arm9copyindexoffset = 0; arm9copyindexoffset < arm9length; arm9copyindexoffset++) {
+//         Address romLocation = arm9copyindexoffset + arm9start_rom;
+//         // Don't use this->getNumberAt yet, not loaded
+//         this->romFile.seekg(romLocation);
+//         uint8_t ret;
+//         this->romFile.read(reinterpret_cast<char *>(&ret),sizeof(ret));
+//         outvec.at(arm9copyindexoffset) = ret;
+//     }
 
-    YUtils::writeByteVectorToFile(outvec,Constants::NEW_BIN_FILE);
-}
+//     YUtils::writeByteVectorToFile(outvec,Constants::NEW_BIN_FILE);
+// }
 
 /**
  * @brief Get the name for the level file, which is almost always a CRSB
