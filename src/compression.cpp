@@ -90,7 +90,7 @@ void YCompression::unpackRom(std::string romFileName) {
 
     execPath = std::filesystem::absolute(execPath).string();
     if (!std::filesystem::exists(execPath)) {
-        YUtils::printDebug("NDSTool not found",DebugType::FATAL);
+        YUtils::popupAlert("NDSTool not found");
         exit(EXIT_FAILURE);
     }
     if (std::filesystem::exists(ROM_EXTRACT_DIR)) {
@@ -138,8 +138,9 @@ void YCompression::unpackRom(std::string romFileName) {
         //YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
     } else {
         std::stringstream ssUnpackResult;
-        ssUnpackResult << "System result: " << result;
-        YUtils::printDebug(ssUnpackResult.str(),DebugType::ERROR);
+        ssUnpackResult << "NDSTool unpack command failed, system result: " << result;
+        YUtils::popupAlert(ssUnpackResult.str());
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -152,11 +153,11 @@ void YCompression::repackRom(std::string outputFileName) {
 
     execPath = std::filesystem::absolute(execPath).string();
     if (!std::filesystem::exists(execPath)) {
-        YUtils::printDebug("NDSTool not found",DebugType::FATAL);
+        YUtils::popupAlert("NDSTool not found");
         exit(EXIT_FAILURE);
     }
     if (!std::filesystem::exists(ROM_EXTRACT_DIR)) {
-        YUtils::printDebug("ROM unpack directory not found, canceling repack",DebugType::ERROR);
+        YUtils::popupAlert("ROM unpack directory not found, canceling repack");
         return;
     }
     if (std::filesystem::exists(outputFileName)) {
@@ -200,16 +201,17 @@ void YCompression::repackRom(std::string outputFileName) {
     if (result == 0) {
         //YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
     } else {
-        std::stringstream ssUnpackResult;
-        ssUnpackResult << "System result: " << result;
-        YUtils::printDebug(ssUnpackResult.str(),DebugType::ERROR);
+        std::stringstream ssRepackResult;
+        ssRepackResult << "NDSTool repack command failed, system result: " << result;
+        YUtils::popupAlert(ssRepackResult.str());
+        exit(EXIT_FAILURE);
     }
 }
 
 // http://problemkaputt.de/gbatek.htm#lzdecompressionfunctions
 std::vector<uint8_t> YCompression::lz10decomp(std::vector<uint8_t> data) {
     if (data.at(0) != 0x10) {
-        YUtils::printDebug("Not LZ10 compressed",DebugType::ERROR);
+        YUtils::popupAlert("Data is not lz10 compressed");
         return std::vector<uint8_t>();
     }
     // Header size is 3 bytes, skipping first which is 0x10

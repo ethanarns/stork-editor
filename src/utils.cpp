@@ -14,6 +14,8 @@
 
 #include <QtCore>
 #include <QColor>
+#include <QMessageBox>
+#include <QApplication>
 
 /**
  * @brief I am amazed this is not in STD
@@ -412,4 +414,12 @@ void YUtils::printQbyte(QByteArray& qb, int newlineBreak) {
         }
     }
     cout << endl;
+}
+
+void YUtils::popupAlert(std::string msg) {
+    QMessageBox::warning( 
+        QApplication::activeWindow(), 
+        "Stork Editor",
+        msg.c_str()
+    );
 }
