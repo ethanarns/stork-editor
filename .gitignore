@@ -2,6 +2,7 @@
 *.stash
 *.zip
 *.txt
+*.log
 
 # Build files
 Makefile

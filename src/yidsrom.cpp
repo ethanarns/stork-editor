@@ -71,6 +71,7 @@ void YidsRom::openRom(std::string fileName) {
         std::stringstream ssFailSub;
         ssFailSub << "[FAIL] First subdirectory '" << SUBDIR_NAME << "' was not found! Found '" << subdirName << "' instead.";
         YUtils::printDebug(ssFailSub.str(), DebugType::FATAL);
+        YUtils::popupAlert(ssFailSub.str());
         exit(EXIT_FAILURE);
     }
     // +4 because 4 bytes between end of text and first entry
@@ -207,6 +208,7 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
         std::filesystem::resize_file(newBinFilePath,romSize9);
         bool arm9decompResult = YCompression::blzDecompress(Constants::NEW_BIN_FILE);
         if (!arm9decompResult) {
+            YUtils::printDebug("Could not BLZ decompress the ARM9 binary",DebugType::ERROR);
             YUtils::popupAlert("Could not BLZ decompress the ARM9 binary");
             exit(EXIT_FAILURE);
         }

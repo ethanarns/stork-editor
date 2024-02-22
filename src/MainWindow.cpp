@@ -38,8 +38,13 @@
 
 #include <iostream>
 #include <filesystem>
+#include <cstdio>
 
 MainWindow::MainWindow() {
+    YUtils::printDebug("Moving STDOUT and STDERR to stork.log",DebugType::VERBOSE);
+    (void)!std::freopen("stork.log", "w", stdout);
+    (void)!std::freopen("stork.log", "w", stderr);
+
     if (!std::filesystem::exists("./lib/")) {
         std::stringstream ss;
         ss << "lib/ directory not found, was looking in '";

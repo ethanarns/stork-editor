@@ -17,6 +17,7 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
         ssBadMagic1 << "Bad magic number when reading CRSB file: ";
         ssBadMagic1 << std::hex << magic;
         YUtils::printDebug(ssBadMagic1.str(),DebugType::FATAL);
+        YUtils::popupAlert(ssBadMagic1.str());
         exit(EXIT_FAILURE);
     }
     auto crsbLength = YUtils::getUint32FromVec(crsbBytes,crsbIndex);
@@ -35,6 +36,7 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
             ssBadMagic2 << "Bad magic number when reading CSCN file: ";
             ssBadMagic2 << std::hex << cscnMagic;
             YUtils::printDebug(ssBadMagic2.str(),DebugType::FATAL);
+            YUtils::popupAlert(ssBadMagic2.str());
             exit(EXIT_FAILURE);
         }
         auto cscnLength = YUtils::getUint32FromVec(crsbBytes,crsbIndex);

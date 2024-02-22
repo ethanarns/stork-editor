@@ -54,6 +54,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         std::stringstream ssBadBg;
         ssBadBg << "Invalid BG put index: " << whichBg;
         YUtils::printDebug(ssBadBg.str(),DebugType::FATAL);
+        YUtils::popupAlert(ssBadBg.str());
         exit(EXIT_FAILURE);
     }
     if (x > (uint32_t)this->columnCount()) {
