@@ -6,7 +6,7 @@
 
 # Build files
 Makefile
-parasol
+stork
 *.o
 blz
 lzss

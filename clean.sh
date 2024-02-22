@@ -1,6 +1,6 @@
 #!/bin/bash
 rm Makefile
-rm parasol
+rm stork
 rm *.o
 rm .qmake.stash
 rm moc_*

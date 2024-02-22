@@ -3,4 +3,4 @@
 qmake
 make
 
-./parasol
+./stork
