@@ -89,7 +89,7 @@ std::filesystem::path YCompression::getAbsoluteRomPart(std::string dataName) {
 void YCompression::unpackRom(std::string romFileName) {
     std::string execPath = NDSTOOL_PATH;
     #ifdef _WIN32
-        YUtils::printDebug("Switching NDSTool to Windows mode");
+        YUtils::printDebug("Switching NDSTool unpack to Windows mode");
         execPath = execPath.append(".exe");
     #endif
 
@@ -144,14 +144,14 @@ void YCompression::unpackRom(std::string romFileName) {
     } else {
         std::stringstream ssUnpackResult;
         ssUnpackResult << "System result: " << result;
-        YUtils::printDebug(ssUnpackResult.str(),DebugType::VERBOSE);
+        YUtils::printDebug(ssUnpackResult.str(),DebugType::ERROR);
     }
 }
 
 void YCompression::repackRom(std::string outputFileName) {
     std::string execPath = NDSTOOL_PATH;
     #ifdef _WIN32
-        YUtils::printDebug("Switching NDSTool to Windows mode");
+        YUtils::printDebug("Switching NDSTool repack to Windows mode");
         execPath = execPath.append(".exe");
     #endif
 
@@ -168,18 +168,39 @@ void YCompression::repackRom(std::string outputFileName) {
         std::filesystem::remove(outputFileName);
     }
     execPath = execPath.append(" -c ").append(outputFileName);
-    execPath = execPath.append(" -9 ").append(ROM_EXTRACT_DIR).append("/arm9.bin");
-    execPath = execPath.append(" -y9 ").append(ROM_EXTRACT_DIR).append("/y9.bin");
-    execPath = execPath.append(" -d ").append(ROM_EXTRACT_DIR).append("/data");
-    execPath = execPath.append(" -h ").append(ROM_EXTRACT_DIR).append("/header.bin");
-    execPath = execPath.append(" -7 ").append(ROM_EXTRACT_DIR).append("/arm7.bin");
-    execPath = execPath.append(" -y7 ").append(ROM_EXTRACT_DIR).append("/y7.bin");
-    execPath = execPath.append(" -y ").append(ROM_EXTRACT_DIR).append("/overlay");
-    execPath = execPath.append(" -t ").append(ROM_EXTRACT_DIR).append("/banner.bin");
+
+    auto arm9 = YCompression::getAbsoluteRomPart("arm9.bin");
+    execPath = execPath.append(" -9 ").append(arm9.string());
+
+    auto y9 = YCompression::getAbsoluteRomPart("y9.bin");
+    execPath = execPath.append(" -y9 ").append(y9.string());
+
+    auto dataDir = YCompression::getAbsoluteRomPart("data/");
+    execPath = execPath.append(" -d ").append(dataDir.string());
+
+    auto header = YCompression::getAbsoluteRomPart("header.bin");
+    execPath = execPath.append(" -h ").append(header.string());
+
+    auto arm7 = YCompression::getAbsoluteRomPart("arm7.bin");
+    execPath = execPath.append(" -7 ").append(arm7.string());
+
+    auto y7 = YCompression::getAbsoluteRomPart("y7.bin");
+    execPath = execPath.append(" -y7 ").append(y7.string());
+
+    auto overlay = YCompression::getAbsoluteRomPart("overlay/");
+    execPath = execPath.append(" -y ").append(overlay.string());
+
+    auto banner = YCompression::getAbsoluteRomPart("banner.bin");
+    execPath = execPath.append(" -t ").append(banner.string());
 #ifdef _WIN32
+    std::stringstream psCommand;
+    psCommand << "powershell -command \"";
+    psCommand << execPath << "\"";
+    execPath = psCommand.str();
+#else
     execPath.append(" 1> /dev/null");
 #endif
-    //YUtils::printDebug(execPath,DebugType::VERBOSE);
+    YUtils::printDebug(execPath,DebugType::VERBOSE);
     auto result = system(execPath.c_str());
     if (result == 0) {
         //YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
