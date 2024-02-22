@@ -263,14 +263,14 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
     auto testText1 = YUtils::getFixedTextFromVec(this->uncompedRomVector,TEST_POSITION,6);
     if (testText1.compare(TEST_TEXT) != 0) {
         std::stringstream ssTestText1;
-        ssTestText1 << "Test looked for '" << TEST_TEXT << "' with getTextAt, found '" << testText1 << "'";
+        ssTestText1 << "Test looked for '" << TEST_TEXT << "' with getFixedTextFromVec, found '" << testText1 << "'";
         YUtils::printDebug(ssTestText1.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
     auto testText2 = YUtils::getNullTermTextFromVec(this->uncompedRomVector,TEST_POSITION);
     if (testText2.compare(TEST_TEXT) != 0) {
         std::stringstream ssTestText2;
-        ssTestText2 << "Test looked for '" << TEST_TEXT << "' with getTextNullTermAt, found '" << testText2 << "'";
+        ssTestText2 << "Test looked for '" << TEST_TEXT << "' with getNullTermTextFromVec, found '" << testText2 << "'";
         YUtils::printDebug(ssTestText2.str(),DebugType::FATAL);
         exit(EXIT_FAILURE);
     }
@@ -377,15 +377,16 @@ std::string YidsRom::getLevelFileNameFromMapIndex(uint32_t worldIndex, uint32_t 
         const uint32_t offset = (levelId - 1) * sizeof(uint32_t);
         Address textPtrAddress = LEVEL_FILENAMES_SUB100_ARRAY + offset;
         Address textAddress = this->getAddrFromAddrPtr(textPtrAddress);
-        auto text = this->getTextNullTermAt(textAddress);
+        auto text = YUtils::getNullTermTextFromVec(this->uncompedRomVector,textAddress);
         return text;
     }
 }
 
 Address YidsRom::getAddrFromAddrPtr(Address pointerAddress_file) {
-    this->romFile.seekg(pointerAddress_file);
-    uint32_t addr0x2;
-    this->romFile.read(reinterpret_cast<char *>(&addr0x2),sizeof(addr0x2));
+    // this->romFile.seekg(pointerAddress_file);
+    // uint32_t addr0x2;
+    // this->romFile.read(reinterpret_cast<char *>(&addr0x2),sizeof(addr0x2));
+    uint32_t addr0x2 = YUtils::getUint32FromVec(this->uncompedRomVector,pointerAddress_file);
     return YUtils::conv2xAddrToFileAddr(addr0x2);
 }
 
