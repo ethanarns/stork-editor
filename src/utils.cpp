@@ -60,6 +60,17 @@ bool YUtils::writeByteVectorToFile(std::vector<uint8_t> &bytes, std::string file
     return true;
 }
 
+std::vector<uint8_t> YUtils::getUint8VectorFromFile(std::string fileToLoad) {
+    std::vector<uint8_t> vec;
+    std::ifstream inputFile{fileToLoad, std::ios::binary};
+    std::copy(
+        std::istreambuf_iterator<char>(inputFile),
+        std::istreambuf_iterator<char>(),
+        std::back_inserter(vec)
+    );
+    return vec;
+}
+
 uint32_t YUtils::getUint32FromVec(std::vector<uint8_t> &bytes, uint32_t location) {
     return (uint32_t)(bytes.at(location+3) << 24) + (uint32_t)(bytes.at(location+2) << 16) + (uint32_t)(bytes.at(location+1) << 8) + (uint32_t)bytes.at(location);
 }
@@ -125,6 +136,15 @@ std::string YUtils::getNullTermTextFromVec(std::vector<uint8_t> &bytes, uint32_t
         killOffset++;
     }
     return "STRING LONGER THAN 0xFF";
+}
+
+std::string YUtils::getFixedTextFromVec(std::vector<uint8_t> &bytes, uint32_t location, uint32_t length) {
+    char* readChars = new char[length];
+    std::stringstream ss;
+    for (uint i = 0; i < length; i++) {
+        ss << bytes.at(i+location);
+    }
+    return ss.str();
 }
 
 QColor YUtils::getColorFromBytes(uint8_t firstByte, uint8_t secondByte) {

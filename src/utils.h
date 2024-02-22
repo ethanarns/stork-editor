@@ -29,6 +29,8 @@ public:
     static Address conv2xAddrToFileAddr(AddressMemory x2address);
     static bool writeByteVectorToFile(std::vector<uint8_t> &bytes, std::string filename);
 
+    static std::vector<uint8_t> getUint8VectorFromFile(std::string fileToLoad);
+
     static size_t getStreamLength(std::ifstream& buffer);
     static uint32_t getUint32FromVec(std::vector<uint8_t> &bytes, uint32_t location);
     static uint16_t getUint16FromVec(std::vector<uint8_t> &bytes, uint32_t location);
@@ -36,6 +38,7 @@ public:
     static std::vector<uint8_t> uint32toVec(uint32_t inputInt);
     static std::vector<uint8_t> uint16toVec(uint16_t inputInt);
     static std::string getNullTermTextFromVec(std::vector<uint8_t> &bytes, uint32_t location);
+    static std::string getFixedTextFromVec(std::vector<uint8_t> &bytes, uint32_t location, uint32_t length);
     static QColor getColorFromBytes(uint8_t firstByte, uint8_t secondByte);
     static ChartilePreRenderData getCharPreRender(uint16_t tileAttr, BgColorMode bgColorMode = BgColorMode::MODE_16);
     static void printLevelObject(LevelObject lo);

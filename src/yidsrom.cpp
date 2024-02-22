@@ -30,20 +30,22 @@ YidsRom::YidsRom() {
 }
 
 void YidsRom::openRom(std::string fileName) {
-    this->romFile.open(fileName, std::ios::binary | std::ios::in);
-    if (!romFile) {
-        std::stringstream ssNoRom;
-        ssNoRom << "ERROR: ROM file could not be opened: '" << fileName << "'. ";
-        ssNoRom << "Reported load error code: " << errno;
-        YUtils::printDebug(ssNoRom.str(),DebugType::FATAL);
-        return;
-    }
+    // this->romFile.open(fileName, std::ios::binary | std::ios::in);
+    // if (!romFile) {
+    //     std::stringstream ssNoRom;
+    //     ssNoRom << "ERROR: ROM file could not be opened: '" << fileName << "'. ";
+    //     ssNoRom << "Reported load error code: " << errno;
+    //     YUtils::printDebug(ssNoRom.str(),DebugType::FATAL);
+    //     return;
+    // }
+    auto compRom = YUtils::getUint8VectorFromFile(fileName);
     this->filesLoaded = false;
 
     /************************
      *** METADATA/HEADERS ***
      ************************/
-    std::string romCode = this->getTextAt(0x0c,4);
+    //std::string romCode = this->getTextAt(0x0c,4);
+    std::string romCode = YUtils::getFixedTextFromVec(compRom,0x0c,4);
     if (romCode.compare(YidsRom::GAME_CODE) != 0) {
         std::stringstream ssGameCode;
         ssGameCode << "Game code AYWE not found! Got '" << romCode << "' instead. Wrong ROM?";
@@ -53,10 +55,10 @@ void YidsRom::openRom(std::string fileName) {
 
     // http://problemkaputt.de/gbatek.htm#dscartridgeheader
     // NDSTool can check these (first 4 checked, correct)
-    this->metadata.fatTableOffset = this->getNumberAt<uint32_t>(0x40);
-    this->metadata.fatTableSize = this->getNumberAt<uint32_t>(0x44);
-    this->metadata.fatOffsets = this->getNumberAt<uint32_t>(0x48);
-    this->metadata.fatSize = this->getNumberAt<uint32_t>(0x4c);
+    this->metadata.fatTableOffset = YUtils::getUint32FromVec(compRom,0x40);
+    this->metadata.fatTableSize = YUtils::getUint32FromVec(compRom,0x44);
+    this->metadata.fatOffsets = YUtils::getUint32FromVec(compRom,0x48);
+    this->metadata.fatSize = YUtils::getUint32FromVec(compRom,0x4c);
 
     // Decompress the ARM9 ROM
     this->initArm9RomData(fileName);
