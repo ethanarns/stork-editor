@@ -385,10 +385,9 @@ MainWindow::MainWindow() {
     this->levelSelectPopup->setWindowTitle("Select a level");
 
     this->statusBar()->show();
-    this->statusBar()->setFixedHeight(70);
     this->statusBar()->setStyleSheet("QStatusBar {padding: 0; margin:0;}");
     this->statusLabel = new QLabel("Your Message");
-    this->statusLabel->setStyleSheet("QLabel {padding:0;margin-top:0;margin-bottom:20px;margin-left:10px;}");
+    this->statusLabel->setStyleSheet("QLabel {padding:0;margin-top:0;margin-bottom:5px;margin-left:10px;}");
     this->statusBar()->addWidget(statusLabel);
 
     this->statusLabel->setText(tr("Ready"));

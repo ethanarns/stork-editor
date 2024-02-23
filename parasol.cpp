@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 
     // This class is the real main
     MainWindow window;
-    window.resize(1280, 1024);
+    window.resize(1200, 800);
     window.setMinimumWidth(800);
     window.setMinimumHeight(600);
     window.setWindowTitle(Constants::WINDOW_TITLE);
