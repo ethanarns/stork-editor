@@ -254,6 +254,45 @@ def handleArea(data: bytearray, index: int, stop: int):
         bottomY = readUint16(data,index)
         index += 2
         print(ind(2) + "TriggerBox { index: " + str(objectIndex) + "")
+    if index != stop:
+        print(ind(2) + "Warning: unequal ending in AREA")
+
+def handlePath(data: bytearray, index: int, stop: int):
+    pathCount = readUint32(data,index)
+    print(ind(2) + "Path Count: " + hex(pathCount))
+    index += 4
+    pathIndex = 0
+    doRecordPrint = True
+    while index < stop:
+        if doRecordPrint:
+            print(ind(2) + "Path Record Index: " + hex(pathIndex))
+            doRecordPrint = False
+        movementAngle = readUint16(data,index)
+        index += 2
+        moveDistance = readUint16(data,index)
+        index += 2
+        xValue = readUint32(data,index)
+        index += 4
+        yValue = readUint32(data,index)
+        index += 4
+        print(ind(3) + "Angle: " + hex(movementAngle))
+        if moveDistance == 0:
+            print(ind(3) + "Distance: End")
+            print(ind(3) + "Ending X: " + hex(xValue))
+            print(ind(3) + "Ending Y: " + hex(yValue))
+            # Path terminated
+            pathIndex += 1
+            doRecordPrint = True
+        else:
+            print(ind(3) + "Distance: " + hex(moveDistance))
+            print(ind(3) + "Starting X: " + hex(xValue))
+            print(ind(3) + "Starting Y: " + hex(yValue))
+
+    if index != stop:
+        print(ind(2) + "Warning: unequal ending in PATH")
+    if pathCount != pathIndex: # It increments at the last second, so no +1 needed on the pathIndex
+        print(ind(2) + "Mismatch in path count and paths found")
+    
 
 def handleMpdz(filename):
     print(filename)
@@ -291,6 +330,8 @@ def handleMpdz(filename):
             setdCount += 1
         elif topMagic == "AREA":
             handleArea(mpdz,readIndex+0,readIndex+topLength)
+        elif topMagic == "PATH":
+            handlePath(mpdz,readIndex+0,readIndex+topLength)
         else:
             print("Unhandled top-length instruction")
         readIndex += topLength
