@@ -489,7 +489,7 @@ public:
     QByteArray getLayerOrder();
     bool wipeLayerOrderCache();
 
-    LevelData* getFirstDataByMagic(uint32_t magicNumber);
+    LevelData* getFirstDataByMagic(uint32_t magicNumber, bool silentFail = false);
     std::string filename;
 private:    
     std::vector<LevelData*> subData;

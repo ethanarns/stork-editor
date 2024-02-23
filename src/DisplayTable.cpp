@@ -464,12 +464,12 @@ void DisplayTable::updateShowCollision() {
 }
 
 void DisplayTable::updateTriggerBoxes() {
-    YUtils::printDebug("Updating TriggerBoxes",DebugType::VERBOSE);
-    auto triggerBoxDataMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::AREA_MAGIC_NUM);
+    auto triggerBoxDataMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::AREA_MAGIC_NUM,true);
     if (triggerBoxDataMaybe == nullptr) {
         YUtils::printDebug("No TriggerBoxes (AREA) for this map",DebugType::VERBOSE);
         return;
     }
+    YUtils::printDebug("Updating TriggerBoxes",DebugType::VERBOSE);
     auto triggerBoxData = static_cast<TriggerBoxData*>(triggerBoxDataMaybe);
     auto triggerBoxes = triggerBoxData->triggers;
     for (auto tit = triggerBoxes.begin(); tit != triggerBoxes.end(); tit++) {

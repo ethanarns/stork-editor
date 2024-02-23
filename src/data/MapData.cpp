@@ -368,15 +368,17 @@ bool MapData::wipeLayerOrderCache()
     return true;
 }
 
-LevelData *MapData::getFirstDataByMagic(uint32_t magicNumber) {
+LevelData *MapData::getFirstDataByMagic(uint32_t magicNumber, bool silentFail) {
     for (auto it = this->subData.begin(); it != this->subData.end(); it++) {
         if ( (*it)->getMagic() == magicNumber ) {
             return (*it);
         }
     }
-    std::stringstream ss;
-    ss << "LevelData with magic number ";
-    ss << std::hex << magicNumber << " not found";
-    YUtils::printDebug(ss.str(),DebugType::WARNING);
+    if (!silentFail) {
+        std::stringstream ss;
+        ss << "LevelData with magic number ";
+        ss << std::hex << magicNumber << " not found";
+        YUtils::printDebug(ss.str(),DebugType::WARNING);
+    }
     return nullptr;
 }
