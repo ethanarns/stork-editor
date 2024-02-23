@@ -135,7 +135,7 @@ void YCompression::unpackRom(std::string romFileName) {
     YUtils::printDebug(execPath,DebugType::VERBOSE);
     auto result = system(execPath.c_str());
     if (result == 0) {
-        //YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
+        YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
     } else {
         std::stringstream ssUnpackResult;
         ssUnpackResult << "NDSTool unpack command failed, system result: " << result;
@@ -199,7 +199,7 @@ void YCompression::repackRom(std::string outputFileName) {
     YUtils::printDebug(execPath,DebugType::VERBOSE);
     auto result = system(execPath.c_str());
     if (result == 0) {
-        //YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
+        YUtils::printDebug("Command executed successfully",DebugType::VERBOSE);
     } else {
         std::stringstream ssRepackResult;
         ssRepackResult << "NDSTool repack command failed, system result: " << result;

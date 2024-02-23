@@ -41,16 +41,6 @@
 #include <cstdio>
 
 MainWindow::MainWindow() {
-    YUtils::printDebug("Moving STDOUT and STDERR to stork-out/error.log",DebugType::VERBOSE);
-    if (std::filesystem::exists("stork-out.log")) {
-        std::filesystem::remove("stork-out.log");
-    }
-    if (std::filesystem::exists("stork-error.log")) {
-        std::filesystem::remove("stork-error.log");
-    }
-    // (void)! is to handle a pointless warning
-    (void)!std::freopen("stork-out.log", "w", stdout);
-    (void)!std::freopen("stork-error.log", "w", stderr);
     YUtils::printDebug("** Launching Stork Editor **",DebugType::VERBOSE);
 
     if (!std::filesystem::exists("./lib/")) {

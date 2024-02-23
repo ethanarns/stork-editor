@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = parasol
+TARGET = stork
 INCLUDEPATH += .
 
 # Warn if using deprecated features
@@ -29,7 +29,5 @@ src/data/LevelSelectData.h src/cue_lzss.h src/cue_blz.h
 QT += core gui widgets
 
 DISTFILES += \
-    lib/blz.py \
-    lib/lzss.py \
     lib/ndstool \
     lib/ndstool.exe
