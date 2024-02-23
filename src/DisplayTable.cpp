@@ -388,10 +388,10 @@ void DisplayTable::selectItemByUuid(uint32_t uuid) {
             uint32_t foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt();
             if (foundUuid == uuid) {
                 potentialItem->setSelected(true);
-                //this->setItemSelected(potentialItem,true); // Deprecated
             }
         }
     }
+    emit this->triggerMainWindowUpdate();
 }
 
 void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType) {
@@ -505,7 +505,6 @@ void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
     this->clearSelection();
     this->selectedObjects.clear();
     this->selectItemByUuid(uuid);
-    emit this->triggerMainWindowUpdate();
 }
 
 void DisplayTable::setLayerDraw(uint whichLayer, bool shouldDraw) {
@@ -687,6 +686,7 @@ void DisplayTable::updateObjects() {
             );
         }
     }
+    emit this->triggerMainWindowUpdate();
 }
 
 int DisplayTable::wipeTable() {
