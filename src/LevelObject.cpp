@@ -248,7 +248,7 @@ ObjectTextMetadata LevelObject::getObjectTextMetadata(uint16_t levelObjectId) {
             break;
         case 0x13:
             textData.prettyName = "Winged Cloud (5 stars)";
-            textData.description = "Releases 5 stars upon hit (check settings)";
+            textData.description = "Releases 5 stars upon hit (check settings, can be invisible)";
             break;
         case 0x22:
             textData.prettyName = "Piranha Plant";
@@ -257,6 +257,10 @@ ObjectTextMetadata LevelObject::getObjectTextMetadata(uint16_t levelObjectId) {
         case 0x28:
             textData.prettyName = "Flower Collectible";
             textData.description = "Collect 5 of these";
+            break;
+        case 0x2d:
+            textData.prettyName = "Winged Cloud (Stairs)";
+            textData.description = "Generates stairs upon hit";
             break;
         case 0x36:
             textData.prettyName = "Yellow Shy Guy";
