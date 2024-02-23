@@ -246,8 +246,13 @@ ObjectTextMetadata LevelObject::getObjectTextMetadata(uint16_t levelObjectId) {
             textData.prettyName = "Basic Yellow Coin";
             textData.description = "A basic yellow coin";
             break;
+        case 0x13:
+            textData.prettyName = "Winged Cloud (5 stars)";
+            textData.description = "Releases 5 stars upon hit (check settings)";
+            break;
         case 0x22:
-            textData.prettyName = "Piranha Plant?";
+            textData.prettyName = "Piranha Plant";
+            textData.description = "A monster that eats Yoshi";
             break;
         case 0x28:
             textData.prettyName = "Flower Collectible";
@@ -275,6 +280,9 @@ ObjectTextMetadata LevelObject::getObjectTextMetadata(uint16_t levelObjectId) {
         case 0x54:
             textData.prettyName = "Crayzee Dayzee";
             break;
+        case 0x93:
+            textData.prettyName = "Stairs outline";
+            break;
         case 0x94:
             textData.prettyName = "Event-Breakable Dirt Block";
             textData.description = "Can be broken by giant tap tap in 1-3";
@@ -286,6 +294,10 @@ ObjectTextMetadata LevelObject::getObjectTextMetadata(uint16_t levelObjectId) {
         case 0x9f:
             textData.prettyName = "Hint Block";
             textData.description = "Hit this to get a hint";
+            break;
+        case 0xa1:
+            textData.prettyName = "Grow Block";
+            textData.description = "Hit this with your head to make it expand";
             break;
         default:
             std::stringstream ss;

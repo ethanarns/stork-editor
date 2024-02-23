@@ -237,13 +237,10 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         }
 
         if (!index.data(PixelDelegateData::OBJECT_ID).isNull() && index.data(PixelDelegateData::DRAW_OBJECTS).toBool()) {
-            QPen qcWhiteRect("white");
-            painter->setPen(qcWhiteRect);
             auto rectCopy = option.rect;
-            rectCopy.setHeight(option.rect.height()-1);
-            rectCopy.setWidth(option.rect.width()-1);
+            rectCopy.setHeight(option.rect.height());
+            rectCopy.setWidth(option.rect.width());
             painter->fillRect(rectCopy,"purple");
-            painter->drawRect(rectCopy);
         }
     }
 

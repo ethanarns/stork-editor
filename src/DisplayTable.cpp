@@ -545,17 +545,48 @@ void DisplayTable::updateObjects() {
         auto objectGraphicsMeta = LevelObject::getObjectGraphicMetadata(*it);
         auto objectTextMeta = LevelObject::getObjectTextMetadata(it->objectId);
         if (objectGraphicsMeta.tilesCount == 0) {
+            // top left I think
             potentialExisting->setData(PixelDelegateData::OBJECT_ID,(uint32_t)it->objectId);
             potentialExisting->setData(PixelDelegateData::OBJECT_UUID,it->uuid);
             potentialExisting->setText("sprite");
             potentialExisting->setData(PixelDelegateData::OBJECT_PALETTE,this->yidsRom->backgroundPalettes[0]);
             std::stringstream ss;
-            ss << std::hex << (uint32_t)it->objectId;
+            ss << "0x" << std::hex << (uint32_t)it->objectId;
             ss << std::endl;
             ss << objectTextMeta.prettyName;
             ss << std::endl;
             ss << objectTextMeta.description;
             potentialExisting->setToolTip(tr(ss.str().c_str()));
+            // Top Right
+            auto topRight = this->item(y,x+1);
+            if (topRight == nullptr) {
+                topRight = new QTableWidgetItem();
+            }
+            topRight->setData(PixelDelegateData::OBJECT_ID,(uint32_t)it->objectId);
+            topRight->setData(PixelDelegateData::OBJECT_UUID,it->uuid);
+            topRight->setText("sprite");
+            topRight->setData(PixelDelegateData::OBJECT_PALETTE,this->yidsRom->backgroundPalettes[0]);
+            topRight->setToolTip(tr(ss.str().c_str()));
+            // Bottom Left
+            auto bottomLeft = this->item(y+1,x);
+            if (bottomLeft == nullptr) {
+                topRight = new QTableWidgetItem();
+            }
+            bottomLeft->setData(PixelDelegateData::OBJECT_ID,(uint32_t)it->objectId);
+            bottomLeft->setData(PixelDelegateData::OBJECT_UUID,it->uuid);
+            bottomLeft->setText("sprite");
+            bottomLeft->setData(PixelDelegateData::OBJECT_PALETTE,this->yidsRom->backgroundPalettes[0]);
+            bottomLeft->setToolTip(tr(ss.str().c_str()));
+            // Bottom Right
+            auto bottomRight = this->item(y+1,x+1);
+            if (bottomRight == nullptr) {
+                bottomRight = new QTableWidgetItem();
+            }
+            bottomRight->setData(PixelDelegateData::OBJECT_ID,(uint32_t)it->objectId);
+            bottomRight->setData(PixelDelegateData::OBJECT_UUID,it->uuid);
+            bottomRight->setText("sprite");
+            bottomRight->setData(PixelDelegateData::OBJECT_PALETTE,this->yidsRom->backgroundPalettes[0]);
+            bottomRight->setToolTip(tr(ss.str().c_str()));
         } else {
             this->placeObjectTile(
                 (uint32_t)x,(uint32_t)y,
