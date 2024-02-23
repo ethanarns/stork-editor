@@ -78,7 +78,10 @@ std::filesystem::path YCompression::getAbsoluteRomPart(std::string dataName) {
     std::string dataPath = "./"; // "." means current directory, even within a greater path
     dataPath = dataPath.append(ROM_EXTRACT_DIR).append("/").append(dataName);
     std::filesystem::path result = std::filesystem::absolute(dataPath);
-    return result;
+    std::stringstream ss;
+    ss << "'" << result.string() << "'";
+    std::filesystem::path result2(ss.str());
+    return result2;
 }
 
 void YCompression::unpackRom(std::string romFileName) {
@@ -100,7 +103,12 @@ void YCompression::unpackRom(std::string romFileName) {
         YUtils::printDebug("Unpacking ROM with NDSTool",DebugType::VERBOSE);
         std::filesystem::create_directory(ROM_EXTRACT_DIR);
     }
-    execPath = execPath.append(" -x ").append(romFileName);
+
+    std::stringstream ssRomFileName;
+    ssRomFileName << "'" << romFileName << "'";
+
+    execPath = execPath.append(" -x ").append(ssRomFileName.str());
+
     auto arm9 = YCompression::getAbsoluteRomPart("arm9.bin");
     execPath = execPath.append(" -9 ").append(arm9.string());
 
@@ -163,7 +171,9 @@ void YCompression::repackRom(std::string outputFileName) {
     if (std::filesystem::exists(outputFileName)) {
         std::filesystem::remove(outputFileName);
     }
-    execPath = execPath.append(" -c ").append(outputFileName);
+    std::stringstream ssOutputFile;
+    ssOutputFile << "'" << outputFileName << "'";
+    execPath = execPath.append(" -c ").append(ssOutputFile.str());
 
     auto arm9 = YCompression::getAbsoluteRomPart("arm9.bin");
     execPath = execPath.append(" -9 ").append(arm9.string());
