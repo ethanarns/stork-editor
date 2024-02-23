@@ -605,6 +605,7 @@ void MainWindow::saveRom() {
     if (this->rom->mapData->filename.empty()) {
         // Saving a rom pre-load should be impossible
         YUtils::printDebug("No filename for MapData saved",DebugType::FATAL);
+        YUtils::popupAlert("No filename for MapData saved");
         exit(EXIT_FAILURE);
     }
     this->setWindowTitle(Constants::WINDOW_TITLE);
@@ -627,6 +628,7 @@ void MainWindow::saveRom() {
         YUtils::printDebug("No existing file found, creating new",DebugType::VERBOSE);
     }
     YUtils::writeByteVectorToFile(finalOut,outFile.str());
+    YUtils::printDebug("Save successful");
 }
 
 void MainWindow::markSavableUpdate() {
