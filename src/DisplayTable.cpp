@@ -547,6 +547,8 @@ void DisplayTable::updateObjects() {
         if (objectGraphicsMeta.tilesCount == 0) {
             potentialExisting->setData(PixelDelegateData::OBJECT_ID,(uint32_t)it->objectId);
             potentialExisting->setData(PixelDelegateData::OBJECT_UUID,it->uuid);
+            potentialExisting->setText("sprite");
+            potentialExisting->setData(PixelDelegateData::OBJECT_PALETTE,this->yidsRom->backgroundPalettes[0]);
             std::stringstream ss;
             ss << std::hex << (uint32_t)it->objectId;
             ss << std::endl;
