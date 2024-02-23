@@ -96,6 +96,16 @@ void YCompression::unpackRom(std::string romFileName) {
         YUtils::popupAlert("NDSTool not found");
         exit(EXIT_FAILURE);
     }
+
+#ifdef _WIN32
+    std::stringstream ssWindowsExecPath;
+    // Escape
+    ssWindowsExecPath << "& '" << execPath << "'";
+    execPath = ssWindowsExecPath.str();
+#else
+    // TODO: Escape Linux paths?
+#endif
+
     if (std::filesystem::exists(ROM_EXTRACT_DIR)) {
         YUtils::printDebug("ROM unpack directory already exists, skipping extraction",DebugType::VERBOSE);
         return;

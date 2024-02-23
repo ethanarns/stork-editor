@@ -525,7 +525,7 @@ void MainWindow::menuClick_levelSelect() {
 }
 
 void MainWindow::menuClick_export() {
-    this->saveRom();
+    //this->saveRom();
     auto fileName = QFileDialog::getSaveFileName(this,tr("Export to NDS"),".",tr("NDS files (*.nds *.NDS)"));
     if (fileName.isEmpty()) {
         YUtils::printDebug("Canceled export dialog",DebugType::VERBOSE);
@@ -536,8 +536,11 @@ void MainWindow::menuClick_export() {
         std::stringstream ss;
         ss << "Exporting to " << fileName.toStdString() << "...";
         YUtils::printDebug(ss.str(),DebugType::VERBOSE);
+        this->statusLabel->setText(tr("Exporting ROM..."));
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
         YCompression::repackRom(fileName.toStdString());
         YUtils::printDebug("Export complete",DebugType::VERBOSE);
+        this->statusLabel->setText(tr("ROM export complete"));
         this->setWindowTitle(Constants::WINDOW_TITLE);
     }
 }
@@ -602,6 +605,8 @@ void MainWindow::menuClick_viewObjects(bool checked) {
 }
 
 void MainWindow::saveRom() {
+    this->statusLabel->setText(tr("Saving map file..."));
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     if (this->rom->mapData->filename.empty()) {
         // Saving a rom pre-load should be impossible
         YUtils::printDebug("No filename for MapData saved",DebugType::FATAL);
@@ -628,7 +633,9 @@ void MainWindow::saveRom() {
         YUtils::printDebug("No existing file found, creating new",DebugType::VERBOSE);
     }
     YUtils::writeByteVectorToFile(finalOut,outFile.str());
-    YUtils::printDebug("Save successful");
+    YUtils::printDebug("Map save successful");
+    this->statusLabel->setText(tr("Map save successful"));
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
 void MainWindow::markSavableUpdate() {
@@ -718,4 +725,5 @@ void MainWindow::displayTableUpdate(){
         }
         this->selectionInfoTable->updateWithLevelObject(*lo);
     }
+    this->markSavableUpdate();
 }
