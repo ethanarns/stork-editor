@@ -6,6 +6,10 @@
 #include <QtCore>
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QMimeData>
+#include <QDrag>
+#include <QApplication>
+
 #include <iostream>
 #include <sstream>
 
@@ -37,7 +41,7 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     setItemDelegate(new PixelDelegate);
 
     QTableWidget::connect(this, &QTableWidget::cellEntered, this, &DisplayTable::cellEnteredTriggered);
-    QTableWidget::connect(this, &QTableWidget::cellClicked, this, &DisplayTable::displayTableClicked);
+    //QTableWidget::connect(this, &QTableWidget::cellClicked, this, &DisplayTable::displayTableClicked);
 }
 
 /**
@@ -200,42 +204,122 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
     }
 }
 
-void DisplayTable::dragEnterEvent(QDragEnterEvent *deEvent) {
-    this->currentlyDraggedItem = 0;
-    if (this->layerSelectMode != LayerSelectMode::SPRITES_LAYER) {
-        YUtils::printDebug("dragEnterEvent should not fire outside of sprite mode",DebugType::ERROR);
-        return;
-    }
-    if (this->selectedObjects.size() < 1) {
-        YUtils::printDebug("Nothing selected to drag",DebugType::VERBOSE);
-        deEvent->setAccepted(false);
-        return;
-    }
-    if (this->selectedObjects.size() > 1) {
-        YUtils::printDebug("Multiple sprite movement not yet supported",DebugType::WARNING);
-    }
-    this->currentlyDraggedItem = this->selectedObjects.at(0);
-    std::stringstream ssDragEnter;
-    ssDragEnter << "Dragging sprite with UUID 0x" << std::hex << this->currentlyDraggedItem;
-    YUtils::printDebug(ssDragEnter.str(),DebugType::VERBOSE);
+void DisplayTable::mousePressEvent(QMouseEvent *event) {
+    if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+        // Something is already selected
+        if (this->selectedObjects.size() > 0) {
+            if (this->selectedObjects.size() > 1) {
+                YUtils::printDebug("Multiple object selection not yet supported",DebugType::WARNING);
+            }
+            uint32_t selectedObjectUuid = this->selectedObjects.at(0);
+            auto curItemUnderCursor = this->itemAt(event->pos());
+            if (curItemUnderCursor == nullptr) {
+                YUtils::printDebug("Item under cursor in mousePressEvent is null", DebugType::ERROR);
+                return;
+            }
+            // Do they match?
+            auto cursorUuidMaybe = curItemUnderCursor->data(PixelDelegateData::OBJECT_UUID);
+            if (cursorUuidMaybe.isNull()) {
+                YUtils::printDebug("Mismatch in selected item and cursor item, deselecting",DebugType::VERBOSE);
+                this->clearSelection();
+                this->selectedObjects.clear();
+                return;
+            }
+            if (cursorUuidMaybe.toUInt() == selectedObjectUuid) {
+                YUtils::printDebug("Selected and clicked match! Starting drag...",DebugType::VERBOSE);
+                this->dragStartPosition = event->pos();
+                QDrag *drag = new QDrag(this);
+                QMimeData *mimeData = new QMimeData();
+                QByteArray uuidBytes;
+                uuidBytes.setNum(this->selectedObjects.at(0));
+                mimeData->setData("application/x-stork-sprite-uuid",uuidBytes);
+                drag->setMimeData(mimeData);
+                drag->exec(Qt::MoveAction);
+                return;
+            } else {
+                YUtils::printDebug("Clicked a different object, selecting it");
+                this->clearSelection();
+                this->selectedObjects.clear();
+                this->selectItemByUuid(cursorUuidMaybe.toUInt());
+                return;
+            }
+            // This cannot be reached, if/else returns above
+        } else {
+            // Nothing is selected
+            auto curItemUnderCursor = this->itemAt(event->pos());
+            if (curItemUnderCursor == nullptr) {
+                YUtils::printDebug("No item loaded under cursor",DebugType::ERROR);
+                return;
+            }
+            if (!curItemUnderCursor->data(PixelDelegateData::OBJECT_UUID).isNull()) {
+                uint32_t cursorItemUuid = curItemUnderCursor->data(PixelDelegateData::OBJECT_UUID).toUInt();
+                if (cursorItemUuid < 1) {
+                    YUtils::printDebug("Cursor Item UUID is less than 1",DebugType::ERROR);
+                    return;
+                }
+                // Change the following 2 lines when multiple item selection is enabled
+                this->clearSelection();
+                this->selectedObjects.clear();
 
-    QTableWidget::dragEnterEvent(deEvent);
+                YUtils::printDebug("Doing item selection in mousePressEvent");
+                this->selectItemByUuid(cursorItemUuid);
+                return;
+            } else {
+                YUtils::printDebug("Area clicked does not have an item UUID, deselecting all");
+                this->clearSelection();
+                this->selectedObjects.clear();
+                return;
+            }
+        }
+    }
+    QTableWidget::mousePressEvent(event);
 }
 
-bool DisplayTable::dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action) {
-    Q_UNUSED(data);
-    Q_UNUSED(action);
-    if (this->layerSelectMode != LayerSelectMode::SPRITES_LAYER) {
-        YUtils::printDebug("dropMimeData should not fire outside of sprite mode",DebugType::WARNING);
-        return false;
+void DisplayTable::dragEnterEvent(QDragEnterEvent *event) {
+    if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+        if (event->mimeData()->hasFormat("application/x-stork-sprite-uuid")) {
+            event->setAccepted(true);
+        } else {
+            YUtils::printDebug("dragEnterEvent did not detect 'application/x-stork-sprite-uuid'");
+            event->setAccepted(false);
+        }
+    } else {
+        YUtils::printDebug("dragEnterEvent not supported for this layer", DebugType::WARNING);
+        QTableWidget::dragEnterEvent(event);
     }
-    if (this->currentlyDraggedItem == 0) {
-        YUtils::printDebug("No currentlyDraggedItem was set",DebugType::ERROR);
-        return false;
+    
+}
+
+void DisplayTable::dragMoveEvent(QDragMoveEvent *event) {
+    if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+        if (event->mimeData()->hasFormat("application/x-stork-sprite-uuid")) {
+            event->setAccepted(true);
+        } else {
+            YUtils::printDebug("dragMoveEvent did not detect 'application/x-stork-sprite-uuid'");
+            event->setAccepted(false);
+        }
+    } else {
+        YUtils::printDebug("dragMoveEvent not supported for this layer",DebugType::WARNING);
+        QTableWidget::dragMoveEvent(event);
     }
-    this->moveSpriteTo(this->currentlyDraggedItem,column,row);
-    this->updateObjects();
-    return true;
+}
+
+void DisplayTable::dropEvent(QDropEvent *event) {
+    if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+        if (event->mimeData()->hasFormat("application/x-stork-sprite-uuid")) {
+            auto uuidByteData = event->mimeData()->data("application/x-stork-sprite-uuid");
+            uint32_t uuid = uuidByteData.toUInt();
+            auto tableItem = this->itemAt(event->pos());
+            this->moveSpriteTo(uuid,tableItem->column(),tableItem->row());
+            this->updateObjects();
+        } else {
+            YUtils::printDebug("dropEvent did not detect 'application/x-stork-sprite-uuid'");
+            event->ignore();
+        }
+    } else {
+        YUtils::printDebug("dropEvent not supported for this layer",DebugType::WARNING);
+        QTableWidget::dropEvent(event);
+    }
 }
 
 void DisplayTable::displayTableClicked(int row, int column) {

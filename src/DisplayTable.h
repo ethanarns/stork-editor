@@ -73,12 +73,14 @@ private:
     const static int CELL_COUNT_W = 0xff*4;
     const static int CELL_COUNT_H = 0xff*2;
     YidsRom* yidsRom;
-    uint32_t currentlyDraggedItem = 0;
 
     void cellEnteredTriggered(int row, int column);
 protected:
-    bool dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action) override;
+    QPoint dragStartPosition;
+    void mousePressEvent(QMouseEvent *event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 signals:
     int triggerMainWindowUpdate();
     void updateMainWindowStatus(std::string newStatus);
