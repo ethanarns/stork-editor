@@ -15,17 +15,20 @@ SelectionInfoTable::SelectionInfoTable(QWidget* parent, YidsRom* rom) {
 
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
     this->setColumnCount(2);
-    this->setRowCount(6);
+    this->setRowCount(8);
     this->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
 
-    this->setText(0,0,"ID",false);
-    this->setText(0,1,"UUID",false);
-    this->setText(0,2,"Name",false);
-    this->setText(0,3,"Description",false);
-    this->setText(0,4,"X Position",false);
-    this->setText(0,5,"Y Position",false);
+    int i = 0;
+    this->setText(0,i++,"ID",false);
+    this->setText(0,i++,"UUID",false);
+    this->setText(0,i++,"Name",false);
+    this->setText(0,i++,"Description",false);
+    this->setText(0,i++,"X Position",false);
+    this->setText(0,i++,"Y Position",false);
+    this->setText(0,i++,"Settings Length",false);
+    this->setText(0,i++,"Settings",false);
 }
 
 void SelectionInfoTable::setText(int x, int y, std::string text, bool editable) {
@@ -52,18 +55,31 @@ void SelectionInfoTable::setText(int x, int y, std::string text, bool editable) 
 
 void SelectionInfoTable::updateWithLevelObject(LevelObject lo) {
     auto textMetadata = LevelObject::getObjectTextMetadata(lo.objectId);
+    int i = 0;
     std::stringstream s0;
     s0 << "0x" << std::hex << lo.objectId;
-    this->setText(1,0,s0.str(),false);
+    this->setText(1,i++,s0.str(),false);
     std::stringstream s1;
     s1 << "0x" << std::hex << lo.uuid;
-    this->setText(1,1,s1.str(),false);
-    this->setText(1,2,textMetadata.prettyName,false);
-    this->setText(1,3,textMetadata.description,false);
+    this->setText(1,i++,s1.str(),false);
+    this->setText(1,i++,textMetadata.prettyName,false);
+    this->setText(1,i++,textMetadata.description,false);
     std::stringstream sX;
     sX << "0x" << std::hex << lo.xPosition;
     std::stringstream sY;
     sY << "0x" << std::hex << lo.yPosition;
-    this->setText(1,4,sX.str(),true);
-    this->setText(1,5,sY.str(),true);
+    this->setText(1,i++,sX.str(),true);
+    this->setText(1,i++,sY.str(),true);
+    // Settings
+    std::stringstream sSettingsLength;
+    sSettingsLength << "0x" << std::hex << lo.settingsLength;
+    this->setText(1,i++,sSettingsLength.str(),false);
+    std::stringstream ssSettings;
+    if (lo.settingsLength != lo.settings.size()) {
+        YUtils::printDebug("Settings length value and settings size not matching",DebugType::ERROR);
+    }
+    for (int j = 0; j < lo.settingsLength; j++) {
+        ssSettings << std::hex << std::setw(2) << (uint16_t)lo.settings.at(j) << " ";
+    }
+    this->setText(1,i++,ssSettings.str(),true);
 }
