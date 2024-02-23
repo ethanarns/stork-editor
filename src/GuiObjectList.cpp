@@ -37,12 +37,11 @@ void GuiObjectList::updateList() {
 int GuiObjectList::wipeList() {
     int deletedCount = 0;
     auto len = this->count();
-    // Since you're deleting things, do not 
     for (int i = 0; i < len; i++) {
         auto curItem = this->item(i);
         delete curItem;
-        this->removeItemWidget(curItem);
         deletedCount++;
     }
+    this->clear();
     return deletedCount;
 }
