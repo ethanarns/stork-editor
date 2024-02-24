@@ -427,7 +427,7 @@ void MainWindow::LoadRom() {
         this->button_toggleCollision->setDisabled(false);
 
         // Objects //
-        this->grid->updateObjects();
+        this->grid->updateSprites();
         this->grid->setLayerDraw(4,true); // 4 here means objects
 
         // Triggers //
@@ -584,7 +584,7 @@ void MainWindow::buttonClick_levelSelect_load() {
     this->grid->firstLayerDrawDone = false;
     this->grid->updateBg();
     this->grid->initCellCollision();
-    this->grid->updateObjects();
+    this->grid->updateSprites();
     this->grid->setLayerDraw(4,true);
     this->chartilesTable->wipeTiles();
     this->chartilesTable->refreshLoadedMapTilesMap(2);
@@ -740,7 +740,7 @@ void MainWindow::displayTableUpdate(){
 
 void MainWindow::selectionWindowUpdate(LevelObject *sprite) {
     this->grid->wipeObject(sprite->uuid);
-    this->grid->updateObjects();
+    this->grid->updateSprites();
     this->grid->clearSelection();
     this->grid->selectedObjects.clear();
     this->grid->selectItemByUuid(sprite->uuid);

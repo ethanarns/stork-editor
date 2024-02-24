@@ -311,7 +311,7 @@ void DisplayTable::dropEvent(QDropEvent *event) {
             uint32_t uuid = uuidByteData.toUInt();
             auto tableItem = this->itemAt(event->pos());
             this->moveSpriteTo(uuid,tableItem->column(),tableItem->row());
-            this->updateObjects();
+            this->updateSprites();
         } else {
             YUtils::printDebug("dropEvent did not detect 'application/x-stork-sprite-uuid'");
             event->ignore();
@@ -501,7 +501,7 @@ void DisplayTable::updateTriggerBoxes() {
 void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
     this->wipeObject(uuid);
     this->yidsRom->moveObjectTo(uuid,newX,newY);
-    this->updateObjects();
+    this->updateSprites();
     this->clearSelection();
     this->selectedObjects.clear();
     this->selectItemByUuid(uuid);
@@ -611,7 +611,7 @@ void DisplayTable::updateBg() {
     this->firstLayerDrawDone = true;
 }
 
-void DisplayTable::updateObjects() {
+void DisplayTable::updateSprites() {
     if (this->yidsRom->mapData->getAllLevelObjects().size() == 0) {
         YUtils::printDebug("No objects loaded, cannot update",DebugType::ERROR);
         return;

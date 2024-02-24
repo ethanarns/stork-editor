@@ -62,7 +62,7 @@ public:
     void updateShowCollision();
     void updateTriggerBoxes();
     void setLayerDraw(uint whichLayer, bool shouldDraw);
-    void updateObjects();
+    void updateSprites();
     int wipeTable();
     
     void wipeObject(uint32_t uuid);
