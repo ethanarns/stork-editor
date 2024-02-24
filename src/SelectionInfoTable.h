@@ -4,6 +4,8 @@
 #include "yidsrom.h"
 #include "LevelObject.h"
 
+#include <vector>
+
 #include <QtCore>
 #include <QTableWidget>
 #include <QTableWidgetItem>
@@ -24,6 +26,7 @@ private:
     const int XPOSROW = 4;
     const int YPOSROW = 5;
     const int SETTINGSDATAROW = 7;
+    std::vector<uint8_t> hexStringToByteVector(std::string hexString);
 signals:
     void updateMainWindow(LevelObject *sprite);
 };

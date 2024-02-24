@@ -4,6 +4,7 @@
 #include "LevelObject.h"
 
 #include <sstream>
+#include <string>
 
 #include <QtCore>
 #include <QWidget>
@@ -131,9 +132,47 @@ void SelectionInfoTable::cellChanged(int row, int column) {
             std::cout << "Changing X POS to " << std::hex << value << std::endl;
             this->spritePointer->xPosition = value;
         } else if (row == SelectionInfoTable::SETTINGSDATAROW) {
-            
+            auto str = item->text().toStdString();
+            auto hexVector = this->hexStringToByteVector(str);
+            if (hexVector.size() == 0) {
+                YUtils::popupAlert("Error parsing settings data");
+                return;
+            }
+            if (hexVector.size() != this->spritePointer->settingsLength) {
+                YUtils::popupAlert("Invalid settings length");
+                return;
+            }
+            this->spritePointer->settings = hexVector;
         }
         std::cout << "Emitting updateMainWindow" << std::endl;
         emit this->updateMainWindow(this->spritePointer);
     }
+}
+
+std::vector<uint8_t> SelectionInfoTable::hexStringToByteVector(std::string hexString) {
+    // String is auto trimmed to have zero spaces in front and 1 space in back
+    std::vector<uint8_t> result;
+    if (hexString.empty()) {
+        return result;
+    }
+    if (!std::isspace(hexString.at(hexString.size()-1))) {
+        hexString = hexString.append(" ");
+    }
+    uint stringIndex = 0;
+    while (stringIndex < hexString.size()) {
+        auto spaceIndex = hexString.find_first_of(' ',stringIndex);
+        auto length = spaceIndex - stringIndex;
+        auto charString = hexString.substr(stringIndex,length);
+        stringIndex += length+1;
+        //std::cout << "'" << charString << "'" << std::endl;
+        uint64_t toUnsigned = std::strtoul(charString.c_str(), nullptr, 16);
+        if (toUnsigned > 0xff) {
+            std::stringstream ssTooBig;
+            ssTooBig << "Hex value bigger than 0xff: " << std::hex << toUnsigned;
+            YUtils::popupAlert(ssTooBig.str());
+            return std::vector<uint8_t>();
+        }
+        result.push_back((uint8_t)toUnsigned);
+    }
+    return result;
 }
