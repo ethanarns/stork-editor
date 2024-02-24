@@ -387,6 +387,7 @@ MainWindow::MainWindow() {
      *******************/
     connect(this->guiObjectList,&GuiObjectList::itemSelectionChanged,this,&MainWindow::objectListClick);
     connect(this->grid, &DisplayTable::triggerMainWindowUpdate,this,&MainWindow::displayTableUpdate);
+    connect(this->selectionInfoTable, &SelectionInfoTable::updateMainWindow,this,&MainWindow::selectionWindowUpdate);
     connect(this->grid,&DisplayTable::updateMainWindowStatus,this,&MainWindow::setWindowStatus);
 }
 
@@ -683,7 +684,7 @@ void MainWindow::objectListClick() {
         YUtils::printDebug("Loaded Level Object with that UUID not found",DebugType::ERROR);
         return;
     }
-    this->selectionInfoTable->updateWithLevelObject(*loadedLevelObject);
+    this->selectionInfoTable->updateWithLevelObject(loadedLevelObject);
     if (this->grid->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
         this->grid->clearSelection();
         this->grid->selectItemByUuid(objectUuid);
@@ -710,7 +711,7 @@ void MainWindow::displayTableClicked() {
             YUtils::printDebug("Invalid level object",DebugType::WARNING);
             return;
         }
-        this->selectionInfoTable->updateWithLevelObject(*lo);
+        this->selectionInfoTable->updateWithLevelObject(lo);
     }
 }
 
@@ -731,8 +732,16 @@ void MainWindow::displayTableUpdate(){
             YUtils::printDebug("Invalid level object",DebugType::ERROR);
             return;
         }
-        this->selectionInfoTable->updateWithLevelObject(*lo);
+        this->selectionInfoTable->updateWithLevelObject(lo);
         this->guiObjectList->updateList();
     }
     this->markSavableUpdate();
+}
+
+void MainWindow::selectionWindowUpdate(LevelObject *sprite) {
+    this->grid->wipeObject(sprite->uuid);
+    this->grid->updateObjects();
+    this->grid->clearSelection();
+    this->grid->selectedObjects.clear();
+    this->grid->selectItemByUuid(sprite->uuid);
 }

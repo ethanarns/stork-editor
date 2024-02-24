@@ -33,7 +33,7 @@ SelectionInfoTable::SelectionInfoTable(QWidget* parent, YidsRom* rom) {
     this->setText(0,i++,"Settings",false);
 
     connect(this,&QTableWidget::cellDoubleClicked,this,&SelectionInfoTable::cellDoubleClicked);
-    connect(this,&QTableWidget::itemChanged,this,&SelectionInfoTable::itemChanged);
+    connect(this,&QTableWidget::cellChanged,this,&SelectionInfoTable::cellChanged);
 }
 
 void SelectionInfoTable::setText(int x, int y, std::string text, bool editable) {
@@ -58,35 +58,35 @@ void SelectionInfoTable::setText(int x, int y, std::string text, bool editable) 
     }
 }
 
-void SelectionInfoTable::updateWithLevelObject(LevelObject lo) {
-    auto textMetadata = LevelObject::getObjectTextMetadata(lo.objectId);
-    int i = 0;
+void SelectionInfoTable::updateWithLevelObject(LevelObject *lo) {
+    this->spritePointer = lo;
+    auto textMetadata = LevelObject::getObjectTextMetadata(lo->objectId);
     std::stringstream s0;
-    s0 << "0x" << std::hex << lo.objectId;
-    this->setText(1,i++,s0.str(),false);
+    s0 << "0x" << std::hex << lo->objectId;
+    this->setText(1,0,s0.str(),false);
     std::stringstream s1;
-    s1 << "0x" << std::hex << lo.uuid;
-    this->setText(1,i++,s1.str(),false);
-    this->setText(1,i++,textMetadata.prettyName,false);
-    this->setText(1,i++,textMetadata.description,false);
+    s1 << "0x" << std::hex << lo->uuid;
+    this->setText(1,1,s1.str(),false);
+    this->setText(1,2,textMetadata.prettyName,false);
+    this->setText(1,3,textMetadata.description,false);
     std::stringstream sX;
-    sX << "0x" << std::hex << lo.xPosition;
+    sX << "0x" << std::hex << lo->xPosition;
     std::stringstream sY;
-    sY << "0x" << std::hex << lo.yPosition;
-    this->setText(1,i++,sX.str(),true);
-    this->setText(1,i++,sY.str(),true);
+    sY << "0x" << std::hex << lo->yPosition;
+    this->setText(1,SelectionInfoTable::XPOSROW,sX.str(),true);
+    this->setText(1,SelectionInfoTable::YPOSROW,sY.str(),true);
     // Settings
     std::stringstream sSettingsLength;
-    sSettingsLength << "0x" << std::hex << lo.settingsLength;
-    this->setText(1,i++,sSettingsLength.str(),false);
+    sSettingsLength << "0x" << std::hex << lo->settingsLength;
+    this->setText(1,6,sSettingsLength.str(),false);
     std::stringstream ssSettings;
-    if (lo.settingsLength != lo.settings.size()) {
+    if (lo->settingsLength != lo->settings.size()) {
         YUtils::printDebug("Settings length value and settings size not matching",DebugType::ERROR);
     }
-    for (int j = 0; j < lo.settingsLength; j++) {
-        ssSettings << std::hex << std::setw(2) << (uint16_t)lo.settings.at(j) << " ";
+    for (int j = 0; j < lo->settingsLength; j++) {
+        ssSettings << std::hex << std::setw(2) << (uint16_t)lo->settings.at(j) << " ";
     }
-    this->setText(1,i++,ssSettings.str(),true);
+    this->setText(1,7,ssSettings.str(),true);
 }
 
 void SelectionInfoTable::cellDoubleClicked(int row, int column) {
@@ -100,9 +100,10 @@ void SelectionInfoTable::cellDoubleClicked(int row, int column) {
     }
 }
 
-void SelectionInfoTable::itemChanged(QTableWidgetItem *item) {
+void SelectionInfoTable::cellChanged(int row, int column) {
+    auto item = this->item(row,column);
     if (item == nullptr) {
-        YUtils::printDebug("itemChanged given null item",DebugType::WARNING);
+        YUtils::printDebug("cellChanged given null item",DebugType::WARNING);
         return;
     }
     if (this->cellBeingEdited == nullptr) {
@@ -110,7 +111,27 @@ void SelectionInfoTable::itemChanged(QTableWidgetItem *item) {
         return;
     }
     if (item == this->cellBeingEdited) {
-        std::cout << item->text().toStdString() << std::endl;
         this->cellBeingEdited = nullptr;
+        if (row == SelectionInfoTable::YPOSROW) {
+            bool ok;
+            uint32_t value = item->text().toUInt(&ok,16);
+            if (ok == false) {
+                YUtils::printDebug("Base 16 value parse failed");
+                return;
+            }
+            std::cout << "Changing Y POS to " << std::hex << value << std::endl;
+            this->spritePointer->yPosition = value;
+        } else if (row == SelectionInfoTable::XPOSROW) {
+            bool ok;
+            uint32_t value = item->text().toUInt(&ok,16);
+            if (ok == false) {
+                YUtils::printDebug("Base 16 value parse failed");
+                return;
+            }
+            std::cout << "Changing X POS to " << std::hex << value << std::endl;
+            this->spritePointer->xPosition = value;
+        }
+        std::cout << "Emitting updateMainWindow" << std::endl;
+        emit this->updateMainWindow(this->spritePointer);
     }
 }

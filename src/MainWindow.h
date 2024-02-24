@@ -84,6 +84,7 @@ private:
     void objectListClick();
     void displayTableClicked();
     void displayTableUpdate();
+    void selectionWindowUpdate(LevelObject *sprite);
 };
 
 #endif

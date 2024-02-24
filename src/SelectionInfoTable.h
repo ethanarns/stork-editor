@@ -13,12 +13,18 @@ class SelectionInfoTable : public QTableWidget {
 public:
     SelectionInfoTable(QWidget* parent, YidsRom* rom);
     void setText(int x, int y, std::string text, bool editable = false);
-    void updateWithLevelObject(LevelObject lo);
+    void updateWithLevelObject(LevelObject *lo);
+
+    LevelObject *spritePointer;
 private:
     YidsRom* yidsRom;
     void cellDoubleClicked(int row, int column);
-    void itemChanged(QTableWidgetItem *item);
+    void cellChanged(int row, int column);
     QTableWidgetItem* cellBeingEdited;
+    const int XPOSROW = 4;
+    const int YPOSROW = 5;
+signals:
+    void updateMainWindow(LevelObject *sprite);
 };
 
 #endif
