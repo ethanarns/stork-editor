@@ -23,6 +23,7 @@ private:
     QTableWidgetItem* cellBeingEdited;
     const int XPOSROW = 4;
     const int YPOSROW = 5;
+    const int SETTINGSDATAROW = 7;
 signals:
     void updateMainWindow(LevelObject *sprite);
 };

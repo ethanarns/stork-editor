@@ -648,7 +648,7 @@ void MainWindow::saveRom() {
 }
 
 void MainWindow::markSavableUpdate() {
-    YUtils::printDebug("Savable change made",DebugType::VERBOSE);
+    //YUtils::printDebug("Savable change made",DebugType::VERBOSE);
     this->menu_save->setDisabled(false);
     // Should already be enabled, but just in case
     std::string newWindowTitle = Constants::WINDOW_TITLE;

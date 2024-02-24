@@ -62,31 +62,31 @@ void SelectionInfoTable::updateWithLevelObject(LevelObject *lo) {
     this->spritePointer = lo;
     auto textMetadata = LevelObject::getObjectTextMetadata(lo->objectId);
     std::stringstream s0;
-    s0 << "0x" << std::hex << lo->objectId;
+    s0 << "0x" << std::hex << std::setw(2) << std::setfill('0') << lo->objectId;
     this->setText(1,0,s0.str(),false);
     std::stringstream s1;
-    s1 << "0x" << std::hex << lo->uuid;
+    s1 << "0x" << std::hex << std::setw(2) << std::setfill('0') << lo->uuid;
     this->setText(1,1,s1.str(),false);
     this->setText(1,2,textMetadata.prettyName,false);
     this->setText(1,3,textMetadata.description,false);
     std::stringstream sX;
-    sX << "0x" << std::hex << lo->xPosition;
+    sX << "0x" << std::hex << std::setw(2) << std::setfill('0') << lo->xPosition;
     std::stringstream sY;
-    sY << "0x" << std::hex << lo->yPosition;
+    sY << "0x" << std::hex << std::setw(2) << std::setfill('0') << lo->yPosition;
     this->setText(1,SelectionInfoTable::XPOSROW,sX.str(),true);
     this->setText(1,SelectionInfoTable::YPOSROW,sY.str(),true);
     // Settings
     std::stringstream sSettingsLength;
-    sSettingsLength << "0x" << std::hex << lo->settingsLength;
+    sSettingsLength << "0x" << std::hex << std::setw(2) << std::setfill('0') << lo->settingsLength;
     this->setText(1,6,sSettingsLength.str(),false);
     std::stringstream ssSettings;
     if (lo->settingsLength != lo->settings.size()) {
         YUtils::printDebug("Settings length value and settings size not matching",DebugType::ERROR);
     }
     for (int j = 0; j < lo->settingsLength; j++) {
-        ssSettings << std::hex << std::setw(2) << (uint16_t)lo->settings.at(j) << " ";
+        ssSettings << std::hex << std::setw(2) << std::setfill('0') << (uint16_t)lo->settings.at(j) << " ";
     }
-    this->setText(1,7,ssSettings.str(),true);
+    this->setText(1,SelectionInfoTable::SETTINGSDATAROW,ssSettings.str(),true);
 }
 
 void SelectionInfoTable::cellDoubleClicked(int row, int column) {
@@ -130,6 +130,8 @@ void SelectionInfoTable::cellChanged(int row, int column) {
             }
             std::cout << "Changing X POS to " << std::hex << value << std::endl;
             this->spritePointer->xPosition = value;
+        } else if (row == SelectionInfoTable::SETTINGSDATAROW) {
+            
         }
         std::cout << "Emitting updateMainWindow" << std::endl;
         emit this->updateMainWindow(this->spritePointer);
