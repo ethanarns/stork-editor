@@ -96,10 +96,9 @@ void YidsRom::openRom(std::string fileName) {
     // }
 
     auto objsetFile = this->getMajorObjPltFile("objset.arcz",this->objsetPixelTiles,this->objsetPalettes);
+    this->objectFiles[ObjectFileName::OBJSET] = objsetFile;
     auto effectFile = this->getMajorObjPltFile("objeffect.arcz",this->effectPixelTiles,this->effectPalettes);
-    Q_UNUSED(objsetFile);
-    Q_UNUSED(effectFile);
-
+    this->objectFiles[ObjectFileName::OBJEFFECT] = effectFile;
     this->objectFiles[ObjectFileName::OBJSBBLOCK] = this->getObjPltFile("objsbblock.arc");
 
     std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,0);
