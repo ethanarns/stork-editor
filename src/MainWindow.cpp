@@ -488,12 +488,15 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
     if (str.compare("BG1") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::BG1_LAYER;
         ss << "BG1";
+        this->chartilesTable->refreshLoadedMapTilesMap(1);
     } else if (str.compare("BG2") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::BG2_LAYER;
         ss << "BG2";
+        this->chartilesTable->refreshLoadedMapTilesMap(2);
     } else if (str.compare("BG3") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::BG3_LAYER;
         ss << "BG3";
+        this->chartilesTable->refreshLoadedMapTilesMap(3);
     } else if (str.compare("Sprites") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::SPRITES_LAYER;
         this->grid->setDragEnabled(true);

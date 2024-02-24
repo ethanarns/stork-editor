@@ -477,7 +477,6 @@ void DisplayTable::updateTriggerBoxes() {
         auto topY = tb->topY;
         auto rightX = tb->rightX;
         auto bottomY = tb->bottomY;
-        std::cout << tb->toString() << std::endl;
 
         for (uint x = leftX; x < rightX; x++) {
             for (uint y = topY; y < bottomY; y++) {

@@ -17,7 +17,7 @@ public:
 private:
     const static int CELL_SIZE_PX = 16;
     const static int CHARTILES_TABLE_WIDTH = 0x10;
-    const static int CHARTILES_ROW_COUNT = 0x1000;
+    const static int CHARTILES_ROW_COUNT_DEFAULT = 0x10;
     YidsRom* yidsRom;
 };
 #endif

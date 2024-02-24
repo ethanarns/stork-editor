@@ -19,7 +19,7 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
     this->verticalHeader()->setMinimumSectionSize(0);
     this->verticalHeader()->setDefaultSectionSize(ChartilesTable::CELL_SIZE_PX);
     this->setColumnCount(ChartilesTable::CHARTILES_TABLE_WIDTH);
-    this->setRowCount(ChartilesTable::CHARTILES_ROW_COUNT);
+    this->setRowCount(ChartilesTable::CHARTILES_ROW_COUNT_DEFAULT);
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
@@ -70,15 +70,17 @@ void ChartilesTable::refreshLoadedObjectTilesMap() {
 }
 
 void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
+    std::cout << "refreshLoadedMapTilesMap" << std::endl;
     std::map<uint32_t,Chartile> tilesMap;
     if (whichBg == 1) {
         tilesMap = this->yidsRom->mapData->getScenByBg(1)->getVramChartiles();
     } else if (whichBg == 2) {
         tilesMap = this->yidsRom->mapData->getScenByBg(2)->getVramChartiles();
     } else {
-        return;
+        tilesMap = this->yidsRom->mapData->getScenByBg(3)->getVramChartiles();;
     }
     uint32_t mapSize = tilesMap.size();
+    this->setRowCount((mapSize / 16)+1);
     uint32_t indexForOffset = 0;
     for (uint32_t mapIndex = 0; mapIndex < mapSize; mapIndex++) {
         auto chartile = tilesMap[mapIndex];
@@ -88,6 +90,9 @@ void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
         newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
         newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
         newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);
+        newItem->setData(PixelDelegateData::DRAW_BG1,true);
+        newItem->setData(PixelDelegateData::DRAW_BG2,true);
+        newItem->setData(PixelDelegateData::DRAW_BG3,true);
         uint32_t x = indexForOffset % 0x10;
         uint32_t y = indexForOffset / 0x10;
         if (this->item(y,x) != nullptr) {
@@ -99,7 +104,7 @@ void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
 }
 
 void ChartilesTable::wipeTiles() {
-    for (uint32_t tileRowIndex = 0; tileRowIndex < ChartilesTable::CHARTILES_ROW_COUNT; tileRowIndex++) {
+    for (uint32_t tileRowIndex = 0; tileRowIndex < ChartilesTable::CHARTILES_ROW_COUNT_DEFAULT; tileRowIndex++) {
         for (uint32_t tileColumnIndex = 0; tileColumnIndex < ChartilesTable::CHARTILES_TABLE_WIDTH; tileColumnIndex++) {
             if (this->item(tileRowIndex,tileColumnIndex) != nullptr) {
                 this->takeItem(tileRowIndex,tileColumnIndex);
