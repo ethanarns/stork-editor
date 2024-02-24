@@ -35,7 +35,6 @@ class YidsRom {
 public:
     const char* GAME_CODE = "AYWE";
     std::map<std::string,uint32_t> fileIdMap;
-    //std::fstream romFile;
     std::vector<uint8_t> uncompedRomVector;
     RomMetadata metadata;
     MapData* mapData;
@@ -48,21 +47,12 @@ public:
      * @brief "Characters", or the pixel arrangement of tiles. From OBJ data, for OAM
      */
     std::map<uint32_t,std::vector<uint8_t>> objsetPixelTiles;
-    //std::map<uint32_t,std::vector<ObjectDrawInstruction>> pixelTilesObj;
-    
-    // std::vector<uint16_t> preRenderDataBg2;
-    // std::vector<uint16_t> preRenderDataBg1;
-    // std::vector<uint16_t> preRenderDataBg3;
 
     std::map<uint32_t,ObjectPalette> objsetPalettes;
 
     std::map<uint32_t,std::vector<uint8_t>> effectPixelTiles;
     std::map<uint32_t,ObjectPalette> effectPalettes;
     std::map<uint32_t,ObjectFile> objectFiles;
-
-    // uint32_t paletteOffsetBg1 = 0;
-    // uint32_t paletteOffsetBg2 = 0;
-    // uint32_t paletteOffsetBg3 = 0;
 
     bool filesLoaded = false;
     YidsRom();
@@ -94,15 +84,6 @@ public:
     ~YidsRom();
 private:
     void initArm9RomData(std::string fileName, std::vector<uint8_t> &compedRom);
-    //void extractCompressedARM9(uint32_t arm9start_rom, uint32_t arm9length);
-    ScenData handleSCEN(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
-    MpbzData handleMPBZ(std::vector<uint8_t>& uncompressedMpbz, uint16_t whichBg, BgColorMode bgColMode = BgColorMode::MODE_16);
-    ImbzData handleImbz(std::string fileName_noext, uint16_t whichBg, BgColorMode bgColMode = BgColorMode::MODE_16);
-    void handleGrad(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
-    SetdObjectData handleSETD(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
-    void handleAREA(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
-    PathData handlePATH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
-    void handleALPH(std::vector<uint8_t>& mpdzVec, uint32_t& indexPointer);
     ObjectFile getMajorObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes);
     ObjectFile getObjPltFile(std::string objset_filename);
 };

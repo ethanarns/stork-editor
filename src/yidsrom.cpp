@@ -25,8 +25,6 @@
 
 YidsRom::YidsRom() {
     this->filesLoaded = false;
-    //this->preRenderDataBg2.reserve(180'000); // Found 189280 in 1-1's first IMBZ
-    //this->collisionTileArray.reserve(79'000); // Found roughly 79000 in 1-1's first IMBZ
 }
 
 void YidsRom::openRom(std::string fileName) {
@@ -115,47 +113,6 @@ void YidsRom::openRom(std::string fileName) {
     //TODO: this->romFile.close();
     this->loadMpdz(levelSelectData->levels.at(0)->mpdzFileNoExtension);
 }
-
-// std::string YidsRom::getTextAt(Address position_file, uint32_t length) {
-//     this->romFile.seekg(position_file);
-//     char* readChars = new char[length];
-//     this->romFile.read(readChars,length);
-//     std::string ret = readChars;
-//     // Cut out garbage data
-//     ret = ret.substr(0,length);
-//     delete[] readChars;
-//     return ret;
-// }
-
-// std::string YidsRom::getTextNullTermAt(Address position_file) {
-//     uint8_t offset = 0;
-//     constexpr uint8_t MAX_STRING_LENGTH = 0xff;
-//     uint8_t killOffset = 0;
-//     std::string result = "";
-
-//     this->romFile.seekg(position_file + offset);
-//     char container;
-//     const uint8_t NULL_TERM = 0x00;
-//     this->romFile.read(&container, sizeof(container));
-//     if (container == NULL_TERM) {
-//         std::stringstream nullTermSs;
-//         nullTermSs << "Found empty string at position " << std::hex << position_file;
-//         YUtils::printDebug(nullTermSs.str(),DebugType::ERROR);
-//         return result;
-//     }
-//     // Increment then return offset. 2 birds, meet 1 stone
-//     while (killOffset < MAX_STRING_LENGTH) {
-//         // ++ afterwards returns the original value THEN increments
-//         this->romFile.seekg(position_file + offset++);
-//         this->romFile.read(&container, sizeof(container));
-//         if (container == NULL_TERM) {
-//             return result;
-//         }
-//         result += container;
-//         killOffset++;
-//     }
-//     return "STRING LONGER THAN 0xFF";
-// }
 
 YidsRom::~YidsRom() {
     // delete/delete[] things here
@@ -296,25 +253,6 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
         this->universalPalette[univPalIndex] = this->uncompedRomVector.at(seekPos);
     }
 }
-
-// void YidsRom::extractCompressedARM9(Address arm9start_rom, uint32_t arm9length) {
-//     if (this->filesLoaded) {
-//         std::cout << "ARM9 has already been written and read" << std::endl;
-//         return;
-//     }
-
-//     std::vector<uint8_t> outvec(arm9length,0xfe);
-//     for (uint32_t arm9copyindexoffset = 0; arm9copyindexoffset < arm9length; arm9copyindexoffset++) {
-//         Address romLocation = arm9copyindexoffset + arm9start_rom;
-//         // Don't use this->getNumberAt yet, not loaded
-//         this->romFile.seekg(romLocation);
-//         uint8_t ret;
-//         this->romFile.read(reinterpret_cast<char *>(&ret),sizeof(ret));
-//         outvec.at(arm9copyindexoffset) = ret;
-//     }
-
-//     YUtils::writeByteVectorToFile(outvec,Constants::NEW_BIN_FILE);
-// }
 
 /**
  * @brief Get the name for the level file, which is almost always a CRSB
