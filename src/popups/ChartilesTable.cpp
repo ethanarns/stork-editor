@@ -73,7 +73,6 @@ void ChartilesTable::refreshLoadedObjectTilesMap() {
 }
 
 void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
-    std::cout << "refreshLoadedMapTilesMap" << std::endl;
     this->wipeTiles();
     std::map<uint32_t,Chartile> tilesMap;
     if (whichBg == 1) {

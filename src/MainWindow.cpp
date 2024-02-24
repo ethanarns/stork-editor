@@ -234,7 +234,7 @@ MainWindow::MainWindow() {
     toolbar->setMovable(false);
 
     QPixmap iconTiles("assets/icon_tiles.png");
-    this->button_iconTiles = toolbar->addAction(QIcon(iconTiles), tr("Open Tiles Dialog"));
+    this->button_iconTiles = toolbar->addAction(QIcon(iconTiles), tr("Open BG Tiles Dialog"));
     this->button_iconTiles->setObjectName("button_iconTiles");
     this->button_iconTiles->setDisabled(true);
     connect(this->button_iconTiles, &QAction::triggered, this, &MainWindow::toolbarClick_tiles);
@@ -406,9 +406,8 @@ void MainWindow::LoadRom() {
         this->chartilesPopup->resize(350, 400);
         this->chartilesPopup->setMinimumWidth(350);
         this->chartilesPopup->setMinimumHeight(300);
-        this->chartilesPopup->setWindowTitle("Sprite Tiles");
+        this->chartilesPopup->setWindowTitle("Select a layer to view its tileset");
         this->button_iconTiles->setDisabled(false);
-        this->chartilesTable->refreshLoadedObjectTilesMap();
 
         // Palette popup //
         this->palettePopup->resize(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH,PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);
@@ -505,8 +504,9 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
         this->grid->setDragEnabled(true);
         this->grid->setDragDropMode(QAbstractItemView::DragDrop);
         ss << "Sprites";
-        this->chartilesTable->refreshLoadedObjectTilesMap();
-        this->chartilesPopup->setWindowTitle("Sprite Tiles");
+        // Do this in a new window
+        // this->chartilesTable->refreshLoadedObjectTilesMap();
+        // this->chartilesPopup->setWindowTitle("Sprite Tiles");
     } else if (str.compare("Colliders") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::COLLISION_LAYER;
         ss << "Colliders";
@@ -594,7 +594,7 @@ void MainWindow::buttonClick_levelSelect_load() {
     this->grid->initCellCollision();
     this->grid->updateSprites();
     this->grid->setLayerDraw(4,true);
-    this->chartilesTable->refreshLoadedObjectTilesMap();
+    //this->chartilesTable->refreshLoadedMapTilesMap(2);
     this->paletteTable->refreshLoadedTiles();
     this->guiObjectList->updateList();
     this->grid->updateTriggerBoxes();
