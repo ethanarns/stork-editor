@@ -12,6 +12,7 @@ blz
 lzss
 moc_*
 _nds_unpack/
+*.user
 
 # test extracted files
 *.arcz
