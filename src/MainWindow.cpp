@@ -403,12 +403,12 @@ void MainWindow::LoadRom() {
         this->rom->openRom(fileName.toStdString());
 
         // Chartiles popup //
-        this->chartilesPopup->resize(300, 400);
-        this->chartilesPopup->setMinimumWidth(300);
+        this->chartilesPopup->resize(350, 400);
+        this->chartilesPopup->setMinimumWidth(350);
         this->chartilesPopup->setMinimumHeight(300);
-        this->chartilesPopup->setWindowTitle("Tile Viewer");
+        this->chartilesPopup->setWindowTitle("Sprite Tiles");
         this->button_iconTiles->setDisabled(false);
-        this->chartilesTable->refreshLoadedMapTilesMap(2);
+        this->chartilesTable->refreshLoadedObjectTilesMap();
 
         // Palette popup //
         this->palettePopup->resize(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH,PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);
@@ -489,19 +489,24 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
         this->grid->layerSelectMode = LayerSelectMode::BG1_LAYER;
         ss << "BG1";
         this->chartilesTable->refreshLoadedMapTilesMap(1);
+        this->chartilesPopup->setWindowTitle("BG1 Tiles");
     } else if (str.compare("BG2") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::BG2_LAYER;
         ss << "BG2";
         this->chartilesTable->refreshLoadedMapTilesMap(2);
+        this->chartilesPopup->setWindowTitle("BG2 Tiles");
     } else if (str.compare("BG3") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::BG3_LAYER;
         ss << "BG3";
         this->chartilesTable->refreshLoadedMapTilesMap(3);
+        this->chartilesPopup->setWindowTitle("BG3 Tiles");
     } else if (str.compare("Sprites") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::SPRITES_LAYER;
         this->grid->setDragEnabled(true);
         this->grid->setDragDropMode(QAbstractItemView::DragDrop);
         ss << "Sprites";
+        this->chartilesTable->refreshLoadedObjectTilesMap();
+        this->chartilesPopup->setWindowTitle("Sprite Tiles");
     } else if (str.compare("Colliders") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::COLLISION_LAYER;
         ss << "Colliders";
@@ -589,8 +594,7 @@ void MainWindow::buttonClick_levelSelect_load() {
     this->grid->initCellCollision();
     this->grid->updateSprites();
     this->grid->setLayerDraw(4,true);
-    this->chartilesTable->wipeTiles();
-    this->chartilesTable->refreshLoadedMapTilesMap(2);
+    this->chartilesTable->refreshLoadedObjectTilesMap();
     this->paletteTable->refreshLoadedTiles();
     this->guiObjectList->updateList();
     this->grid->updateTriggerBoxes();

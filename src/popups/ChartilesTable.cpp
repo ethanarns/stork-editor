@@ -32,6 +32,7 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
 }
 
 void ChartilesTable::refreshLoadedObjectTilesMap() {
+    this->wipeTiles();
     // The following (messily) spits out all available tiles for debug purposes
     auto tilesMap = &this->yidsRom->objectFiles[ObjectFileName::OBJSBBLOCK].objectPixelTiles;
     uint32_t mapSize = tilesMap->size();
@@ -57,6 +58,8 @@ void ChartilesTable::refreshLoadedObjectTilesMap() {
             newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
             newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
             newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);
+            newItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
+            newItem->setData(PixelDelegateData::DRAW_BG1,true);
             uint32_t x = indexForOffset % 0x10;
             uint32_t y = indexForOffset / 0x10 + yOffset;
             if (this->item(y,x) != nullptr) {
@@ -71,6 +74,7 @@ void ChartilesTable::refreshLoadedObjectTilesMap() {
 
 void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
     std::cout << "refreshLoadedMapTilesMap" << std::endl;
+    this->wipeTiles();
     std::map<uint32_t,Chartile> tilesMap;
     if (whichBg == 1) {
         tilesMap = this->yidsRom->mapData->getScenByBg(1)->getVramChartiles();
@@ -91,8 +95,6 @@ void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
         newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
         newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);
         newItem->setData(PixelDelegateData::DRAW_BG1,true);
-        newItem->setData(PixelDelegateData::DRAW_BG2,true);
-        newItem->setData(PixelDelegateData::DRAW_BG3,true);
         uint32_t x = indexForOffset % 0x10;
         uint32_t y = indexForOffset / 0x10;
         if (this->item(y,x) != nullptr) {
@@ -104,8 +106,8 @@ void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
 }
 
 void ChartilesTable::wipeTiles() {
-    for (uint32_t tileRowIndex = 0; tileRowIndex < ChartilesTable::CHARTILES_ROW_COUNT_DEFAULT; tileRowIndex++) {
-        for (uint32_t tileColumnIndex = 0; tileColumnIndex < ChartilesTable::CHARTILES_TABLE_WIDTH; tileColumnIndex++) {
+    for (int tileRowIndex = 0; tileRowIndex < this->rowCount(); tileRowIndex++) {
+        for (int tileColumnIndex = 0; tileColumnIndex < this->columnCount(); tileColumnIndex++) {
             if (this->item(tileRowIndex,tileColumnIndex) != nullptr) {
                 this->takeItem(tileRowIndex,tileColumnIndex);
                 delete this->item(tileRowIndex,tileColumnIndex);
