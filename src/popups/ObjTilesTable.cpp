@@ -5,10 +5,13 @@
 #include "../utils.h"
 
 #include <iostream>
+#include <string>
+#include <sstream>
 
 #include <QtCore>
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QFileDialog>
 
 ObjTilesTable::ObjTilesTable(QWidget* parent, YidsRom* rom) {
     Q_UNUSED(parent);
@@ -31,16 +34,28 @@ ObjTilesTable::ObjTilesTable(QWidget* parent, YidsRom* rom) {
     QTableWidget::connect(this, &QTableWidget::cellClicked, this, &ObjTilesTable::tableClicked);
 }
 
-void ObjTilesTable::loadObjectTiles() {
+void ObjTilesTable::loadObjectTiles(std::string fullFileName) {
+    std::cout << "loadObjectTiles()" << std::endl;
+    std::cout << fullFileName << std::endl;
+    auto objectFile = this->yidsRom->objectRenderFiles[fullFileName];
+    auto findTry = this->yidsRom->objectRenderFiles.find(fullFileName);
+    if (findTry == this->yidsRom->objectRenderFiles.end()) {
+        std::stringstream ssNotFound;
+        ssNotFound << "Sprite file with name '" << fullFileName << "' not found";
+        YUtils::popupAlert(ssNotFound.str());
+        return;
+    }
     this->wipeTiles();
     // The following (messily) spits out all available tiles for debug purposes
-    auto tilesMap = &this->yidsRom->objectFiles[ObjectFileName::OBJSBKACHIKACHI].objectPixelTiles;
+    auto tilesMap = &this->yidsRom->objectRenderFiles[fullFileName].objectPixelTiles;
     uint32_t mapSize = tilesMap->size();
     uint32_t yOffset = 0;
     uint32_t indexForOffset = 0;
+    this->setRowCount(ObjTilesTable::OBJTILES_ROW_COUNT_DEFAULT);
     for (uint32_t mapIndex = 0; mapIndex < mapSize; mapIndex++) {
         auto chartilesVector = (*tilesMap)[mapIndex];
         const uint32_t chartilesVectorSize = chartilesVector.size();
+        this->setRowCount(this->rowCount()+(chartilesVectorSize/32/0x10));
         for (uint32_t i = 0; i < chartilesVectorSize; i += Constants::CHARTILE_DATA_SIZE) {
             QTableWidgetItem *newItem = new QTableWidgetItem();
             const uint32_t start = i;
@@ -96,4 +111,9 @@ void ObjTilesTable::wipeTiles() {
             }
         }
     }
+}
+
+void ObjTilesTable::doFileLoad() {
+    this->yidsRom->objectRenderFiles["objsbkachikachi.arcz"] = this->yidsRom->getObjPltFile("objsbkachikachi.arcz");
+    this->loadObjectTiles("objsbkachikachi.arcz");
 }

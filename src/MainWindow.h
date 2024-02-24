@@ -11,11 +11,13 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QTextLayout>
+#include <QPushButton>
 
 #include "yidsrom.h"
 #include "DisplayTable.h"
 #include "popups/ChartilesTable.h"
 #include "popups/PaletteTable.h"
+#include "popups/ObjTilesTable.h"
 #include "SettingsEnum.h"
 #include "popups/LevelSelect.h"
 #include "GuiObjectList.h"
@@ -44,6 +46,11 @@ private:
     DisplayTable* grid;
     QWidget* chartilesPopup;
     ChartilesTable* chartilesTable;
+
+    QWidget* objtilesPopup;
+    ObjTilesTable* objtilesTable;
+    QPushButton* spriteFileSelectButton;
+
     QWidget* palettePopup;
     QWidget* levelSelectPopup;
     LevelSelect* levelSelect;

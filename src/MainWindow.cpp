@@ -10,6 +10,7 @@
 
 #include "MainWindow.h"
 #include "popups/ChartilesTable.h"
+#include "popups/ObjTilesTable.h"
 #include "popups/PaletteTable.h"
 #include "utils.h"
 #include "DisplayTable.h"
@@ -328,6 +329,22 @@ MainWindow::MainWindow() {
     chartilesLayout->addWidget(this->chartilesTable);
     this->chartilesPopup->setLayout(chartilesLayout);
 
+    /*******************
+     *** SPRITETILES ***
+     *******************/
+    this->objtilesPopup = new QWidget;
+    QVBoxLayout* objtilesLayout = new QVBoxLayout(this);
+    this->objtilesTable = new ObjTilesTable(this,this->rom);
+    // Set up dropdown //
+    this->spriteFileSelectButton = new QPushButton("&Load file...", this);
+    this->spriteFileSelectButton->setObjectName("spriteFileSelectButton");
+    this->spriteFileSelectButton->setToolTip(tr("Load an object render file"));
+    this->spriteFileSelectButton->setEnabled(false);
+    connect(this->spriteFileSelectButton,&QPushButton::released,this->objtilesTable,&ObjTilesTable::doFileLoad);
+    objtilesLayout->addWidget(this->spriteFileSelectButton);
+    objtilesLayout->addWidget(this->objtilesTable);
+    this->objtilesPopup->setLayout(objtilesLayout);
+
     /*********************
      *** PALETTE TABLE ***
      *********************/
@@ -408,6 +425,14 @@ void MainWindow::LoadRom() {
         this->chartilesPopup->setMinimumHeight(300);
         this->chartilesPopup->setWindowTitle("Select a layer to view its tileset");
         this->button_iconTiles->setDisabled(false);
+
+        // Sprite tiles popup //
+        this->objtilesPopup->resize(350,400);
+        this->objtilesPopup->setMinimumWidth(350);
+        this->objtilesPopup->setMinimumHeight(300);
+        this->objtilesPopup->setWindowTitle("Select an object render data archive to view");
+        this->spriteFileSelectButton->setEnabled(true);
+        this->objtilesPopup->show();
 
         // Palette popup //
         this->palettePopup->resize(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH,PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);

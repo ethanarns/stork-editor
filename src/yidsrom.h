@@ -54,6 +54,8 @@ public:
     std::map<uint32_t,ObjectPalette> effectPalettes;
     std::map<uint32_t,ObjectFile> objectFiles;
 
+    std::map<std::string,ObjectFile> objectRenderFiles;
+
     bool filesLoaded = false;
     YidsRom();
     void openRom(std::string fileName);
@@ -72,6 +74,7 @@ public:
     Address getAddrFromAddrPtr(Address pointerAddress_file);
 
     std::vector<uint8_t> getByteVectorFromFile(std::string fileName);
+    ObjectFile getObjPltFile(std::string objset_filename);
 
     // template<typename T>
     // T getNumberAt(Address addr){
@@ -85,7 +88,6 @@ public:
 private:
     void initArm9RomData(std::string fileName, std::vector<uint8_t> &compedRom);
     ObjectFile getMajorObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes);
-    ObjectFile getObjPltFile(std::string objset_filename);
 };
 
 #endif
