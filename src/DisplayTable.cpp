@@ -237,13 +237,12 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                 drag->exec(Qt::MoveAction);
                 return;
             } else {
-                YUtils::printDebug("Clicked a different object, selecting it");
+                //YUtils::printDebug("Clicked a different object, selecting it");
                 this->clearSelection();
                 this->selectedObjects.clear();
                 this->selectItemByUuid(cursorUuidMaybe.toUInt());
                 return;
             }
-            // This cannot be reached, if/else returns above
         } else {
             // Nothing is selected
             auto curItemUnderCursor = this->itemAt(event->pos());

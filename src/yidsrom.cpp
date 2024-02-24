@@ -57,44 +57,45 @@ void YidsRom::openRom(std::string fileName) {
 
     /*************************
      *** FILE MANIPULATION ***
+     *** I use files now, but this is still cool so I'm keeping it here anyway hahaha ***
      *************************/
 
-    // http://problemkaputt.de/gbatek.htm#dscartridgenitroromandnitroarcfilesystems
-    uint32_t offsetToFirstSubTable = YUtils::getUint32FromVec(this->uncompedRomVector,this->metadata.fatTableOffset + 0);
-    Address fileSubDirectory = offsetToFirstSubTable + this->metadata.fatTableOffset;
-    uint8_t subdirTypeAndNameLength = this->uncompedRomVector.at(fileSubDirectory);
-    uint8_t subdirNameLength = subdirTypeAndNameLength % 0x10;
-    // +1 because the text name starts at 1
-    auto subdirName = YUtils::getFixedTextFromVec(this->uncompedRomVector,fileSubDirectory + 1,subdirNameLength);
-    const std::string SUBDIR_NAME = "file";
-    if (subdirName.compare(SUBDIR_NAME) != 0) {
-        std::stringstream ssFailSub;
-        ssFailSub << "[FAIL] First subdirectory '" << SUBDIR_NAME << "' was not found! Found '" << subdirName << "' instead.";
-        YUtils::printDebug(ssFailSub.str(), DebugType::FATAL);
-        YUtils::popupAlert(ssFailSub.str());
-        exit(EXIT_FAILURE);
-    }
-    // +4 because 4 bytes between end of text and first entry
-    Address FILESDIR_BASE_ADDR = fileSubDirectory + (uint32_t)subdirNameLength + 4;
+    // // http://problemkaputt.de/gbatek.htm#dscartridgenitroromandnitroarcfilesystems
+    // uint32_t offsetToFirstSubTable = YUtils::getUint32FromVec(this->uncompedRomVector,this->metadata.fatTableOffset + 0);
+    // Address fileSubDirectory = offsetToFirstSubTable + this->metadata.fatTableOffset;
+    // uint8_t subdirTypeAndNameLength = this->uncompedRomVector.at(fileSubDirectory);
+    // uint8_t subdirNameLength = subdirTypeAndNameLength % 0x10;
+    // // +1 because the text name starts at 1
+    // auto subdirName = YUtils::getFixedTextFromVec(this->uncompedRomVector,fileSubDirectory + 1,subdirNameLength);
+    // const std::string SUBDIR_NAME = "file";
+    // if (subdirName.compare(SUBDIR_NAME) != 0) {
+    //     std::stringstream ssFailSub;
+    //     ssFailSub << "[FAIL] First subdirectory '" << SUBDIR_NAME << "' was not found! Found '" << subdirName << "' instead.";
+    //     YUtils::printDebug(ssFailSub.str(), DebugType::FATAL);
+    //     YUtils::popupAlert(ssFailSub.str());
+    //     exit(EXIT_FAILURE);
+    // }
+    // // +4 because 4 bytes between end of text and first entry
+    // Address FILESDIR_BASE_ADDR = fileSubDirectory + (uint32_t)subdirNameLength + 4;
 
-    const uint32_t FIRST_FILE_ID = 45; // 2D
+    // const uint32_t FIRST_FILE_ID = 45; // 2D
 
-    const Address FAT_TABLE_END = this->metadata.fatTableOffset + this->metadata.fatTableSize - 1; // Sub 1 to prevent blank end
-    uint32_t fileOffset = 0;
-    uint32_t curFileId = FIRST_FILE_ID;
-    while (FILESDIR_BASE_ADDR + fileOffset < FAT_TABLE_END) {
-        uint8_t len = this->uncompedRomVector.at(FILESDIR_BASE_ADDR + fileOffset);
-        if (len > 0x20) {
-            std::stringstream ssLongLen;
-            ssLongLen << "Long length: " << std::hex << (int)len << " at " << std::hex << (FILESDIR_BASE_ADDR + fileOffset);
-            YUtils::printDebug(ssLongLen.str(),DebugType::WARNING);
-        }
-        auto nameStr = YUtils::getFixedTextFromVec(this->uncompedRomVector,FILESDIR_BASE_ADDR + fileOffset + 1,len);
-        // When finding files, it lowercases
-        this->fileIdMap[YUtils::getLowercase(nameStr)] = curFileId;
-        fileOffset += len + 1; // +1 accounts for length byte
-        curFileId++;
-    }
+    // const Address FAT_TABLE_END = this->metadata.fatTableOffset + this->metadata.fatTableSize - 1; // Sub 1 to prevent blank end
+    // uint32_t fileOffset = 0;
+    // uint32_t curFileId = FIRST_FILE_ID;
+    // while (FILESDIR_BASE_ADDR + fileOffset < FAT_TABLE_END) {
+    //     uint8_t len = this->uncompedRomVector.at(FILESDIR_BASE_ADDR + fileOffset);
+    //     if (len > 0x20) {
+    //         std::stringstream ssLongLen;
+    //         ssLongLen << "Long length: " << std::hex << (int)len << " at " << std::hex << (FILESDIR_BASE_ADDR + fileOffset);
+    //         YUtils::printDebug(ssLongLen.str(),DebugType::WARNING);
+    //     }
+    //     auto nameStr = YUtils::getFixedTextFromVec(this->uncompedRomVector,FILESDIR_BASE_ADDR + fileOffset + 1,len);
+    //     // When finding files, it lowercases
+    //     this->fileIdMap[YUtils::getLowercase(nameStr)] = curFileId;
+    //     fileOffset += len + 1; // +1 accounts for length byte
+    //     curFileId++;
+    // }
 
     auto objsetFile = this->getMajorObjPltFile("objset.arcz",this->objsetPixelTiles,this->objsetPalettes);
     auto effectFile = this->getMajorObjPltFile("objeffect.arcz",this->effectPixelTiles,this->effectPalettes);
