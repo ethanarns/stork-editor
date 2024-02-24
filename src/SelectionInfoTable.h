@@ -6,6 +6,7 @@
 
 #include <QtCore>
 #include <QTableWidget>
+#include <QTableWidgetItem>
 
 class SelectionInfoTable : public QTableWidget {
     Q_OBJECT
@@ -15,6 +16,9 @@ public:
     void updateWithLevelObject(LevelObject lo);
 private:
     YidsRom* yidsRom;
+    void cellDoubleClicked(int row, int column);
+    void itemChanged(QTableWidgetItem *item);
+    QTableWidgetItem* cellBeingEdited;
 };
 
 #endif

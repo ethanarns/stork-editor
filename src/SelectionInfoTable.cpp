@@ -8,6 +8,8 @@
 #include <QtCore>
 #include <QWidget>
 #include <QHeaderView>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
 SelectionInfoTable::SelectionInfoTable(QWidget* parent, YidsRom* rom) {
     Q_UNUSED(parent);
@@ -29,6 +31,9 @@ SelectionInfoTable::SelectionInfoTable(QWidget* parent, YidsRom* rom) {
     this->setText(0,i++,"Y Position",false);
     this->setText(0,i++,"Settings Length",false);
     this->setText(0,i++,"Settings",false);
+
+    connect(this,&QTableWidget::cellDoubleClicked,this,&SelectionInfoTable::cellDoubleClicked);
+    connect(this,&QTableWidget::itemChanged,this,&SelectionInfoTable::itemChanged);
 }
 
 void SelectionInfoTable::setText(int x, int y, std::string text, bool editable) {
@@ -82,4 +87,30 @@ void SelectionInfoTable::updateWithLevelObject(LevelObject lo) {
         ssSettings << std::hex << std::setw(2) << (uint16_t)lo.settings.at(j) << " ";
     }
     this->setText(1,i++,ssSettings.str(),true);
+}
+
+void SelectionInfoTable::cellDoubleClicked(int row, int column) {
+    auto cell = this->item(row,column);
+    if (cell == nullptr) {
+        YUtils::printDebug("Cell double clicked is null",DebugType::WARNING);
+        return;
+    }
+    if (cell->flags() & Qt::ItemIsEditable) {
+        this->cellBeingEdited = cell;
+    }
+}
+
+void SelectionInfoTable::itemChanged(QTableWidgetItem *item) {
+    if (item == nullptr) {
+        YUtils::printDebug("itemChanged given null item",DebugType::WARNING);
+        return;
+    }
+    if (this->cellBeingEdited == nullptr) {
+        // Fail silently, it will output a LOT
+        return;
+    }
+    if (item == this->cellBeingEdited) {
+        std::cout << item->text().toStdString() << std::endl;
+        this->cellBeingEdited = nullptr;
+    }
 }
