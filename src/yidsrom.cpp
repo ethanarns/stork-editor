@@ -100,6 +100,7 @@ void YidsRom::openRom(std::string fileName) {
     auto effectFile = this->getMajorObjPltFile("objeffect.arcz",this->effectPixelTiles,this->effectPalettes);
     this->objectFiles[ObjectFileName::OBJEFFECT] = effectFile;
     this->objectFiles[ObjectFileName::OBJSBBLOCK] = this->getObjPltFile("objsbblock.arc");
+    this->objectFiles[ObjectFileName::OBJSBKACHIKACHI] = this->getObjPltFile("objsbkachikachi.arcz");
 
     std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,0);
     //auto crsb = this->loadCrsb(crsbFileName);

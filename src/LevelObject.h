@@ -19,7 +19,8 @@
 enum ObjectFileName {
     OBJSET,
     OBJEFFECT,
-    OBJSBBLOCK
+    OBJSBBLOCK,
+    OBJSBKACHIKACHI
 };
 
 struct ObjectGraphicMetadata {
