@@ -342,6 +342,8 @@ MainWindow::MainWindow() {
     this->spriteFileSelect->addItem("---");
     this->spriteFileSelect->addItem("objsbkachikachi.arcz");
     this->spriteFileSelect->addItem("objset.arcz");
+    this->spriteFileSelect->addItem("objiceblock.arcz");
+    this->spriteFileSelect->addItem("objsbblock.arc");
     this->spriteFileSelect->setCurrentText("---");
     this->spriteFileSelect->setEnabled(false);
     connect(this->spriteFileSelect,&QComboBox::currentTextChanged,this->objtilesTable,&ObjTilesTable::doFileLoad);

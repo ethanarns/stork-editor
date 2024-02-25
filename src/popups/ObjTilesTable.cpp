@@ -35,7 +35,7 @@ ObjTilesTable::ObjTilesTable(QWidget* parent, YidsRom* rom) {
 }
 
 void ObjTilesTable::loadObjectTiles(std::string fullFileName) {
-    std::cout << "loadObjectTiles()" << std::endl;
+    YUtils::printDebug("Loading object tiles to the sprite tile popup",DebugType::VERBOSE);
     auto objectFile = this->yidsRom->getObjPltFile(fullFileName);
     this->wipeTiles();
     // The following (messily) spits out all available tiles for debug purposes
