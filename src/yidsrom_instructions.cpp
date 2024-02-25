@@ -14,8 +14,6 @@
 #include <vector>
 
 void YidsRom::loadMpdz(std::string fileName_noext) {
-    using namespace std;
-    MapFile mf;
     std::stringstream ssMpdzLoad;
     ssMpdzLoad << "Loading MPDZ (Map) '" << fileName_noext << "'";
     YUtils::printDebug(ssMpdzLoad.str(),DebugType::VERBOSE);
