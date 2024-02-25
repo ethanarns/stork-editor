@@ -28,6 +28,7 @@ YidsRom::YidsRom() {
 }
 
 void YidsRom::openRom(std::string fileName) {
+    YUtils::printDebug("Opening ROM");
     auto compRom = YUtils::getUint8VectorFromFile(fileName);
     this->filesLoaded = false;
 
@@ -119,6 +120,7 @@ YidsRom::~YidsRom() {
 }
 
 void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &compedRom) {
+    YUtils::printDebug("Initializing ARM9 data");
     // Start of ARM9 ROM data, aka "MainRomOffset"
     // this->romFile.seekg(0x20);
     // Address romStart9;
