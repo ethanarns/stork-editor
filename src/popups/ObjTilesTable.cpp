@@ -113,7 +113,9 @@ void ObjTilesTable::wipeTiles() {
     }
 }
 
-void ObjTilesTable::doFileLoad() {
-    this->yidsRom->objectRenderFiles["objsbkachikachi.arcz"] = this->yidsRom->getObjPltFile("objsbkachikachi.arcz");
-    this->loadObjectTiles("objsbkachikachi.arcz");
+void ObjTilesTable::doFileLoad(const QString text) {
+    auto archiveFileName = text.toStdString();
+    std::cout << "Loading sprite file '" << archiveFileName << "'" << std::endl;
+    this->yidsRom->objectRenderFiles[archiveFileName] = this->yidsRom->getObjPltFile(archiveFileName);
+    this->loadObjectTiles(archiveFileName);
 }

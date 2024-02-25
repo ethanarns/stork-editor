@@ -336,12 +336,16 @@ MainWindow::MainWindow() {
     QVBoxLayout* objtilesLayout = new QVBoxLayout(this);
     this->objtilesTable = new ObjTilesTable(this,this->rom);
     // Set up dropdown //
-    this->spriteFileSelectButton = new QPushButton("&Load file...", this);
-    this->spriteFileSelectButton->setObjectName("spriteFileSelectButton");
-    this->spriteFileSelectButton->setToolTip(tr("Load an object render file"));
-    this->spriteFileSelectButton->setEnabled(false);
-    connect(this->spriteFileSelectButton,&QPushButton::released,this->objtilesTable,&ObjTilesTable::doFileLoad);
-    objtilesLayout->addWidget(this->spriteFileSelectButton);
+    this->spriteFileSelect = new QComboBox(this);
+    this->spriteFileSelect->setObjectName("spriteFileSelectDropdown");
+    this->spriteFileSelect->setToolTip(tr("Load an object render file"));
+    this->spriteFileSelect->addItem("---");
+    this->spriteFileSelect->addItem("objsbkachikachi.arcz");
+    this->spriteFileSelect->addItem("objset.arcz");
+    this->spriteFileSelect->setCurrentText("---");
+    this->spriteFileSelect->setEnabled(false);
+    connect(this->spriteFileSelect,&QComboBox::currentTextChanged,this->objtilesTable,&ObjTilesTable::doFileLoad);
+    objtilesLayout->addWidget(this->spriteFileSelect);
     objtilesLayout->addWidget(this->objtilesTable);
     this->objtilesPopup->setLayout(objtilesLayout);
 
@@ -431,7 +435,7 @@ void MainWindow::LoadRom() {
         this->objtilesPopup->setMinimumWidth(350);
         this->objtilesPopup->setMinimumHeight(300);
         this->objtilesPopup->setWindowTitle("Select an object render data archive to view");
-        this->spriteFileSelectButton->setEnabled(true);
+        this->spriteFileSelect->setEnabled(true);
         this->objtilesPopup->show();
 
         // Palette popup //

@@ -49,7 +49,7 @@ private:
 
     QWidget* objtilesPopup;
     ObjTilesTable* objtilesTable;
-    QPushButton* spriteFileSelectButton;
+    QComboBox* spriteFileSelect;
 
     QWidget* palettePopup;
     QWidget* levelSelectPopup;

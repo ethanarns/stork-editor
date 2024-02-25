@@ -12,7 +12,7 @@ public:
     void loadObjectTiles(std::string fullFileName);
     void tableClicked(int row, int column);
     void wipeTiles();
-    void doFileLoad();
+    void doFileLoad(const QString text);
 private:
     const static int OBJTILES_CELL_SIZE_PX = 16;
     const static int OBJTILES_TABLE_WIDTH = 0x10;
