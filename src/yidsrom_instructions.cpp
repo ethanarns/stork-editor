@@ -167,9 +167,9 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
                 currentLoadingPalette.paletteData[curPaletteIndex] = subsection.at(curPaletteIndex);
             }
             currentLoadingPalette.index = currentPaletteIndex;
-            currentPaletteIndex++;
             currentLoadingPalette.address = indexObjset;
-            objFileData.objectPalettes[curTileStartOffset] = currentLoadingPalette;
+            objFileData.objectPalettes[currentPaletteIndex] = currentLoadingPalette;
+            currentPaletteIndex++;
         } else {
             std::cerr << "[ERROR] Known objset magic number not found! Instead found ";
             std::cerr << hex << instructionCheck << " at " << std::hex << (indexObjset - 4) << std::endl;

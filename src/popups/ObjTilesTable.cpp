@@ -36,18 +36,10 @@ ObjTilesTable::ObjTilesTable(QWidget* parent, YidsRom* rom) {
 
 void ObjTilesTable::loadObjectTiles(std::string fullFileName) {
     std::cout << "loadObjectTiles()" << std::endl;
-    std::cout << fullFileName << std::endl;
-    auto objectFile = this->yidsRom->objectRenderFiles[fullFileName];
-    auto findTry = this->yidsRom->objectRenderFiles.find(fullFileName);
-    if (findTry == this->yidsRom->objectRenderFiles.end()) {
-        std::stringstream ssNotFound;
-        ssNotFound << "Sprite file with name '" << fullFileName << "' not found";
-        YUtils::popupAlert(ssNotFound.str());
-        return;
-    }
+    auto objectFile = this->yidsRom->getObjPltFile(fullFileName);
     this->wipeTiles();
     // The following (messily) spits out all available tiles for debug purposes
-    auto tilesMap = &this->yidsRom->objectRenderFiles[fullFileName].objectPixelTiles;
+    auto tilesMap = &objectFile.objectPixelTiles;
     uint32_t mapSize = tilesMap->size();
     uint32_t yOffset = 0;
     uint32_t indexForOffset = 0;
@@ -69,7 +61,11 @@ void ObjTilesTable::loadObjectTiles(std::string fullFileName) {
             auto currentSubSection = YUtils::subVector(chartilesVector,start,end);
             auto qArray = YUtils::tileVectorToQByteArray(currentSubSection);
             newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,qArray);
-            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
+            if (objectFile.objectPalettes.size() > 0) {
+                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,objectFile.objectPalettes.at(0).paletteData);
+            } else {
+                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
+            }
             newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
             newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
             newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);
@@ -115,7 +111,5 @@ void ObjTilesTable::wipeTiles() {
 
 void ObjTilesTable::doFileLoad(const QString text) {
     auto archiveFileName = text.toStdString();
-    std::cout << "Loading sprite file '" << archiveFileName << "'" << std::endl;
-    this->yidsRom->objectRenderFiles[archiveFileName] = this->yidsRom->getObjPltFile(archiveFileName);
     this->loadObjectTiles(archiveFileName);
 }
