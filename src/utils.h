@@ -43,6 +43,7 @@ public:
     static void printLevelObject(LevelObject lo);
     static std::vector<uint8_t> compileObject(LevelObject lo);
     static std::vector<uint8_t> stringToVector(std::string &inputString);
+    static std::string relativeToEscapedAbs(std::string relPath);
     
     static int16_t roundI16Down(int16_t unrounded, int16_t multiple);
 

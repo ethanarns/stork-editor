@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <fstream>
+#include <iomanip>
 
 #include <QtCore>
 #include <QColor>
@@ -448,4 +449,11 @@ void YUtils::popupAlert(std::string msg) {
         "Stork Editor",
         msg.c_str()
     );
+}
+
+std::string YUtils::relativeToEscapedAbs(std::string relPath) {
+    std::stringstream res;
+    auto absPath = std::filesystem::absolute(relPath);
+    res << std::quoted(absPath.string());
+    return res.str();
 }

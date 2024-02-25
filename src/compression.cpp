@@ -15,7 +15,8 @@
 #include <QtGlobal>
 
 const char* ROM_EXTRACT_DIR = "_nds_unpack";
-const char* NDSTOOL_PATH = "./lib/ndstool";
+const char* NDSTOOL_PATH = "lib/ndstool";
+const char* NDSTOOL_PATH_WIN = "lib\\ndstool";
 
 /**
  * @brief Modifies the file in place with Backwards Decompression (BLZ)
@@ -77,34 +78,21 @@ std::vector<uint8_t> YCompression::lzssVectorRecomp(std::vector<uint8_t>& uncomp
 std::filesystem::path YCompression::getAbsoluteRomPart(std::string dataName) {
     std::string dataPath = "./"; // "." means current directory, even within a greater path
     dataPath = dataPath.append(ROM_EXTRACT_DIR).append("/").append(dataName);
-    std::filesystem::path result = std::filesystem::absolute(dataPath);
-    std::stringstream ss;
-    ss << "'" << result.string() << "'";
-    std::filesystem::path result2(ss.str());
-    return result2;
+    return YUtils::relativeToEscapedAbs(dataPath);
 }
 
 void YCompression::unpackRom(std::string romFileName) {
-    std::string execPath = NDSTOOL_PATH;
+    std::string toolPath = NDSTOOL_PATH;
     #ifdef _WIN32
         YUtils::printDebug("Switching NDSTool unpack to Windows mode");
-        execPath = execPath.append(".exe");
+        toolPath = NDSTOOL_PATH_WIN;
     #endif
 
-    execPath = std::filesystem::absolute(execPath).string();
+    auto execPath = toolPath;
     if (!std::filesystem::exists(execPath)) {
         YUtils::popupAlert("NDSTool not found");
         exit(EXIT_FAILURE);
     }
-
-#ifdef _WIN32
-    std::stringstream ssWindowsExecPath;
-    // Escape
-    ssWindowsExecPath << "& '" << execPath << "'";
-    execPath = ssWindowsExecPath.str();
-#else
-    // TODO: Escape Linux paths?
-#endif
 
     if (std::filesystem::exists(ROM_EXTRACT_DIR)) {
         YUtils::printDebug("ROM unpack directory already exists, skipping extraction",DebugType::VERBOSE);
@@ -114,10 +102,7 @@ void YCompression::unpackRom(std::string romFileName) {
         std::filesystem::create_directory(ROM_EXTRACT_DIR);
     }
 
-    std::stringstream ssRomFileName;
-    ssRomFileName << "'" << romFileName << "'";
-
-    execPath = execPath.append(" -x ").append(ssRomFileName.str());
+    execPath = execPath.append(" -x ").append(YUtils::relativeToEscapedAbs(romFileName));
 
     auto arm9 = YCompression::getAbsoluteRomPart("arm9.bin");
     execPath = execPath.append(" -9 ").append(arm9.string());
@@ -143,10 +128,7 @@ void YCompression::unpackRom(std::string romFileName) {
     auto banner = YCompression::getAbsoluteRomPart("banner.bin");
     execPath = execPath.append(" -t ").append(banner.string());
 #ifdef _WIN32
-    std::stringstream psCommand;
-    psCommand << "powershell -command \"";
-    psCommand << execPath << "\"";
-    execPath = psCommand.str();
+    // Can CMD be silenced in one line?
 #else
     execPath.append(" 1> /dev/null");
 #endif
@@ -163,17 +145,18 @@ void YCompression::unpackRom(std::string romFileName) {
 }
 
 void YCompression::repackRom(std::string outputFileName) {
-    std::string execPath = NDSTOOL_PATH;
-    #ifdef _WIN32
-        YUtils::printDebug("Switching NDSTool repack to Windows mode");
-        execPath = execPath.append(".exe");
-    #endif
+    std::string toolPath = NDSTOOL_PATH;
+#ifdef _WIN32
+    YUtils::printDebug("Switching NDSTool unpack to Windows mode");
+    toolPath = NDSTOOL_PATH_WIN;
+#endif
 
-    execPath = std::filesystem::absolute(execPath).string();
+    auto execPath = toolPath;
     if (!std::filesystem::exists(execPath)) {
         YUtils::popupAlert("NDSTool not found");
         exit(EXIT_FAILURE);
     }
+
     if (!std::filesystem::exists(ROM_EXTRACT_DIR)) {
         YUtils::popupAlert("ROM unpack directory not found, canceling repack");
         return;
@@ -181,9 +164,7 @@ void YCompression::repackRom(std::string outputFileName) {
     if (std::filesystem::exists(outputFileName)) {
         std::filesystem::remove(outputFileName);
     }
-    std::stringstream ssOutputFile;
-    ssOutputFile << "'" << outputFileName << "'";
-    execPath = execPath.append(" -c ").append(ssOutputFile.str());
+    execPath = execPath.append(" -c ").append(YUtils::relativeToEscapedAbs(outputFileName));
 
     auto arm9 = YCompression::getAbsoluteRomPart("arm9.bin");
     execPath = execPath.append(" -9 ").append(arm9.string());
@@ -209,10 +190,7 @@ void YCompression::repackRom(std::string outputFileName) {
     auto banner = YCompression::getAbsoluteRomPart("banner.bin");
     execPath = execPath.append(" -t ").append(banner.string());
 #ifdef _WIN32
-    std::stringstream psCommand;
-    psCommand << "powershell -command \"";
-    psCommand << execPath << "\"";
-    execPath = psCommand.str();
+    // Can it be silenced on the end line?
 #else
     execPath.append(" 1> /dev/null");
 #endif
