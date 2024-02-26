@@ -7,6 +7,7 @@
 
 struct ObjbFrame {
     // In the binary, this is a direct offset in bytes to the ObjFrameBuild associated, no <<s
+    // Starts from first build offset, not OBJB or length
     uint16_t buildOffset;
     uint8_t holdTime;
     int8_t frameJump;
