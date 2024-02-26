@@ -3,6 +3,7 @@
 #include "../Chartile.h"
 #include "../PixelDelegate.h"
 #include "../utils.h"
+#include "../data/ObjectRenderFile.h"
 
 #include <iostream>
 #include <string>
@@ -111,5 +112,7 @@ void ObjTilesTable::wipeTiles() {
 
 void ObjTilesTable::doFileLoad(const QString text) {
     auto archiveFileName = text.toStdString();
+    std::vector<uint8_t> fileVectorObjset = this->yidsRom->getByteVectorFromFile(archiveFileName);
+    auto obar = new ObjectRenderArchive(fileVectorObjset);
     this->loadObjectTiles(archiveFileName);
 }

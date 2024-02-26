@@ -107,6 +107,11 @@ int16_t YUtils::getInt16FromVec(std::vector<uint8_t> &bytes, uint32_t location) 
     return firstS + secondS;
 }
 
+int16_t YUtils::getSint16FromVec(std::vector<uint8_t> &bytes, uint32_t location) {
+    auto u = YUtils::getUint16FromVec(bytes,location);
+    return static_cast<int16_t>(u);
+}
+
 size_t YUtils::getStreamLength(std::ifstream& buffer) {
     using namespace std;
     uint32_t priorPos = buffer.tellg();
