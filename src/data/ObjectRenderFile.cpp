@@ -35,7 +35,7 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
         if (headerCheck == Constants::OBJB_MAGIC_NUM) {
             YUtils::printDebug("Loading OBJB");
             uint32_t endPos = obarIndex + innerLength;
-            auto objb = new ObjectTileData(obarVector, obarIndex, innerLength);
+            auto objb = new ObjectTileData(obarVector, obarIndex, endPos);
             this->objectTileDataVector.push_back(objb);
             std::cout << "pushed back" << std::endl;
             obarIndex = endPos;
@@ -55,7 +55,7 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
     }
 }
 
-ObjectTileData::ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarIndex, uint32_t length) {
+ObjectTileData::ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarIndex, uint32_t end) {
     // Skipped the header and length already
     // Should start with frames
     bool continueFrames = true;
@@ -106,8 +106,7 @@ ObjectTileData::ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarI
         this->frameBuilds.push_back(frameBuild);
     }
     // Now the rest of the tiles
-    std::cout << "Remaining tile time" << std::endl;
-    for (int i = 0; i < this->frameBuilds.size(); i++) {
+    while (obarIndex < end) {
         auto chartileArray = YUtils::subVector(obarVector,obarIndex,obarIndex + Constants::CHARTILE_DATA_SIZE);
         auto objchar = new ObjChartile();
         objchar->_binOffset = obarIndex;
@@ -115,5 +114,4 @@ ObjectTileData::ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarI
         this->chartiles.push_back(objchar);
         obarIndex += Constants::CHARTILE_DATA_SIZE;
     }
-    std::cout << "Done!" << std::endl;
 }

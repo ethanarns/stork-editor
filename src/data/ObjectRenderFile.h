@@ -53,7 +53,7 @@ struct ObjChartile {
 class ObjectTileData {
 public:
     // Uncompressed
-    ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarIndex, uint32_t length);
+    ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarIndex, uint32_t end);
 
     std::vector<ObjbFrame*> frames;
     std::vector<ObjFrameBuild*> frameBuilds;
