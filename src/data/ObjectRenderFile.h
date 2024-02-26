@@ -10,12 +10,14 @@ struct ObjbFrame {
     uint16_t buildOffset;
     uint8_t holdTime;
     int8_t frameJump;
+    uint32_t _binOffset;
     std::string toString() {
         std::stringstream ss;
         ss << "ObjbFrame { buildOffset: 0x";
         ss << std::hex << this->buildOffset;
         ss << ", holdTime: 0x" << std::hex << (uint16_t)this->holdTime;
         ss << ", frameJump: " << std::dec << (int16_t)this->frameJump;
+        ss << ", _binOffset: 0x" << std::hex << this->_binOffset;
         ss << " }";
         return ss.str();
     };
@@ -28,6 +30,7 @@ struct ObjFrameBuild {
     int16_t xOffset;
     int16_t yOffset;
     uint16_t flags;
+    uint32_t _binOffset;
     std::string toString() {
         std::stringstream ss;
         ss << "ObjbFrameBuild { tileOffset: 0x";
@@ -35,9 +38,15 @@ struct ObjFrameBuild {
         ss << ", xOffset: " << std::dec << this->xOffset;
         ss << ", yOffset: " << std::dec << this->yOffset;
         ss << ", flags: 0x" << std::hex << this->flags;
+        ss << ", _binOffset: 0x" << std::hex << this->_binOffset;
         ss << " }";
         return ss.str();
     };
+};
+
+struct ObjChartile {
+    std::vector<uint8_t> tileVector;
+    uint32_t _binOffset;
 };
 
 // OBJB/OBJZ record
@@ -48,10 +57,12 @@ public:
 
     std::vector<ObjbFrame*> frames;
     std::vector<ObjFrameBuild*> frameBuilds;
+    std::vector<ObjChartile*> chartiles;
 };
 
 // OBAR
 class ObjectRenderArchive {
 public:
     ObjectRenderArchive(std::vector<uint8_t> obarVector);
+    std::vector<ObjectTileData*> objectTileDataVector;
 };

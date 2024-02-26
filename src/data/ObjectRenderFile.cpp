@@ -33,14 +33,24 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
         obarIndex += 4;
         auto innerSection = YUtils::subVector(obarVector,obarIndex,obarIndex + innerLength);
         if (headerCheck == Constants::OBJB_MAGIC_NUM) {
+            YUtils::printDebug("Loading OBJB");
+            uint32_t endPos = obarIndex + innerLength;
             auto objb = new ObjectTileData(obarVector, obarIndex, innerLength);
-            for (int i = 0; i < objb->frames.size(); i++) {
-                std::cout << objb->frames.at(i)->toString() << std::endl;
-            }
-            for (int y = 0; y < objb->frameBuilds.size(); y++) {
-                std::cout << objb->frameBuilds.at(y)->toString() << std::endl;
-            }
-            return;
+            this->objectTileDataVector.push_back(objb);
+            std::cout << "pushed back" << std::endl;
+            obarIndex = endPos;
+        } else if (headerCheck == Constants::PLTB_MAGIC_NUM) {
+            YUtils::printDebug("Unhandled PLTB record");
+            obarIndex += innerLength;
+        } else if (headerCheck == Constants::OBJZ_MAGIC_NUM) {
+            YUtils::printDebug("Unhandled OBJZ record");
+            obarIndex += innerLength;
+        } else {
+            std::stringstream ssUnknownHeader;
+            ssUnknownHeader << "Unknown header when loading OBAR file: ";
+            ssUnknownHeader << std::hex << headerCheck;
+            YUtils::printDebug(ssUnknownHeader.str(),DebugType::ERROR);
+            obarIndex += innerLength;
         }
     }
 }
@@ -50,6 +60,7 @@ ObjectTileData::ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarI
     // Should start with frames
     bool continueFrames = true;
     while (continueFrames) {
+        auto frameIndexLoc = obarIndex + 0;
         auto buildOffset = YUtils::getUint16FromVec(obarVector,obarIndex);
         obarIndex += 2;
         auto holdTime = obarVector.at(obarIndex);
@@ -65,11 +76,13 @@ ObjectTileData::ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarI
         frame->buildOffset = buildOffset;
         frame->holdTime = holdTime;
         frame->frameJump = frameJump;
+        frame->_binOffset = frameIndexLoc;
         this->frames.push_back(frame);
     }
     // Onto the next
     bool continueFrameBuilds = true;
     while (continueFrameBuilds) {
+        auto frameBuildIndexLoc = obarIndex + 0;
         auto tileOffset = YUtils::getUint16FromVec(obarVector,obarIndex);
         obarIndex += 2;
         auto xOffset = YUtils::getSint16FromVec(obarVector,obarIndex);
@@ -89,6 +102,18 @@ ObjectTileData::ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarI
         frameBuild->xOffset = xOffset;
         frameBuild->yOffset = yOffset;
         frameBuild->flags = flags;
+        frameBuild->_binOffset = frameBuildIndexLoc;
         this->frameBuilds.push_back(frameBuild);
     }
+    // Now the rest of the tiles
+    std::cout << "Remaining tile time" << std::endl;
+    for (int i = 0; i < this->frameBuilds.size(); i++) {
+        auto chartileArray = YUtils::subVector(obarVector,obarIndex,obarIndex + Constants::CHARTILE_DATA_SIZE);
+        auto objchar = new ObjChartile();
+        objchar->_binOffset = obarIndex;
+        objchar->tileVector = chartileArray;
+        this->chartiles.push_back(objchar);
+        obarIndex += Constants::CHARTILE_DATA_SIZE;
+    }
+    std::cout << "Done!" << std::endl;
 }
