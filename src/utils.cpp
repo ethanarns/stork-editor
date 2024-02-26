@@ -82,31 +82,6 @@ uint16_t YUtils::getUint16FromVec(std::vector<uint8_t> &bytes, uint32_t location
     return (uint16_t)(bytes.at(location+1) << 8) + (uint16_t)bytes.at(location);
 }
 
-int16_t YUtils::getInt16FromVec(std::vector<uint8_t> &bytes, uint32_t location) {
-    uint16_t first = bytes.at(location+1) << 8;
-    int16_t firstS;
-    // Cause it shows up as 0xFFFx
-    if (first <= INT16_MAX) {
-        firstS = static_cast<int16_t>(first);
-    } else if (first >= INT16_MIN) {
-        firstS = static_cast<int16_t>(first - INT16_MIN) + INT16_MIN;
-    } else {
-        YUtils::printDebug("Range error 1 in getInt16FromVec",DebugType::ERROR);
-        return 0;
-    }
-    uint16_t second = bytes.at(location);
-    int16_t secondS;
-    if (second <= INT16_MAX) {
-        secondS = static_cast<int16_t>(second);
-    } else if (second >= INT16_MIN) {
-        secondS = static_cast<int16_t>(second - INT16_MIN) + INT16_MIN;
-    } else {
-        YUtils::printDebug("Range error 1 in getInt16FromVec",DebugType::ERROR);
-        return 0;
-    }
-    return firstS + secondS;
-}
-
 int16_t YUtils::getSint16FromVec(std::vector<uint8_t> &bytes, uint32_t location) {
     auto u = YUtils::getUint16FromVec(bytes,location);
     return static_cast<int16_t>(u);

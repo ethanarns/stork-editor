@@ -6,6 +6,7 @@
 #include <sstream>
 
 struct ObjbFrame {
+    // In the binary, this is a direct offset in bytes to the ObjFrameBuild associated, no <<s
     uint16_t buildOffset;
     uint8_t holdTime;
     int8_t frameJump;
@@ -21,6 +22,8 @@ struct ObjbFrame {
 };
 
 struct ObjFrameBuild {
+    // Offset (<< 4) from very start of binary (or section?) to the frame in question
+    // For example, 0xe << 0xe0, means the chartile data starts 0xe0 after
     uint16_t tileOffset;
     int16_t xOffset;
     int16_t yOffset;

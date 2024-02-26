@@ -33,7 +33,6 @@ public:
     static size_t getStreamLength(std::ifstream& buffer);
     static uint32_t getUint32FromVec(std::vector<uint8_t> &bytes, uint32_t location);
     static uint16_t getUint16FromVec(std::vector<uint8_t> &bytes, uint32_t location);
-    static int16_t getInt16FromVec(std::vector<uint8_t> &bytes, uint32_t location);
     static int16_t getSint16FromVec(std::vector<uint8_t> &bytes, uint32_t location);
     static std::vector<uint8_t> uint32toVec(uint32_t inputInt);
     static std::vector<uint8_t> uint16toVec(uint16_t inputInt);
