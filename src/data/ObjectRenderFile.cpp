@@ -30,6 +30,10 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
         auto headerCheck = YUtils::getUint32FromVec(obarVector,obarIndex);
         obarIndex += 4;
         auto innerLength = YUtils::getUint32FromVec(obarVector,obarIndex);
+        if (innerLength <= 0x4) {
+            YUtils::printDebug("Very short innerLength",DebugType::ERROR);
+            return;
+        }
         obarIndex += 4;
         auto innerSection = YUtils::subVector(obarVector,obarIndex,obarIndex + innerLength);
         if (headerCheck == Constants::OBJB_MAGIC_NUM) {
@@ -37,10 +41,15 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
             uint32_t endPos = obarIndex + innerLength;
             auto objb = new ObjectTileData(obarVector, obarIndex, endPos);
             this->objectTileDataVector.push_back(objb);
-            std::cout << "pushed back" << std::endl;
-            obarIndex = endPos;
+            if (obarIndex != endPos) {
+                std::stringstream ssLengthObjb;
+                ssLengthObjb << "obarIndex != endPos: 0x" << std::hex;
+                ssLengthObjb << obarIndex << " != 0x" << std::hex << endPos;
+                YUtils::printDebug(ssLengthObjb.str(),DebugType::WARNING);
+                obarIndex = endPos;
+            }
         } else if (headerCheck == Constants::PLTB_MAGIC_NUM) {
-            YUtils::printDebug("Unhandled PLTB record");
+            //YUtils::printDebug("Unhandled PLTB record");
             obarIndex += innerLength;
         } else if (headerCheck == Constants::OBJZ_MAGIC_NUM) {
             YUtils::printDebug("Unhandled OBJZ record");
@@ -53,6 +62,7 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
             obarIndex += innerLength;
         }
     }
+    std::cout << "Loop done" << std::endl;
 }
 
 ObjectTileData::ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarIndex, uint32_t end) {
