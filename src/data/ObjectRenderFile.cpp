@@ -37,17 +37,11 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
         obarIndex += 4;
         auto innerSection = YUtils::subVector(obarVector,obarIndex,obarIndex + innerLength);
         if (headerCheck == Constants::OBJB_MAGIC_NUM) {
-            YUtils::printDebug("Loading OBJB");
+            //YUtils::printDebug("Loading OBJB");
             uint32_t endPos = obarIndex + innerLength;
             auto objb = new ObjectTileData(obarVector, obarIndex, endPos);
             this->objectTileDataVector.push_back(objb);
-            if (obarIndex != endPos) {
-                std::stringstream ssLengthObjb;
-                ssLengthObjb << "obarIndex != endPos: 0x" << std::hex;
-                ssLengthObjb << obarIndex << " != 0x" << std::hex << endPos;
-                YUtils::printDebug(ssLengthObjb.str(),DebugType::WARNING);
-                obarIndex = endPos;
-            }
+            obarIndex = endPos;
         } else if (headerCheck == Constants::PLTB_MAGIC_NUM) {
             //YUtils::printDebug("Unhandled PLTB record");
             obarIndex += innerLength;
@@ -62,21 +56,16 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
             obarIndex += innerLength;
         }
     }
-    std::cout << "Loop done" << std::endl;
 }
 
 ObjectTileData::ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarIndex, uint32_t end) {
-    // Skipped the header and length already
-    // Should start with frames
-    bool continueFrames = true;
     uint32_t startIndex = obarIndex + 0;
-    uint32_t highestOffset = 0;
+    // Just take the entire chunk, it's not smart to try and calc it a different way
+    this->byteData = YUtils::subVector(obarVector,startIndex,end);
+    bool continueFrames = true;
     while (continueFrames) {
         auto frameIndexLoc = obarIndex + 0;
         auto buildOffset = YUtils::getUint16FromVec(obarVector,obarIndex);
-        if (buildOffset > highestOffset) {
-            highestOffset = buildOffset;
-        }
         obarIndex += 2;
         auto holdTime = obarVector.at(obarIndex);
         obarIndex++;
@@ -93,61 +82,30 @@ ObjectTileData::ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarI
         frame->holdTime = holdTime;
         frame->frameJump = frameJump;
         frame->_binOffset = frameIndexLoc;
-        this->frames.push_back(frame);
-    }
-    uint32_t indexOfFirstBuildFrame = obarIndex;
-    // std::cout << "indedOfFirstBuildFrame: 0x" << std::hex << indexOfFirstBuildFrame << std::endl;
-    // std::cout << "lowestOffset: 0x" << std::hex << lowestOffset << std::endl;
-    // std::cout << "highestOffset: 0x" << std::hex << highestOffset << std::endl;
-    uint32_t firstNotBuildFrameIndex = indexOfFirstBuildFrame + highestOffset;
-    uint32_t lowestOffset = 0xffff;
-    while (obarIndex < firstNotBuildFrameIndex) {
-        auto frameBuildIndexLoc = obarIndex + 0;
-        auto tileOffset = YUtils::getUint16FromVec(obarVector,obarIndex);
-        if (tileOffset < lowestOffset) {
-            lowestOffset = tileOffset;
-        }
-        obarIndex += 2;
-        auto xOffset = YUtils::getSint16FromVec(obarVector,obarIndex);
-        obarIndex += 2;
-        auto yOffset = YUtils::getSint16FromVec(obarVector,obarIndex);
-        obarIndex += 2;
-        auto flags = YUtils::getUint16FromVec(obarVector,obarIndex);
-        obarIndex += 2;
+        // Find the build frame
+        uint32_t buildFrameLocation = frame->buildOffset + frame->_binOffset;
+        auto tileOffset = YUtils::getUint16FromVec(obarVector,buildFrameLocation);
+        auto xOffset = YUtils::getSint16FromVec(obarVector,buildFrameLocation+2);
+        auto yOffset = YUtils::getSint16FromVec(obarVector,buildFrameLocation+4);
+        auto flags = YUtils::getUint16FromVec(obarVector,buildFrameLocation+6);
         auto frameBuild = new ObjFrameBuild();
         frameBuild->tileOffset = tileOffset;
         frameBuild->xOffset = xOffset;
         frameBuild->yOffset = yOffset;
         frameBuild->flags = flags;
-        frameBuild->_binOffset = frameBuildIndexLoc;
-        // // 4 bytes worth of zeroes
-        // if (tileOffset == 0x0000) {
-        //     // Loop null terminated
-        //     continueFrameBuilds = false;
-        //     break;
-        // }
-        this->frameBuilds.push_back(frameBuild);
+        frameBuild->_binOffset = buildFrameLocation;
+        // Attach the build frame
+        frame->buildFrame = frameBuild;
+        this->frames.push_back(frame);
     }
-    // for (int i = 0; i < this->frameBuilds.size(); i++) {
-    //     std::cout << this->frameBuilds.at(i)->toString() << std::endl;
-    // }
-    // std::cout << "lowestOffset << 4: 0x" << std::hex << (lowestOffset << 4) << std::endl;
-    // std::cout << "startIndex: 0x" << std::hex << startIndex << std::endl;
-    // std::cout << "Start of chartiles: 0x" << std::hex << (startIndex + (lowestOffset << 4)) << std::endl;
-    obarIndex = (startIndex + (lowestOffset << 4));
-    // Now the rest of the tiles
-    while (obarIndex < end) {
-        auto chartileArray = YUtils::subVector(obarVector,obarIndex,obarIndex + Constants::CHARTILE_DATA_SIZE);
-        auto objchar = new ObjChartile();
-        objchar->_binOffset = obarIndex;
-        objchar->tileVector = chartileArray;
-        this->chartiles.push_back(objchar);
-        obarIndex += Constants::CHARTILE_DATA_SIZE;
+}
+
+void ObjectTileData::getFrameData(uint32_t frameIndex) {
+    if (frameIndex >= this->frames.size()) {
+        YUtils::printDebug("frameIndex out of range",DebugType::ERROR);
+        return;
     }
-    // if (obarIndex != end) {
-    //     std::cout << "Not match index vs end" << std::endl;
-    //     std::cout << std::hex << obarIndex << std::endl;
-    //     std::cout << std::hex << end << std::endl;
-    //     exit(EXIT_FAILURE);
-    // }
+    auto theFrame = this->frames.at(frameIndex);
+    std::cout << theFrame->toString() << std::endl;
+    std::cout << theFrame->buildFrame->toString() << std::endl;
 }
