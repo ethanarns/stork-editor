@@ -116,35 +116,69 @@ void ObjTilesTable::doFileLoad(const QString text) {
     auto archiveFileName = text.toStdString();
     std::vector<uint8_t> fileVectorObjset = this->yidsRom->getByteVectorFromFile(archiveFileName);
     auto obarData = new ObjectRenderArchive(fileVectorObjset);
-    auto objb = obarData->objectTileDataVector.at(0);
-    objb->getFrameData(0);
-    // //this->loadObjectTiles(archiveFileName);
-    // this->wipeTiles();
-    // uint32_t itemIndex = 0;
-    // this->setRowCount(0x1000);
-    // std::cout << "doing render loop" << std::endl;
-    // for (uint obarTileIndex = 0; obarTileIndex < obarData->objectTileDataVector.size(); obarTileIndex++) {
-    //     auto objb = obarData->objectTileDataVector.at(obarTileIndex);
-    //     auto tiles = objb->chartiles;
-    //     for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
-    //         auto objChartile = tiles.at(tilesIndex);
-    //         auto byteArray = YUtils::tileVectorToQByteArray(objChartile->tileVector);
-    //         auto tileItem = new QTableWidgetItem();
-    //         tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,byteArray);
-    //         tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
-    //         tileItem->setData(PixelDelegateData::FLIP_H_BG1,false);
-    //         tileItem->setData(PixelDelegateData::FLIP_V_BG1,false);
-    //         tileItem->setData(PixelDelegateData::DEBUG_DATA,objChartile->_binOffset);
-    //         tileItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
-    //         tileItem->setData(PixelDelegateData::DRAW_BG1,true);
-    //         uint32_t x = itemIndex % 0x10;
-    //         uint32_t y = itemIndex / 0x10;
-    //         if (this->item(y,x) != nullptr) {
-    //             delete this->item(y,x);
-    //         }
-    //         this->setItem(y,x,tileItem);
-    //         itemIndex++;
-    //     }
-    // }
+    // auto objb = obarData->objectTileDataVector.at(0);
+    // auto frame = objb->getFrameData(0);
+    // std::cout << frame->toString() << std::endl;
+    // std::cout << frame->buildFrame->toString() << std::endl;
+    // uint32_t frameMetaOffset = frame->buildFrame->flags & 0b11111;
+    // frameMetaOffset *= 3;
+    // uint32_t frameMetaBaseAddress = 0x020D'5E88;
+    // uint32_t frameMetaAddress = frameMetaBaseAddress + frameMetaOffset;
+    // std::cout << "0x" << std::hex << frameMetaAddress << std::endl;
+    // uint32_t trueMetaAddress = YUtils::conv2xAddrToFileAddr(frameMetaAddress);
+    // std::cout << "0x" << std::hex << (uint16_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+0) << std::endl;
+    // std::cout << "0x" << std::hex << (uint16_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+1) << std::endl;
+    // std::cout << "0x" << std::hex << (uint16_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+2) << std::endl;
+    // auto tiles = objb->getChartiles(frame->buildFrame->tileOffset << 4,1);
+    //this->loadObjectTiles(archiveFileName);
+    this->wipeTiles();
+    uint32_t itemIndex = 0;
+    this->setRowCount(0x1000);
+    std::cout << "doing render loop" << std::endl;
+    for (uint obarTileIndex = 0; obarTileIndex < obarData->objectTileDataVector.size(); obarTileIndex++) {
+        auto objb = obarData->objectTileDataVector.at(obarTileIndex);
+        for (uint frameIndex = 0; frameIndex < objb->frames.size(); frameIndex++) {
+            auto frame = objb->getFrameData(frameIndex);
+            auto tiles = objb->getChartiles(frame->buildFrame->tileOffset << 4,4);
+            for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
+                auto objChartile = tiles.at(tilesIndex);
+                auto tileItem = new QTableWidgetItem();
+                tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,objChartile);
+                tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
+                tileItem->setData(PixelDelegateData::FLIP_H_BG1,false);
+                tileItem->setData(PixelDelegateData::FLIP_V_BG1,false);
+                tileItem->setData(PixelDelegateData::DEBUG_DATA,0x69);
+                tileItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
+                tileItem->setData(PixelDelegateData::DRAW_BG1,true);
+                uint32_t x = itemIndex % 0x10;
+                uint32_t y = itemIndex / 0x10;
+                if (this->item(y,x) != nullptr) {
+                    delete this->item(y,x);
+                }
+                this->setItem(y,x,tileItem);
+                itemIndex++;
+            }
+        }
+        // auto tiles = objb->getChartiles();
+        // for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
+        //     auto objChartile = tiles.at(tilesIndex);
+        //     //auto byteArray = YUtils::tileVectorToQByteArray(objChartile->tileVector);
+        //     auto tileItem = new QTableWidgetItem();
+        //     tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tiles.at(0));
+        //     tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
+        //     tileItem->setData(PixelDelegateData::FLIP_H_BG1,false);
+        //     tileItem->setData(PixelDelegateData::FLIP_V_BG1,false);
+        //     tileItem->setData(PixelDelegateData::DEBUG_DATA,0x69);
+        //     tileItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
+        //     tileItem->setData(PixelDelegateData::DRAW_BG1,true);
+        //     uint32_t x = itemIndex % 0x10;
+        //     uint32_t y = itemIndex / 0x10;
+        //     if (this->item(y,x) != nullptr) {
+        //         delete this->item(y,x);
+        //     }
+        //     this->setItem(y,x,tileItem);
+        //     itemIndex++;
+        // }
+    }
     std::cout << "doFileLoad done" << std::endl;
 }

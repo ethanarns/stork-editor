@@ -5,6 +5,8 @@
 #include <string>
 #include <sstream>
 
+#include <QByteArray>
+
 struct ObjFrameBuild {
     // Offset (<< 4) from very start of binary (or section?) to the frame in question
     // For example, 0xe << 0xe0, means the chartile data starts 0xe0 after
@@ -56,9 +58,11 @@ class ObjectTileData {
 public:
     // Uncompressed
     ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarIndex, uint32_t end);
-    void getFrameData(uint32_t frameIndex);
-private:
+    ObjbFrame* getFrameData(uint32_t frameIndex);
+    std::vector<QByteArray> getChartiles(uint32_t index, uint32_t count);
+
     std::vector<ObjbFrame*> frames;
+private:
     // Store raw, as the program accesses it that way
     std::vector<uint8_t> byteData;
 };

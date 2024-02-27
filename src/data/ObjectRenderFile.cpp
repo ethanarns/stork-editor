@@ -100,12 +100,20 @@ ObjectTileData::ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarI
     }
 }
 
-void ObjectTileData::getFrameData(uint32_t frameIndex) {
+ObjbFrame* ObjectTileData::getFrameData(uint32_t frameIndex) {
     if (frameIndex >= this->frames.size()) {
         YUtils::printDebug("frameIndex out of range",DebugType::ERROR);
-        return;
+        YUtils::popupAlert("frameIndex out of range");
     }
-    auto theFrame = this->frames.at(frameIndex);
-    std::cout << theFrame->toString() << std::endl;
-    std::cout << theFrame->buildFrame->toString() << std::endl;
+    return this->frames.at(frameIndex);
+}
+
+std::vector<QByteArray> ObjectTileData::getChartiles(uint32_t index, uint32_t count) {
+    std::vector<QByteArray> chartiles;
+    for (uint i = 0; i < count; i++) {
+        uint32_t curIndex = index + (i * Constants::CHARTILE_DATA_SIZE);
+        auto curSection = YUtils::subVector(this->byteData,curIndex,curIndex+Constants::CHARTILE_DATA_SIZE);
+        chartiles.push_back(YUtils::tileVectorToQByteArray(curSection));
+    }
+    return chartiles;
 }
