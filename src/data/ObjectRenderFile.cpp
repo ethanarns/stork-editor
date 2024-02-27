@@ -26,6 +26,7 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
     }
     uint32_t obarInternalLength = YUtils::getUint32FromVec(obarVector,obarIndex);
     obarIndex += 4;
+    uint32_t globalIndex = 0;
     while (obarIndex < obarDecompLength) {
         auto headerCheck = YUtils::getUint32FromVec(obarVector,obarIndex);
         obarIndex += 4;
@@ -37,18 +38,34 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
         obarIndex += 4;
         auto innerSection = YUtils::subVector(obarVector,obarIndex,obarIndex + innerLength);
         if (headerCheck == Constants::OBJB_MAGIC_NUM) {
-            //YUtils::printDebug("Loading OBJB");
             uint32_t endPos = obarIndex + innerLength;
             auto objb = new ObjectTileData(obarVector, obarIndex, endPos);
+            // Metadata
+            objb->_globalIndex = globalIndex;
+            globalIndex++;
+            objb->_obarAddress = obarIndex;
+            // Push it
             this->objectTileDataVector.push_back(objb);
             obarIndex = endPos;
         } else if (headerCheck == Constants::PLTB_MAGIC_NUM) {
-            //YUtils::printDebug("Unhandled PLTB record");
+            auto pltbSector = YUtils::subVector(obarVector,obarIndex,obarIndex+innerLength);
+            auto objPltb = new ObjPltb();
+            // Metadata
+            objPltb->_globalIndex = globalIndex;
+            globalIndex++;
+            objPltb->_obarAddress = obarIndex;
+            // Push it
+            this->objectPaletteDataVector.push_back(objPltb);
             obarIndex += innerLength;
         } else if (headerCheck == Constants::OBJZ_MAGIC_NUM) {
             auto sectionCompressed = YUtils::subVector(obarVector,obarIndex,obarIndex + innerLength);
             auto decomp = YCompression::lz10decomp(sectionCompressed);
             auto objz = new ObjectTileData(decomp);
+            // Metadata
+            objz->_globalIndex = globalIndex;
+            globalIndex++;
+            objz->_obarAddress = obarIndex;
+            // Push it
             this->objectTileDataVector.push_back(objz);
             obarIndex += innerLength;
         } else {

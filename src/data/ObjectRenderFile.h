@@ -28,6 +28,12 @@ struct ObjFrameBuild {
     };
 };
 
+struct ObjPltb {
+    std::vector<QByteArray> palettes;
+    uint32_t _globalIndex;
+    uint32_t _obarAddress;
+};
+
 struct ObjbFrame {
     // In the binary, this is a direct offset in bytes to the ObjFrameBuild associated, no <<s
     // Starts from first build offset, not OBJB or length
@@ -58,6 +64,9 @@ public:
     std::vector<QByteArray> getChartiles(uint32_t index, uint32_t count);
 
     std::vector<ObjbFrame*> frames;
+
+    uint32_t _globalIndex;
+    uint32_t _obarAddress;
 private:
     // Store raw, as the program accesses it that way
     std::vector<uint8_t> byteData;
@@ -68,4 +77,5 @@ class ObjectRenderArchive {
 public:
     ObjectRenderArchive(std::vector<uint8_t> obarVector);
     std::vector<ObjectTileData*> objectTileDataVector;
+    std::vector<ObjPltb*> objectPaletteDataVector;
 };
