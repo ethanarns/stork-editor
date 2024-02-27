@@ -53,6 +53,7 @@ class ObjectTileData {
 public:
     // Uncompressed
     ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarIndex, uint32_t end);
+    ObjectTileData(std::vector<uint8_t> decompVector);
     ObjbFrame* getFrameData(uint32_t frameIndex);
     std::vector<QByteArray> getChartiles(uint32_t index, uint32_t count);
 
