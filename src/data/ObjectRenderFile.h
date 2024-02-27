@@ -48,11 +48,6 @@ struct ObjbFrame {
     };
 };
 
-struct ObjChartile {
-    std::vector<uint8_t> tileVector;
-    uint32_t _binOffset;
-};
-
 // OBJB/OBJZ record
 class ObjectTileData {
 public:

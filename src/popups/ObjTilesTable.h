@@ -18,4 +18,5 @@ private:
     const static int OBJTILES_TABLE_WIDTH = 0x10;
     const static int OBJTILES_ROW_COUNT_DEFAULT = 0x1;
     YidsRom* yidsRom;
+    uint32_t getTileCountMaybe(uint32_t buildFlags);
 };
