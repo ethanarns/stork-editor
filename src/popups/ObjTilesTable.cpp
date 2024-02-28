@@ -116,7 +116,7 @@ void ObjTilesTable::frameValueChanged(int i) {
         this->frameIndex = (uint32_t)i;
     }
     auto curFrame = this->currentObar->objectTileDataVector.at(this->objbIndex)->frames.at(this->frameIndex);
-    std::cout << "Selected frame metadata:" << std::endl;
+    std::cout << "Metadata for frame 0x" << std::hex << this->frameIndex << ":" << std::endl;
     std::cout << "  " << curFrame->toString() << std::endl;
     std::cout << "  " << curFrame->buildFrame->toString() << std::endl;
     this->refreshWithCurrentData();
