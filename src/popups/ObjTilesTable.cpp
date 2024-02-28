@@ -22,7 +22,7 @@ ObjTilesTable::ObjTilesTable(QWidget* parent, YidsRom* rom) {
     this->horizontalHeader()->setDefaultSectionSize(ObjTilesTable::OBJTILES_CELL_SIZE_PX);
     this->verticalHeader()->setMinimumSectionSize(0);
     this->verticalHeader()->setDefaultSectionSize(ObjTilesTable::OBJTILES_CELL_SIZE_PX);
-    this->setColumnCount(ObjTilesTable::OBJTILES_TABLE_WIDTH);
+    this->setColumnCount(0x2);
     this->setRowCount(ObjTilesTable::OBJTILES_ROW_COUNT_DEFAULT);
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
@@ -138,7 +138,6 @@ void ObjTilesTable::refreshWithCurrentData() {
         YUtils::printDebug("No OBAR loaded in refreshWithCurrentData",DebugType::WARNING);
         return;
     }
-    this->wipeTiles();
     auto objbs = this->currentObar->objectTileDataVector;
     if (this->objbIndex >= objbs.size()) {
         YUtils::printDebug("objbIndex overflow in refreshWithCurrentData",DebugType::WARNING);
@@ -153,6 +152,8 @@ void ObjTilesTable::refreshWithCurrentData() {
     // Probably? This will allow you to check
     auto tileCount = this->getTileCount(curFrame->buildFrame->flags);
     auto tiles = curObjb->getChartiles(curFrame->buildFrame->tileOffset << 4,tileCount);
+    this->setRowCount(tiles.size() / this->columnCount());
+    this->wipeTiles();
     for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
         auto objChartile = tiles.at(tilesIndex);
         auto tileItem = new QTableWidgetItem();
@@ -163,8 +164,8 @@ void ObjTilesTable::refreshWithCurrentData() {
         tileItem->setData(PixelDelegateData::DEBUG_DATA,0x69);
         tileItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
         tileItem->setData(PixelDelegateData::DRAW_BG1,true);
-        uint32_t x = tilesIndex % 0x10;
-        uint32_t y = tilesIndex / 0x10;
+        uint32_t x = tilesIndex % this->columnCount();
+        uint32_t y = tilesIndex / this->columnCount();
         if (this->item(y,x) != nullptr) {
             delete this->item(y,x);
         }

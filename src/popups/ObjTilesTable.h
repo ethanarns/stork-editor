@@ -21,7 +21,6 @@ public:
     void refreshWithCurrentData();
 private:
     const static int OBJTILES_CELL_SIZE_PX = 32;
-    const static int OBJTILES_TABLE_WIDTH = 0x10;
     const static int OBJTILES_ROW_COUNT_DEFAULT = 0x1;
     YidsRom* yidsRom;
     ObjectRenderArchive* currentObar;
