@@ -49,7 +49,19 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
             obarIndex = endPos;
         } else if (headerCheck == Constants::PLTB_MAGIC_NUM) {
             auto pltbSector = YUtils::subVector(obarVector,obarIndex,obarIndex+innerLength);
+            if (pltbSector.size() % Constants::PALETTE_SIZE != 0) {
+                YUtils::printDebug("Uneven PLTB size",DebugType::ERROR);
+            }
+            uint paletteSetCount = pltbSector.size() / Constants::PALETTE_SIZE;
+            // Make it
             auto objPltb = new ObjPltb();
+            for (uint i = 0; i < paletteSetCount; i++) {
+                QByteArray curPalette;
+                curPalette.resize(Constants::PALETTE_SIZE);
+                for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
+                    curPalette[curPaletteIndex] = curPalette.at(curPaletteIndex);
+                }
+            }
             // Metadata
             objPltb->_globalIndex = globalIndex;
             globalIndex++;

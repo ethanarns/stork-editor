@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../yidsrom.h"
+#include "../data/ObjectRenderFile.h"
 
 #include <QtCore>
 #include <QTableWidget>
@@ -9,14 +10,20 @@ class ObjTilesTable : public QTableWidget {
     Q_OBJECT
 public:
     ObjTilesTable(QWidget *parent, YidsRom* rom);
-    void loadObjectTiles(std::string fullFileName);
     void tableClicked(int row, int column);
     void wipeTiles();
+    // Triggers
     void doFileLoad(const QString text);
+    void objbValueChanged(int i);
+    void frameValueChanged(int i);
+    void refreshWithCurrentData();
 private:
-    const static int OBJTILES_CELL_SIZE_PX = 16;
+    const static int OBJTILES_CELL_SIZE_PX = 32;
     const static int OBJTILES_TABLE_WIDTH = 0x10;
     const static int OBJTILES_ROW_COUNT_DEFAULT = 0x1;
     YidsRom* yidsRom;
+    ObjectRenderArchive* currentObar;
+    uint32_t objbIndex = 0;
+    uint32_t frameIndex = 0;
     uint32_t getTileCountMaybe(uint32_t buildFlags);
 };

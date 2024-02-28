@@ -36,6 +36,7 @@
 #include <QComboBox>
 #include <QStatusBar>
 #include <QMessageBox>
+#include <QSpinBox>
 
 #include <iostream>
 #include <filesystem>
@@ -348,6 +349,29 @@ MainWindow::MainWindow() {
     this->spriteFileSelect->setEnabled(false);
     connect(this->spriteFileSelect,&QComboBox::currentTextChanged,this->objtilesTable,&ObjTilesTable::doFileLoad);
     objtilesLayout->addWidget(this->spriteFileSelect);
+    // Selectors //
+    QHBoxLayout* spriteIndexesLayout = new QHBoxLayout(this);
+    // OBJB select
+    auto objbSelect = new QSpinBox(this);
+    objbSelect->setObjectName("spritePopupObjbSelect");
+    objbSelect->setEnabled(true);
+    objbSelect->setMinimum(0);
+    objbSelect->setDisplayIntegerBase(16);
+    objbSelect->setPrefix(tr("0x"));
+    // Frame select
+    auto frameSelect = new QSpinBox(this);
+    frameSelect->setObjectName("spritePopupFrameSelect");
+    frameSelect->setEnabled(true);
+    frameSelect->setMinimum(0);
+    frameSelect->setDisplayIntegerBase(16);
+    frameSelect->setPrefix(tr("0x"));
+    connect(objbSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::objbValueChanged);
+    connect(frameSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::frameValueChanged);
+    // Add selectors
+    spriteIndexesLayout->addWidget(objbSelect);
+    spriteIndexesLayout->addWidget(frameSelect);
+    objtilesLayout->addLayout(spriteIndexesLayout);
+    // Remaining stuff
     objtilesLayout->addWidget(this->objtilesTable);
     this->objtilesPopup->setLayout(objtilesLayout);
 

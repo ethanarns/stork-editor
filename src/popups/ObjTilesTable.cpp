@@ -35,59 +35,6 @@ ObjTilesTable::ObjTilesTable(QWidget* parent, YidsRom* rom) {
     QTableWidget::connect(this, &QTableWidget::cellClicked, this, &ObjTilesTable::tableClicked);
 }
 
-/// @brief Deprecated function
-/// @param fullFileName The file name
-/// @deprecated
-void ObjTilesTable::loadObjectTiles(std::string fullFileName) {
-    YUtils::printDebug("Loading object tiles to the sprite tile popup",DebugType::VERBOSE);
-    return;
-    auto objectFile = this->yidsRom->getObjPltFile(fullFileName);
-    this->wipeTiles();
-    // The following (messily) spits out all available tiles for debug purposes
-    auto tilesMap = &objectFile.objectPixelTiles;
-    uint32_t mapSize = tilesMap->size();
-    uint32_t yOffset = 0;
-    uint32_t indexForOffset = 0;
-    this->setRowCount(ObjTilesTable::OBJTILES_ROW_COUNT_DEFAULT);
-    for (uint32_t mapIndex = 0; mapIndex < mapSize; mapIndex++) {
-        auto chartilesVector = (*tilesMap)[mapIndex];
-        const uint32_t chartilesVectorSize = chartilesVector.size();
-        this->setRowCount(this->rowCount()+(chartilesVectorSize/32/0x10));
-        for (uint32_t i = 0; i < chartilesVectorSize; i += Constants::CHARTILE_DATA_SIZE) {
-            QTableWidgetItem *newItem = new QTableWidgetItem();
-            const uint32_t start = i;
-            uint32_t end = i + Constants::CHARTILE_DATA_SIZE;
-            if (end > chartilesVectorSize) {
-                indexForOffset++;
-                // This is likely it trying to get crap from other areas
-                //cout << "End too big: " << std::hex << end << ", versus size: " << std::hex << chartilesVectorSize << endl;
-                continue;
-            }
-            auto currentSubSection = YUtils::subVector(chartilesVector,start,end);
-            auto qArray = YUtils::tileVectorToQByteArray(currentSubSection);
-            newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,qArray);
-            if (objectFile.objectPalettes.size() > 0) {
-                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,objectFile.objectPalettes.at(0).paletteData);
-            } else {
-                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
-            }
-            newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
-            newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
-            newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);
-            newItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
-            newItem->setData(PixelDelegateData::DRAW_BG1,true);
-            uint32_t x = indexForOffset % 0x10;
-            uint32_t y = indexForOffset / 0x10 + yOffset;
-            if (this->item(y,x) != nullptr) {
-                delete this->item(y,x);
-            }
-            this->setItem(y,x,newItem);
-            indexForOffset++;
-        }
-        yOffset += 2;
-    }
-}
-
 void ObjTilesTable::tableClicked(int row, int column) {
     std::cout << "Row: " << std::hex << row << ", column: " << std::hex << column << std::endl;
     auto potentialItem = this->item(row,column);
@@ -119,42 +66,77 @@ void ObjTilesTable::doFileLoad(const QString text) {
     auto archiveFileName = text.toStdString();
     std::vector<uint8_t> fileVectorObjset = this->yidsRom->getByteVectorFromFile(archiveFileName);
     auto obarData = new ObjectRenderArchive(fileVectorObjset);
-    // this->loadObjectTiles(archiveFileName);
-    this->wipeTiles();
-    uint32_t itemIndex = 0;
-    this->setRowCount(0x1000);
-    uint32_t offset = 0;
-    uint32_t yOffset = 0;
-    std::cout << "doing render loop" << std::endl;
-    for (uint obarTileIndex = 0; obarTileIndex < obarData->objectTileDataVector.size(); obarTileIndex++) {
-        auto objb = obarData->objectTileDataVector.at(obarTileIndex);
-        for (uint frameIndex = 0; frameIndex < objb->frames.size(); frameIndex++) {
-            auto frame = objb->getFrameData(frameIndex);
-            auto tileCount = this->getTileCountMaybe(frame->buildFrame->flags);
-            auto tiles = objb->getChartiles(frame->buildFrame->tileOffset << 4,tileCount);
-            for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
-                auto objChartile = tiles.at(tilesIndex);
-                auto tileItem = new QTableWidgetItem();
-                tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,objChartile);
-                tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
-                tileItem->setData(PixelDelegateData::FLIP_H_BG1,false);
-                tileItem->setData(PixelDelegateData::FLIP_V_BG1,false);
-                tileItem->setData(PixelDelegateData::DEBUG_DATA,0x69);
-                tileItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
-                tileItem->setData(PixelDelegateData::DRAW_BG1,true);
-                uint32_t x = (itemIndex+offset) % 0x10;
-                uint32_t y = (itemIndex+offset) / 0x10 + yOffset;
-                if (this->item(y,x) != nullptr) {
-                    delete this->item(y,x);
-                }
-                this->setItem(y,x,tileItem);
-                itemIndex++;
-            }
-            offset++;
-        }
-        yOffset++;
+    this->currentObar = obarData;
+    this->objbIndex = 0;
+    this->frameIndex = 0;
+    this->refreshWithCurrentData();
+}
+
+void ObjTilesTable::objbValueChanged(int i) {
+    YUtils::printDebug("objbValueChanged()");
+    if (this->currentObar == nullptr) {
+        YUtils::printDebug("No OBAR loaded",DebugType::WARNING);
+        return;
     }
-    std::cout << "doFileLoad done" << std::endl;
+    auto objbs = this->currentObar->objectTileDataVector;
+    uint32_t newObjbIndex = (uint32_t)i;
+    if (newObjbIndex > objbs.size()) {
+        YUtils::printDebug("objbIndex overflow in objbValueChanged",DebugType::WARNING);
+        newObjbIndex = objbs.size() - 1; // Set to last index
+    }
+    this->objbIndex = newObjbIndex;
+    this->frameIndex = 0;
+    this->refreshWithCurrentData();
+}
+
+void ObjTilesTable::frameValueChanged(int i) {
+    YUtils::printDebug("frameValueChanged()");
+    if (this->currentObar == nullptr) {
+        YUtils::printDebug("No OBAR loaded",DebugType::WARNING);
+        return;
+    }
+    this->frameIndex = (uint32_t)i;
+    this->refreshWithCurrentData();
+}
+
+void ObjTilesTable::refreshWithCurrentData() {
+    //YUtils::printDebug("refreshWithCurrentData()",DebugType::VERBOSE);
+    if (this->currentObar == nullptr) {
+        YUtils::printDebug("No OBAR loaded in refreshWithCurrentData",DebugType::WARNING);
+        return;
+    }
+    this->wipeTiles();
+    auto objbs = this->currentObar->objectTileDataVector;
+    if (this->objbIndex > objbs.size()) {
+        YUtils::printDebug("objbIndex overflow in refreshWithCurrentData",DebugType::WARNING);
+        this->objbIndex = objbs.size() - 1; // Set to last index
+    }
+    auto curObjb = objbs.at(this->objbIndex);
+    if (this->frameIndex > curObjb->frames.size()) {
+        YUtils::printDebug("frameIndex overflow in refreshWithCurrentData",DebugType::WARNING);
+        this->frameIndex = curObjb->frames.size() - 1; // Set to last index
+    }
+    auto curFrame = curObjb->getFrameData(this->frameIndex);
+    // Probably? This will allow you to check
+    auto tileCount = this->getTileCountMaybe(curFrame->buildFrame->flags);
+    auto tiles = curObjb->getChartiles(curFrame->buildFrame->tileOffset << 4,tileCount);
+    for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
+        auto objChartile = tiles.at(tilesIndex);
+        auto tileItem = new QTableWidgetItem();
+        tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,objChartile);
+        tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
+        tileItem->setData(PixelDelegateData::FLIP_H_BG1,false);
+        tileItem->setData(PixelDelegateData::FLIP_V_BG1,false);
+        tileItem->setData(PixelDelegateData::DEBUG_DATA,0x69);
+        tileItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
+        tileItem->setData(PixelDelegateData::DRAW_BG1,true);
+        uint32_t x = tilesIndex % 0x10;
+        uint32_t y = tilesIndex / 0x10;
+        if (this->item(y,x) != nullptr) {
+            delete this->item(y,x);
+        }
+        this->setItem(y,x,tileItem);
+    }
 }
 
 uint32_t ObjTilesTable::getTileCountMaybe(uint32_t buildFlags) {
