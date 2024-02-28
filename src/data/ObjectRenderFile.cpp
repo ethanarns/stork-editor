@@ -61,6 +61,7 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
                 for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
                     curPalette[curPaletteIndex] = curPalette.at(curPaletteIndex);
                 }
+                objPltb->palettes.push_back(curPalette);
             }
             // Metadata
             objPltb->_globalIndex = globalIndex;

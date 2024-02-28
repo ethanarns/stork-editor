@@ -154,11 +154,15 @@ void ObjTilesTable::refreshWithCurrentData() {
     auto tiles = curObjb->getChartiles(curFrame->buildFrame->tileOffset << 4,tileCount);
     this->setRowCount(tiles.size() / this->columnCount());
     this->wipeTiles();
+    if (this->currentPalette == nullptr) {
+        std::cout << "Setting to default" << std::endl;
+        this->currentPalette = this->yidsRom->backgroundPalettes[0];
+    }
     for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
         auto objChartile = tiles.at(tilesIndex);
         auto tileItem = new QTableWidgetItem();
         tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,objChartile);
-        tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
+        tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->currentPalette);
         tileItem->setData(PixelDelegateData::FLIP_H_BG1,false);
         tileItem->setData(PixelDelegateData::FLIP_V_BG1,false);
         tileItem->setData(PixelDelegateData::DEBUG_DATA,0x69);
@@ -174,7 +178,7 @@ void ObjTilesTable::refreshWithCurrentData() {
 }
 
 void ObjTilesTable::widthChanged(int i) {
-    std::cout << "widthChanged" << std::endl;
+    //std::cout << "widthChanged" << std::endl;
     if (i < 1) {
         YUtils::printDebug("Sprite width selected too small",DebugType::ERROR);
         return;
@@ -184,12 +188,22 @@ void ObjTilesTable::widthChanged(int i) {
 }
 
 void ObjTilesTable::paletteChanged(int i) {
-    std::cout << "paletteChanged" << std::endl;
+    //std::cout << "paletteChanged: 0x" << std::hex << i << std::endl;
     if (i < -1) {
         YUtils::printDebug("Sprite palette selected too low",DebugType::ERROR);
         return;
     }
-    std::cout << std::hex << i << std::endl;
+    auto paletteDataList = this->currentObar->objectPaletteDataVector;
+    auto size = paletteDataList.size(); // Can be 0
+    //std::cout << "paletteDataSize: 0x" << std::hex << size << std::endl;
+    if ((uint32_t)i >= size) {
+        YUtils::printDebug("i too big in paletteChanged",DebugType::WARNING);
+        return;
+    }
+    auto curPaletteData = paletteDataList.at(i);
+    //std::cout << "Getting first QByteArray..." << std::endl;
+    this->currentPalette = curPaletteData->palettes.at(0);
+    this->refreshWithCurrentData();
 }
 
 uint32_t ObjTilesTable::getTileCount(uint32_t buildFlags) {

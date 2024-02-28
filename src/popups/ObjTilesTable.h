@@ -5,6 +5,7 @@
 
 #include <QtCore>
 #include <QTableWidget>
+#include <QByteArray>
 
 #include <string>
 
@@ -29,5 +30,6 @@ private:
     uint32_t objbIndex = 0;
     uint32_t frameIndex = 0;
     std::string currentFileName = "";
+    QByteArray currentPalette;
     uint32_t getTileCount(uint32_t buildFlags);
 };
