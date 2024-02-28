@@ -6,6 +6,8 @@
 #include <QtCore>
 #include <QTableWidget>
 
+#include <string>
+
 class ObjTilesTable : public QTableWidget {
     Q_OBJECT
 public:
@@ -25,5 +27,6 @@ private:
     ObjectRenderArchive* currentObar;
     uint32_t objbIndex = 0;
     uint32_t frameIndex = 0;
+    std::string currentFileName = "";
     uint32_t getTileCountMaybe(uint32_t buildFlags);
 };

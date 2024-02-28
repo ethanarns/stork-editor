@@ -64,6 +64,11 @@ void ObjTilesTable::wipeTiles() {
 void ObjTilesTable::doFileLoad(const QString text) {
     YUtils::printDebug("doFileLoad()");
     auto archiveFileName = text.toStdString();
+    if (archiveFileName.empty() || archiveFileName.compare("---") == 0) {
+        YUtils::printDebug("Invalid sprite file name load attempt");
+        return;
+    }
+    this->currentFileName = archiveFileName;
     std::vector<uint8_t> fileVectorObjset = this->yidsRom->getByteVectorFromFile(archiveFileName);
     auto obarData = new ObjectRenderArchive(fileVectorObjset);
     this->currentObar = obarData;
@@ -74,6 +79,10 @@ void ObjTilesTable::doFileLoad(const QString text) {
 
 void ObjTilesTable::objbValueChanged(int i) {
     YUtils::printDebug("objbValueChanged()");
+    if (this->currentFileName.empty() || this->currentFileName.compare("---") == 0) {
+        YUtils::printDebug("Invalid sprite file name in objbValueChanged");
+        return;
+    }
     if (this->currentObar == nullptr) {
         YUtils::printDebug("No OBAR loaded",DebugType::WARNING);
         return;
@@ -90,7 +99,11 @@ void ObjTilesTable::objbValueChanged(int i) {
 }
 
 void ObjTilesTable::frameValueChanged(int i) {
-    YUtils::printDebug("frameValueChanged()");
+    //YUtils::printDebug("frameValueChanged()");
+    if (this->currentFileName.empty() || this->currentFileName.compare("---") == 0) {
+        YUtils::printDebug("Invalid sprite file name in frameValueChanged");
+        return;
+    }
     if (this->currentObar == nullptr) {
         YUtils::printDebug("No OBAR loaded",DebugType::WARNING);
         return;
@@ -102,6 +115,10 @@ void ObjTilesTable::frameValueChanged(int i) {
     } else {
         this->frameIndex = (uint32_t)i;
     }
+    auto curFrame = this->currentObar->objectTileDataVector.at(this->objbIndex)->frames.at(this->frameIndex);
+    std::cout << "Selected frame metadata:" << std::endl;
+    std::cout << "  " << curFrame->toString() << std::endl;
+    std::cout << "  " << curFrame->buildFrame->toString() << std::endl;
     this->refreshWithCurrentData();
 }
 

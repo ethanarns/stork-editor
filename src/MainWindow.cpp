@@ -345,7 +345,7 @@ MainWindow::MainWindow() {
     this->spriteFileSelect->addItem("objset.arcz");
     this->spriteFileSelect->addItem("objiceblock.arcz");
     this->spriteFileSelect->addItem("objsbblock.arc");
-    this->spriteFileSelect->setCurrentText("---");
+    //this->spriteFileSelect->setCurrentText("---");
     this->spriteFileSelect->setEnabled(false);
     connect(this->spriteFileSelect,&QComboBox::currentTextChanged,this->objtilesTable,&ObjTilesTable::doFileLoad);
     objtilesLayout->addWidget(this->spriteFileSelect);
@@ -358,6 +358,7 @@ MainWindow::MainWindow() {
     objbSelect->setMinimum(0);
     objbSelect->setDisplayIntegerBase(16);
     objbSelect->setPrefix(tr("0x"));
+    objbSelect->setToolTip(tr("Select which OBJB record to load"));
     // Frame select
     auto frameSelect = new QSpinBox(this);
     frameSelect->setObjectName("spritePopupFrameSelect");
@@ -365,6 +366,8 @@ MainWindow::MainWindow() {
     frameSelect->setMinimum(0);
     frameSelect->setDisplayIntegerBase(16);
     frameSelect->setPrefix(tr("0x"));
+    frameSelect->setToolTip(tr("Select which frame of the object to render"));
+    // Connect
     connect(objbSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::objbValueChanged);
     connect(frameSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::frameValueChanged);
     // Add selectors
