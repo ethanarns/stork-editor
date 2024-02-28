@@ -173,6 +173,25 @@ void ObjTilesTable::refreshWithCurrentData() {
     }
 }
 
+void ObjTilesTable::widthChanged(int i) {
+    std::cout << "widthChanged" << std::endl;
+    if (i < 1) {
+        YUtils::printDebug("Sprite width selected too small",DebugType::ERROR);
+        return;
+    }
+    this->setColumnCount(i);
+    this->refreshWithCurrentData();
+}
+
+void ObjTilesTable::paletteChanged(int i) {
+    std::cout << "paletteChanged" << std::endl;
+    if (i < -1) {
+        YUtils::printDebug("Sprite palette selected too low",DebugType::ERROR);
+        return;
+    }
+    std::cout << std::hex << i << std::endl;
+}
+
 uint32_t ObjTilesTable::getTileCount(uint32_t buildFlags) {
     uint32_t frameMetaOffset = buildFlags & 0b11111;
     frameMetaOffset *= 3;

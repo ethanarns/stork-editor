@@ -349,7 +349,8 @@ MainWindow::MainWindow() {
     this->spriteFileSelect->setEnabled(false);
     connect(this->spriteFileSelect,&QComboBox::currentTextChanged,this->objtilesTable,&ObjTilesTable::doFileLoad);
     objtilesLayout->addWidget(this->spriteFileSelect);
-    // Selectors //
+
+    // Selectors 1 //
     QHBoxLayout* spriteIndexesLayout = new QHBoxLayout(this);
     // OBJB select
     auto objbSelect = new QSpinBox(this);
@@ -370,10 +371,38 @@ MainWindow::MainWindow() {
     // Connect
     connect(objbSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::objbValueChanged);
     connect(frameSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::frameValueChanged);
-    // Add selectors
+    // Add selectors 1
     spriteIndexesLayout->addWidget(objbSelect);
     spriteIndexesLayout->addWidget(frameSelect);
     objtilesLayout->addLayout(spriteIndexesLayout);
+    // Selectors 2 //
+    QHBoxLayout* spriteWidthPaletteLayout = new QHBoxLayout(this);
+    // Sprite width
+    auto spriteWidthSelect = new QSpinBox(this);
+    spriteWidthSelect->setObjectName("spritePopupWidthSelect");
+    spriteWidthSelect->setEnabled(true);
+    spriteWidthSelect->setMinimum(1);
+    spriteWidthSelect->setDisplayIntegerBase(16);
+    spriteWidthSelect->setPrefix(tr("W 0x"));
+    spriteWidthSelect->setValue(2);
+    spriteWidthSelect->setToolTip(tr("Set the width of the object to view (will be automatic later)"));
+    // Sprite palette
+    auto spritePaletteSelect = new QSpinBox(this);
+    spritePaletteSelect->setObjectName("spritePopupPaletteSelect");
+    spritePaletteSelect->setEnabled(true);
+    spritePaletteSelect->setMinimum(-1); // -1 = universal palette
+    spritePaletteSelect->setDisplayIntegerBase(16);
+    spritePaletteSelect->setPrefix("PLTB 0x");
+    spritePaletteSelect->setValue(-1);
+    spritePaletteSelect->setToolTip(tr("Select palette to use within the OBAR (-1 is universal palette)"));
+    // Connect
+    connect(spriteWidthSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::widthChanged);
+    connect(spritePaletteSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::paletteChanged);
+    // Add selectors 2
+    spriteWidthPaletteLayout->addWidget(spriteWidthSelect);
+    spriteWidthPaletteLayout->addWidget(spritePaletteSelect);
+    objtilesLayout->addLayout(spriteWidthPaletteLayout);
+
     // Finishing touches //
     objtilesLayout->addWidget(this->objtilesTable);
     this->objtilesPopup->setLayout(objtilesLayout);
