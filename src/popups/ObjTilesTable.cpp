@@ -80,9 +80,9 @@ void ObjTilesTable::objbValueChanged(int i) {
     }
     auto objbs = this->currentObar->objectTileDataVector;
     uint32_t newObjbIndex = (uint32_t)i;
-    if (newObjbIndex > objbs.size()) {
+    if (newObjbIndex >= objbs.size()) {
         YUtils::printDebug("objbIndex overflow in objbValueChanged",DebugType::WARNING);
-        newObjbIndex = objbs.size() - 1; // Set to last index
+        newObjbIndex = 0; // Set to last index
     }
     this->objbIndex = newObjbIndex;
     this->frameIndex = 0;
@@ -95,7 +95,13 @@ void ObjTilesTable::frameValueChanged(int i) {
         YUtils::printDebug("No OBAR loaded",DebugType::WARNING);
         return;
     }
-    this->frameIndex = (uint32_t)i;
+    auto frameCount = this->currentObar->objectTileDataVector.at(this->objbIndex)->frames.size();
+    if ((uint32_t)i >= frameCount) {
+        YUtils::printDebug("frameIndex overflow in frameValueChanged",DebugType::WARNING);
+        this->frameIndex = 0;
+    } else {
+        this->frameIndex = (uint32_t)i;
+    }
     this->refreshWithCurrentData();
 }
 
@@ -107,14 +113,14 @@ void ObjTilesTable::refreshWithCurrentData() {
     }
     this->wipeTiles();
     auto objbs = this->currentObar->objectTileDataVector;
-    if (this->objbIndex > objbs.size()) {
+    if (this->objbIndex >= objbs.size()) {
         YUtils::printDebug("objbIndex overflow in refreshWithCurrentData",DebugType::WARNING);
-        this->objbIndex = objbs.size() - 1; // Set to last index
+        this->objbIndex = 0;
     }
     auto curObjb = objbs.at(this->objbIndex);
-    if (this->frameIndex > curObjb->frames.size()) {
+    if (this->frameIndex >= curObjb->frames.size()) {
         YUtils::printDebug("frameIndex overflow in refreshWithCurrentData",DebugType::WARNING);
-        this->frameIndex = curObjb->frames.size() - 1; // Set to last index
+        this->frameIndex = 0;
     }
     auto curFrame = curObjb->getFrameData(this->frameIndex);
     // Probably? This will allow you to check
