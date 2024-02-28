@@ -365,7 +365,7 @@ MainWindow::MainWindow() {
     frameSelect->setEnabled(true);
     frameSelect->setMinimum(0);
     frameSelect->setDisplayIntegerBase(16);
-    frameSelect->setPrefix(tr("0x"));
+    frameSelect->setPrefix(tr("Frame 0x"));
     frameSelect->setToolTip(tr("Select which frame of the object to render"));
     // Connect
     connect(objbSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::objbValueChanged);
@@ -374,7 +374,7 @@ MainWindow::MainWindow() {
     spriteIndexesLayout->addWidget(objbSelect);
     spriteIndexesLayout->addWidget(frameSelect);
     objtilesLayout->addLayout(spriteIndexesLayout);
-    // Remaining stuff
+    // Finishing touches //
     objtilesLayout->addWidget(this->objtilesTable);
     this->objtilesPopup->setLayout(objtilesLayout);
 

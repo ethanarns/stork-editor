@@ -78,7 +78,7 @@ void ObjTilesTable::doFileLoad(const QString text) {
 }
 
 void ObjTilesTable::objbValueChanged(int i) {
-    YUtils::printDebug("objbValueChanged()");
+    //YUtils::printDebug("objbValueChanged()");
     if (this->currentFileName.empty() || this->currentFileName.compare("---") == 0) {
         YUtils::printDebug("Invalid sprite file name in objbValueChanged");
         return;
@@ -119,6 +119,16 @@ void ObjTilesTable::frameValueChanged(int i) {
     std::cout << "Metadata for frame 0x" << std::hex << this->frameIndex << ":" << std::endl;
     std::cout << "  " << curFrame->toString() << std::endl;
     std::cout << "  " << curFrame->buildFrame->toString() << std::endl;
+    std::cout << "  ObjFrameBuild metadata: 0x";
+    uint32_t frameMetaOffset = curFrame->buildFrame->flags & 0b11111;
+    frameMetaOffset *= 3;
+    uint32_t frameMetaBaseAddress = 0x020D'5E88;
+    uint32_t frameMetaAddress = frameMetaBaseAddress + frameMetaOffset;
+    uint32_t trueMetaAddress = YUtils::conv2xAddrToFileAddr(frameMetaAddress);
+    uint32_t item1 = (uint32_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+0);
+    uint32_t item2 = (uint32_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+1);
+    uint32_t item3 = (uint32_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+2);
+    std::cout << std::hex << item1 << ", 0x" << item2 << std::hex << ", 0x" << item3 << std::endl;
     this->refreshWithCurrentData();
 }
 
@@ -141,7 +151,7 @@ void ObjTilesTable::refreshWithCurrentData() {
     }
     auto curFrame = curObjb->getFrameData(this->frameIndex);
     // Probably? This will allow you to check
-    auto tileCount = this->getTileCountMaybe(curFrame->buildFrame->flags);
+    auto tileCount = this->getTileCount(curFrame->buildFrame->flags);
     auto tiles = curObjb->getChartiles(curFrame->buildFrame->tileOffset << 4,tileCount);
     for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
         auto objChartile = tiles.at(tilesIndex);
@@ -162,7 +172,7 @@ void ObjTilesTable::refreshWithCurrentData() {
     }
 }
 
-uint32_t ObjTilesTable::getTileCountMaybe(uint32_t buildFlags) {
+uint32_t ObjTilesTable::getTileCount(uint32_t buildFlags) {
     uint32_t frameMetaOffset = buildFlags & 0b11111;
     frameMetaOffset *= 3;
     uint32_t frameMetaBaseAddress = 0x020D'5E88;
