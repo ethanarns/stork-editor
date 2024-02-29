@@ -40,14 +40,15 @@
 
 #include <iostream>
 #include <filesystem>
-#include <cstdio>
+#include <vector>
 
 MainWindow::MainWindow() {
     YUtils::printDebug("** Launching Stork Editor **",DebugType::VERBOSE);
 
     // Set up settings
-    globalSettings.brushHeight = 1;
-    globalSettings.brushWidth = 1;
+    globalSettings.currentBrush = new TileBrush();
+    globalSettings.currentBrush->tileAttrs = std::vector<unsigned int>(TileBrush::BRUSH_DIMS * TileBrush::BRUSH_DIMS,0x1000);
+    globalSettings.brushes.push_back(globalSettings.currentBrush);
 
     if (!std::filesystem::exists("./lib/")) {
         std::stringstream ss;

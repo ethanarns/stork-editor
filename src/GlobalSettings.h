@@ -2,10 +2,16 @@
 #define SETTINGSENUM_H
 
 #include <cstdint>
+#include <vector>
+
+struct TileBrush {
+    std::vector<uint32_t> tileAttrs;
+    const static int BRUSH_DIMS = 16;
+};
 
 struct GlobalSettings {
-    uint32_t brushWidth;
-    uint32_t brushHeight;
+    TileBrush* currentBrush;
+    std::vector<TileBrush*> brushes;
 };
 extern GlobalSettings globalSettings;
 
