@@ -1,11 +1,11 @@
 /**
  * @file parasol.cpp
  * @author your name (you@domain.com)
- * @brief The main file for Parasol Editor
+ * @brief The main file for Stork Editor
  * @version 0.1
- * @date 2022-06-24
+ * @date 2024-02-29
  * 
- * @copyright Copyright (c) 2022
+ * @copyright Copyright (c) 2024
  * 
  */
 
@@ -13,6 +13,9 @@
 
 #include "src/MainWindow.h"
 #include "src/constants.h"
+#include "src/GlobalSettings.h"
+
+GlobalSettings globalSettings;
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);

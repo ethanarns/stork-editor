@@ -45,6 +45,10 @@
 MainWindow::MainWindow() {
     YUtils::printDebug("** Launching Stork Editor **",DebugType::VERBOSE);
 
+    // Set up settings
+    globalSettings.brushHeight = 1;
+    globalSettings.brushWidth = 1;
+
     if (!std::filesystem::exists("./lib/")) {
         std::stringstream ss;
         ss << "lib/ directory not found, was looking in '";

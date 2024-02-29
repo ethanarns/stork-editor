@@ -19,7 +19,7 @@
 #include "popups/ChartilesTable.h"
 #include "popups/PaletteTable.h"
 #include "popups/ObjTilesTable.h"
-#include "SettingsEnum.h"
+#include "GlobalSettings.h"
 #include "popups/LevelSelect.h"
 #include "GuiObjectList.h"
 #include "SelectionInfoTable.h"

@@ -22,7 +22,7 @@ src/popups/ObjTilesTable.cpp src/data/ObjectRenderFile.cpp
 HEADERS += src/Chartile.h \
 src/yidsrom.h src/utils.h src/compression.h src/MainWindow.h \
 src/DisplayTable.h src/popups/ChartilesTable.h src/PixelDelegate.h \
-src/popups/PaletteTable.h src/LevelObject.h src/SettingsEnum.h \
+src/popups/PaletteTable.h src/LevelObject.h src/GlobalSettings.h \
 src/popups/LevelSelect.h src/Level.h src/FsPacker.h src/InstructionRenderer.h \
 src/GuiObjectList.h src/SelectionInfoTable.h src/data/MapData.h \
 src/data/LevelSelectData.h src/cue_lzss.h src/cue_blz.h \
