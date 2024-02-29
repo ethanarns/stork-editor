@@ -15,7 +15,7 @@ public:
     void chartilesTableClicked(int row, int column);
     void wipeTiles();
 private:
-    const static int CELL_SIZE_PX = 16;
+    const static int CELL_SIZE_PX = 32;
     const static int CHARTILES_TABLE_WIDTH = 0x10;
     const static int CHARTILES_ROW_COUNT_DEFAULT = 0x10;
     YidsRom* yidsRom;

@@ -57,7 +57,7 @@ void ChartilesTable::refreshLoadedObjectTilesMap() {
             newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
             newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
             newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
-            newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);
+            newItem->setData(PixelDelegateData::TILE_ID_BG1,mapIndex);
             newItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
             newItem->setData(PixelDelegateData::DRAW_BG1,true);
             uint32_t x = indexForOffset % 0x10;
@@ -92,7 +92,7 @@ void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
         newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
         newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
         newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
-        newItem->setData(PixelDelegateData::DEBUG_DATA,mapIndex);
+        newItem->setData(PixelDelegateData::TILE_ID_BG1,mapIndex);
         newItem->setData(PixelDelegateData::DRAW_BG1,true);
         uint32_t x = indexForOffset % 0x10;
         uint32_t y = indexForOffset / 0x10;
@@ -122,9 +122,9 @@ void ChartilesTable::chartilesTableClicked(int row, int column) {
         std::cout << "No item in location" << std::endl;
     } else {
         std::cout << "Item in location" << std::endl;
-        uint32_t foundDebug = potentialItem->data(PixelDelegateData::DEBUG_DATA).toUInt();
+        uint32_t tileId = potentialItem->data(PixelDelegateData::TILE_ID_BG1).toUInt();
         auto tileArray = potentialItem->data(PixelDelegateData::PIXEL_ARRAY_BG1).toByteArray();
-        std::cout << "Index: " << std::hex << foundDebug << std::endl;
+        std::cout << "Tile ID: 0x" << std::hex << tileId << std::endl;
         std::vector<uint8_t> printableArray(tileArray.begin(), tileArray.end());
         YUtils::printVector(printableArray);
     }

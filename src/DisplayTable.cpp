@@ -121,12 +121,14 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             newItem->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
             newItem->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
             newItem->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
+            newItem->setData(PixelDelegateData::TILE_ID_BG2,(uint)pren.tileId);
         } else if (whichBg == 1) {
             newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
             newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
             newItem->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
             newItem->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
             newItem->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
+            newItem->setData(PixelDelegateData::TILE_ID_BG1,(uint)pren.tileId);
         } else if (whichBg == 3) {
             newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
             if (!isColorMode256) {
@@ -138,6 +140,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             newItem->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
             newItem->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);
             newItem->setData(PixelDelegateData::TILEATTR_BG3,(uint)pren.tileAttr);
+            newItem->setData(PixelDelegateData::TILE_ID_BG3,(uint)pren.tileId);
         }
 
         // Things to do for every layer:
@@ -146,8 +149,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         // Only doing collision here because there's no data for it, so create it
         newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
         newItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
-        // Debug stuff
-        newItem->setData(PixelDelegateData::DEBUG_DATA,loadedTile.index);
+
         this->setItem(y,x,newItem);
     } else {
         // There is already an item here, lets just update it
@@ -164,12 +166,14 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             potentialExisting->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
             potentialExisting->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
             potentialExisting->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
+            potentialExisting->setData(PixelDelegateData::TILE_ID_BG2,(uint)pren.tileId);
         } else if (whichBg == 1) {
             potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
             potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
             potentialExisting->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
             potentialExisting->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
             potentialExisting->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
+            potentialExisting->setData(PixelDelegateData::TILE_ID_BG1,(uint)pren.tileId);
         } else if (whichBg == 3) {
             potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
             if (!isColorMode256) {
@@ -183,11 +187,10 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
             potentialExisting->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
             potentialExisting->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);
             potentialExisting->setData(PixelDelegateData::TILEATTR_BG3,(uint)pren.tileAttr);
+            potentialExisting->setData(PixelDelegateData::TILE_ID_BG3,(uint)pren.tileId);
         }
         // Things to do for every layer:
         potentialExisting->setData(PixelDelegateData::LAYER_DRAW_ORDER,layerDrawOrder);
-        // Debug
-        potentialExisting->setData(PixelDelegateData::DEBUG_DATA,loadedTile.index);
     }
 }
 
@@ -216,6 +219,7 @@ void DisplayTable::printCellDebug(QTableWidgetItem *item, uint whichBg) {
         if (!item->data(PixelDelegateData::PIXEL_ARRAY_BG2).isNull()) {
             std::stringstream ssBg2;
             ssBg2 << "Tile attr BG2: 0x" << std::hex << item->data(PixelDelegateData::TILEATTR_BG2).toUInt();
+            ssBg2 << ", Tile ID: 0x" << std::hex << item->data(PixelDelegateData::TILE_ID_BG2).toUInt();
             YUtils::printDebug(ssBg2.str(),DebugType::VERBOSE);
             auto pixArray2 = item->data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
             YUtils::printDebug("Pixel Array for BG 2:",DebugType::VERBOSE);
