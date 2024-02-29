@@ -60,11 +60,11 @@ public:
     // Uncompressed
     ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarIndex, uint32_t end);
     ObjectTileData(std::vector<uint8_t> decompVector);
-    ObjbFrame* getFrameData(uint32_t frameIndex);
+    //ObjbFrame* getFrameData(uint32_t frameIndex);
     ObjbFrame getFrameAt(uint32_t frameIndex);
     std::vector<QByteArray> getChartiles(uint32_t index, uint32_t count);
 
-    std::vector<ObjbFrame*> frames;
+    //std::vector<ObjbFrame*> frames;
 
     uint32_t _globalIndex;
     uint32_t _obarAddress;

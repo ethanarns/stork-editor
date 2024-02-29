@@ -110,28 +110,29 @@ void ObjTilesTable::frameValueChanged(int i) {
         YUtils::printDebug("No OBAR loaded",DebugType::WARNING);
         return;
     }
-    auto frameCount = this->currentObar->objectTileDataVector.at(this->objbIndex)->frames.size();
-    if ((uint32_t)i >= frameCount) {
-        YUtils::printDebug("frameIndex overflow in frameValueChanged",DebugType::WARNING);
-        this->frameIndex = frameCount - 1;
-        return;
-    } else {
-        this->frameIndex = (uint32_t)i;
-    }
-    auto curFrame = this->currentObar->objectTileDataVector.at(this->objbIndex)->frames.at(this->frameIndex);
-    std::cout << "Metadata for frame 0x" << std::hex << this->frameIndex << ":" << std::endl;
-    std::cout << "  " << curFrame->toString() << std::endl;
-    std::cout << "  " << curFrame->buildFrame->toString() << std::endl;
-    std::cout << "  ObjFrameBuild metadata: 0x";
-    uint32_t frameMetaOffset = curFrame->buildFrame->flags & 0b11111;
-    frameMetaOffset *= 3;
-    uint32_t frameMetaBaseAddress = 0x020D'5E88;
-    uint32_t frameMetaAddress = frameMetaBaseAddress + frameMetaOffset;
-    uint32_t trueMetaAddress = YUtils::conv2xAddrToFileAddr(frameMetaAddress);
-    uint32_t item1 = (uint32_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+0);
-    uint32_t item2 = (uint32_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+1);
-    uint32_t item3 = (uint32_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+2);
-    std::cout << std::hex << item1 << ", 0x" << item2 << std::hex << ", 0x" << item3 << std::endl;
+    // auto frameCount = this->currentObar->objectTileDataVector.at(this->objbIndex)->frames.size();
+    // if ((uint32_t)i >= frameCount) {
+    //     YUtils::printDebug("frameIndex overflow in frameValueChanged",DebugType::WARNING);
+    //     this->frameIndex = frameCount - 1;
+    //     return;
+    // } else {
+    //     this->frameIndex = (uint32_t)i;
+    // }
+    this->frameIndex = (uint32_t)i;
+    // auto curFrame = this->currentObar->objectTileDataVector.at(this->objbIndex)->frames.at(this->frameIndex);
+    // std::cout << "Metadata for frame 0x" << std::hex << this->frameIndex << ":" << std::endl;
+    // std::cout << "  " << curFrame->toString() << std::endl;
+    // std::cout << "  " << curFrame->buildFrame->toString() << std::endl;
+    // std::cout << "  ObjFrameBuild metadata: 0x";
+    // uint32_t frameMetaOffset = curFrame->buildFrame->flags & 0b11111;
+    // frameMetaOffset *= 3;
+    // uint32_t frameMetaBaseAddress = 0x020D'5E88;
+    // uint32_t frameMetaAddress = frameMetaBaseAddress + frameMetaOffset;
+    // uint32_t trueMetaAddress = YUtils::conv2xAddrToFileAddr(frameMetaAddress);
+    // uint32_t item1 = (uint32_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+0);
+    // uint32_t item2 = (uint32_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+1);
+    // uint32_t item3 = (uint32_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+2);
+    // std::cout << std::hex << item1 << ", 0x" << item2 << std::hex << ", 0x" << item3 << std::endl;
     this->refreshWithCurrentData();
 }
 
@@ -150,10 +151,10 @@ void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
         this->objbIndex = 0;
     }
     auto curObjb = objbs.at(this->objbIndex);
-    if (this->frameIndex >= curObjb->frames.size()) {
-        YUtils::printDebug("frameIndex overflow in refreshWithCurrentData",DebugType::WARNING);
-        this->frameIndex = 0;
-    }
+    // if (this->frameIndex >= curObjb->frames.size()) {
+    //     YUtils::printDebug("frameIndex overflow in refreshWithCurrentData",DebugType::WARNING);
+    //     this->frameIndex = 0;
+    // }
     auto curFrame = curObjb->getFrameAt(this->frameIndex);
     auto tileCount = 18;
     if (guessTileCount) {
