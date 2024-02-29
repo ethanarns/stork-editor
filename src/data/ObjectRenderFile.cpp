@@ -92,86 +92,12 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
 }
 
 ObjectTileData::ObjectTileData(std::vector<uint8_t> &obarVector, uint32_t &obarIndex, uint32_t end) {
-    uint32_t startIndex = obarIndex + 0;
     // Just take the entire chunk, it's not smart to try and calc it a different way
-    this->byteData = YUtils::subVector(obarVector,startIndex,end);
-    // bool continueFrames = true;
-    // while (continueFrames) {
-    //     auto frameIndexLoc = obarIndex + 0;
-    //     auto buildOffset = YUtils::getUint16FromVec(obarVector,obarIndex);
-    //     obarIndex += 2;
-    //     auto holdTime = obarVector.at(obarIndex);
-    //     obarIndex++;
-    //     auto frameJump = static_cast<int8_t>(obarVector.at(obarIndex));
-    //     obarIndex++;
-    //     if (buildOffset == 0x0000) {
-    //         // Seemingly how its checked in code
-    //         // Analysis wise, it is not padded anything above 0x4
-    //         continueFrames = false;
-    //         break;
-    //     }
-    //     auto frame = new ObjbFrame();
-    //     frame->buildOffset = buildOffset;
-    //     frame->holdTime = holdTime;
-    //     frame->frameJump = frameJump;
-    //     frame->_binOffset = frameIndexLoc;
-    //     // Find the build frame
-    //     uint32_t buildFrameLocation = frame->buildOffset + frame->_binOffset;
-    //     auto tileOffset = YUtils::getUint16FromVec(obarVector,buildFrameLocation);
-    //     auto xOffset = YUtils::getSint16FromVec(obarVector,buildFrameLocation+2);
-    //     auto yOffset = YUtils::getSint16FromVec(obarVector,buildFrameLocation+4);
-    //     auto flags = YUtils::getUint16FromVec(obarVector,buildFrameLocation+6);
-    //     auto frameBuild = new ObjFrameBuild();
-    //     frameBuild->tileOffset = tileOffset;
-    //     frameBuild->xOffset = xOffset;
-    //     frameBuild->yOffset = yOffset;
-    //     frameBuild->flags = flags;
-    //     frameBuild->_binOffset = buildFrameLocation;
-    //     // Attach the build frame
-    //     frame->buildFrame = frameBuild;
-    //     this->frames.push_back(frame);
-    // }
+    this->byteData = YUtils::subVector(obarVector,obarIndex,end);
 }
 
 ObjectTileData::ObjectTileData(std::vector<uint8_t> decompVector) {
     this->byteData = decompVector;
-    // bool continueFrames = true;
-    // uint32_t obarIndex = 0;
-    // while (continueFrames) {
-    //     auto frameIndexLoc = obarIndex + 0;
-    //     auto buildOffset = YUtils::getUint16FromVec(decompVector,obarIndex);
-    //     obarIndex += 2;
-    //     auto holdTime = decompVector.at(obarIndex);
-    //     obarIndex++;
-    //     auto frameJump = static_cast<int8_t>(decompVector.at(obarIndex));
-    //     obarIndex++;
-    //     if (buildOffset == 0x0000) {
-    //         // Seemingly how its checked in code
-    //         // Analysis wise, it is not padded anything above 0x4
-    //         continueFrames = false;
-    //         break;
-    //     }
-    //     auto frame = new ObjbFrame();
-    //     frame->buildOffset = buildOffset;
-    //     frame->holdTime = holdTime;
-    //     frame->frameJump = frameJump;
-    //     frame->_binOffset = frameIndexLoc;
-    //     // Find the build frame
-    //     uint32_t buildFrameLocation = frame->buildOffset + frame->_binOffset;
-    //     auto tileOffset = YUtils::getUint16FromVec(decompVector,buildFrameLocation);
-    //     auto xOffset = YUtils::getSint16FromVec(decompVector,buildFrameLocation+2);
-    //     auto yOffset = YUtils::getSint16FromVec(decompVector,buildFrameLocation+4);
-    //     auto flags = YUtils::getUint16FromVec(decompVector,buildFrameLocation+6);
-    //     auto frameBuild = new ObjFrameBuild();
-    //     frameBuild->tileOffset = tileOffset;
-    //     frameBuild->xOffset = xOffset;
-    //     frameBuild->yOffset = yOffset;
-    //     frameBuild->flags = flags;
-    //     frameBuild->_binOffset = buildFrameLocation;
-    //     // Attach the build frame
-    //     frame->buildFrame = frameBuild;
-    //     this->frames.push_back(frame);
-    // }
 }
 
 ObjbFrame ObjectTileData::getFrameAt(uint32_t frameIndex) {

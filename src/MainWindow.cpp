@@ -345,6 +345,9 @@ MainWindow::MainWindow() {
     this->spriteFileSelect->addItem("objset.arcz");
     this->spriteFileSelect->addItem("objiceblock.arcz");
     this->spriteFileSelect->addItem("objsbblock.arc");
+    this->spriteFileSelect->addItem("objyamori.arcz");
+    this->spriteFileSelect->addItem("objtori_yuuhi.arcz");
+    this->spriteFileSelect->addItem("objplayer.arcz");
     //this->spriteFileSelect->setCurrentText("---");
     this->spriteFileSelect->setEnabled(false);
     connect(this->spriteFileSelect,&QComboBox::currentTextChanged,this->objtilesTable,&ObjTilesTable::doFileLoad);
