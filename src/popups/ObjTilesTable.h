@@ -19,8 +19,9 @@ public:
     void doFileLoad(const QString text);
     void objbValueChanged(int i);
     void frameValueChanged(int i);
-    void refreshWithCurrentData();
+    void refreshWithCurrentData(bool guessTileCount = true);
     void widthChanged(int i);
+    void heightChanged(int i);
     void paletteChanged(int i);
 private:
     const static int OBJTILES_CELL_SIZE_PX = 32;

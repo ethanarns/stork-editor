@@ -386,6 +386,15 @@ MainWindow::MainWindow() {
     spriteWidthSelect->setPrefix(tr("W 0x"));
     spriteWidthSelect->setValue(2);
     spriteWidthSelect->setToolTip(tr("Set the width of the object to view (will be automatic later)"));
+    // Sprite height
+    auto spriteHeightSelect = new QSpinBox(this);
+    spriteHeightSelect->setObjectName("spritePopupHeightSelect");
+    spriteHeightSelect->setEnabled(true);
+    spriteHeightSelect->setMinimum(1);
+    spriteHeightSelect->setDisplayIntegerBase(16);
+    spriteHeightSelect->setPrefix(tr("H 0x"));
+    spriteHeightSelect->setValue(2);
+    spriteHeightSelect->setToolTip(tr("Set the height of the object to view (will be automatic later)"));
     // Sprite palette
     auto spritePaletteSelect = new QSpinBox(this);
     spritePaletteSelect->setObjectName("spritePopupPaletteSelect");
@@ -397,9 +406,11 @@ MainWindow::MainWindow() {
     spritePaletteSelect->setToolTip(tr("Select palette to use within the OBAR (-1 is universal palette)"));
     // Connect
     connect(spriteWidthSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::widthChanged);
+    connect(spriteHeightSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::heightChanged);
     connect(spritePaletteSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::paletteChanged);
     // Add selectors 2
     spriteWidthPaletteLayout->addWidget(spriteWidthSelect);
+    spriteWidthPaletteLayout->addWidget(spriteHeightSelect);
     spriteWidthPaletteLayout->addWidget(spritePaletteSelect);
     objtilesLayout->addLayout(spriteWidthPaletteLayout);
 

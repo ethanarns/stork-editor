@@ -23,6 +23,7 @@ ObjTilesTable::ObjTilesTable(QWidget* parent, YidsRom* rom) {
     this->verticalHeader()->setMinimumSectionSize(0);
     this->verticalHeader()->setDefaultSectionSize(ObjTilesTable::OBJTILES_CELL_SIZE_PX);
     this->setColumnCount(0x2);
+    this->setRowCount(0x2);
     this->setRowCount(ObjTilesTable::OBJTILES_ROW_COUNT_DEFAULT);
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
@@ -134,8 +135,11 @@ void ObjTilesTable::frameValueChanged(int i) {
     this->refreshWithCurrentData();
 }
 
-void ObjTilesTable::refreshWithCurrentData() {
-    //YUtils::printDebug("refreshWithCurrentData()",DebugType::VERBOSE);
+void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
+    YUtils::printDebug("refreshWithCurrentData()",DebugType::VERBOSE);
+    if (guessTileCount) {
+        std::cout << "Guessing tile count" << std::endl;
+    }
     if (this->currentObar == nullptr) {
         YUtils::printDebug("No OBAR loaded in refreshWithCurrentData",DebugType::WARNING);
         return;
@@ -151,10 +155,16 @@ void ObjTilesTable::refreshWithCurrentData() {
         this->frameIndex = 0;
     }
     auto curFrame = curObjb->getFrameData(this->frameIndex);
-    // Probably? This will allow you to check
-    auto tileCount = this->getTileCount(curFrame->buildFrame->flags);
+    auto tileCount = 18;
+    if (guessTileCount) {
+        tileCount = this->getTileCount(curFrame->buildFrame->flags);
+    } else {
+        tileCount = this->rowCount() * this->columnCount();
+    }
     auto tiles = curObjb->getChartiles(curFrame->buildFrame->tileOffset << 4,tileCount);
-    this->setRowCount(tiles.size() / this->columnCount());
+    if (guessTileCount) {
+        this->setRowCount(tiles.size() / this->columnCount());
+    }
     this->wipeTiles();
     if (this->currentPalette == nullptr) {
         std::cout << "Setting to default" << std::endl;
@@ -186,7 +196,17 @@ void ObjTilesTable::widthChanged(int i) {
         return;
     }
     this->setColumnCount(i);
-    this->refreshWithCurrentData();
+    this->refreshWithCurrentData(false);
+}
+
+void ObjTilesTable::heightChanged(int i) {
+    //std::cout << "widthChanged" << std::endl;
+    if (i < 1) {
+        YUtils::printDebug("Sprite height selected too small",DebugType::ERROR);
+        return;
+    }
+    this->setRowCount(i);
+    this->refreshWithCurrentData(false);
 }
 
 void ObjTilesTable::paletteChanged(int i) {
@@ -214,7 +234,9 @@ void ObjTilesTable::paletteChanged(int i) {
     this->refreshWithCurrentData();
 }
 
+// Does not work properly
 uint32_t ObjTilesTable::getTileCount(uint32_t buildFlags) {
+    // MOSTLY works
     uint32_t frameMetaOffset = buildFlags & 0b11111;
     frameMetaOffset *= 3;
     uint32_t frameMetaBaseAddress = 0x020D'5E88;
