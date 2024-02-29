@@ -154,14 +154,14 @@ void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
         YUtils::printDebug("frameIndex overflow in refreshWithCurrentData",DebugType::WARNING);
         this->frameIndex = 0;
     }
-    auto curFrame = curObjb->getFrameData(this->frameIndex);
+    auto curFrame = curObjb->getFrameAt(this->frameIndex);
     auto tileCount = 18;
     if (guessTileCount) {
-        tileCount = this->getTileCount(curFrame->buildFrame->flags);
+        tileCount = this->getTileCount(curFrame.buildFrame->flags);
     } else {
         tileCount = this->rowCount() * this->columnCount();
     }
-    auto tiles = curObjb->getChartiles(curFrame->buildFrame->tileOffset << 4,tileCount);
+    auto tiles = curObjb->getChartiles(curFrame.buildFrame->tileOffset << 4,tileCount);
     if (guessTileCount) {
         this->setRowCount(tiles.size() / this->columnCount());
     }

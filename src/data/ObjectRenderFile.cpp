@@ -182,6 +182,28 @@ ObjbFrame* ObjectTileData::getFrameData(uint32_t frameIndex) {
     return this->frames.at(frameIndex);
 }
 
+ObjbFrame ObjectTileData::getFrameAt(uint32_t frameIndex) {
+    // Each frame is 4 bytes
+    uint32_t frameAddress = frameIndex * 4;
+    ObjbFrame frame;
+    frame.buildOffset = YUtils::getUint16FromVec(this->byteData,frameAddress+0);
+    frame.holdTime = this->byteData.at(frameAddress+2);
+    frame.frameJump = static_cast<int8_t>(this->byteData.at(frameAddress+3));
+    frame._binOffset = frameAddress;
+    if (frame.buildOffset == 0xffff) {
+        YUtils::printDebug("FrameBuild offset was 0xffff",DebugType::VERBOSE);
+        return frame;
+    }
+    uint32_t buildFrameLocation = frame.buildOffset + frame._binOffset;
+    ObjFrameBuild* frameBuild = new ObjFrameBuild();
+    frameBuild->tileOffset = YUtils::getUint16FromVec(this->byteData,buildFrameLocation);
+    frameBuild->xOffset = YUtils::getSint16FromVec(this->byteData,buildFrameLocation+2);
+    frameBuild->yOffset = YUtils::getSint16FromVec(this->byteData,buildFrameLocation+4);
+    frameBuild->flags = YUtils::getUint16FromVec(this->byteData,buildFrameLocation+6);
+    frame.buildFrame = frameBuild;
+    return frame;
+}
+
 std::vector<QByteArray> ObjectTileData::getChartiles(uint32_t index, uint32_t count) {
     std::vector<QByteArray> chartiles;
     for (uint i = 0; i < count; i++) {
