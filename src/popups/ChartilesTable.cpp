@@ -31,47 +31,6 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
     QTableWidget::connect(this, &QTableWidget::cellClicked, this, &ChartilesTable::chartilesTableClicked);
 }
 
-void ChartilesTable::refreshLoadedObjectTilesMap() {
-    this->wipeTiles();
-    // The following (messily) spits out all available tiles for debug purposes
-    auto tilesMap = &this->yidsRom->objectFiles[ObjectFileName::OBJSET].objectPixelTiles;
-    uint32_t mapSize = tilesMap->size();
-    uint32_t yOffset = 0;
-    uint32_t indexForOffset = 0;
-    for (uint32_t mapIndex = 0; mapIndex < mapSize; mapIndex++) {
-        auto chartilesVector = (*tilesMap)[mapIndex];
-        const uint32_t chartilesVectorSize = chartilesVector.size();
-        for (uint32_t i = 0; i < chartilesVectorSize; i += Constants::CHARTILE_DATA_SIZE) {
-            QTableWidgetItem *newItem = new QTableWidgetItem();
-            const uint32_t start = i;
-            uint32_t end = i + Constants::CHARTILE_DATA_SIZE;
-            if (end > chartilesVectorSize) {
-                indexForOffset++;
-                // This is likely it trying to get crap from other areas
-                //cout << "End too big: " << std::hex << end << ", versus size: " << std::hex << chartilesVectorSize << endl;
-                continue;
-            }
-            auto currentSubSection = YUtils::subVector(chartilesVector,start,end);
-            auto qArray = YUtils::tileVectorToQByteArray(currentSubSection);
-            newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,qArray);
-            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
-            newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
-            newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
-            newItem->setData(PixelDelegateData::TILE_ID_BG1,mapIndex);
-            newItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
-            newItem->setData(PixelDelegateData::DRAW_BG1,true);
-            uint32_t x = indexForOffset % 0x10;
-            uint32_t y = indexForOffset / 0x10 + yOffset;
-            if (this->item(y,x) != nullptr) {
-                delete this->item(y,x);
-            }
-            this->setItem(y,x,newItem);
-            indexForOffset++;
-        }
-        yOffset += 2;
-    }
-}
-
 void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
     this->wipeTiles();
     std::map<uint32_t,Chartile> tilesMap;
@@ -94,6 +53,7 @@ void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
         newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
         newItem->setData(PixelDelegateData::TILE_ID_BG1,mapIndex);
         newItem->setData(PixelDelegateData::DRAW_BG1,true);
+        newItem->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
         uint32_t x = indexForOffset % 0x10;
         uint32_t y = indexForOffset / 0x10;
         if (this->item(y,x) != nullptr) {

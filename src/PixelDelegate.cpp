@@ -62,7 +62,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
                     QColor qc;
                     auto whichPalette = (uint8_t)byteArrayBg1.at(i);
-                    if (whichPalette == 0) {
+                    if (whichPalette == 0 && index.data(PixelDelegateData::DRAW_TRANS_TILES).toBool() == false) {
                         // NOTE: Palette index 0 seems to almost always be the transparent
                         //   value. This may not be true, keep this in mind for future bugs
                         continue;
@@ -114,7 +114,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
                     QColor qc;
                     auto whichPalette = (uint8_t)byteArrayBg2.at(i);
-                    if (whichPalette == 0) {
+                    if (whichPalette == 0 && index.data(PixelDelegateData::DRAW_TRANS_TILES).toBool() == false) {
                         // NOTE: Palette index 0 seems to almost always be the transparent
                         //   value. This may not be true, keep this in mind for future bugs
                         continue;
@@ -166,7 +166,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
                     QColor qc;
                     auto whichPalette = (uint8_t)byteArrayBg3.at(i);
-                    if (whichPalette == 0) {
+                    if (whichPalette == 0 && index.data(PixelDelegateData::DRAW_TRANS_TILES).toBool() == false) {
                         // NOTE: Palette index 0 seems to almost always be the transparent
                         //   value. This may not be true, keep this in mind for future bugs
                         continue;

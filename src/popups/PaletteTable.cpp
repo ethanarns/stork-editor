@@ -50,11 +50,13 @@ void PaletteTable::refreshLoadedTiles() {
                 tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,fill);
                 tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,curPalette);
                 tileItem->setData(PixelDelegateData::DRAW_BG2,true);
+                tileItem->setData(PixelDelegateData::DRAW_TRANS_TILES,true);
                 this->setItem(paletteIndex,colorIndex,tileItem);
             } else {
                 tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,fill);
                 tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,curPalette);
                 tileItem->setData(PixelDelegateData::DRAW_BG2,true);
+                tileItem->setData(PixelDelegateData::DRAW_TRANS_TILES,true);
             }
         }
     }

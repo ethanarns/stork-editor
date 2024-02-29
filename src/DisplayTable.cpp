@@ -145,6 +145,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
 
         // Things to do for every layer:
         newItem->setData(PixelDelegateData::LAYER_DRAW_ORDER,layerDrawOrder);
+        newItem->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
 
         // Only doing collision here because there's no data for it, so create it
         newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
@@ -191,6 +192,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         }
         // Things to do for every layer:
         potentialExisting->setData(PixelDelegateData::LAYER_DRAW_ORDER,layerDrawOrder);
+        potentialExisting->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
     }
 }
 

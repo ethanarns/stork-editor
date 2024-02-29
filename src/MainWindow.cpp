@@ -605,9 +605,7 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
         this->grid->setDragEnabled(true);
         this->grid->setDragDropMode(QAbstractItemView::DragDrop);
         ss << "Sprites";
-        // Do this in a new window
-        // this->chartilesTable->refreshLoadedObjectTilesMap();
-        // this->chartilesPopup->setWindowTitle("Sprite Tiles");
+        // Do not use chartilesPopup
     } else if (str.compare("Colliders") == 0) {
         this->grid->layerSelectMode = LayerSelectMode::COLLISION_LAYER;
         ss << "Colliders";

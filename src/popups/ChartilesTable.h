@@ -10,7 +10,6 @@ class ChartilesTable : public QTableWidget {
     Q_OBJECT
 public:
     ChartilesTable(QWidget *parent, YidsRom* rom);
-    void refreshLoadedObjectTilesMap();
     void refreshLoadedMapTilesMap(int whichBg);
     void chartilesTableClicked(int row, int column);
     void wipeTiles();
