@@ -353,65 +353,65 @@ MainWindow::MainWindow() {
     // Selectors 1 //
     QHBoxLayout* spriteIndexesLayout = new QHBoxLayout(this);
     // OBJB select
-    auto objbSelect = new QSpinBox(this);
-    objbSelect->setObjectName("spritePopupObjbSelect");
-    objbSelect->setEnabled(true);
-    objbSelect->setMinimum(0);
-    objbSelect->setDisplayIntegerBase(16);
-    objbSelect->setPrefix(tr("0x"));
-    objbSelect->setToolTip(tr("Select which OBJB record to load"));
+    this->objbSelect = new QSpinBox(this);
+    this->objbSelect->setObjectName("spritePopupObjbSelect");
+    this->objbSelect->setEnabled(true);
+    this->objbSelect->setMinimum(0);
+    this->objbSelect->setDisplayIntegerBase(16);
+    this->objbSelect->setPrefix(tr("0x"));
+    this->objbSelect->setToolTip(tr("Select which OBJB record to load"));
     // Frame select
-    auto frameSelect = new QSpinBox(this);
-    frameSelect->setObjectName("spritePopupFrameSelect");
-    frameSelect->setEnabled(true);
-    frameSelect->setMinimum(0);
-    frameSelect->setDisplayIntegerBase(16);
-    frameSelect->setPrefix(tr("Frame 0x"));
-    frameSelect->setToolTip(tr("Select which frame of the object to render"));
+    this->frameSelect = new QSpinBox(this);
+    this->frameSelect->setObjectName("spritePopupFrameSelect");
+    this->frameSelect->setEnabled(true);
+    this->frameSelect->setMinimum(0);
+    this->frameSelect->setDisplayIntegerBase(16);
+    this->frameSelect->setPrefix(tr("Frame 0x"));
+    this->frameSelect->setToolTip(tr("Select which frame of the object to render"));
     // Connect
-    connect(objbSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::objbValueChanged);
-    connect(frameSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::frameValueChanged);
+    connect(this->objbSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::objbValueChanged);
+    connect(this->frameSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::frameValueChanged);
     // Add selectors 1
-    spriteIndexesLayout->addWidget(objbSelect);
-    spriteIndexesLayout->addWidget(frameSelect);
+    spriteIndexesLayout->addWidget(this->objbSelect);
+    spriteIndexesLayout->addWidget(this->frameSelect);
     objtilesLayout->addLayout(spriteIndexesLayout);
     // Selectors 2 //
     QHBoxLayout* spriteWidthPaletteLayout = new QHBoxLayout(this);
     // Sprite width
-    auto spriteWidthSelect = new QSpinBox(this);
-    spriteWidthSelect->setObjectName("spritePopupWidthSelect");
-    spriteWidthSelect->setEnabled(true);
-    spriteWidthSelect->setMinimum(1);
-    spriteWidthSelect->setDisplayIntegerBase(16);
-    spriteWidthSelect->setPrefix(tr("W 0x"));
-    spriteWidthSelect->setValue(2);
-    spriteWidthSelect->setToolTip(tr("Set the width of the object to view (will be automatic later)"));
+    this->spriteWidthSelect = new QSpinBox(this);
+    this->spriteWidthSelect->setObjectName("spritePopupWidthSelect");
+    this->spriteWidthSelect->setEnabled(true);
+    this->spriteWidthSelect->setMinimum(1);
+    this->spriteWidthSelect->setDisplayIntegerBase(16);
+    this->spriteWidthSelect->setPrefix(tr("W 0x"));
+    this->spriteWidthSelect->setValue(2);
+    this->spriteWidthSelect->setToolTip(tr("Set the width of the object to view (will be automatic later)"));
     // Sprite height
-    auto spriteHeightSelect = new QSpinBox(this);
-    spriteHeightSelect->setObjectName("spritePopupHeightSelect");
-    spriteHeightSelect->setEnabled(true);
-    spriteHeightSelect->setMinimum(1);
-    spriteHeightSelect->setDisplayIntegerBase(16);
-    spriteHeightSelect->setPrefix(tr("H 0x"));
-    spriteHeightSelect->setValue(2);
-    spriteHeightSelect->setToolTip(tr("Set the height of the object to view (will be automatic later)"));
+    this->spriteHeightSelect = new QSpinBox(this);
+    this->spriteHeightSelect->setObjectName("spritePopupHeightSelect");
+    this->spriteHeightSelect->setEnabled(true);
+    this->spriteHeightSelect->setMinimum(1);
+    this->spriteHeightSelect->setDisplayIntegerBase(16);
+    this->spriteHeightSelect->setPrefix(tr("H 0x"));
+    this->spriteHeightSelect->setValue(2);
+    this->spriteHeightSelect->setToolTip(tr("Set the height of the object to view (will be automatic later)"));
     // Sprite palette
-    auto spritePaletteSelect = new QSpinBox(this);
-    spritePaletteSelect->setObjectName("spritePopupPaletteSelect");
-    spritePaletteSelect->setEnabled(true);
-    spritePaletteSelect->setMinimum(-1); // -1 = universal palette
-    spritePaletteSelect->setDisplayIntegerBase(16);
-    spritePaletteSelect->setPrefix("PLTB 0x");
-    spritePaletteSelect->setValue(-1);
-    spritePaletteSelect->setToolTip(tr("Select palette to use within the OBAR (-1 is universal palette)"));
+    this->spritePaletteSelect = new QSpinBox(this);
+    this->spritePaletteSelect->setObjectName("spritePopupPaletteSelect");
+    this->spritePaletteSelect->setEnabled(true);
+    this->spritePaletteSelect->setMinimum(-1); // -1 = universal palette
+    this->spritePaletteSelect->setDisplayIntegerBase(16);
+    this->spritePaletteSelect->setPrefix("PLTB 0x");
+    this->spritePaletteSelect->setValue(-1);
+    this->spritePaletteSelect->setToolTip(tr("Select palette to use within the OBAR (-1 is universal palette)"));
     // Connect
-    connect(spriteWidthSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::widthChanged);
-    connect(spriteHeightSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::heightChanged);
-    connect(spritePaletteSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::paletteChanged);
+    connect(this->spriteWidthSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::widthChanged);
+    connect(this->spriteHeightSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::heightChanged);
+    connect(this->spritePaletteSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::paletteChanged);
     // Add selectors 2
-    spriteWidthPaletteLayout->addWidget(spriteWidthSelect);
-    spriteWidthPaletteLayout->addWidget(spriteHeightSelect);
-    spriteWidthPaletteLayout->addWidget(spritePaletteSelect);
+    spriteWidthPaletteLayout->addWidget(this->spriteWidthSelect);
+    spriteWidthPaletteLayout->addWidget(this->spriteHeightSelect);
+    spriteWidthPaletteLayout->addWidget(this->spritePaletteSelect);
     objtilesLayout->addLayout(spriteWidthPaletteLayout);
 
     // Finishing touches //

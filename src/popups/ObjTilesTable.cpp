@@ -136,10 +136,10 @@ void ObjTilesTable::frameValueChanged(int i) {
 }
 
 void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
-    YUtils::printDebug("refreshWithCurrentData()",DebugType::VERBOSE);
-    if (guessTileCount) {
-        std::cout << "Guessing tile count" << std::endl;
-    }
+    // YUtils::printDebug("refreshWithCurrentData()",DebugType::VERBOSE);
+    // if (guessTileCount) {
+    //     std::cout << "Guessing tile count" << std::endl;
+    // }
     if (this->currentObar == nullptr) {
         YUtils::printDebug("No OBAR loaded in refreshWithCurrentData",DebugType::WARNING);
         return;

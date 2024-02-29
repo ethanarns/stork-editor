@@ -12,6 +12,7 @@
 #include <QComboBox>
 #include <QTextLayout>
 #include <QPushButton>
+#include <QSpinBox>
 
 #include "yidsrom.h"
 #include "DisplayTable.h"
@@ -50,6 +51,11 @@ private:
     QWidget* objtilesPopup;
     ObjTilesTable* objtilesTable;
     QComboBox* spriteFileSelect;
+    QSpinBox* objbSelect;
+    QSpinBox* frameSelect;
+    QSpinBox* spriteWidthSelect;
+    QSpinBox* spriteHeightSelect;
+    QSpinBox* spritePaletteSelect;
 
     QWidget* palettePopup;
     QWidget* levelSelectPopup;
