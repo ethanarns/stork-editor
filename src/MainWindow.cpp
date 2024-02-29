@@ -480,6 +480,9 @@ MainWindow::MainWindow() {
 
     this->statusLabel->setText(tr("Ready"));
 
+    // BrushWindow //
+    this->brushWindow = new BrushWindow(this,this->rom);
+
     /*******************
      *** Connections ***
      *******************/
@@ -514,6 +517,9 @@ void MainWindow::LoadRom() {
         this->objtilesPopup->setWindowTitle("Select an object render data archive to view");
         this->spriteFileSelect->setEnabled(true);
         this->objtilesPopup->show();
+
+        // Brush popup //
+        this->brushWindow->show();
 
         // Palette popup //
         this->palettePopup->resize(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH,PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);

@@ -23,6 +23,7 @@
 #include "popups/LevelSelect.h"
 #include "GuiObjectList.h"
 #include "SelectionInfoTable.h"
+#include "popups/BrushWindow.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -38,6 +39,7 @@ public:
     SelectionInfoTable* selectionInfoTable;
     PaletteTable* paletteTable;
     QLabel* statusLabel;
+    BrushWindow* brushWindow;
 
     std::string currentFileName = "";
 
