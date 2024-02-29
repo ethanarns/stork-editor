@@ -800,7 +800,7 @@ void MainWindow::objectListClick() {
 }
 
 void MainWindow::displayTableClicked() {
-    if (this->windowEditMode == WindowEditMode::OBJECTS) {
+    if (this->grid->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
         auto selectedObjects = this->grid->selectedObjects;
         if (selectedObjects.size() < 1) {
             YUtils::printDebug("No objects selected",DebugType::VERBOSE);
@@ -820,29 +820,37 @@ void MainWindow::displayTableClicked() {
             return;
         }
         this->selectionInfoTable->updateWithLevelObject(lo);
+    } else if (this->grid->layerSelectMode == LayerSelectMode::BG2_LAYER) {
+        YUtils::printDebug("MainWindow clicked while in BG2 mode");
+    } else if (this->grid->layerSelectMode == LayerSelectMode::BG1_LAYER) {
+        YUtils::printDebug("MainWindow clicked while in BG1 mode");
+    } else if (this->grid->layerSelectMode == LayerSelectMode::BG3_LAYER) {
+        YUtils::printDebug("MainWindow clicked while in BG3 mode");
+    } else if (this->grid->layerSelectMode == LayerSelectMode::COLLISION_LAYER) {
+        YUtils::printDebug("MainWindow clicked while in COLL mode");
+    } else {
+        YUtils::printDebug("MainWindow clicked while in UNKNOWN mode");
     }
 }
 
 void MainWindow::displayTableUpdate(){
-    if (this->windowEditMode == WindowEditMode::OBJECTS) {
-        auto selectedObjects = this->grid->selectedObjects;
-        if (selectedObjects.size() < 1) {
-            YUtils::printDebug("No objects selected",DebugType::VERBOSE);
-            return;
-        } else if (selectedObjects.size() > 1) {
-            std::stringstream ss;
-            ss << "More than one object selected (" << std::dec << selectedObjects.size() << "), taking first";
-            YUtils::printDebug(ss.str(),DebugType::VERBOSE);
-        }
-        auto selectedObjectUuid = selectedObjects.at(0);
-        LevelObject* lo = this->rom->mapData->getLevelObjectByUuid(selectedObjectUuid);
-        if (lo == nullptr) {
-            YUtils::printDebug("Invalid level object",DebugType::ERROR);
-            return;
-        }
-        this->selectionInfoTable->updateWithLevelObject(lo);
-        this->guiObjectList->updateList();
+    auto selectedObjects = this->grid->selectedObjects;
+    if (selectedObjects.size() < 1) {
+        YUtils::printDebug("No objects selected",DebugType::VERBOSE);
+        return;
+    } else if (selectedObjects.size() > 1) {
+        std::stringstream ss;
+        ss << "More than one object selected (" << std::dec << selectedObjects.size() << "), taking first";
+        YUtils::printDebug(ss.str(),DebugType::VERBOSE);
     }
+    auto selectedObjectUuid = selectedObjects.at(0);
+    LevelObject* lo = this->rom->mapData->getLevelObjectByUuid(selectedObjectUuid);
+    if (lo == nullptr) {
+        YUtils::printDebug("Invalid level object",DebugType::ERROR);
+        return;
+    }
+    this->selectionInfoTable->updateWithLevelObject(lo);
+    this->guiObjectList->updateList();
     this->markSavableUpdate();
 }
 

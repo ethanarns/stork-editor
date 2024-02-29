@@ -204,6 +204,33 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
     }
 }
 
+void DisplayTable::printCellDebug(QTableWidgetItem *item, uint whichBg) {
+    std::cout << "** Printing cell debug **" << std::endl;
+    if (item == nullptr) {
+        YUtils::printDebug("Item is null, can't print debug",DebugType::WARNING);
+        return;
+    }
+    if (whichBg == 1) {
+
+    } else if (whichBg == 2) {
+        if (!item->data(PixelDelegateData::PIXEL_ARRAY_BG2).isNull()) {
+            std::stringstream ssBg2;
+            ssBg2 << "Tile attr BG2: 0x" << std::hex << item->data(PixelDelegateData::TILEATTR_BG2).toUInt();
+            YUtils::printDebug(ssBg2.str(),DebugType::VERBOSE);
+            auto pixArray2 = item->data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
+            YUtils::printDebug("Pixel Array for BG 2:",DebugType::VERBOSE);
+            YUtils::printQbyte(pixArray2);
+            YUtils::printDebug("Palette for BG2:",DebugType::VERBOSE);
+            auto pal = item->data(PixelDelegateData::PALETTE_ARRAY_BG2).toByteArray();
+            YUtils::printQbyte(pal);
+        }
+    } else if (whichBg == 3) {
+
+    } else {
+        YUtils::printDebug("Unknown BG to debug",DebugType::ERROR);
+    }
+}
+
 void DisplayTable::mousePressEvent(QMouseEvent *event) {
     if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
         // Something is already selected
@@ -270,6 +297,26 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                 return;
             }
         }
+    } else if (
+        this->layerSelectMode == LayerSelectMode::BG1_LAYER ||
+        this->layerSelectMode == LayerSelectMode::BG2_LAYER ||
+        this->layerSelectMode == LayerSelectMode::BG3_LAYER
+    ) {
+        auto curItemUnderCursor = this->itemAt(event->pos());
+        if (curItemUnderCursor == nullptr) {
+            YUtils::printDebug("Item under cursor in mousePressEvent for BGX is null", DebugType::ERROR);
+            return;
+        }
+        if (this->layerSelectMode == LayerSelectMode::BG1_LAYER) {
+            this->printCellDebug(curItemUnderCursor,1);
+        } else if (this->layerSelectMode == LayerSelectMode::BG2_LAYER) {
+            this->printCellDebug(curItemUnderCursor,2);
+        } else if (this->layerSelectMode == LayerSelectMode::BG3_LAYER) {
+            this->printCellDebug(curItemUnderCursor,3);
+        } else {
+            YUtils::printDebug("If this is hit, you seriously messed something up",DebugType::ERROR);
+        }
+        return;
     }
     QTableWidget::mousePressEvent(event);
 }
@@ -321,6 +368,7 @@ void DisplayTable::dropEvent(QDropEvent *event) {
     }
 }
 
+// delete this
 void DisplayTable::displayTableClicked(int row, int column) {
     QTableWidgetItem* curCell = this->item(row,column);
     if (curCell == nullptr) {

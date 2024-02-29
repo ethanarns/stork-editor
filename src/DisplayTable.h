@@ -75,6 +75,7 @@ private:
     YidsRom* yidsRom;
 
     void cellEnteredTriggered(int row, int column);
+    void printCellDebug(QTableWidgetItem *item, uint whichBg);
 protected:
     QPoint dragStartPosition;
     void mousePressEvent(QMouseEvent *event) override;

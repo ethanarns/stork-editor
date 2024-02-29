@@ -25,6 +25,7 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
         return;
     }
     uint32_t obarInternalLength = YUtils::getUint32FromVec(obarVector,obarIndex);
+    Q_UNUSED(obarInternalLength);
     obarIndex += 4;
     uint32_t globalIndex = 0;
     while (obarIndex < obarDecompLength) {

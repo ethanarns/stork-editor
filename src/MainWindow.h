@@ -28,7 +28,6 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
     YidsRom* rom = new YidsRom();
-    WindowEditMode windowEditMode = WindowEditMode::OBJECTS;
 
     MainWindow();
     void LoadRom();
