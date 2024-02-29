@@ -13,6 +13,7 @@
 #include <QMimeData>
 #include <QDragEnterEvent>
 #include <QByteArray>
+#include <QPoint>
 
 enum LayerSelectMode {
     BG1_LAYER,
@@ -76,6 +77,7 @@ private:
 
     void cellEnteredTriggered(int row, int column);
     void printCellDebug(QTableWidgetItem *item, uint whichBg);
+    QPoint getTopLeftOfSprite(uint32_t levelObjectUuid);
 protected:
     QPoint dragStartPosition;
     void mousePressEvent(QMouseEvent *event) override;

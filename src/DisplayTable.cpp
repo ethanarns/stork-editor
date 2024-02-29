@@ -237,6 +237,24 @@ void DisplayTable::printCellDebug(QTableWidgetItem *item, uint whichBg) {
     }
 }
 
+QPoint DisplayTable::getTopLeftOfSprite(uint32_t levelObjectUuid) {
+    const int ROW_COUNT = this->rowCount();
+    const int COLUMN_COUNT = this->columnCount();
+    for (int row = 0; row < ROW_COUNT; row++) {
+        for (int col = 0; col < COLUMN_COUNT; col++) {
+            auto potentialItem = this->item(row,col);
+            if (potentialItem != nullptr && !potentialItem->data(PixelDelegateData::OBJECT_UUID).isNull()) {
+                if (potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt() == levelObjectUuid) {
+                    QPoint point(col,row);
+                    return point;
+                }
+            }
+        }
+    }
+    YUtils::printDebug("Could not find sprite with that UUID",DebugType::ERROR);
+    return QPoint();
+}
+
 void DisplayTable::mousePressEvent(QMouseEvent *event) {
     if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
         // Something is already selected
@@ -260,7 +278,8 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
             }
             if (cursorUuidMaybe.toUInt() == selectedObjectUuid) {
                 YUtils::printDebug("Selected and clicked match! Starting drag...",DebugType::VERBOSE);
-                this->dragStartPosition = event->pos();
+                QPoint underCursorPos(curItemUnderCursor->column(),curItemUnderCursor->row());
+                this->dragStartPosition = underCursorPos;
                 QDrag *drag = new QDrag(this);
                 QMimeData *mimeData = new QMimeData();
                 QByteArray uuidBytes;
@@ -362,7 +381,9 @@ void DisplayTable::dropEvent(QDropEvent *event) {
             auto uuidByteData = event->mimeData()->data("application/x-stork-sprite-uuid");
             uint32_t uuid = uuidByteData.toUInt();
             auto tableItem = this->itemAt(event->pos());
-            this->moveSpriteTo(uuid,tableItem->column(),tableItem->row());
+            int tableX = tableItem->column();
+            int tableY = tableItem->row();
+            this->moveSpriteTo(uuid,tableX,tableY);
             this->updateSprites();
         } else {
             YUtils::printDebug("dropEvent did not detect 'application/x-stork-sprite-uuid'");
