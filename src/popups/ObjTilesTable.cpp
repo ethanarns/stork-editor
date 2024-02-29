@@ -80,7 +80,7 @@ void ObjTilesTable::doFileLoad(const QString text) {
 void ObjTilesTable::objbValueChanged(int i) {
     //YUtils::printDebug("objbValueChanged()");
     if (this->currentFileName.empty() || this->currentFileName.compare("---") == 0) {
-        YUtils::printDebug("Invalid sprite file name in objbValueChanged");
+        YUtils::printDebug("Invalid sprite file name in objbValueChanged",DebugType::WARNING);
         return;
     }
     if (this->currentObar == nullptr) {
@@ -91,7 +91,8 @@ void ObjTilesTable::objbValueChanged(int i) {
     uint32_t newObjbIndex = (uint32_t)i;
     if (newObjbIndex >= objbs.size()) {
         YUtils::printDebug("objbIndex overflow in objbValueChanged",DebugType::WARNING);
-        newObjbIndex = 0; // Set to last index
+        newObjbIndex = objbs.size() - 1; // Set to last index
+        return;
     }
     this->objbIndex = newObjbIndex;
     this->frameIndex = 0;
@@ -111,7 +112,8 @@ void ObjTilesTable::frameValueChanged(int i) {
     auto frameCount = this->currentObar->objectTileDataVector.at(this->objbIndex)->frames.size();
     if ((uint32_t)i >= frameCount) {
         YUtils::printDebug("frameIndex overflow in frameValueChanged",DebugType::WARNING);
-        this->frameIndex = 0;
+        this->frameIndex = frameCount - 1;
+        return;
     } else {
         this->frameIndex = (uint32_t)i;
     }
@@ -191,6 +193,12 @@ void ObjTilesTable::paletteChanged(int i) {
     //std::cout << "paletteChanged: 0x" << std::hex << i << std::endl;
     if (i < -1) {
         YUtils::printDebug("Sprite palette selected too low",DebugType::ERROR);
+        return;
+    }
+    if (i == -1) {
+        YUtils::printDebug("Setting to default bg palette");
+        this->currentPalette = this->yidsRom->backgroundPalettes[0];
+        this->refreshWithCurrentData();
         return;
     }
     auto paletteDataList = this->currentObar->objectPaletteDataVector;

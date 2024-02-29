@@ -59,7 +59,7 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
                 QByteArray curPalette;
                 curPalette.resize(Constants::PALETTE_SIZE);
                 for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
-                    curPalette[curPaletteIndex] = curPalette.at(curPaletteIndex);
+                    curPalette[curPaletteIndex] = pltbSector.at(curPaletteIndex+(i*Constants::PALETTE_SIZE));
                 }
                 objPltb->palettes.push_back(curPalette);
             }
