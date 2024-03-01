@@ -259,33 +259,19 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         QPen qpW(qcWhite);
         qpW.setStyle(Qt::PenStyle::DotLine);
 
-        const int X_WIDTH = option.rect.width()-1;
-        const int Y_HEIGHT = option.rect.height()-1;
+        const int X_WIDTH = option.rect.width();
+        const int Y_HEIGHT = option.rect.height();
         const int X_BASE = option.rect.x();
         const int Y_BASE = option.rect.y();
 
         switch(colDrawType) {
-            case CollisionDraw::CORNER_TOP_LEFT: {
-                QPainterPath path;
-                path.addRect(X_BASE,Y_BASE,X_WIDTH+1,Y_HEIGHT+1);
-                painter->fillPath(path,collisionColor);
-                break;
-            }
-            case CollisionDraw::CORNER_TOP_RIGHT: {
-                QPainterPath path;
-                path.addRect(X_BASE,Y_BASE,X_WIDTH+1,Y_HEIGHT+1);
-                painter->fillPath(path,collisionColor);
-                break;
-            }
-            case CollisionDraw::CORNER_BOTTOM_LEFT: {
-                QPainterPath path;
-                path.addRect(X_BASE,Y_BASE,X_WIDTH+1,Y_HEIGHT+1);
-                painter->fillPath(path,collisionColor);
-                break;
-            }
+            case CollisionDraw::CORNER_TOP_LEFT:
+            case CollisionDraw::SQUARE_DRAW:
+            case CollisionDraw::CORNER_TOP_RIGHT:
+            case CollisionDraw::CORNER_BOTTOM_LEFT:
             case CollisionDraw::CORNER_BOTTOM_RIGHT: {
                 QPainterPath path;
-                path.addRect(X_BASE,Y_BASE,X_WIDTH+1,Y_HEIGHT+1);
+                path.addRect(X_BASE,Y_BASE,X_WIDTH,Y_HEIGHT);
                 painter->fillPath(path,collisionColor);
                 break;
             }
@@ -299,35 +285,26 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 break;
             }
             case CollisionDraw::DIAG_DOWN_RIGHT: {
-                painter->setPen(qpB);
-                painter->drawLine(
-                    X_BASE,Y_BASE,
-                    X_BASE+X_WIDTH,Y_BASE+Y_HEIGHT
-                );
-                painter->setPen(qpW);
-                painter->drawLine(
-                    X_BASE,Y_BASE,
-                    X_BASE+X_WIDTH,Y_BASE+Y_HEIGHT
-                );
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE,(double)Y_BASE) << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT));
+                poly << QPointF((double)(X_BASE),(double)(Y_BASE+Y_HEIGHT));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColor);
                 break;
             }
             case CollisionDraw::DIAG_UP_RIGHT: {
-                painter->setPen(qpB);
-                painter->drawLine(
-                    X_BASE,Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,Y_BASE
-                );
-                painter->setPen(qpW);
-                painter->drawLine(
-                    X_BASE,Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,Y_BASE
-                );
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE,(double)Y_BASE+Y_HEIGHT) << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE));
+                poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColor);
                 break;
             }
             case CollisionDraw::COIN_TOP_LEFT: {
                 painter->drawImage(X_BASE,Y_BASE,COIN_IMAGE,0,0,X_WIDTH*2,Y_HEIGHT*2);
                 break;
-            // TODO: TEMP, REMOVE ME
             }
             case CollisionDraw::COIN_BOTTOM_RIGHT: {
                 painter->drawImage(X_BASE,Y_BASE,COIN_IMAGE,X_WIDTH,Y_HEIGHT,X_WIDTH*2,Y_HEIGHT*2);
@@ -342,73 +319,21 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 break;
             }
             case CollisionDraw::UP_RIGHT_30_BL: {
-                painter->setPen(qpB);
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT/2
-                );
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT
-                );
-                painter->setPen(qpW);
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT/2
-                );
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT
-                );
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE,(double)Y_BASE+Y_HEIGHT) << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT/2));
+                poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColor);
                 break;
             }
             case CollisionDraw::UP_RIGHT_30_BR: {
-                painter->setPen(qpB);
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT
-                );
-                painter->drawLine(
-                    X_BASE+X_WIDTH,
-                    Y_BASE,
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT
-                );
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE+Y_HEIGHT/2,
-                    X_BASE+X_WIDTH,
-                    Y_BASE
-                );
-                painter->setPen(qpW);
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT
-                );
-                painter->drawLine(
-                    X_BASE+X_WIDTH,
-                    Y_BASE,
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT
-                );
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE+Y_HEIGHT/2,
-                    X_BASE+X_WIDTH,
-                    Y_BASE
-                );
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE,(double)Y_BASE+Y_HEIGHT/2) << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE));
+                poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT)) << QPointF((double)(X_BASE),(double)(Y_BASE+Y_HEIGHT));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColor);
                 break;
             }
             case CollisionDraw::UP_RIGHT_30_HALFSTART_UL: {
