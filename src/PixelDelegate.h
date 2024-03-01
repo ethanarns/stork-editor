@@ -107,7 +107,8 @@ enum CollisionDraw {
     UPSIDE_DOWN_DOWNWARDS_45_DRAW,
 
     DOWN_RIGHT_STEEP_THIN,
-    DOWN_RIGHT_STEEP_WIDE
+    DOWN_RIGHT_STEEP_WIDE,
+    SQERR
 };
 
 class PixelDelegate : public QStyledItemDelegate {

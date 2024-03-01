@@ -21,6 +21,7 @@ const QColor hardSelectionColor(255,255,255,100);
 const QImage COIN_IMAGE("assets/coin.png");
 const QColor collisionColor(255,0,255,100);
 const QColor collisionColorAlt(255,200,255,180);
+const QColor collisionColorErr(255,0,0,180);
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
     using namespace std;
@@ -425,6 +426,12 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 path.addPolygon(poly);
                 painter->fillPath(path,collisionColor);
                 break; 
+            }
+            case CollisionDraw::SQERR: {
+                QPainterPath path;
+                path.addRect(X_BASE,Y_BASE,X_WIDTH,Y_HEIGHT);
+                painter->fillPath(path,collisionColorErr);
+                break;
             }
             case CollisionDraw::CLEAR:
             default:
