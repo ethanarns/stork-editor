@@ -253,6 +253,12 @@ MainWindow::MainWindow() {
     this->button_iconPalette->setDisabled(true);
     connect(this->button_iconPalette, &QAction::triggered, this, &MainWindow::toolbarClick_palette);
 
+    QPixmap iconSpritePreviewShow("assets/icon_spritepreview.png");
+    this->button_showSpritePreview = toolbar->addAction(QIcon(iconSpritePreviewShow), tr("Open Sprite Preview"));
+    this->button_showSpritePreview->setObjectName("button_spritePreview");
+    this->button_showSpritePreview->setDisabled(true);
+    connect(this->button_showSpritePreview,&QAction::triggered, this, &MainWindow::toolbarClick_spritePreview);
+
     toolbar->addSeparator();
 
     QPixmap iconCollisionShow("assets/icon_collision.png");
@@ -517,7 +523,7 @@ void MainWindow::LoadRom() {
         this->objtilesPopup->setMinimumHeight(300);
         this->objtilesPopup->setWindowTitle("Select an object render data archive to view");
         this->spriteFileSelect->setEnabled(true);
-        this->objtilesPopup->show();
+        this->button_showSpritePreview->setDisabled(false);
 
         // Brush popup //
         this->brushWindow->show();
@@ -577,6 +583,14 @@ void MainWindow::toolbarClick_tiles() {
         this->chartilesPopup->close();
     } else {
         this->chartilesPopup->show();
+    }
+}
+
+void MainWindow::toolbarClick_spritePreview() {
+    if (this->objtilesPopup->isVisible()) {
+        this->objtilesPopup->close();
+    } else {
+        this->objtilesPopup->show();
     }
 }
 

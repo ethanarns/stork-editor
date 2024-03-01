@@ -66,6 +66,7 @@ private:
 
     QAction* button_iconPalette;
     QAction* button_iconTiles;
+    QAction* button_showSpritePreview;
     QAction* button_toggleCollision;
 
     QAction* menu_levelSelect;
@@ -85,6 +86,7 @@ private:
 
     void toolbarClick_palette();
     void toolbarClick_tiles();
+    void toolbarClick_spritePreview();
     void toolbarClick_showCollision(bool shouldShow);
     void toolbarClick_toggleCollision();
     void toolbarClick_layerSelect(const QString str);
