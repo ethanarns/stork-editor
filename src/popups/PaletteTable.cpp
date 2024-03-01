@@ -3,6 +3,7 @@
 #include "../Chartile.h"
 #include "../PixelDelegate.h"
 #include "../utils.h"
+#include "../GlobalSettings.h"
 
 #include <iostream>
 #include <sstream>
@@ -85,4 +86,7 @@ void PaletteTable::paletteTableClicked(int row, int column) {
     uint32_t ramAddress = 0x05000000 + (index * 0x2);
     ss << ", RAM address: " << ramAddress;
     label->setText(ss.str().c_str());
+
+    // Update brush
+    globalSettings.currentTileIndex = index;
 }

@@ -9,6 +9,7 @@ class BrushTable : public QTableWidget {
     Q_OBJECT
 public:
     BrushTable(QWidget *parent, YidsRom* rom);
+    void updateTable();
 private:
     YidsRom* yidsRom;
     const static int CELL_SIZE_PX = 8;

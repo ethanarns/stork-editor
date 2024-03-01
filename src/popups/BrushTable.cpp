@@ -1,5 +1,6 @@
 #include "BrushTable.h"
 #include "../PixelDelegate.h"
+#include "../GlobalSettings.h"
 
 #include <QHeaderView>
 
@@ -20,4 +21,8 @@ BrushTable::BrushTable(QWidget *parent, YidsRom *rom) {
     this->setEditTriggers(QAbstractItemView::NoEditTriggers); // Disable text editing
 
     setItemDelegate(new PixelDelegate);
+}
+
+void BrushTable::updateTable() {
+    YUtils::printDebug("updateTable");
 }
