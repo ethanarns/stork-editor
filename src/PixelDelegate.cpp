@@ -20,6 +20,7 @@ const QColor selectionColor(255,0,0,50);
 const QColor hardSelectionColor(255,255,255,100);
 const QImage COIN_IMAGE("assets/coin.png");
 const QColor collisionColor(255,0,255,100);
+const QColor collisionColorAlt(255,200,255,180);
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
     using namespace std;
@@ -289,33 +290,12 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 break;
             }
             case CollisionDraw::ZIG_ZAG: {
-                painter->setPen(qpB);
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE,
-                    X_BASE+X_WIDTH/2,
-                    Y_BASE+Y_HEIGHT
-                );
-                painter->drawLine(
-                    X_BASE+X_WIDTH/2,
-                    Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,
-                    Y_BASE
-                );
-                qpW.setColor("red");
-                painter->setPen(qpW);
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE,
-                    X_BASE+X_WIDTH/2,
-                    Y_BASE+Y_HEIGHT
-                );
-                painter->drawLine(
-                    X_BASE+X_WIDTH/2,
-                    Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,
-                    Y_BASE
-                );
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE,(double)Y_BASE) << QPointF((double)(X_BASE+X_WIDTH/2),(double)(Y_BASE+Y_HEIGHT));
+                poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColorAlt);
                 break;
             }
             case CollisionDraw::DIAG_DOWN_RIGHT: {
