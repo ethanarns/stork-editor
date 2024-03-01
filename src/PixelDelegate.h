@@ -83,7 +83,14 @@ enum CollisionDraw {
     COIN_TOP_LEFT,
     COIN_TOP_RIGHT,
     COIN_BOTTOM_LEFT,
-    COIN_BOTTOM_RIGHT
+    COIN_BOTTOM_RIGHT,
+    // UP_RIGHT_30 //
+    UP_RIGHT_30_BL,
+    UP_RIGHT_30_BR,
+    // UP_RIGHT_30_UL, // Not shown
+    //UP_RIGHT_30_UR // Not shown
+    UP_RIGHT_30_HALFSTART_UL,
+    UP_RIGHT_30_HALFSTART_UR
 };
 
 class PixelDelegate : public QStyledItemDelegate {
