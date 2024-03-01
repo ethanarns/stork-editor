@@ -279,7 +279,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 break;
             }
             case CollisionDraw::COIN_TOP_LEFT: {
-                COIN_IMAGE = COIN_IMAGE.scaled(X_WIDTH*2,Y_HEIGHT*2);
+                COIN_IMAGE = COIN_IMAGE.scaled(X_WIDTH*2,Y_HEIGHT*2); // Only need to do this once
                 painter->drawImage(X_BASE,Y_BASE,COIN_IMAGE,0,0,X_WIDTH*2,Y_HEIGHT*2);
                 break;
             }

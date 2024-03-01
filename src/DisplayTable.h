@@ -61,7 +61,7 @@ public:
     void selectItemByUuid(uint32_t uuid);
     void moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY);
 private:
-    const static int CELL_SIZE_PX = 16;
+    const static int CELL_SIZE_PX = 8;
     const static int CELL_COUNT_W = 0xff*4;
     const static int CELL_COUNT_H = 0xff*2;
     YidsRom* yidsRom;
