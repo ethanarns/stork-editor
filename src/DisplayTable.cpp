@@ -829,6 +829,7 @@ void DisplayTable::placeObjectTile(
         ssEmptyPalette << "Palette size is too small! Size: 0x";
         ssEmptyPalette << std::hex << objectPalette.size();
         ssEmptyPalette << ", paletteFile value is 0x" << std::hex << paletteFile;
+        ssEmptyPalette << ", object uuid is 0x" << std::hex << uuid;
         YUtils::printDebug(ssEmptyPalette.str(),DebugType::ERROR);
     }
     if (objectVector.size() == 0) {
@@ -836,6 +837,7 @@ void DisplayTable::placeObjectTile(
         ssEmptyVector << "Object vector size is too small! Size: 0x";
         ssEmptyVector << std::hex << objectPalette.size();
         ssEmptyVector << ", objectFile value is 0x" << std::hex << paletteFile;
+        ssEmptyVector << ", object uuid is 0x" << std::hex << uuid;
         YUtils::printDebug(ssEmptyVector.str(),DebugType::ERROR);
     }
     
