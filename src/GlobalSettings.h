@@ -21,6 +21,7 @@ struct GlobalSettings {
     TileBrush* currentBrush;
     std::vector<TileBrush*> brushes;
     uint32_t currentTileIndex = 0xffff; // Only can go up to about 1024 tiles
+    uint32_t currentPaletteIndex = 0;
     LayerMode layerSelectMode;
 };
 extern GlobalSettings globalSettings;

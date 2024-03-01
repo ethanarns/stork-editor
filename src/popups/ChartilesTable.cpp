@@ -3,6 +3,7 @@
 #include "../Chartile.h"
 #include "../PixelDelegate.h"
 #include "../utils.h"
+#include "../GlobalSettings.h"
 
 #include <iostream>
 
@@ -32,6 +33,7 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
 }
 
 void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
+    this->whichBgLoaded = whichBg;
     this->wipeTiles();
     std::map<uint32_t,Chartile> tilesMap;
     if (whichBg == 1) {
@@ -48,7 +50,7 @@ void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
         auto chartile = tilesMap[mapIndex];
         QTableWidgetItem *newItem = new QTableWidgetItem();
         newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,chartile.tiles);
-        newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
+        newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[this->paletteIndex]);
         newItem->setData(PixelDelegateData::FLIP_H_BG1,false);
         newItem->setData(PixelDelegateData::FLIP_V_BG1,false);
         newItem->setData(PixelDelegateData::TILE_ID_BG1,mapIndex);
@@ -73,6 +75,18 @@ void ChartilesTable::wipeTiles() {
             }
         }
     }
+}
+
+void ChartilesTable::paletteValueChanged(int i) {
+    //YUtils::printDebug("paletteValueChanged",DebugType::VERBOSE);
+    if (whichBgLoaded < 1) {
+        YUtils::printDebug("Cannot load bg index 0",DebugType::ERROR);
+        return;
+    }
+    //std::cout << std::hex << i << std::endl;
+    this->paletteIndex = (uint32_t)i;
+    globalSettings.currentPaletteIndex = (uint32_t)i;
+    this->refreshLoadedMapTilesMap(whichBgLoaded);
 }
 
 void ChartilesTable::chartilesTableClicked(int row, int column) {

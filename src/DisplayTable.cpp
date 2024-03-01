@@ -219,10 +219,8 @@ void DisplayTable::printCellDebug(QTableWidgetItem *item, uint whichBg) {
 
     } else if (whichBg == 2) {
         if (!item->data(PixelDelegateData::PIXEL_ARRAY_BG2).isNull()) {
-            std::stringstream ssBg2;
-            ssBg2 << "Tile attr BG2: 0x" << std::hex << item->data(PixelDelegateData::TILEATTR_BG2).toUInt();
-            ssBg2 << ", Tile ID: 0x" << std::hex << item->data(PixelDelegateData::TILE_ID_BG2).toUInt();
-            YUtils::printDebug(ssBg2.str(),DebugType::VERBOSE);
+            auto tileAttr = item->data(PixelDelegateData::TILEATTR_BG2).toUInt();
+            YUtils::printDebug(YUtils::getCharPreRender(tileAttr).toString());
             auto pixArray2 = item->data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
             YUtils::printDebug("Pixel Array for BG 2:",DebugType::VERBOSE);
             YUtils::printQbyte(pixArray2);

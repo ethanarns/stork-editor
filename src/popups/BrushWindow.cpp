@@ -2,6 +2,7 @@
 #include "../GlobalSettings.h"
 
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 
 BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     Q_UNUSED(parent);
@@ -12,6 +13,10 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
 
     this->brushTable = new BrushTable(this,rom);
     mainLayout->addWidget(this->brushTable);
+    
+    auto paletteAndFlip = new QHBoxLayout(this);
+
+    mainLayout->addLayout(paletteAndFlip);
 
     this->setLayout(mainLayout);
 }

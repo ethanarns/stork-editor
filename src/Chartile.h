@@ -35,8 +35,9 @@ struct ChartilePreRenderData {
     uint16_t tileAttr;
     std::string toString() {
         std::stringstream ssChartilePreRend;
-        ssChartilePreRend << "ChartilePreRenderData { tileId: " << std::hex << this->tileId;
-        ssChartilePreRend << ", paletteId: " << std::hex << (uint16_t)this->paletteId;
+        ssChartilePreRend << "ChartilePreRenderData { tileId: 0x" << std::hex << this->tileId;
+        ssChartilePreRend << ", tileAttr (debug): 0x" << std::hex << this->tileAttr;
+        ssChartilePreRend << ", paletteId: 0x" << std::hex << (uint16_t)this->paletteId;
         ssChartilePreRend << ", flip H/V: " << this->flipH << "/" << this->flipV << " }";
         return ssChartilePreRend.str();
     }

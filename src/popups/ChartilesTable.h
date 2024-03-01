@@ -13,6 +13,9 @@ public:
     void refreshLoadedMapTilesMap(int whichBg);
     void chartilesTableClicked(int row, int column);
     void wipeTiles();
+    uint32_t paletteIndex = 0;
+    int whichBgLoaded = 0;
+    void paletteValueChanged(int i);
 private:
     const static int CELL_SIZE_PX = 32;
     const static int CHARTILES_TABLE_WIDTH = 0x10;
