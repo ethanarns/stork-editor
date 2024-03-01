@@ -519,6 +519,19 @@ void DisplayTable::initCellCollision() {
         } else if (curCol == CollisionType::UP_RIGHT_STEEP_2) {
             this->setCellCollision(y  ,x+1,CollisionDraw::UP_RIGHT_STEEP_SHORT, curCol);
             this->setCellCollision(y+1,x+1,CollisionDraw::UP_RIGHT_STEEP_TALL, curCol);
+        } else if (curCol == CollisionType::UPSIDE_DOWN_DOWNWARDS_45) {
+            this->setCellCollision(y  ,x+1,CollisionDraw::SQUARE_DRAW, curCol);
+            this->setCellCollision(y  ,x  ,CollisionDraw::UPSIDE_DOWN_DOWNWARDS_45_DRAW, curCol);
+            this->setCellCollision(y+1,x+1,CollisionDraw::UPSIDE_DOWN_DOWNWARDS_45_DRAW, curCol);
+        } else if (curCol == CollisionType::DOWN_RIGHT_STEEP_HALFSTART) {
+            // do this
+            this->setCellCollision(y  ,x  ,CollisionDraw::SQUARE_DRAW, curCol);
+            this->setCellCollision(y+1,x  ,CollisionDraw::SQUARE_DRAW, curCol);
+            this->setCellCollision(y  ,x+1,CollisionDraw::DOWN_RIGHT_STEEP_THIN, curCol);
+            this->setCellCollision(y+1,x+1,CollisionDraw::DOWN_RIGHT_STEEP_WIDE, curCol);
+        } else if (curCol == CollisionType::DOWN_RIGHT_STEEP) {
+            this->setCellCollision(y  ,x  ,CollisionDraw::DOWN_RIGHT_STEEP_THIN, curCol);
+            this->setCellCollision(y+1,x  ,CollisionDraw::DOWN_RIGHT_STEEP_WIDE, curCol);
         } else if (curCol != 0) { // Unknown, draw temp
             this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT, curCol);
             this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT, curCol);
