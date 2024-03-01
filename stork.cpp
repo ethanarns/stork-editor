@@ -1,5 +1,5 @@
 /**
- * @file parasol.cpp
+ * @file stork.cpp
  * @author your name (you@domain.com)
  * @brief The main file for Stork Editor
  * @version 0.1

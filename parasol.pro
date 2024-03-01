@@ -10,7 +10,7 @@ CONFIG += c++17
 RC_ICONS += icon.ico
 ICON += icon.ico
 
-SOURCES += parasol.cpp \
+SOURCES += stork.cpp \
 src/yidsrom.cpp src/utils.cpp src/compression.cpp src/MainWindow.cpp \
 src/DisplayTable.cpp src/popups/ChartilesTable.cpp src/PixelDelegate.cpp \
 src/popups/PaletteTable.cpp src/yidsrom_instructions.cpp \
