@@ -439,7 +439,24 @@ public:
     std::vector<uint8_t> compile(ScenInfoData &info) {
         Q_UNUSED(info);
         std::vector<uint8_t> result;
-        // TODO
+        for (auto it = this->triggers.begin(); it != triggers.end(); it++) {
+            auto trigger = *it;
+            auto leftx = trigger->leftX;
+            auto leftxVec = YUtils::uint16toVec(leftx);
+            YUtils::appendVector(result,leftxVec);
+
+            auto topy = trigger->topY;
+            auto topyVec = YUtils::uint16toVec(topy);
+            YUtils::appendVector(result,topyVec);
+
+            auto rightx = trigger->rightX;
+            auto rightxVec = YUtils::uint16toVec(rightx);
+            YUtils::appendVector(result,rightxVec);
+
+            auto bottomy = trigger->bottomY;
+            auto bottomyVec = YUtils::uint16toVec(bottomy);
+            YUtils::appendVector(result,bottomyVec);
+        }
         return result;
     }
 

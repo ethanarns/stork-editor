@@ -699,6 +699,7 @@ void DisplayTable::updateBg() {
             this->setLayerDraw(bgIndex,true);
         }
     }
+    emit this->updateMainWindowStatus("All backgrounds updated");
     // You've put the layer draw data on every tile now, no need to do it again
     this->firstLayerDrawDone = true;
 }
