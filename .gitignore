@@ -13,6 +13,7 @@ lzss
 moc_*
 _nds_unpack/
 *.user
+qrc_images.cpp
 
 # test extracted files
 *.arcz
