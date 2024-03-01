@@ -63,6 +63,8 @@ enum CollisionType {
     UP_RIGHT_30_HALFSTART = 0x4,
     UP_RIGHT_45 = 0x7,
     STATIC_COIN = 0x1a,
+    DOWN_RIGHT_30_2 = 0x43,
+    DOWN_RIGHT_30_1 = 0x44,
     DOWN_RIGHT_STEEP_HALFSTART = 0x45,
     DOWN_RIGHT_STEEP = 0x46,
     DOWN_RIGHT_45 = 0x47,
@@ -85,13 +87,13 @@ enum CollisionDraw {
     COIN_TOP_RIGHT,
     COIN_BOTTOM_LEFT,
     COIN_BOTTOM_RIGHT,
-    // UP_RIGHT_30 //
     UP_RIGHT_30_BL,
     UP_RIGHT_30_BR,
-    // UP_RIGHT_30_UL, // Not shown
-    //UP_RIGHT_30_UR // Not shown
     UP_RIGHT_30_HALFSTART_UL,
-    UP_RIGHT_30_HALFSTART_UR
+    UP_RIGHT_30_HALFSTART_UR,
+
+    DOWN_RIGHT_30_TALL,
+    DOWN_RIGHT_30_SHORT
 };
 
 class PixelDelegate : public QStyledItemDelegate {

@@ -489,6 +489,14 @@ void DisplayTable::initCellCollision() {
             this->setCellCollision(y+1,x  ,CollisionDraw::SQUARE_DRAW, curCol);
             this->setCellCollision(y  ,x+1,CollisionDraw::UP_RIGHT_30_BR, curCol);
             this->setCellCollision(y+1,x+1,CollisionDraw::SQUARE_DRAW, curCol);
+        } else if (curCol == CollisionType::DOWN_RIGHT_30_1) {
+            this->setCellCollision(y  ,x  ,CollisionDraw::DOWN_RIGHT_30_TALL, curCol);
+            this->setCellCollision(y+1,x  ,CollisionDraw::SQUARE_DRAW, curCol);
+            this->setCellCollision(y  ,x+1,CollisionDraw::DOWN_RIGHT_30_SHORT, curCol);
+            this->setCellCollision(y+1,x+1,CollisionDraw::SQUARE_DRAW, curCol);
+        } else if (curCol == CollisionType::DOWN_RIGHT_30_2) {
+            this->setCellCollision(y+1,x  ,CollisionDraw::DOWN_RIGHT_30_TALL, curCol);
+            this->setCellCollision(y+1,x+1,CollisionDraw::DOWN_RIGHT_30_SHORT, curCol);
         } else if (curCol != 0) { // Unknown, draw temp
             this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT, curCol);
             this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT, curCol);

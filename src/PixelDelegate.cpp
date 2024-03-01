@@ -302,6 +302,24 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 painter->fillPath(path,collisionColor);
                 break;
             }
+            case CollisionDraw::DOWN_RIGHT_30_TALL: {
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE,(double)Y_BASE) << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT/2));
+                poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT)) << QPointF((double)(X_BASE),(double)(Y_BASE+Y_HEIGHT));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColor);
+                break;
+            }
+            case CollisionDraw::DOWN_RIGHT_30_SHORT: {
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE,(double)Y_BASE+Y_HEIGHT/2) << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT));
+                poly << QPointF((double)(X_BASE),(double)(Y_BASE+Y_HEIGHT));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColor);
+                break;
+            }
             case CollisionDraw::COIN_TOP_LEFT: {
                 painter->drawImage(X_BASE,Y_BASE,COIN_IMAGE,0,0,X_WIDTH*2,Y_HEIGHT*2);
                 break;
