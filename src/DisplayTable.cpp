@@ -342,6 +342,19 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
             YUtils::printDebug("If this is hit, you seriously messed something up",DebugType::ERROR);
         }
         return;
+    } else if (this->layerSelectMode == LayerSelectMode::COLLISION_LAYER) {
+        auto curItemUnderCursor = this->itemAt(event->pos());
+        if (curItemUnderCursor == nullptr) {
+            YUtils::printDebug("Item under cursor in mousePressEvent for COLL is null", DebugType::ERROR);
+            return;
+        }
+        if (curItemUnderCursor->data(PixelDelegateData::COLLISION_DRAW).isNull()) {
+            YUtils::printDebug("No collision data present");
+            return;
+        }
+        auto colDrawData = curItemUnderCursor->data(PixelDelegateData::COLLISION_DEBUG).toInt();
+        std::cout << "Collision data: 0x" << std::hex << colDrawData << std::endl;
+        return;
     }
     QTableWidget::mousePressEvent(event);
 }
@@ -418,13 +431,14 @@ void DisplayTable::selectItemByUuid(uint32_t uuid) {
     emit this->triggerMainWindowUpdate();
 }
 
-void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType) {
+void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType, CollisionType _colDebug) {
     QTableWidgetItem* curCell = this->item(row,column);
     if (curCell == nullptr) {
         // Make a new one
         curCell = new QTableWidgetItem();
     }
     curCell->setData(PixelDelegateData::COLLISION_DRAW,colType);
+    curCell->setData(PixelDelegateData::COLLISION_DEBUG,_colDebug);
 }
 
 void DisplayTable::initCellCollision() {
@@ -445,31 +459,31 @@ void DisplayTable::initCellCollision() {
         uint32_t y = (colIndex / cutOff)*2;
         uint32_t x = (colIndex % cutOff)*2;
         if (curCol == CollisionType::SQUARE) {
-            this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT);
-            this->setCellCollision(y+1,x,  CollisionDraw::CORNER_BOTTOM_LEFT);
-            this->setCellCollision(y,  x+1,CollisionDraw::CORNER_TOP_RIGHT);
-            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);
+            this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT, CollisionType::SQUARE);
+            this->setCellCollision(y+1,x,  CollisionDraw::CORNER_BOTTOM_LEFT, CollisionType::SQUARE);
+            this->setCellCollision(y,  x+1,CollisionDraw::CORNER_TOP_RIGHT, CollisionType::SQUARE);
+            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT, CollisionType::SQUARE);
         } else if (curCol == CollisionType::PLATFORM_PASSABLE) {
-            this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT);
-            this->setCellCollision(y,  x+1,CollisionDraw::CORNER_TOP_RIGHT);
-            this->setCellCollision(y+1,x,  CollisionDraw::ZIG_ZAG);
-            this->setCellCollision(y+1,x+1,CollisionDraw::ZIG_ZAG);
+            this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT,CollisionType::PLATFORM_PASSABLE);
+            this->setCellCollision(y,  x+1,CollisionDraw::CORNER_TOP_RIGHT,CollisionType::PLATFORM_PASSABLE);
+            this->setCellCollision(y+1,x,  CollisionDraw::ZIG_ZAG,CollisionType::PLATFORM_PASSABLE);
+            this->setCellCollision(y+1,x+1,CollisionDraw::ZIG_ZAG,CollisionType::PLATFORM_PASSABLE);
         } else if (curCol == CollisionType::DOWN_RIGHT_45) {
-            this->setCellCollision(y,  x,  CollisionDraw::DIAG_DOWN_RIGHT);
-            this->setCellCollision(y+1,x,  CollisionDraw::CORNER_BOTTOM_LEFT);
-            this->setCellCollision(y+1,x+1,CollisionDraw::DIAG_DOWN_RIGHT);
+            this->setCellCollision(y,  x,  CollisionDraw::DIAG_DOWN_RIGHT,CollisionType::DOWN_RIGHT_45);
+            this->setCellCollision(y+1,x,  CollisionDraw::CORNER_BOTTOM_LEFT,CollisionType::DOWN_RIGHT_45);
+            this->setCellCollision(y+1,x+1,CollisionDraw::DIAG_DOWN_RIGHT,CollisionType::DOWN_RIGHT_45);
         } else if (curCol == CollisionType::UP_RIGHT_45) {
-            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);
-            this->setCellCollision(y+1,x,  CollisionDraw::DIAG_UP_RIGHT);
-            this->setCellCollision(y  ,x+1,CollisionDraw::DIAG_UP_RIGHT);
+            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT,CollisionType::UP_RIGHT_45);
+            this->setCellCollision(y+1,x,  CollisionDraw::DIAG_UP_RIGHT,CollisionType::UP_RIGHT_45);
+            this->setCellCollision(y  ,x+1,CollisionDraw::DIAG_UP_RIGHT,CollisionType::UP_RIGHT_45);
         } else if (curCol == CollisionType::STATIC_COIN) {
-            this->setCellCollision(y  ,x  ,CollisionDraw::COIN_TOP_LEFT);
-            this->setCellCollision(y+1,x  ,CollisionDraw::COIN_BOTTOM_LEFT);
-            this->setCellCollision(y  ,x+1,CollisionDraw::COIN_TOP_RIGHT);
-            this->setCellCollision(y+1,x+1,CollisionDraw::COIN_BOTTOM_RIGHT);
+            this->setCellCollision(y  ,x  ,CollisionDraw::COIN_TOP_LEFT,CollisionType::STATIC_COIN);
+            this->setCellCollision(y+1,x  ,CollisionDraw::COIN_BOTTOM_LEFT,CollisionType::STATIC_COIN);
+            this->setCellCollision(y  ,x+1,CollisionDraw::COIN_TOP_RIGHT,CollisionType::STATIC_COIN);
+            this->setCellCollision(y+1,x+1,CollisionDraw::COIN_BOTTOM_RIGHT,CollisionType::STATIC_COIN);
         } else if (curCol != 0) { // Unknown, draw temp
-            this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT);
-            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT);
+            this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT,CollisionType::STATIC_COIN);
+            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT,CollisionType::STATIC_COIN);
         }
     }
 }

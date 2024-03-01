@@ -50,7 +50,9 @@ enum PixelDelegateData {
     DRAW_TRANS_TILES = 126,
     TILE_ID_BG1 = 127,
     TILE_ID_BG2 = 128,
-    TILE_ID_BG3 = 129
+    TILE_ID_BG3 = 129,
+
+    COLLISION_DEBUG = 130
 };
 
 enum CollisionType {
