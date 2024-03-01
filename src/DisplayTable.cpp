@@ -575,12 +575,16 @@ void DisplayTable::updateTriggerBoxes() {
                     YUtils::printDebug("Current item in trigger box loop is null",DebugType::WARNING);
                     return;
                 }
-                auto itemArray = curItem->data(PixelDelegateData::DRAW_TRIGGERS).toByteArray();
-                if (itemArray.isNull()) {
-                    itemArray = QByteArray();
+                if (this->shouldShowTriggers) {
+                    auto itemArray = curItem->data(PixelDelegateData::DRAW_TRIGGERS).toByteArray();
+                    if (itemArray.isNull()) {
+                        itemArray = QByteArray();
+                    }
+                    itemArray.push_back((uint8_t)tb->uuid);
+                    curItem->setData(PixelDelegateData::DRAW_TRIGGERS,itemArray);
+                } else {
+                    curItem->setData(PixelDelegateData::DRAW_TRIGGERS,QByteArray());
                 }
-                itemArray.push_back((uint8_t)tb->uuid);
-                curItem->setData(PixelDelegateData::DRAW_TRIGGERS,itemArray);
             }
         }
     }

@@ -773,6 +773,7 @@ void MainWindow::menuClick_viewObjects(bool checked) {
 void MainWindow::menuClick_viewTriggers(bool checked) {
     std::cout << "viewTriggers checked? " << checked << std::endl;
     this->grid->shouldShowTriggers = checked;
+    this->grid->updateTriggerBoxes();
 }
 
 void MainWindow::saveRom() {
