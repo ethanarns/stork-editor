@@ -336,52 +336,6 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 painter->fillPath(path,collisionColor);
                 break;
             }
-            case CollisionDraw::UP_RIGHT_30_HALFSTART_UL: {
-                painter->setPen(qpB);
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT/2
-                );
-                painter->setPen(qpW);
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT/2
-                );
-                break;
-            }
-            case CollisionDraw::UP_RIGHT_30_HALFSTART_UR: {
-                painter->setPen(qpB);
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE+Y_HEIGHT/2,
-                    X_BASE+X_WIDTH,
-                    Y_BASE
-                );
-                painter->drawLine(
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT/2
-                );
-                painter->setPen(qpW);
-                painter->drawLine(
-                    X_BASE,
-                    Y_BASE+Y_HEIGHT/2,
-                    X_BASE+X_WIDTH,
-                    Y_BASE
-                );
-                painter->drawLine(
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT,
-                    X_BASE+X_WIDTH,
-                    Y_BASE+Y_HEIGHT/2
-                );
-                break;
-            }
             case CollisionDraw::CLEAR:
             default:
                 break;

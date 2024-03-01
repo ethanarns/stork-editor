@@ -482,15 +482,13 @@ void DisplayTable::initCellCollision() {
             this->setCellCollision(y  ,x+1,CollisionDraw::COIN_TOP_RIGHT, curCol);
             this->setCellCollision(y+1,x+1,CollisionDraw::COIN_BOTTOM_RIGHT, curCol);
         } else if (curCol == CollisionType::UP_RIGHT_30) {
-            //this->setCellCollision(y  ,x  ,CollisionDraw::UP_RIGHT_30_UL, curCol);
             this->setCellCollision(y+1,x  ,CollisionDraw::UP_RIGHT_30_BL, curCol);
-            //this->setCellCollision(y  ,x+1,CollisionDraw::UP_RIGHT_30_UR, curCol);
             this->setCellCollision(y+1,x+1,CollisionDraw::UP_RIGHT_30_BR, curCol);
         } else if (curCol == CollisionType::UP_RIGHT_30_HALFSTART) {
-            this->setCellCollision(y  ,x  ,CollisionDraw::UP_RIGHT_30_HALFSTART_UL, curCol);
-            this->setCellCollision(y+1,x  ,CollisionDraw::CORNER_BOTTOM_LEFT, curCol);
-            this->setCellCollision(y  ,x+1,CollisionDraw::UP_RIGHT_30_HALFSTART_UR, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT, curCol);
+            this->setCellCollision(y  ,x  ,CollisionDraw::UP_RIGHT_30_BL, curCol);
+            this->setCellCollision(y+1,x  ,CollisionDraw::SQUARE_DRAW, curCol);
+            this->setCellCollision(y  ,x+1,CollisionDraw::UP_RIGHT_30_BR, curCol);
+            this->setCellCollision(y+1,x+1,CollisionDraw::SQUARE_DRAW, curCol);
         } else if (curCol != 0) { // Unknown, draw temp
             this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT, curCol);
             this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT, curCol);
