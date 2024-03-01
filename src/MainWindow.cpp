@@ -214,6 +214,14 @@ MainWindow::MainWindow() {
     menu_view->addAction(this->action_showCollision);
     connect(this->action_showCollision, &QAction::triggered, this, &MainWindow::toolbarClick_showCollision);
 
+    this->action_showTriggerBoxes = new QAction("&Show Triggers");
+    this->action_showTriggerBoxes->setShortcut(tr("CTRL+6"));
+    this->action_showTriggerBoxes->setCheckable(true);
+    this->action_showTriggerBoxes->setChecked(true);
+    this->action_showTriggerBoxes->setDisabled(true);
+    menu_view->addAction(this->action_showTriggerBoxes);
+    connect(this->action_showTriggerBoxes, &QAction::triggered,this, &MainWindow::menuClick_viewTriggers);
+
     // Tools menu //
     QMenu* menu_tools = menuBar()->addMenu("&Tools");
 
@@ -573,6 +581,7 @@ void MainWindow::LoadRom() {
         this->action_viewBg2->setDisabled(false);
         this->action_viewBg3->setDisabled(false);
         this->action_viewObjects->setDisabled(false);
+        this->action_showTriggerBoxes->setDisabled(false);
         this->menu_save->setDisabled(false);
         this->menu_export->setDisabled(false);
 
@@ -759,6 +768,11 @@ void MainWindow::menuClick_viewBg3(bool checked) {
 
 void MainWindow::menuClick_viewObjects(bool checked) {
     this->grid->setLayerDraw(4,checked);
+}
+
+void MainWindow::menuClick_viewTriggers(bool checked) {
+    std::cout << "viewTriggers checked? " << checked << std::endl;
+    this->grid->shouldShowTriggers = checked;
 }
 
 void MainWindow::saveRom() {

@@ -24,6 +24,7 @@ public:
     bool drawBg3;
     bool drawObjects;
     bool shouldShowCollision;
+    bool shouldShowTriggers;
     /**
      * A list/vector of uint32_t UUIDs of selected objects, usually LevelObjects
     */
