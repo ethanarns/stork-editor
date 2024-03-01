@@ -56,7 +56,7 @@ public:
         uint32_t yPixelOffset,
         uint32_t uuid
     );
-    void setCellCollision(int row, int column, CollisionDraw colType, CollisionType _colDebug);
+    void setCellCollision(int row, int column, CollisionDraw colType, uint8_t _colDebug);
     void updateBg();
     void initCellCollision();
     void updateShowCollision();

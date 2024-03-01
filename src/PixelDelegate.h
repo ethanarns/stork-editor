@@ -56,14 +56,19 @@ enum PixelDelegateData {
 };
 
 enum CollisionType {
-    NONE = 0,
+    NONE = 0x0,
     SQUARE = 0x1,
     PLATFORM_PASSABLE = 0x2, // You can jump from below it and land on it, no head hit
-    UP_RIGHT_45 = 0x7,
     UP_RIGHT_30 = 0x3,
-    DOWN_RIGHT_45 = 0x47,
+    UP_RIGHT_30_HALFSTART = 0x4,
+    UP_RIGHT_45 = 0x7,
+    STATIC_COIN = 0x1a,
+    DOWN_RIGHT_STEEP_HALFSTART = 0x45,
     DOWN_RIGHT_STEEP = 0x46,
-    STATIC_COIN = 0x1a
+    DOWN_RIGHT_45 = 0x47,
+    UPSIDE_DOWN_UP_30 = 0xc4,
+    UPSIDE_DOWN_UP_30_HALFSTART = 0xc3,
+    UPSIDE_DOWN_UP_RIGHT = 0xc7
 };
 
 enum CollisionDraw {
