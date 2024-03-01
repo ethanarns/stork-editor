@@ -714,6 +714,9 @@ void DisplayTable::updateSprites() {
             potentialExisting = new QTableWidgetItem();
         }
         auto objectGraphicsMeta = LevelObject::getObjectGraphicMetadata(*it);
+        // if (it->objectId == 0x94) {
+        //     std::cout << objectGraphicsMeta.whichObjectFile << std::endl;
+        // }
         auto objectTextMeta = LevelObject::getObjectTextMetadata(it->objectId);
         if (objectGraphicsMeta.tilesCount == 0) {
             // top left I think
@@ -819,6 +822,21 @@ void DisplayTable::placeObjectTile(
         objectVector = this->yidsRom->objsetPixelTiles[objectOffset];
     } else {
         objectVector = this->yidsRom->objectFiles[objectFile].objectPixelTiles[objectOffset];
+    }
+
+    if (objectPalette.size() < 0xf) {
+        std::stringstream ssEmptyPalette;
+        ssEmptyPalette << "Palette size is too small! Size: 0x";
+        ssEmptyPalette << std::hex << objectPalette.size();
+        ssEmptyPalette << ", paletteFile value is 0x" << std::hex << paletteFile;
+        YUtils::printDebug(ssEmptyPalette.str(),DebugType::ERROR);
+    }
+    if (objectVector.size() == 0) {
+        std::stringstream ssEmptyVector;
+        ssEmptyVector << "Object vector size is too small! Size: 0x";
+        ssEmptyVector << std::hex << objectPalette.size();
+        ssEmptyVector << ", objectFile value is 0x" << std::hex << paletteFile;
+        YUtils::printDebug(ssEmptyVector.str(),DebugType::ERROR);
     }
     
     uint32_t subLength = objectVector.size();

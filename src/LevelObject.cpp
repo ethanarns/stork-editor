@@ -137,7 +137,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.whichObjectFile = ObjectFileName::OBJSBBLOCK;
             // TODO: Make the palette work
             meta.whichPaletteFile = ObjectFileName::OBJSBBLOCK;
-            meta.paletteSectorOffset = 2;
+            meta.paletteSectorOffset = 0;
             meta.xPixelOffset = 8;
             break;
         }
