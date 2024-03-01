@@ -384,3 +384,46 @@ TriggerBoxData::TriggerBoxData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIn
         YUtils::printDebug("MPDZ index did not match stop value in TriggerBoxData",DebugType::ERROR);
     }
 }
+
+PathData::PathData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    //std::cout << "PathData()" << std::endl;
+    // Not compressed
+    uint32_t totalPaths = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
+    mpdzIndex += 4;
+    if (this->paths.size() != 0) {
+        YUtils::printDebug("Paths size not zero at start!",DebugType::ERROR);
+        mpdzIndex = stop;
+        return;
+    }
+    for (uint i = 0; i < totalPaths; i++) {
+        std::vector<PathSection*> currentPath;
+        bool continuePath = true;
+        while (continuePath) {
+            auto angle = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+            mpdzIndex += 2;
+            auto distance = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+            mpdzIndex += 2;
+            auto fineX = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
+            mpdzIndex += 4;
+            auto fineY = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
+            mpdzIndex += 4;
+            PathSection* p = new PathSection();
+            p->angle = angle;
+            p->distance = distance;
+            p->xFine = fineX;
+            p->yFine = fineY;
+            currentPath.push_back(p);
+            if (distance == 0x0000) {
+                continuePath = false;
+            }
+        }
+        this->paths.push_back(currentPath);
+    }
+    if (this->paths.size() != totalPaths) {
+        YUtils::printDebug("Path result size and totalPaths don't match",DebugType::ERROR);
+    }
+    if (mpdzIndex != stop) {
+        YUtils::printDebug("mpdzIndex does not equal stop in PathData()");
+    }
+    //std::cout << "Got " << std::hex << this->paths.size() << " Path vectors in PATH";
+}

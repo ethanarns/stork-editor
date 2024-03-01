@@ -175,11 +175,13 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
     }
     uint32_t mpdzLength = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
     mpdzIndex += 4;
+    auto idealMpdzStop = mpdzIndex + mpdzLength;
     while (mpdzIndex < mpdzLength) {
         uint32_t subMagic = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 4;
         uint32_t subLength = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 4;
+        auto idealStop = mpdzIndex+subLength;
         if (subMagic == Constants::SCEN_MAGIC_NUM) {
             auto scen = new LayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength,this->paletteRamIndex);
             auto pltb = scen->getPalette()->palettes;
@@ -198,6 +200,9 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
         } else if (subMagic == Constants::AREA_MAGIC_NUM) {
             auto area = new TriggerBoxData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subData.push_back(area);
+        } else if (subMagic == Constants::PATH_MAGIC_NUM) {
+            auto path = new PathData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subData.push_back(path);
         } else {
             std::stringstream ssSubNotFound;
             ssSubNotFound << "Unknown MPDZ data: ";
@@ -205,6 +210,12 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
             YUtils::printDebug(ssSubNotFound.str(),DebugType::WARNING);
             mpdzIndex += subLength;
         }
+        if (mpdzIndex != idealStop) {
+            YUtils::printDebug("MPDZ index did not stop at correct index for magic 0x",DebugType::ERROR);
+        }
+    }
+    if (mpdzIndex != idealMpdzStop) {
+        YUtils::printDebug("MPDZ index did not stop at correct place",DebugType::ERROR);
     }
 }
 

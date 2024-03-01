@@ -463,6 +463,37 @@ public:
     std::vector<TriggerBox*> triggers;
 };
 
+struct PathSection {
+    // Can also be the "final angle" of a path
+    uint16_t angle;
+    // Can be 0x0000, indicating the end of a path
+    uint16_t distance;
+    // X Position starts at, or if last, end X
+    uint32_t xFine;
+    // Y Position starts at, or if last, end Y
+    uint32_t yFine;
+};
+
+// PATH
+class PathData : public LevelData {
+public:
+    PathData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    uint32_t getMagic() { return Constants::PATH_MAGIC_NUM; }
+    std::string toString() {
+        std::stringstream ss;
+        ss << "PathData { Path count: ???";
+        ss << " }";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
+        std::vector<uint8_t> result;
+        YUtils::popupAlert("PATH compilation not yet complete!");
+        return result;
+    }
+    std::vector<std::vector<PathSection*>> paths;
+};
+
 // MPDZ
 class MapData : public LevelData {
 public:
