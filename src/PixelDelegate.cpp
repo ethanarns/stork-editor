@@ -19,8 +19,9 @@ const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
 const QColor selectionColor(255,0,0,50);
 const QColor hardSelectionColor(255,255,255,100);
 const QImage COIN_IMAGE("assets/coin.png");
-const QColor collisionColor(255,0,255,100);
-const QColor collisionColorAlt(255,200,255,180);
+
+const QColor collisionColor(     0,255,0  ,100);
+const QColor collisionColorAlt(200,255,200,180);
 const QColor collisionColorErr(255,0,0,180);
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
@@ -200,50 +201,6 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             ssBgOrderFail << "Unknown whichBgToDraw in PixelDelegate: 0x" << std::hex << (uint16_t)whichBgToDraw;
             YUtils::printDebug(ssBgOrderFail.str(),DebugType::FATAL);
             exit(EXIT_FAILURE);
-        }
-    }
-
-    /***************
-     *** OBJECTS ***
-     ***************/
-    if (index.data(PixelDelegateData::DRAW_OBJECTS).isNull() || index.data(PixelDelegateData::DRAW_OBJECTS).toBool() == true) {
-        int objectId = index.data(PixelDelegateData::OBJECT_ID).toInt();
-        Q_UNUSED(objectId);
-
-        auto objectTiles = index.data(PixelDelegateData::OBJECT_TILES).toByteArray();
-        auto objectPalette = index.data(PixelDelegateData::OBJECT_PALETTE).toByteArray();
-        if (!objectTiles.isNull() && !objectPalette.isNull()) {
-            for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
-                char whichPalette = objectTiles.at(i);
-                if (whichPalette == 0) {
-                    // NOTE: Palette index 0 seems to almost always be the transparent
-                    //   value. This may not be true, keep this in mind for future bugs
-                    continue;
-                }
-                auto qc = YUtils::getColorFromBytes(
-                    objectPalette.at(whichPalette*2),
-                    objectPalette.at(whichPalette*2+1)
-                );
-                int x = i % 8;
-                // if (index.data(PixelDelegateData::FLIP_H_BG1).toBool() == true) {
-                //     x = (8 - x - 1);
-                // }
-                int y = i / 8;
-                // if (index.data(PixelDelegateData::FLIP_V_BG1).toBool() == true) {
-                //     y = (8 - y - 1);
-                // }
-                this->drawPixel(painter, option.rect, x, y, qc);
-                if (selected) {
-                    this->drawPixel(painter, option.rect, x, y, hardSelectionColor);
-                }
-            }
-        }
-
-        if (!index.data(PixelDelegateData::OBJECT_ID).isNull() && index.data(PixelDelegateData::DRAW_OBJECTS).toBool()) {
-            auto rectCopy = option.rect;
-            rectCopy.setHeight(option.rect.height());
-            rectCopy.setWidth(option.rect.width());
-            painter->fillRect(rectCopy,"purple");
         }
     }
 
@@ -438,6 +395,51 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 break;
         }
     }
+
+    /***************
+     *** OBJECTS ***
+     ***************/
+    if (index.data(PixelDelegateData::DRAW_OBJECTS).isNull() || index.data(PixelDelegateData::DRAW_OBJECTS).toBool() == true) {
+        int objectId = index.data(PixelDelegateData::OBJECT_ID).toInt();
+        Q_UNUSED(objectId);
+
+        auto objectTiles = index.data(PixelDelegateData::OBJECT_TILES).toByteArray();
+        auto objectPalette = index.data(PixelDelegateData::OBJECT_PALETTE).toByteArray();
+        if (!objectTiles.isNull() && !objectPalette.isNull()) {
+            for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
+                char whichPalette = objectTiles.at(i);
+                if (whichPalette == 0) {
+                    // NOTE: Palette index 0 seems to almost always be the transparent
+                    //   value. This may not be true, keep this in mind for future bugs
+                    continue;
+                }
+                auto qc = YUtils::getColorFromBytes(
+                    objectPalette.at(whichPalette*2),
+                    objectPalette.at(whichPalette*2+1)
+                );
+                int x = i % 8;
+                // if (index.data(PixelDelegateData::FLIP_H_BG1).toBool() == true) {
+                //     x = (8 - x - 1);
+                // }
+                int y = i / 8;
+                // if (index.data(PixelDelegateData::FLIP_V_BG1).toBool() == true) {
+                //     y = (8 - y - 1);
+                // }
+                this->drawPixel(painter, option.rect, x, y, qc);
+                if (selected) {
+                    this->drawPixel(painter, option.rect, x, y, hardSelectionColor);
+                }
+            }
+        }
+
+        if (!index.data(PixelDelegateData::OBJECT_ID).isNull() && index.data(PixelDelegateData::DRAW_OBJECTS).toBool()) {
+            auto rectCopy = option.rect;
+            rectCopy.setHeight(option.rect.height());
+            rectCopy.setWidth(option.rect.width());
+            painter->fillRect(rectCopy,"purple");
+        }
+    }
+    
     /********************
      *** TRIGGERBOXES ***
      ********************/
