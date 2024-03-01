@@ -49,6 +49,7 @@ MainWindow::MainWindow() {
     globalSettings.currentBrush = new TileBrush();
     globalSettings.currentBrush->tileAttrs = std::vector<unsigned int>(TileBrush::BRUSH_DIMS * TileBrush::BRUSH_DIMS,0x1000);
     globalSettings.brushes.push_back(globalSettings.currentBrush);
+    globalSettings.layerSelectMode = LayerMode::SPRITES_LAYER;
 
     if (!std::filesystem::exists("./lib/")) {
         std::stringstream ss;
@@ -597,28 +598,28 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
     this->grid->setDragDropMode(QAbstractItemView::NoDragDrop);
     ss << "Layer selected: ";
     if (str.compare("BG1") == 0) {
-        this->grid->layerSelectMode = LayerSelectMode::BG1_LAYER;
+        globalSettings.layerSelectMode = LayerMode::BG1_LAYER;
         ss << "BG1";
         this->chartilesTable->refreshLoadedMapTilesMap(1);
         this->chartilesPopup->setWindowTitle("BG1 Tiles");
     } else if (str.compare("BG2") == 0) {
-        this->grid->layerSelectMode = LayerSelectMode::BG2_LAYER;
+        globalSettings.layerSelectMode = LayerMode::BG2_LAYER;
         ss << "BG2";
         this->chartilesTable->refreshLoadedMapTilesMap(2);
         this->chartilesPopup->setWindowTitle("BG2 Tiles");
     } else if (str.compare("BG3") == 0) {
-        this->grid->layerSelectMode = LayerSelectMode::BG3_LAYER;
+        globalSettings.layerSelectMode = LayerMode::BG3_LAYER;
         ss << "BG3";
         this->chartilesTable->refreshLoadedMapTilesMap(3);
         this->chartilesPopup->setWindowTitle("BG3 Tiles");
     } else if (str.compare("Sprites") == 0) {
-        this->grid->layerSelectMode = LayerSelectMode::SPRITES_LAYER;
+        globalSettings.layerSelectMode = LayerMode::SPRITES_LAYER;
         this->grid->setDragEnabled(true);
         this->grid->setDragDropMode(QAbstractItemView::DragDrop);
         ss << "Sprites";
         // Do not use chartilesPopup
     } else if (str.compare("Colliders") == 0) {
-        this->grid->layerSelectMode = LayerSelectMode::COLLISION_LAYER;
+        globalSettings.layerSelectMode = LayerMode::COLLISION_LAYER;
         ss << "Colliders";
     } else {
         std::stringstream ssLayerSelect;
@@ -802,14 +803,14 @@ void MainWindow::objectListClick() {
         return;
     }
     this->selectionInfoTable->updateWithLevelObject(loadedLevelObject);
-    if (this->grid->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+    if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
         this->grid->clearSelection();
         this->grid->selectItemByUuid(objectUuid);
     }
 }
 
 void MainWindow::displayTableClicked() {
-    if (this->grid->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+    if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
         auto selectedObjects = this->grid->selectedObjects;
         if (selectedObjects.size() < 1) {
             YUtils::printDebug("No objects selected",DebugType::VERBOSE);
@@ -829,13 +830,13 @@ void MainWindow::displayTableClicked() {
             return;
         }
         this->selectionInfoTable->updateWithLevelObject(lo);
-    } else if (this->grid->layerSelectMode == LayerSelectMode::BG2_LAYER) {
+    } else if (globalSettings.layerSelectMode == LayerMode::BG2_LAYER) {
         YUtils::printDebug("MainWindow clicked while in BG2 mode");
-    } else if (this->grid->layerSelectMode == LayerSelectMode::BG1_LAYER) {
+    } else if (globalSettings.layerSelectMode == LayerMode::BG1_LAYER) {
         YUtils::printDebug("MainWindow clicked while in BG1 mode");
-    } else if (this->grid->layerSelectMode == LayerSelectMode::BG3_LAYER) {
+    } else if (globalSettings.layerSelectMode == LayerMode::BG3_LAYER) {
         YUtils::printDebug("MainWindow clicked while in BG3 mode");
-    } else if (this->grid->layerSelectMode == LayerSelectMode::COLLISION_LAYER) {
+    } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
         YUtils::printDebug("MainWindow clicked while in COLL mode");
     } else {
         YUtils::printDebug("MainWindow clicked while in UNKNOWN mode");

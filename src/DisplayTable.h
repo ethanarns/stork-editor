@@ -7,6 +7,7 @@
 #include "yidsrom.h"
 #include "PixelDelegate.h"
 #include "LevelObject.h"
+#include "GlobalSettings.h"
 
 #include <QtCore>
 #include <QTableWidget>
@@ -14,14 +15,6 @@
 #include <QDragEnterEvent>
 #include <QByteArray>
 #include <QPoint>
-
-enum LayerSelectMode {
-    BG1_LAYER,
-    BG2_LAYER,
-    BG3_LAYER,
-    SPRITES_LAYER,
-    COLLISION_LAYER
-};
 
 class DisplayTable : public QTableWidget {
     Q_OBJECT
@@ -31,8 +24,6 @@ public:
     bool drawBg3;
     bool drawObjects;
     bool shouldShowCollision;
-
-    LayerSelectMode layerSelectMode = LayerSelectMode::SPRITES_LAYER;
     /**
      * A list/vector of uint32_t UUIDs of selected objects, usually LevelObjects
     */

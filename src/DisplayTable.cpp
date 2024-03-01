@@ -201,7 +201,7 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
     if (curCell == nullptr) {
         return;
     } else {
-        if (curCell->isSelected() && this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+        if (curCell->isSelected() && globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
             this->setCursor(Qt::OpenHandCursor);
         } else {
             this->setCursor(Qt::ArrowCursor);
@@ -256,7 +256,7 @@ QPoint DisplayTable::getTopLeftOfSprite(uint32_t levelObjectUuid) {
 }
 
 void DisplayTable::mousePressEvent(QMouseEvent *event) {
-    if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+    if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
         // Something is already selected
         if (this->selectedObjects.size() > 0) {
             if (this->selectedObjects.size() > 1) {
@@ -323,26 +323,26 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
             }
         }
     } else if (
-        this->layerSelectMode == LayerSelectMode::BG1_LAYER ||
-        this->layerSelectMode == LayerSelectMode::BG2_LAYER ||
-        this->layerSelectMode == LayerSelectMode::BG3_LAYER
+        globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
+        globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
+        globalSettings.layerSelectMode == LayerMode::BG3_LAYER
     ) {
         auto curItemUnderCursor = this->itemAt(event->pos());
         if (curItemUnderCursor == nullptr) {
             YUtils::printDebug("Item under cursor in mousePressEvent for BGX is null", DebugType::ERROR);
             return;
         }
-        if (this->layerSelectMode == LayerSelectMode::BG1_LAYER) {
+        if (globalSettings.layerSelectMode == LayerMode::BG1_LAYER) {
             this->printCellDebug(curItemUnderCursor,1);
-        } else if (this->layerSelectMode == LayerSelectMode::BG2_LAYER) {
+        } else if (globalSettings.layerSelectMode == LayerMode::BG2_LAYER) {
             this->printCellDebug(curItemUnderCursor,2);
-        } else if (this->layerSelectMode == LayerSelectMode::BG3_LAYER) {
+        } else if (globalSettings.layerSelectMode == LayerMode::BG3_LAYER) {
             this->printCellDebug(curItemUnderCursor,3);
         } else {
             YUtils::printDebug("If this is hit, you seriously messed something up",DebugType::ERROR);
         }
         return;
-    } else if (this->layerSelectMode == LayerSelectMode::COLLISION_LAYER) {
+    } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
         auto curItemUnderCursor = this->itemAt(event->pos());
         if (curItemUnderCursor == nullptr) {
             YUtils::printDebug("Item under cursor in mousePressEvent for COLL is null", DebugType::ERROR);
@@ -352,15 +352,15 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
             YUtils::printDebug("No collision data present");
             return;
         }
-        auto colDrawData = curItemUnderCursor->data(PixelDelegateData::COLLISION_DEBUG).toInt();
-        std::cout << "Collision data: 0x" << std::hex << colDrawData << std::endl;
+        auto colData = curItemUnderCursor->data(PixelDelegateData::COLLISION_DEBUG).toInt();
+        std::cout << "Collision data: 0x" << std::hex << colData << std::endl;
         return;
     }
     QTableWidget::mousePressEvent(event);
 }
 
 void DisplayTable::dragEnterEvent(QDragEnterEvent *event) {
-    if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+    if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
         if (event->mimeData()->hasFormat("application/x-stork-sprite-uuid")) {
             event->setAccepted(true);
         } else {
@@ -375,7 +375,7 @@ void DisplayTable::dragEnterEvent(QDragEnterEvent *event) {
 }
 
 void DisplayTable::dragMoveEvent(QDragMoveEvent *event) {
-    if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+    if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
         if (event->mimeData()->hasFormat("application/x-stork-sprite-uuid")) {
             event->setAccepted(true);
         } else {
@@ -389,7 +389,7 @@ void DisplayTable::dragMoveEvent(QDragMoveEvent *event) {
 }
 
 void DisplayTable::dropEvent(QDropEvent *event) {
-    if (this->layerSelectMode == LayerSelectMode::SPRITES_LAYER) {
+    if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
         if (event->mimeData()->hasFormat("application/x-stork-sprite-uuid")) {
             auto uuidByteData = event->mimeData()->data("application/x-stork-sprite-uuid");
             uint32_t uuid = uuidByteData.toUInt();
@@ -409,7 +409,7 @@ void DisplayTable::dropEvent(QDropEvent *event) {
 }
 
 void DisplayTable::selectItemByUuid(uint32_t uuid) {
-    if (this->layerSelectMode != LayerSelectMode::SPRITES_LAYER) {
+    if (globalSettings.layerSelectMode != LayerMode::SPRITES_LAYER) {
         YUtils::printDebug("Items should not be selected when not in SPRITES_LAYER mode",DebugType::ERROR);
         return;
     }
