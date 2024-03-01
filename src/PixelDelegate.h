@@ -61,6 +61,8 @@ enum CollisionType {
     PLATFORM_PASSABLE = 0x2, // You can jump from below it and land on it, no head hit
     UP_RIGHT_30 = 0x3,
     UP_RIGHT_30_HALFSTART = 0x4,
+    UP_RIGHT_STEEP_1 = 0x5,
+    UP_RIGHT_STEEP_2 = 0x6,
     UP_RIGHT_45 = 0x7,
     STATIC_COIN = 0x1a,
     DOWN_RIGHT_30_2 = 0x43,
@@ -96,7 +98,10 @@ enum CollisionDraw {
     DOWN_RIGHT_30_SHORT,
     UPSIDE_DOWN_RIGHT_45,
     UPSIDE_DOWN_RIGHT_UP_30_TALL,
-    UPSIDE_DOWN_RIGHT_UP_30_SHORT
+    UPSIDE_DOWN_RIGHT_UP_30_SHORT,
+
+    UP_RIGHT_STEEP_TALL,
+    UP_RIGHT_STEEP_SHORT
 };
 
 class PixelDelegate : public QStyledItemDelegate {
