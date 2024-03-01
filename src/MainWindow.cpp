@@ -582,6 +582,7 @@ void MainWindow::LoadRom() {
         this->action_viewBg3->setDisabled(false);
         this->action_viewObjects->setDisabled(false);
         this->action_showTriggerBoxes->setDisabled(false);
+        this->grid->updateTriggerBoxes();
         this->menu_save->setDisabled(false);
         this->menu_export->setDisabled(false);
 
@@ -771,7 +772,6 @@ void MainWindow::menuClick_viewObjects(bool checked) {
 }
 
 void MainWindow::menuClick_viewTriggers(bool checked) {
-    std::cout << "viewTriggers checked? " << checked << std::endl;
     this->grid->shouldShowTriggers = checked;
     this->grid->updateTriggerBoxes();
 }
