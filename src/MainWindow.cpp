@@ -340,6 +340,9 @@ MainWindow::MainWindow() {
     QHBoxLayout* chartilesLayout = new QHBoxLayout(this); // H cause it's skinny, so stuff next to each other
     this->chartilesTable = new ChartilesTable(this,this->rom); // Connect the rom
     chartilesLayout->addWidget(this->chartilesTable);
+    // Side table //
+    auto chartilesInfoLayout = new QVBoxLayout(this);
+
     auto chartilePaletteSelect = new QSpinBox(this);
     chartilePaletteSelect->setObjectName("chartilesTablePaletteSelect");
     chartilePaletteSelect->setEnabled(true);
@@ -349,7 +352,9 @@ MainWindow::MainWindow() {
     chartilePaletteSelect->setPrefix(tr("0x"));
     chartilePaletteSelect->setToolTip(tr("Select color palette for the tiles here"));
     connect(chartilePaletteSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->chartilesTable,&ChartilesTable::paletteValueChanged);
-    chartilesLayout->addWidget(chartilePaletteSelect);
+    chartilesInfoLayout->addWidget(chartilePaletteSelect);
+
+    chartilesLayout->addLayout(chartilesInfoLayout);
 
     this->chartilesPopup->setLayout(chartilesLayout);
 
