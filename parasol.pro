@@ -32,6 +32,5 @@ src/popups/BrushTable.h
 
 QT += core gui widgets
 
-DISTFILES += \
-    lib/ndstool \
-    lib/ndstool.exe
+RESOURCES += \
+    images.qrc

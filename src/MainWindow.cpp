@@ -249,19 +249,19 @@ MainWindow::MainWindow() {
     toolbar->setObjectName("toolbar_primary");
     toolbar->setMovable(false);
 
-    QPixmap iconTiles("assets/icon_tiles.png");
+    QPixmap iconTiles(":/assets/icon_tiles.png");
     this->button_iconTiles = toolbar->addAction(QIcon(iconTiles), tr("Open BG Tiles Dialog"));
     this->button_iconTiles->setObjectName("button_iconTiles");
     this->button_iconTiles->setDisabled(true);
     connect(this->button_iconTiles, &QAction::triggered, this, &MainWindow::toolbarClick_tiles);
 
-    QPixmap iconPalette("assets/icon_palette.png");
+    QPixmap iconPalette(":/assets/icon_palette.png");
     this->button_iconPalette = toolbar->addAction(QIcon(iconPalette), tr("Open Palette Dialog"));
     this->button_iconPalette->setObjectName("button_iconPalette");
     this->button_iconPalette->setDisabled(true);
     connect(this->button_iconPalette, &QAction::triggered, this, &MainWindow::toolbarClick_palette);
 
-    QPixmap iconSpritePreviewShow("assets/icon_spritepreview.png");
+    QPixmap iconSpritePreviewShow(":/assets/icon_spritepreview.png");
     this->button_showSpritePreview = toolbar->addAction(QIcon(iconSpritePreviewShow), tr("Open Sprite Preview"));
     this->button_showSpritePreview->setObjectName("button_spritePreview");
     this->button_showSpritePreview->setDisabled(true);
@@ -269,7 +269,7 @@ MainWindow::MainWindow() {
 
     toolbar->addSeparator();
 
-    QPixmap iconCollisionShow("assets/icon_collision.png");
+    QPixmap iconCollisionShow(":/assets/icon_collision.png");
     this->button_toggleCollision = toolbar->addAction(QIcon(iconCollisionShow), tr("Toggle collision visibility"));
     this->button_toggleCollision->setObjectName("button_iconCollision");
     this->button_toggleCollision->setDisabled(true);

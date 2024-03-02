@@ -18,7 +18,7 @@ const int PIXEL_TILE_DIVISIONS = 8;
 const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
 const QColor selectionColor(255,0,0,50);
 const QColor hardSelectionColor(255,255,255,100);
-QImage COIN_IMAGE("assets/coin.png");
+QImage COIN_IMAGE(":/assets/coin.png");
 
 const QColor collisionColor(     0,255,0  ,100);
 const QColor collisionColorAlt(200,255,200,180);

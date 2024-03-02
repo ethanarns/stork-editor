@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/coin.png</file>
+        <file>assets/icon_collision.png</file>
+        <file>assets/icon_palette.png</file>
+        <file>assets/icon_spritepreview.png</file>
+        <file>assets/icon_tiles.png</file>
+    </qresource>
+</RCC>
