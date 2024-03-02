@@ -3,6 +3,7 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QCheckBox>
 
 BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     Q_UNUSED(parent);
@@ -14,9 +15,16 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     this->brushTable = new BrushTable(this,rom);
     mainLayout->addWidget(this->brushTable);
     
-    auto paletteAndFlip = new QHBoxLayout(this);
+    auto bar1 = new QHBoxLayout(this);
+    auto flipHbox = new QCheckBox(this);
+    flipHbox->setText(tr("Flip H"));
+    bar1->addWidget(flipHbox);
 
-    mainLayout->addLayout(paletteAndFlip);
+    auto flipVbox = new QCheckBox(this);
+    flipVbox->setText(tr("Flip V"));
+    bar1->addWidget(flipVbox);
+
+    mainLayout->addLayout(bar1);
 
     this->setLayout(mainLayout);
 }
