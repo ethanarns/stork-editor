@@ -9,6 +9,8 @@ enum HoverType {
     HOVER_SQUARE,
     HOVER_TOP,
     HOVER_LEFT,
+    HOVER_RIGHT,
+    HOVER_BOTTOM,
     HOVER_BR,
     HOVER_TR,
     HOVER_BL

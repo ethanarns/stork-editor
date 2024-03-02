@@ -25,8 +25,8 @@ struct GlobalSettings {
     uint32_t currentEditingBackground = 0; // 0 = not a bg
     bool brushFlipH = false;
     bool brushFlipV = false;
-    int brushW = 5;
-    int brushH = 5;
+    int brushW = 2;
+    int brushH = 2;
     LayerMode layerSelectMode;
 };
 extern GlobalSettings globalSettings;
