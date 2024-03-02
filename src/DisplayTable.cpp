@@ -716,6 +716,18 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, ChartilePreRenderData 
         YUtils::printDebug("SCEN for this BG is nullptr, skipping",DebugType::WARNING);
         return false;
     }
+    // TODO
+    if (scen->hasAnmzChartiles) {
+        YUtils::printDebug("ANMZ-containing layers not yet supported",DebugType::WARNING);
+        YUtils::popupAlert("ANMZ-containing layers not yet supported");
+        return false;
+    }
+    // TODO
+    if (scen->getInfo()->colorMode == BgColorMode::MODE_256) {
+        YUtils::printDebug("256-bit color mode layers not yet supported",DebugType::WARNING);
+        YUtils::popupAlert("256-bit color mode layers not yet supported");
+        return false;
+    }
     auto vramChartiles = scen->getVramChartiles();
     Chartile loadedTile;
     try {
@@ -760,6 +772,19 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, ChartilePreRenderData 
     }
     curItem->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
     curItem->setData(PixelDelegateData::HOVER_TYPE,HoverType::NO_HOVER);
+    // Update the map
+    scen->clearVramChartilesCache();
+    if (scen->magicOfChartilesSource == Constants::INFO_MAGIC_NUM) {
+        YUtils::printDebug("Updating INFO-IMBZ tile records");
+        // TODO
+    } else if (scen->magicOfChartilesSource == Constants::IMGB_MAGIC_NUM) {
+        YUtils::printDebug("Updating IMGB tile records");
+        // TODO
+    } else {
+        YUtils::printDebug("Unhandled magic number for chartiles source",DebugType::ERROR);
+        YUtils::popupAlert("Unhandled magic number for chartiles source");
+        return false;
+    }
     return true;
 }
 

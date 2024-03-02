@@ -13,6 +13,9 @@ std::map<uint32_t, Chartile> LayerData::getVramChartiles() {
     if (this->cachedVramTiles.size() > 0) {
         return this->cachedVramTiles;
     }
+    YUtils::printDebug("Refreshing vramChartilesCache");
+    this->magicOfChartilesSource = 0;
+    this->hasAnmzChartiles = false;
     std::map<uint32_t, Chartile> pixelTiles;
     uint32_t chartileIndex = 0;
     // Keep it simple
@@ -29,6 +32,11 @@ std::map<uint32_t, Chartile> LayerData::getVramChartiles() {
             for (uint j = 0; j < tileVector.size(); j++) {
                 pixelTiles[chartileIndex++] = tileVector.at(j);
             }
+            if (this->magicOfChartilesSource != 0) {
+                YUtils::printDebug("Another SCEN chartile section loaded before INFO-IMBZ",DebugType::ERROR);
+                YUtils::popupAlert("Another SCEN chartile section loaded before INFO-IMBZ");
+            }
+            this->magicOfChartilesSource = Constants::INFO_MAGIC_NUM;
         } else if (curSection->getMagic() == Constants::ANMZ_MAGIC_NUM) {
             auto anmz = static_cast<AnimatedMapData*>(curSection);
             chartileIndex = (uint32_t)anmz->vramOffset;
@@ -36,6 +44,7 @@ std::map<uint32_t, Chartile> LayerData::getVramChartiles() {
             for (uint j = 0; j < tileVector.size(); j++) {
                 pixelTiles[chartileIndex++] = tileVector.at(j);
             }
+            this->hasAnmzChartiles = true;
             chartileIndex = 0; // Reset after ANMZ
         } else if (curSection->getMagic() == Constants::IMGB_MAGIC_NUM) {
             auto imbz = static_cast<ImgbLayerData*>(curSection);
@@ -43,10 +52,21 @@ std::map<uint32_t, Chartile> LayerData::getVramChartiles() {
             for (uint j = 0; j < tileVector.size(); j++) {
                 pixelTiles[chartileIndex++] = tileVector.at(j);
             }
+            if (this->magicOfChartilesSource != 0) {
+                YUtils::printDebug("Another SCEN chartile section loaded before IMGB",DebugType::ERROR);
+                YUtils::popupAlert("Another SCEN chartile section loaded before IMGB");
+            }
+            this->magicOfChartilesSource = Constants::IMGB_MAGIC_NUM;
         }
     }
     this->cachedVramTiles = pixelTiles;
     return pixelTiles;
+}
+
+void LayerData::clearVramChartilesCache() {
+    YUtils::printDebug("clearVramChartilesCache()");
+    // No need to delete, no pointers
+    this->cachedVramTiles.clear();
 }
 
 ScenInfoData *LayerData::getInfo()

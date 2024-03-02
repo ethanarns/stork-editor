@@ -331,6 +331,7 @@ public:
 
     // A mirror of the VRAM set aside for this BG
     std::map<uint32_t,Chartile> getVramChartiles();
+    void clearVramChartilesCache();
 
     ScenInfoData* getInfo();
     LayerPaletteData* getPalette();
@@ -341,6 +342,8 @@ public:
     std::vector<Chartile> parseImbzFromFile(std::string filename_noExt, BgColorMode bgColMode = BgColorMode::MODE_16);
 
     uint32_t paletteStartOffset;
+    uint32_t magicOfChartilesSource = 0;
+    bool hasAnmzChartiles = false;
 private:
     std::vector<LevelData*> subScenData;
 
