@@ -21,7 +21,8 @@ struct Chartile {
     QByteArray tiles;
 };
 
-/// @brief This is a breaking-up of the 2 byte MPBZ data records
+/// @brief This is a breaking-up of the 2 byte MPBZ data record.
+/// Referenced in No$GBA RAM as Map Address
 /// @note http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
 struct MapTileRecordData {
     /// @brief Points to a certain Chartile in the VRAM

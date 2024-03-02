@@ -710,7 +710,7 @@ void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
     this->selectItemByUuid(uuid);
 }
 
-bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData pren) {
+bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapRecord) {
     //YUtils::printDebug("placeNewTileOnMap()");
     if (row < 0 || row > this->rowCount()-1) {
         YUtils::printDebug("placeNewTileOnMap row out of bounds",DebugType::VERBOSE);
@@ -730,7 +730,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData pren
         YUtils::popupAlert("currentEditingBackground value in placeNewTileOnMap too high");
         return false;
     }
-    if (pren.tileId == 0xffff) {
+    if (mapRecord.tileId == 0xffff) {
         // This brush tile is empty, skip silently
         return false;
     }
@@ -753,20 +753,20 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData pren
     auto vramChartiles = scen->getVramChartiles();
     Chartile loadedTile;
     try {
-        loadedTile = vramChartiles.at(pren.tileId);
+        loadedTile = vramChartiles.at(mapRecord.tileId);
     } catch (...) {
         // 0 often just means "empty," but is not consistent
         // Use this as a fallback until you find out
-        if (pren.tileId != 0) {
+        if (mapRecord.tileId != 0) {
             std::stringstream ssTile;
-            ssTile << "Could not get certain tileId for BG" << globalSettings.currentEditingBackground << ": " << std::hex << pren.tileId;
+            ssTile << "Could not get certain tileId for BG" << globalSettings.currentEditingBackground << ": " << std::hex << mapRecord.tileId;
             YUtils::printDebug(ssTile.str(),DebugType::ERROR);
         } else {
             YUtils::printDebug("tileId in placeNewTileOnMap was 0",DebugType::WARNING);
         }
         return false;
     }
-    auto pal = pren.paletteId;
+    auto pal = mapRecord.paletteId;
     pal += scen->paletteStartOffset - 1;
     auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
     if (globalSettings.currentEditingBackground == 1) {
@@ -783,10 +783,10 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData pren
             curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(pal+1));
         }
         curItem->setData(PixelDelegateData::PALETTE_ID_BG2,pal);
-        curItem->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
-        curItem->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
-        curItem->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
-        curItem->setData(PixelDelegateData::TILE_ID_BG2,(uint)pren.tileId);
+        curItem->setData(PixelDelegateData::FLIP_H_BG2,mapRecord.flipH);
+        curItem->setData(PixelDelegateData::FLIP_V_BG2,mapRecord.flipV);
+        curItem->setData(PixelDelegateData::TILEATTR_BG2,(uint)mapRecord.tileAttr);
+        curItem->setData(PixelDelegateData::TILE_ID_BG2,(uint)mapRecord.tileId);
     } else if (globalSettings.currentEditingBackground == 3) {
         // BG 3 //
         YUtils::printDebug("BG3 not yet supported"); // TODO
@@ -799,7 +799,11 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData pren
     curItem->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
     curItem->setData(PixelDelegateData::HOVER_TYPE,HoverType::NO_HOVER);
     // You are changing the MAP TILES not the pixels you dingus. VRAM is moot
-    // Fuck you really need to get this better organized
+    auto mpbzMaybe = scen->getFirstDataByMagic(Constants::MPBZ_MAGIC_NUM);
+    auto mpbz = static_cast<MapTilesData*>(mpbzMaybe);
+    auto width = scen->getInfo()->layerWidth;
+    uint32_t index = column + (row*width);
+    mpbz->tileRenderData.at(index) = mapRecord.compile();
     return true;
 }
 
