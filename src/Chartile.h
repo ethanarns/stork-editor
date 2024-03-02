@@ -21,7 +21,7 @@ struct Chartile {
     QByteArray tiles;
 };
 
-/// @brief This is a breaking-up of the 2 byte (or 1 byte in 256 color mode) MPBZ data records
+/// @brief This is a breaking-up of the 2 byte MPBZ data records
 /// @note http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
 struct ChartilePreRenderData {
     /// @brief Points to a certain Chartile in the VRAM
@@ -37,9 +37,22 @@ struct ChartilePreRenderData {
         std::stringstream ssChartilePreRend;
         ssChartilePreRend << "ChartilePreRenderData { tileId: 0x" << std::hex << this->tileId;
         ssChartilePreRend << ", tileAttr (debug): 0x" << std::hex << this->tileAttr;
+        ssChartilePreRend << ", tileAttr (compile): 0x" << std::hex << this->compile();
         ssChartilePreRend << ", paletteId: 0x" << std::hex << (uint16_t)this->paletteId;
         ssChartilePreRend << ", flip H/V: " << this->flipH << "/" << this->flipV << " }";
         return ssChartilePreRend.str();
+    }
+
+    uint16_t compile() {
+        uint16_t res = (uint16_t)this->tileId | (this->flipH << 10) | (this->flipV << 11);;
+        // If 256 mode, will have large palette
+        if (this->paletteId > 15) {
+            // Skip adding palette
+            return res;
+        } else {
+            // 16 bit mode, palette okay
+            return res | (this->paletteId << 12);
+        }
     }
 };
 
