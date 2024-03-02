@@ -65,7 +65,11 @@ enum PixelDelegateData {
     TILE_ID_BG3 = 129,
 
     COLLISION_DEBUG = 130,
-    HOVER_TYPE = 131
+    HOVER_TYPE = 131,
+
+    PALETTE_ID_BG1 = 132,
+    PALETTE_ID_BG2 = 133,
+    PALETTE_ID_BG3 = 134
 };
 
 enum CollisionType {

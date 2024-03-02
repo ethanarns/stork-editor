@@ -42,6 +42,43 @@ void BrushTable::resetTable() {
     }
 }
 
+void BrushTable::loadTilesToCurBrush() {
+    YUtils::printDebug("Loading brush window tiles to current brush");
+    globalSettings.currentBrush->tileAttrs.clear();
+    for (int y = 0; y < this->rowCount(); y++) {
+        for (int x = 0; x < this->columnCount(); x++) {
+            auto item = this->item(y,x);
+            ChartilePreRenderData pren;
+            if (item != nullptr) {
+                pren.tileId = item->data(PixelDelegateData::TILE_ID_BG1).toUInt();
+                pren.paletteId = (uint8_t)item->data(PixelDelegateData::PALETTE_ID_BG1).toUInt();
+                pren.flipH = item->data(PixelDelegateData::FLIP_H_BG1).toBool();
+                pren.flipV = item->data(PixelDelegateData::FLIP_V_BG1).toBool();
+                pren.tileAttr = 0xffff;
+            } else {
+                pren.tileId = 0xffff;
+                pren.paletteId = 0;
+                pren.flipH = false;
+                pren.flipV = false;
+                pren.tileAttr = 0xffff;
+            }
+            globalSettings.currentBrush->tileAttrs.push_back(pren);
+        }
+    }
+    if ((this->rowCount() * this->columnCount()) != (int)globalSettings.currentBrush->tileAttrs.size()) {
+        std::stringstream ssMismatch;
+        ssMismatch << "Mismatch in row/column mult and current brush data size: 0x";
+        ssMismatch << std::hex << (this->rowCount() * this->columnCount()) << " vs 0x";
+        ssMismatch << std::hex << globalSettings.currentBrush->tileAttrs.size();
+        YUtils::printDebug(ssMismatch.str(),DebugType::ERROR);
+        YUtils::popupAlert(ssMismatch.str());
+    }
+    if (globalSettings.currentBrush->tileAttrs.size() == 0) {
+        YUtils::printDebug("No tiles loaded to brush",DebugType::ERROR);
+        YUtils::popupAlert("No tiles loaded to brush");
+    }
+}
+
 void BrushTable::mousePressEvent(QMouseEvent *event) {
     if (globalSettings.currentEditingBackground == 0) {
         YUtils::printDebug("currentEditingBackground is 0, can't edit",DebugType::WARNING);
@@ -62,7 +99,10 @@ void BrushTable::mousePressEvent(QMouseEvent *event) {
     //std::cout << "Updating tile on BrushTable" << std::endl;
     item->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tilesMap.at(globalSettings.currentTileIndex).tiles);
     item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[globalSettings.currentPaletteIndex]);
+    item->setData(PixelDelegateData::PALETTE_ID_BG1,globalSettings.currentPaletteIndex);
     item->setData(PixelDelegateData::FLIP_H_BG1,globalSettings.brushFlipH);
     item->setData(PixelDelegateData::FLIP_V_BG1,globalSettings.brushFlipV);
     item->setData(PixelDelegateData::TILE_ID_BG1,globalSettings.currentTileIndex);
+
+    this->loadTilesToCurBrush();
 }
