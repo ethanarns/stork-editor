@@ -212,14 +212,16 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
         this->updateSurrounding(y,x,20);
         curCell->setData(PixelDelegateData::HOVER_TYPE,HoverType::HOVER_SQUARE);
         // Top line
-        for (int xTop = 1; xTop < globalSettings.brushW; xTop++) {
+        for (int xTop = 1; xTop < globalSettings.brushW-1; xTop++) {
             this->setHover(y,x+xTop,HoverType::HOVER_TOP);
         }
-        for (int yLeft = 1; yLeft < globalSettings.brushH; yLeft++) {
+        for (int yLeft = 1; yLeft < globalSettings.brushH-1; yLeft++) {
             this->setHover(y+yLeft,x,HoverType::HOVER_LEFT);
         }
 
+        this->setHover(y                        ,x+globalSettings.brushW-1,HoverType::HOVER_TR);
         this->setHover(y+globalSettings.brushH-1,x+globalSettings.brushW-1,HoverType::HOVER_BR);
+        this->setHover(y+globalSettings.brushH-1,x                        ,HoverType::HOVER_BL);
     }
 }
 
