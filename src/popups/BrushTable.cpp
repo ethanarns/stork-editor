@@ -55,14 +55,14 @@ void BrushTable::mousePressEvent(QMouseEvent *event) {
     }
     auto item = this->itemAt(event->pos());
     if (item == nullptr) {
-        YUtils::printDebug("Failed to get itemAt",DebugType::WARNING);
+        YUtils::printDebug("Failed to get itemAt",DebugType::ERROR);
         return;
     }
-    std::cout << "Updating tiles" << std::endl;
     std::map<uint32_t,Chartile> tilesMap = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground)->getVramChartiles();
+    //std::cout << "Updating tile on BrushTable" << std::endl;
     item->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tilesMap.at(globalSettings.currentTileIndex).tiles);
     item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[globalSettings.currentPaletteIndex]);
-    item->setData(PixelDelegateData::FLIP_H_BG1,false);
-    item->setData(PixelDelegateData::FLIP_V_BG1,false);
+    item->setData(PixelDelegateData::FLIP_H_BG1,globalSettings.brushFlipH);
+    item->setData(PixelDelegateData::FLIP_V_BG1,globalSettings.brushFlipV);
     item->setData(PixelDelegateData::TILE_ID_BG1,globalSettings.currentTileIndex);
 }

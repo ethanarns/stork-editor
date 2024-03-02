@@ -23,6 +23,8 @@ struct GlobalSettings {
     uint32_t currentTileIndex = 0xffff; // Only can go up to about 1024 tiles
     uint32_t currentPaletteIndex = 0;
     uint32_t currentEditingBackground = 0; // 0 = not a bg
+    bool brushFlipH = false;
+    bool brushFlipV = false;
     LayerMode layerSelectMode;
 };
 extern GlobalSettings globalSettings;
