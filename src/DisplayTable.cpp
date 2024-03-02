@@ -771,15 +771,23 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
     auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
     if (globalSettings.currentEditingBackground == 1) {
         // BG 1 //
-        YUtils::printDebug("BG1 not yet supported"); // TODO
-        return false;
+        curItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
+        if (!isColorMode256) {
+            curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
+        } else {
+            curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->get256Palettes(pal+1));
+        }
+        curItem->setData(PixelDelegateData::PALETTE_ID_BG1,pal);
+        curItem->setData(PixelDelegateData::FLIP_H_BG1,mapRecord.flipH);
+        curItem->setData(PixelDelegateData::FLIP_V_BG1,mapRecord.flipV);
+        curItem->setData(PixelDelegateData::TILEATTR_BG1,(uint)mapRecord.tileAttr);
+        curItem->setData(PixelDelegateData::TILE_ID_BG1,(uint)mapRecord.tileId);
     } else if (globalSettings.currentEditingBackground == 2) {
         // BG 2 //
         curItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
         if (!isColorMode256) {
             curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
         } else {
-            // newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(this->yidsRom->paletteOffsetBg2 + 1));
             curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(pal+1));
         }
         curItem->setData(PixelDelegateData::PALETTE_ID_BG2,pal);
@@ -789,8 +797,17 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         curItem->setData(PixelDelegateData::TILE_ID_BG2,(uint)mapRecord.tileId);
     } else if (globalSettings.currentEditingBackground == 3) {
         // BG 3 //
-        YUtils::printDebug("BG3 not yet supported"); // TODO
-        return false;
+        curItem->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
+        if (!isColorMode256) {
+            curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
+        } else {
+            curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(pal+1));
+        }
+        curItem->setData(PixelDelegateData::PALETTE_ID_BG3,pal);
+        curItem->setData(PixelDelegateData::FLIP_H_BG3,mapRecord.flipH);
+        curItem->setData(PixelDelegateData::FLIP_V_BG3,mapRecord.flipV);
+        curItem->setData(PixelDelegateData::TILEATTR_BG3,(uint)mapRecord.tileAttr);
+        curItem->setData(PixelDelegateData::TILE_ID_BG3,(uint)mapRecord.tileId);
     } else {
         YUtils::printDebug("Unusual currentEditingBackground in placeNewTileOnMap",DebugType::ERROR);
         YUtils::popupAlert("Unusual currentEditingBackground in placeNewTileOnMap");
@@ -801,8 +818,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
     // You are changing the MAP TILES not the pixels you dingus. VRAM is moot
     auto mpbzMaybe = scen->getFirstDataByMagic(Constants::MPBZ_MAGIC_NUM);
     auto mpbz = static_cast<MapTilesData*>(mpbzMaybe);
-    auto width = scen->getInfo()->layerWidth;
-    uint32_t index = column + (row*width);
+    uint32_t index = column + (row * scen->getInfo()->layerWidth);
     mpbz->tileRenderData.at(index) = mapRecord.compile();
     return true;
 }
