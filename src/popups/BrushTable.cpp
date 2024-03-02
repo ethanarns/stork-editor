@@ -54,7 +54,7 @@ void BrushTable::loadTilesToCurBrush() {
                 pren.paletteId = (uint8_t)item->data(PixelDelegateData::PALETTE_ID_BG1).toUInt();
                 pren.flipH = item->data(PixelDelegateData::FLIP_H_BG1).toBool();
                 pren.flipV = item->data(PixelDelegateData::FLIP_V_BG1).toBool();
-                pren.tileAttr = 0xffff;
+                pren.tileAttr = pren.compile();
             } else {
                 pren.tileId = 0xffff;
                 pren.paletteId = 0;

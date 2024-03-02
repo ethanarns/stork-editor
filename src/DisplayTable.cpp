@@ -2,6 +2,7 @@
 #include "PixelDelegate.h"
 #include "yidsrom.h"
 #include "utils.h"
+#include "popups/BrushTable.h"
 
 #include <QtCore>
 #include <QTableWidget>
@@ -430,7 +431,25 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
             YUtils::popupAlert("Brush tiles currently empty");
             return;
         }
-        this->placeNewTileOnMap(curItemUnderCursor->row(),curItemUnderCursor->column(),globalSettings.currentBrush->tileAttrs.at(0));
+        const uint32_t checkTileAttrsSize = BrushTable::CELL_COUNT_DIMS * BrushTable::CELL_COUNT_DIMS;
+        if (globalSettings.currentBrush->tileAttrs.size() != checkTileAttrsSize) {
+            YUtils::printDebug("Brush tiles size unusual",DebugType::WARNING);
+            YUtils::popupAlert("Brush tiles size unusual");
+            return;
+        }
+        const uint32_t yBase = curItemUnderCursor->row();
+        const uint32_t xBase = curItemUnderCursor->column();
+        // Do tile placement loop
+        for (int y = 0; y < BrushTable::CELL_COUNT_DIMS; y++) {
+            for (int x = 0; x < BrushTable::CELL_COUNT_DIMS; x++) {
+                uint attrPos = x + y*BrushTable::CELL_COUNT_DIMS;
+                auto tileAttr = globalSettings.currentBrush->tileAttrs.at(attrPos);
+                if (tileAttr.compile() == 0) {
+                    continue;
+                }
+                this->placeNewTileOnMap(yBase+y,xBase+x,tileAttr);
+            }
+        }
         return;
     } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
         auto curItemUnderCursor = this->itemAt(event->pos());
@@ -692,7 +711,7 @@ void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
 }
 
 bool DisplayTable::placeNewTileOnMap(int row, int column, ChartilePreRenderData pren) {
-    YUtils::printDebug("placeNewTileOnMap()");
+    //YUtils::printDebug("placeNewTileOnMap()");
     if (row < 0 || row > this->rowCount()-1) {
         YUtils::printDebug("placeNewTileOnMap row out of bounds",DebugType::VERBOSE);
         return false;
@@ -786,18 +805,19 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, ChartilePreRenderData 
     curItem->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
     curItem->setData(PixelDelegateData::HOVER_TYPE,HoverType::NO_HOVER);
     // Update the map
-    scen->clearVramChartilesCache();
-    if (scen->magicOfChartilesSource == Constants::INFO_MAGIC_NUM) {
-        YUtils::printDebug("Updating INFO-IMBZ tile records");
-        // TODO
-    } else if (scen->magicOfChartilesSource == Constants::IMGB_MAGIC_NUM) {
-        YUtils::printDebug("Updating IMGB tile records");
-        // TODO
-    } else {
-        YUtils::printDebug("Unhandled magic number for chartiles source",DebugType::ERROR);
-        YUtils::popupAlert("Unhandled magic number for chartiles source");
-        return false;
-    }
+    // TODO: Actually, do this later by reading the tiles themselves
+    // scen->clearVramChartilesCache();
+    // if (scen->magicOfChartilesSource == Constants::INFO_MAGIC_NUM) {
+    //     YUtils::printDebug("Updating INFO-IMBZ tile records");
+    //     // TODO
+    // } else if (scen->magicOfChartilesSource == Constants::IMGB_MAGIC_NUM) {
+    //     YUtils::printDebug("Updating IMGB tile records");
+    //     // TODO
+    // } else {
+    //     YUtils::printDebug("Unhandled magic number for chartiles source",DebugType::ERROR);
+    //     YUtils::popupAlert("Unhandled magic number for chartiles source");
+    //     return false;
+    // }
     return true;
 }
 
