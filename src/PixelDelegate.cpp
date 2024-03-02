@@ -463,6 +463,41 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             boxColor
         );
     }
+
+    /*************
+     *** HOVER ***
+     *************/
+    auto hoverType = index.data(PixelDelegateData::HOVER_TYPE);
+    if (!hoverType.isNull() && hoverType.toInt() != HoverType::NO_HOVER) {
+        HoverType hoverVal = static_cast<HoverType>(hoverType.toInt());
+        switch (hoverVal) {
+            case HoverType::HOVER_SQUARE: {
+                auto rectCopy = option.rect;
+                rectCopy.setX(rectCopy.x()+1);
+                rectCopy.setY(rectCopy.y()+1);
+                rectCopy.setHeight(option.rect.height()-2);
+                rectCopy.setWidth(option.rect.width()-2);
+                QPen hoverPen;
+                hoverPen.setColor(QColor("red"));
+                hoverPen.setWidth(2);
+                painter->setPen(hoverPen);
+                painter->drawRect(rectCopy);
+                break;
+            }
+            case HoverType::HOVER_TOP: {
+                painter->drawLine(option.rect.x(),option.rect.y()+1,option.rect.x()+option.rect.width()-1,option.rect.y()+1);
+                break;
+            }
+            case HoverType::HOVER_LEFT: {
+                painter->drawLine(option.rect.x()+1,option.rect.y(),option.rect.x()+1,option.rect.y()+option.rect.width()-1);
+                break;
+            }
+            case HoverType::NO_HOVER: // This shouldn't be hit
+            default: {
+                break;
+            }
+        }
+    }
 }
 
 void PixelDelegate::drawPixel(QPainter *painter, const QRect &rect, const int x, const int y, const QColor &color) const {

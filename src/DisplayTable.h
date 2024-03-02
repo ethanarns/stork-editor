@@ -69,6 +69,8 @@ private:
     void cellEnteredTriggered(int row, int column);
     void printCellDebug(QTableWidgetItem *item, uint whichBg);
     QPoint getTopLeftOfSprite(uint32_t levelObjectUuid);
+    void updateSurrounding(int row, int column, int distance);
+    void setHover(int row, int column, HoverType hoverType);
 protected:
     QPoint dragStartPosition;
     void mousePressEvent(QMouseEvent *event) override;

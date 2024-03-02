@@ -4,6 +4,13 @@
 #include <QtCore>
 #include <QStyledItemDelegate>
 
+enum HoverType {
+    NO_HOVER,
+    HOVER_SQUARE,
+    HOVER_TOP,
+    HOVER_LEFT
+};
+
 enum PixelDelegateData {
     DRAW_BG1 = 32,
     DRAW_BG2 = 31,
@@ -52,7 +59,8 @@ enum PixelDelegateData {
     TILE_ID_BG2 = 128,
     TILE_ID_BG3 = 129,
 
-    COLLISION_DEBUG = 130
+    COLLISION_DEBUG = 130,
+    HOVER_TYPE = 131
 };
 
 enum CollisionType {

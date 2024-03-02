@@ -146,6 +146,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         // Things to do for every layer:
         newItem->setData(PixelDelegateData::LAYER_DRAW_ORDER,layerDrawOrder);
         newItem->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
+        newItem->setData(PixelDelegateData::HOVER_TYPE,HoverType::NO_HOVER);
 
         // Only doing collision here because there's no data for it, so create it
         newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
@@ -193,6 +194,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren
         // Things to do for every layer:
         potentialExisting->setData(PixelDelegateData::LAYER_DRAW_ORDER,layerDrawOrder);
         potentialExisting->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
+        potentialExisting->setData(PixelDelegateData::HOVER_TYPE,HoverType::NO_HOVER);
     }
 }
 
@@ -204,7 +206,17 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
         if (curCell->isSelected() && globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
             this->setCursor(Qt::OpenHandCursor);
         } else {
-            this->setCursor(Qt::ArrowCursor);
+            this->setCursor(Qt::CustomCursor);
+        }
+        // BG Brush hovering
+        this->updateSurrounding(y,x,20);
+        curCell->setData(PixelDelegateData::HOVER_TYPE,HoverType::HOVER_SQUARE);
+        // Top line
+        for (int xTop = 1; xTop < globalSettings.brushW; xTop++) {
+            this->setHover(y,x+xTop,HoverType::HOVER_TOP);
+        }
+        for (int yLeft = 1; yLeft < globalSettings.brushH; yLeft++) {
+            this->setHover(y+yLeft,x,HoverType::HOVER_LEFT);
         }
     }
 }
@@ -251,6 +263,41 @@ QPoint DisplayTable::getTopLeftOfSprite(uint32_t levelObjectUuid) {
     }
     YUtils::printDebug("Could not find sprite with that UUID",DebugType::ERROR);
     return QPoint();
+}
+
+void DisplayTable::updateSurrounding(int row, int column, int distance) {
+    int leftEnd = column - distance;
+    if (leftEnd < 0) {
+        leftEnd = 0;
+    }
+    int rightEnd = column + distance;
+
+    int topEnd = row - distance;
+    if (topEnd < 0) {
+        topEnd = 0;
+    }
+    int bottomEnd = row + distance;
+
+    for (int colIndex = leftEnd; colIndex < rightEnd; colIndex++) {
+        for (int rowIndex = topEnd; rowIndex < bottomEnd; rowIndex++) {
+            // Do update!
+            auto curItem = this->item(rowIndex,colIndex);
+            if (curItem != nullptr) {
+                curItem->setData(PixelDelegateData::HOVER_TYPE,HoverType::NO_HOVER);
+            } else {
+                // Do nothing if null
+            }
+        }
+    }
+}
+
+void DisplayTable::setHover(int row, int column, HoverType hoverType) {
+    QTableWidgetItem* curCell = this->item(row,column);
+    if (curCell == nullptr) {
+        return;
+    } else {
+        curCell->setData(PixelDelegateData::HOVER_TYPE,hoverType);
+    }
 }
 
 void DisplayTable::mousePressEvent(QMouseEvent *event) {
