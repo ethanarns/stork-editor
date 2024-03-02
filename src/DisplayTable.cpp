@@ -420,7 +420,16 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
         } else {
             YUtils::printDebug("If this is hit, you seriously messed something up",DebugType::ERROR);
         }
-        // Now, PLACE TILES!!
+        if (globalSettings.currentBrush == nullptr) {
+            YUtils::printDebug("Brush currently null",DebugType::ERROR);
+            YUtils::popupAlert("Brush currently null");
+            return;
+        }
+        if (globalSettings.currentBrush->tileAttrs.empty()) {
+            YUtils::printDebug("Brush tiles currently empty",DebugType::WARNING);
+            YUtils::popupAlert("Brush tiles currently empty");
+            return;
+        }
         this->placeNewTileOnMap(curItemUnderCursor->row(),curItemUnderCursor->column(),globalSettings.currentBrush->tileAttrs.at(0));
         return;
     } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
@@ -749,6 +758,8 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, ChartilePreRenderData 
     auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
     if (globalSettings.currentEditingBackground == 1) {
         // BG 1 //
+        YUtils::printDebug("BG1 not yet supported"); // TODO
+        return false;
     } else if (globalSettings.currentEditingBackground == 2) {
         // BG 2 //
         curItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
@@ -765,6 +776,8 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, ChartilePreRenderData 
         curItem->setData(PixelDelegateData::TILE_ID_BG2,(uint)pren.tileId);
     } else if (globalSettings.currentEditingBackground == 3) {
         // BG 3 //
+        YUtils::printDebug("BG3 not yet supported"); // TODO
+        return false;
     } else {
         YUtils::printDebug("Unusual currentEditingBackground in placeNewTileOnMap",DebugType::ERROR);
         YUtils::popupAlert("Unusual currentEditingBackground in placeNewTileOnMap");
