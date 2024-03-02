@@ -218,6 +218,8 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
         for (int yLeft = 1; yLeft < globalSettings.brushH; yLeft++) {
             this->setHover(y+yLeft,x,HoverType::HOVER_LEFT);
         }
+
+        this->setHover(y+globalSettings.brushH-1,x+globalSettings.brushW-1,HoverType::HOVER_BR);
     }
 }
 

@@ -8,7 +8,8 @@ enum HoverType {
     NO_HOVER,
     HOVER_SQUARE,
     HOVER_TOP,
-    HOVER_LEFT
+    HOVER_LEFT,
+    HOVER_BR
 };
 
 enum PixelDelegateData {

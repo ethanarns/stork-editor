@@ -492,6 +492,17 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 painter->drawLine(option.rect.x()+1,option.rect.y(),option.rect.x()+1,option.rect.y()+option.rect.width()-1);
                 break;
             }
+            case HoverType::HOVER_BR: {
+                painter->drawLine(
+                    option.rect.x()+1,     option.rect.y()+option.rect.width()-1,
+                    option.rect.x()+option.rect.height()-1,option.rect.y()+option.rect.width()-1
+                );
+                painter->drawLine(
+                    option.rect.x()+option.rect.height()-1,option.rect.y()+option.rect.width()-1,
+                    option.rect.x()+option.rect.height()-1,option.rect.y()+1
+                );
+                break;
+            }
             case HoverType::NO_HOVER: // This shouldn't be hit
             default: {
                 break;
