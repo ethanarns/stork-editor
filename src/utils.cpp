@@ -145,7 +145,7 @@ std::vector<uint8_t> YUtils::subVector(std::vector<uint8_t> &inVec, uint32_t sta
     return newVec;
 }
 
-MapTileRecordData YUtils::getCharPreRender(uint16_t mapTileAttr, BgColorMode bgColorMode) {
+MapTileRecordData YUtils::getMapTileRecordDataFromShort(uint16_t mapTileAttr, BgColorMode bgColorMode) {
     Q_UNUSED(bgColorMode);
     MapTileRecordData res;
     res.tileAttr = mapTileAttr;

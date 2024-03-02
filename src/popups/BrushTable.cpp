@@ -48,21 +48,21 @@ void BrushTable::loadTilesToCurBrush() {
     for (int y = 0; y < this->rowCount(); y++) {
         for (int x = 0; x < this->columnCount(); x++) {
             auto item = this->item(y,x);
-            MapTileRecordData pren;
+            MapTileRecordData mapTile;
             if (item != nullptr) {
-                pren.tileId = item->data(PixelDelegateData::TILE_ID_BG1).toUInt();
-                pren.paletteId = (uint8_t)item->data(PixelDelegateData::PALETTE_ID_BG1).toUInt();
-                pren.flipH = item->data(PixelDelegateData::FLIP_H_BG1).toBool();
-                pren.flipV = item->data(PixelDelegateData::FLIP_V_BG1).toBool();
-                pren.tileAttr = pren.compile();
+                mapTile.tileId = item->data(PixelDelegateData::TILE_ID_BG1).toUInt();
+                mapTile.paletteId = (uint8_t)item->data(PixelDelegateData::PALETTE_ID_BG1).toUInt();
+                mapTile.flipH = item->data(PixelDelegateData::FLIP_H_BG1).toBool();
+                mapTile.flipV = item->data(PixelDelegateData::FLIP_V_BG1).toBool();
+                mapTile.tileAttr = mapTile.compile();
             } else {
-                pren.tileId = 0xffff;
-                pren.paletteId = 0;
-                pren.flipH = false;
-                pren.flipV = false;
-                pren.tileAttr = 0xffff;
+                mapTile.tileId = 0xffff;
+                mapTile.paletteId = 0;
+                mapTile.flipH = false;
+                mapTile.flipV = false;
+                mapTile.tileAttr = 0xffff;
             }
-            globalSettings.currentBrush->tileAttrs.push_back(pren);
+            globalSettings.currentBrush->tileAttrs.push_back(mapTile);
         }
     }
     if ((this->rowCount() * this->columnCount()) != (int)globalSettings.currentBrush->tileAttrs.size()) {

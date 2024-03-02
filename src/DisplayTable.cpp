@@ -247,7 +247,7 @@ void DisplayTable::printCellDebug(QTableWidgetItem *item, uint whichBg) {
     if (whichBg == 1) {
         if (!item->data(PixelDelegateData::PIXEL_ARRAY_BG1).isNull()) {
             auto tileAttr = item->data(PixelDelegateData::TILEATTR_BG1).toUInt();
-            YUtils::printDebug(YUtils::getCharPreRender(tileAttr).toString());
+            YUtils::printDebug(YUtils::getMapTileRecordDataFromShort(tileAttr).toString());
             auto pixArray2 = item->data(PixelDelegateData::PIXEL_ARRAY_BG1).toByteArray();
             YUtils::printDebug("Pixel Array for BG 1:",DebugType::VERBOSE);
             YUtils::printQbyte(pixArray2);
@@ -258,7 +258,7 @@ void DisplayTable::printCellDebug(QTableWidgetItem *item, uint whichBg) {
     } else if (whichBg == 2) {
         if (!item->data(PixelDelegateData::PIXEL_ARRAY_BG2).isNull()) {
             auto tileAttr = item->data(PixelDelegateData::TILEATTR_BG2).toUInt();
-            YUtils::printDebug(YUtils::getCharPreRender(tileAttr).toString());
+            YUtils::printDebug(YUtils::getMapTileRecordDataFromShort(tileAttr).toString());
             auto pixArray2 = item->data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
             YUtils::printDebug("Pixel Array for BG 2:",DebugType::VERBOSE);
             YUtils::printQbyte(pixArray2);
@@ -269,7 +269,7 @@ void DisplayTable::printCellDebug(QTableWidgetItem *item, uint whichBg) {
     } else if (whichBg == 3) {
         if (!item->data(PixelDelegateData::PIXEL_ARRAY_BG3).isNull()) {
             auto tileAttr = item->data(PixelDelegateData::TILEATTR_BG3).toUInt();
-            YUtils::printDebug(YUtils::getCharPreRender(tileAttr).toString());
+            YUtils::printDebug(YUtils::getMapTileRecordDataFromShort(tileAttr).toString());
             auto pixArray2 = item->data(PixelDelegateData::PIXEL_ARRAY_BG3).toByteArray();
             YUtils::printDebug("Pixel Array for BG 3:",DebugType::VERBOSE);
             YUtils::printQbyte(pixArray2);
@@ -892,7 +892,7 @@ void DisplayTable::updateBg() {
                     std::cout << "X too big (x vs width): " << std::hex << x << " vs " << std::hex << (canvasWidth-1) << std::endl;
                     continue;
                 }
-                MapTileRecordData curPren = YUtils::getCharPreRender(mapTiles.at(preRenderIndex),colorMode);
+                MapTileRecordData curPren = YUtils::getMapTileRecordDataFromShort(mapTiles.at(preRenderIndex),colorMode);
                 this->putTileBg(x,y,curPren,bgIndex);
             }
             bgLeftOffset += cutOffBg;

@@ -39,7 +39,7 @@ public:
     static std::string getNullTermTextFromVec(std::vector<uint8_t> &bytes, uint32_t location);
     static std::string getFixedTextFromVec(std::vector<uint8_t> &bytes, uint32_t location, uint32_t length);
     static QColor getColorFromBytes(uint8_t firstByte, uint8_t secondByte);
-    static MapTileRecordData getCharPreRender(uint16_t tileAttr, BgColorMode bgColorMode = BgColorMode::MODE_16);
+    static MapTileRecordData getMapTileRecordDataFromShort(uint16_t tileAttr, BgColorMode bgColorMode = BgColorMode::MODE_16);
     static void printLevelObject(LevelObject lo);
     static std::vector<uint8_t> compileObject(LevelObject lo);
     static std::vector<uint8_t> stringToVector(std::string &inputString);
