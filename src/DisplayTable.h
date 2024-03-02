@@ -60,6 +60,12 @@ public:
     void wipeObject(uint32_t uuid);
     void selectItemByUuid(uint32_t uuid);
     void moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY);
+    /// @brief This both updates the grid as well as updates the MapData
+    /// @param row Y location on grid and MapData
+    /// @param column X location on grid and MapData
+    /// @param pren BG Map tile data struct
+    /// @return true if place successful, false if failed
+    bool placeNewTileOnMap(int row, int column, ChartilePreRenderData pren);
 private:
     const static int CELL_SIZE_PX = 8;
     const static int CELL_COUNT_W = 0xff*4;
