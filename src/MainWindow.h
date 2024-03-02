@@ -13,6 +13,7 @@
 #include <QTextLayout>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QCloseEvent>
 
 #include "yidsrom.h"
 #include "DisplayTable.h"
@@ -104,6 +105,8 @@ private:
     void displayTableClicked();
     void displayTableUpdate();
     void selectionWindowUpdate(LevelObject *sprite);
+
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif

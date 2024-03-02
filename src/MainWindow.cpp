@@ -916,3 +916,12 @@ void MainWindow::selectionWindowUpdate(LevelObject *sprite) {
     this->grid->selectedObjects.clear();
     this->grid->selectItemByUuid(sprite->uuid);
 }
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    this->brushWindow->close();
+    this->palettePopup->close();
+    this->chartilesPopup->close();
+    this->levelSelectPopup->close();
+    this->objtilesPopup->close();
+    event->accept();
+}

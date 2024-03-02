@@ -16,7 +16,7 @@
 
 const char* ROM_EXTRACT_DIR = "_nds_unpack";
 const char* NDSTOOL_PATH = "lib/ndstool";
-const char* NDSTOOL_PATH_WIN = "lib\\ndstool";
+const char* NDSTOOL_PATH_WIN = "lib\\ndstool.exe";
 
 /**
  * @brief Modifies the file in place with Backwards Decompression (BLZ)
