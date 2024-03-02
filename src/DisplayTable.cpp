@@ -209,25 +209,31 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
             this->setCursor(Qt::CustomCursor);
         }
         // BG Brush hovering
-        this->updateSurrounding(y,x,20);
-        curCell->setData(PixelDelegateData::HOVER_TYPE,HoverType::HOVER_SQUARE);
-        // Top line
-        for (int xTop = 1; xTop < globalSettings.brushW-1; xTop++) {
-            this->setHover(y,x+xTop,HoverType::HOVER_TOP);
-        }
-        for (int yLeft = 1; yLeft < globalSettings.brushH-1; yLeft++) {
-            this->setHover(y+yLeft,x,HoverType::HOVER_LEFT);
-        }
-        for (int yLeft = 1; yLeft < globalSettings.brushH-1; yLeft++) {
-            this->setHover(y+yLeft,x+globalSettings.brushH-1,HoverType::HOVER_RIGHT);
-        }
-        for (int xTop = 1; xTop < globalSettings.brushW-1; xTop++) {
-            this->setHover(y+globalSettings.brushW-1,x+xTop,HoverType::HOVER_BOTTOM);
-        }
+        if (
+            globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
+            globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
+            globalSettings.layerSelectMode == LayerMode::BG3_LAYER
+        ) {
+            this->updateSurrounding(y,x,20);
+            curCell->setData(PixelDelegateData::HOVER_TYPE,HoverType::HOVER_SQUARE);
+ 
+            for (int xTop = 1; xTop < globalSettings.brushW-1; xTop++) {
+                this->setHover(y,x+xTop,HoverType::HOVER_TOP);
+            }
+            for (int yLeft = 1; yLeft < globalSettings.brushH-1; yLeft++) {
+                this->setHover(y+yLeft,x,HoverType::HOVER_LEFT);
+            }
+            for (int yLeft = 1; yLeft < globalSettings.brushH-1; yLeft++) {
+                this->setHover(y+yLeft,x+globalSettings.brushH-1,HoverType::HOVER_RIGHT);
+            }
+            for (int xTop = 1; xTop < globalSettings.brushW-1; xTop++) {
+                this->setHover(y+globalSettings.brushW-1,x+xTop,HoverType::HOVER_BOTTOM);
+            }
 
-        this->setHover(y                        ,x+globalSettings.brushW-1,HoverType::HOVER_TR);
-        this->setHover(y+globalSettings.brushH-1,x+globalSettings.brushW-1,HoverType::HOVER_BR);
-        this->setHover(y+globalSettings.brushH-1,x                        ,HoverType::HOVER_BL);
+            this->setHover(y                        ,x+globalSettings.brushW-1,HoverType::HOVER_TR);
+            this->setHover(y+globalSettings.brushH-1,x+globalSettings.brushW-1,HoverType::HOVER_BR);
+            this->setHover(y+globalSettings.brushH-1,x                        ,HoverType::HOVER_BL);
+        }
     }
 }
 
