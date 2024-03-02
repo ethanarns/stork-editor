@@ -23,52 +23,46 @@ BrushTable::BrushTable(QWidget *parent, YidsRom *rom) {
 
     setItemDelegate(new PixelDelegate);
 
-    this->updateTable(); // TODO: move this elsewhere to avoid issues
+    this->resetTable();
 }
 
-void BrushTable::updateTable() {
-    YUtils::printDebug("updateTable");
+void BrushTable::resetTable() {
+    YUtils::printDebug("resetTable");
     for (int y = 0; y < this->rowCount(); y++) {
         for (int x = 0; x < this->columnCount(); x++) {
             auto potentialExisting = this->item(y,x);
-            if (potentialExisting == nullptr) {
-                QTableWidgetItem *newItem = new QTableWidgetItem();
-                newItem->setData(PixelDelegateData::DRAW_BG1,true);
-                newItem->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
-                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[0]);
-                this->setItem(y,x,newItem);
-            } else {
-
+            if (potentialExisting != nullptr) {
+                delete potentialExisting;
             }
+            QTableWidgetItem *newItem = new QTableWidgetItem();
+            newItem->setData(PixelDelegateData::DRAW_BG1,true);
+            newItem->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
+            this->setItem(y,x,newItem);
         }
     }
 }
 
 void BrushTable::mousePressEvent(QMouseEvent *event) {
-    if (
-        globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
-        globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
-        globalSettings.layerSelectMode == LayerMode::BG3_LAYER)
-    {
-        if (globalSettings.currentTileIndex == 0xffff) {
-            YUtils::printDebug("currentTileIndex is unset",DebugType::WARNING);
-            return;
-        }
-        auto item = this->itemAt(event->pos());
-        if (item == nullptr) {
-            YUtils::printDebug("Failed to get itemAt",DebugType::WARNING);
-            return;
-        }
-        std::cout << "Updating tiles" << std::endl;
-        std::map<uint32_t,Chartile> tilesMap = this->yidsRom->mapData->getScenByBg(2)->getVramChartiles();
-        item->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tilesMap.at(globalSettings.currentTileIndex).tiles);
-        item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[globalSettings.currentPaletteIndex]);
-        item->setData(PixelDelegateData::FLIP_H_BG1,false);
-        item->setData(PixelDelegateData::FLIP_V_BG1,false);
-        item->setData(PixelDelegateData::TILE_ID_BG1,globalSettings.currentTileIndex);
-        item->setData(PixelDelegateData::DRAW_BG1,true);
-        item->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
+    if (globalSettings.currentEditingBackground == 0) {
+        YUtils::printDebug("currentEditingBackground is 0, can't edit",DebugType::WARNING);
+        YUtils::popupAlert("Select which background to edit from the main window dropdown");
         return;
     }
-    QTableWidget::mousePressEvent(event);
+    if (globalSettings.currentTileIndex == 0xffff) {
+        YUtils::printDebug("currentTileIndex is unset (0xffff)",DebugType::WARNING);
+        YUtils::popupAlert("Select a tile and palette from BG Tiles Window");
+        return;
+    }
+    auto item = this->itemAt(event->pos());
+    if (item == nullptr) {
+        YUtils::printDebug("Failed to get itemAt",DebugType::WARNING);
+        return;
+    }
+    std::cout << "Updating tiles" << std::endl;
+    std::map<uint32_t,Chartile> tilesMap = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground)->getVramChartiles();
+    item->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tilesMap.at(globalSettings.currentTileIndex).tiles);
+    item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[globalSettings.currentPaletteIndex]);
+    item->setData(PixelDelegateData::FLIP_H_BG1,false);
+    item->setData(PixelDelegateData::FLIP_V_BG1,false);
+    item->setData(PixelDelegateData::TILE_ID_BG1,globalSettings.currentTileIndex);
 }

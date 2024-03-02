@@ -9,7 +9,7 @@ class BrushTable : public QTableWidget {
     Q_OBJECT
 public:
     BrushTable(QWidget *parent, YidsRom* rom);
-    void updateTable();
+    void resetTable();
 protected:
     void mousePressEvent(QMouseEvent *event) override;
 private:

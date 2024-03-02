@@ -636,36 +636,43 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
     std::stringstream ss;
     this->grid->setDragEnabled(false);
     this->grid->setDragDropMode(QAbstractItemView::NoDragDrop);
+    globalSettings.currentTileIndex = 0xffff; // Any change in layer resets the tile index
     ss << "Layer selected: ";
     if (str.compare("BG1") == 0) {
         globalSettings.layerSelectMode = LayerMode::BG1_LAYER;
+        globalSettings.currentEditingBackground = 1;
         ss << "BG1";
         this->chartilesTable->refreshLoadedMapTilesMap(1);
         this->chartilesPopup->setWindowTitle("BG1 Tiles");
     } else if (str.compare("BG2") == 0) {
         globalSettings.layerSelectMode = LayerMode::BG2_LAYER;
+        globalSettings.currentEditingBackground = 2;
         ss << "BG2";
         this->chartilesTable->refreshLoadedMapTilesMap(2);
         this->chartilesPopup->setWindowTitle("BG2 Tiles");
     } else if (str.compare("BG3") == 0) {
         globalSettings.layerSelectMode = LayerMode::BG3_LAYER;
+        globalSettings.currentEditingBackground = 3;
         ss << "BG3";
         this->chartilesTable->refreshLoadedMapTilesMap(3);
         this->chartilesPopup->setWindowTitle("BG3 Tiles");
     } else if (str.compare("Sprites") == 0) {
         globalSettings.layerSelectMode = LayerMode::SPRITES_LAYER;
+        globalSettings.currentEditingBackground = 0;
         this->grid->setDragEnabled(true);
         this->grid->setDragDropMode(QAbstractItemView::DragDrop);
         ss << "Sprites";
         // Do not use chartilesPopup
     } else if (str.compare("Colliders") == 0) {
         globalSettings.layerSelectMode = LayerMode::COLLISION_LAYER;
+        globalSettings.currentEditingBackground = 0;
         ss << "Colliders";
     } else {
         std::stringstream ssLayerSelect;
         ssLayerSelect << "Unknown layer selected in dropdown: ";
         ssLayerSelect << strToCompare;
         YUtils::printDebug(ssLayerSelect.str(),DebugType::ERROR);
+        globalSettings.currentEditingBackground = 0;
         return;
     }
     YUtils::printDebug(ss.str(),DebugType::VERBOSE);
