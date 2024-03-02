@@ -10,8 +10,10 @@ class BrushTable : public QTableWidget {
 public:
     BrushTable(QWidget *parent, YidsRom* rom);
     void updateTable();
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
 private:
     YidsRom* yidsRom;
-    const static int CELL_SIZE_PX = 8;
+    const static int CELL_SIZE_PX = 32;
     const static int CELL_COUNT_DIMS = 12;
 };

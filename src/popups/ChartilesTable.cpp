@@ -41,7 +41,7 @@ void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
     } else if (whichBg == 2) {
         tilesMap = this->yidsRom->mapData->getScenByBg(2)->getVramChartiles();
     } else {
-        tilesMap = this->yidsRom->mapData->getScenByBg(3)->getVramChartiles();;
+        tilesMap = this->yidsRom->mapData->getScenByBg(3)->getVramChartiles();
     }
     uint32_t mapSize = tilesMap.size();
     this->setRowCount((mapSize / 16)+1);
@@ -101,5 +101,6 @@ void ChartilesTable::chartilesTableClicked(int row, int column) {
         std::cout << "Tile ID: 0x" << std::hex << tileId << std::endl;
         std::vector<uint8_t> printableArray(tileArray.begin(), tileArray.end());
         YUtils::printVector(printableArray);
+        globalSettings.currentTileIndex = tileId;
     }
 }
