@@ -51,10 +51,10 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
  * 
  * @param x X Position of tile
  * @param y Y Position of tile
- * @param pren ChartilePreRenderData
+ * @param pren MapTileRecordData
  * @param whichBg which background to draw to
  */
-void DisplayTable::putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren, uint16_t whichBg) {
+void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, uint16_t whichBg) {
     if (whichBg == 0 || whichBg > 3) {
         std::stringstream ssBadBg;
         ssBadBg << "Invalid BG put index: " << whichBg;
@@ -710,7 +710,7 @@ void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
     this->selectItemByUuid(uuid);
 }
 
-bool DisplayTable::placeNewTileOnMap(int row, int column, ChartilePreRenderData pren) {
+bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData pren) {
     //YUtils::printDebug("placeNewTileOnMap()");
     if (row < 0 || row > this->rowCount()-1) {
         YUtils::printDebug("placeNewTileOnMap row out of bounds",DebugType::VERBOSE);
@@ -742,12 +742,6 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, ChartilePreRenderData 
     auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground,false);
     if (scen == nullptr) {
         YUtils::printDebug("SCEN for this BG is nullptr, skipping",DebugType::WARNING);
-        return false;
-    }
-    // TODO
-    if (scen->hasAnmzChartiles) {
-        YUtils::printDebug("ANMZ-containing layers not yet supported",DebugType::WARNING);
-        YUtils::popupAlert("ANMZ-containing layers not yet supported");
         return false;
     }
     // TODO
@@ -804,20 +798,8 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, ChartilePreRenderData 
     }
     curItem->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
     curItem->setData(PixelDelegateData::HOVER_TYPE,HoverType::NO_HOVER);
-    // Update the map
-    // TODO: Actually, do this later by reading the tiles themselves
-    // scen->clearVramChartilesCache();
-    // if (scen->magicOfChartilesSource == Constants::INFO_MAGIC_NUM) {
-    //     YUtils::printDebug("Updating INFO-IMBZ tile records");
-    //     // TODO
-    // } else if (scen->magicOfChartilesSource == Constants::IMGB_MAGIC_NUM) {
-    //     YUtils::printDebug("Updating IMGB tile records");
-    //     // TODO
-    // } else {
-    //     YUtils::printDebug("Unhandled magic number for chartiles source",DebugType::ERROR);
-    //     YUtils::popupAlert("Unhandled magic number for chartiles source");
-    //     return false;
-    // }
+    // You are changing the MAP TILES not the pixels you dingus. VRAM is moot
+    // Fuck you really need to get this better organized
     return true;
 }
 
@@ -910,7 +892,7 @@ void DisplayTable::updateBg() {
                     std::cout << "X too big (x vs width): " << std::hex << x << " vs " << std::hex << (canvasWidth-1) << std::endl;
                     continue;
                 }
-                ChartilePreRenderData curPren = YUtils::getCharPreRender(mapTiles.at(preRenderIndex),colorMode);
+                MapTileRecordData curPren = YUtils::getCharPreRender(mapTiles.at(preRenderIndex),colorMode);
                 this->putTileBg(x,y,curPren,bgIndex);
             }
             bgLeftOffset += cutOffBg;

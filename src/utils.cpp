@@ -145,9 +145,9 @@ std::vector<uint8_t> YUtils::subVector(std::vector<uint8_t> &inVec, uint32_t sta
     return newVec;
 }
 
-ChartilePreRenderData YUtils::getCharPreRender(uint16_t mapTileAttr, BgColorMode bgColorMode) {
+MapTileRecordData YUtils::getCharPreRender(uint16_t mapTileAttr, BgColorMode bgColorMode) {
     Q_UNUSED(bgColorMode);
-    ChartilePreRenderData res;
+    MapTileRecordData res;
     res.tileAttr = mapTileAttr;
     // See: http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
     res.flipV = ((mapTileAttr >> 11) % 2) == 1;

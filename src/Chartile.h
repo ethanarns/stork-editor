@@ -23,7 +23,7 @@ struct Chartile {
 
 /// @brief This is a breaking-up of the 2 byte MPBZ data records
 /// @note http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
-struct ChartilePreRenderData {
+struct MapTileRecordData {
     /// @brief Points to a certain Chartile in the VRAM
     uint32_t tileId;
     /// @brief Which color palette to use when rendering the tile
@@ -35,7 +35,7 @@ struct ChartilePreRenderData {
     uint16_t tileAttr;
     std::string toString() {
         std::stringstream ssChartilePreRend;
-        ssChartilePreRend << "ChartilePreRenderData { tileId: 0x" << std::hex << this->tileId;
+        ssChartilePreRend << "MapTileRecordData { tileId: 0x" << std::hex << this->tileId;
         ssChartilePreRend << ", tileAttr (debug): 0x" << std::hex << this->tileAttr;
         ssChartilePreRend << ", tileAttr (compile): 0x" << std::hex << this->compile();
         ssChartilePreRend << ", paletteId: 0x" << std::hex << (uint16_t)this->paletteId;

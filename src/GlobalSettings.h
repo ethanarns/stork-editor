@@ -13,7 +13,7 @@ enum LayerMode {
 };
 
 struct TileBrush {
-    std::vector<ChartilePreRenderData> tileAttrs;
+    std::vector<MapTileRecordData> tileAttrs;
     const static int BRUSH_DIMS = 16;
 };
 

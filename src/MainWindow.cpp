@@ -47,7 +47,7 @@ MainWindow::MainWindow() {
 
     // Set up settings
     globalSettings.currentBrush = new TileBrush();
-    globalSettings.currentBrush->tileAttrs = std::vector<ChartilePreRenderData>();
+    globalSettings.currentBrush->tileAttrs = std::vector<MapTileRecordData>();
     globalSettings.brushes.push_back(globalSettings.currentBrush);
     globalSettings.layerSelectMode = LayerMode::SPRITES_LAYER;
 

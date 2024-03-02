@@ -48,7 +48,7 @@ void BrushTable::loadTilesToCurBrush() {
     for (int y = 0; y < this->rowCount(); y++) {
         for (int x = 0; x < this->columnCount(); x++) {
             auto item = this->item(y,x);
-            ChartilePreRenderData pren;
+            MapTileRecordData pren;
             if (item != nullptr) {
                 pren.tileId = item->data(PixelDelegateData::TILE_ID_BG1).toUInt();
                 pren.paletteId = (uint8_t)item->data(PixelDelegateData::PALETTE_ID_BG1).toUInt();

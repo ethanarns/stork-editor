@@ -34,7 +34,7 @@ public:
     bool firstLayerDrawDone = false;
 
     DisplayTable(QWidget *parent, YidsRom* rom);
-    void putTileBg(uint32_t x, uint32_t y, ChartilePreRenderData &pren, uint16_t whichBg);
+    void putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, uint16_t whichBg);
     void placeObjectTile(
         uint32_t x, uint32_t y,
         uint32_t objectOffset,
@@ -65,7 +65,7 @@ public:
     /// @param column X location on grid and MapData
     /// @param pren BG Map tile data struct
     /// @return true if place successful, false if failed
-    bool placeNewTileOnMap(int row, int column, ChartilePreRenderData pren);
+    bool placeNewTileOnMap(int row, int column, MapTileRecordData pren);
 private:
     const static int CELL_SIZE_PX = 8;
     const static int CELL_COUNT_W = 0xff*4;
