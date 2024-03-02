@@ -206,7 +206,7 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
         if (curCell->isSelected() && globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
             this->setCursor(Qt::OpenHandCursor);
         } else {
-            this->setCursor(Qt::CustomCursor);
+            this->setCursor(Qt::CrossCursor);
         }
         // BG Brush hovering
         if (
@@ -244,7 +244,16 @@ void DisplayTable::printCellDebug(QTableWidgetItem *item, uint whichBg) {
         return;
     }
     if (whichBg == 1) {
-
+        if (!item->data(PixelDelegateData::PIXEL_ARRAY_BG1).isNull()) {
+            auto tileAttr = item->data(PixelDelegateData::TILEATTR_BG1).toUInt();
+            YUtils::printDebug(YUtils::getCharPreRender(tileAttr).toString());
+            auto pixArray2 = item->data(PixelDelegateData::PIXEL_ARRAY_BG1).toByteArray();
+            YUtils::printDebug("Pixel Array for BG 1:",DebugType::VERBOSE);
+            YUtils::printQbyte(pixArray2);
+            YUtils::printDebug("Palette for BG 1:",DebugType::VERBOSE);
+            auto pal = item->data(PixelDelegateData::PALETTE_ARRAY_BG1).toByteArray();
+            YUtils::printQbyte(pal);
+        }
     } else if (whichBg == 2) {
         if (!item->data(PixelDelegateData::PIXEL_ARRAY_BG2).isNull()) {
             auto tileAttr = item->data(PixelDelegateData::TILEATTR_BG2).toUInt();
@@ -257,7 +266,16 @@ void DisplayTable::printCellDebug(QTableWidgetItem *item, uint whichBg) {
             YUtils::printQbyte(pal);
         }
     } else if (whichBg == 3) {
-
+        if (!item->data(PixelDelegateData::PIXEL_ARRAY_BG3).isNull()) {
+            auto tileAttr = item->data(PixelDelegateData::TILEATTR_BG3).toUInt();
+            YUtils::printDebug(YUtils::getCharPreRender(tileAttr).toString());
+            auto pixArray2 = item->data(PixelDelegateData::PIXEL_ARRAY_BG3).toByteArray();
+            YUtils::printDebug("Pixel Array for BG 3:",DebugType::VERBOSE);
+            YUtils::printQbyte(pixArray2);
+            YUtils::printDebug("Palette for BG 3:",DebugType::VERBOSE);
+            auto pal = item->data(PixelDelegateData::PALETTE_ARRAY_BG3).toByteArray();
+            YUtils::printQbyte(pal);
+        }
     } else {
         YUtils::printDebug("Unknown BG to debug",DebugType::ERROR);
     }
@@ -402,6 +420,8 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
         } else {
             YUtils::printDebug("If this is hit, you seriously messed something up",DebugType::ERROR);
         }
+        // Now, PLACE TILES!!
+        // todo lol
         return;
     } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
         auto curItemUnderCursor = this->itemAt(event->pos());
