@@ -228,6 +228,8 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
             ssSubNotFound << "Unknown MPDZ data: ";
             ssSubNotFound << std::hex << subMagic;
             YUtils::printDebug(ssSubNotFound.str(),DebugType::WARNING);
+            ssSubNotFound << ", saving the level may corrupt it!";
+            YUtils::popupAlert(ssSubNotFound.str());
             mpdzIndex += subLength;
         }
         if (mpdzIndex != idealStop) {

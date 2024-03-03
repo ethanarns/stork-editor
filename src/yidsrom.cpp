@@ -337,6 +337,11 @@ std::vector<uint8_t> YidsRom::getByteVectorFromFile(std::string fileName) {
     std::string UNPACKED_FILE_LOCATION = "_nds_unpack/data/file/";
     fileName = UNPACKED_FILE_LOCATION.append(fileName);
     std::ifstream inputFile{fileName, std::ios::binary};
+    if (!inputFile) {
+        YUtils::printDebug("getByteVectorFromFile failed",DebugType::FATAL);
+        YUtils::popupAlert("Failed to get byte vector from file");
+        exit(EXIT_FAILURE);
+    }
     std::copy(
         std::istreambuf_iterator<char>(inputFile),
         std::istreambuf_iterator<char>(),

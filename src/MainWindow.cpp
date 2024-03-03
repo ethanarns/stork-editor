@@ -749,8 +749,8 @@ void MainWindow::buttonClick_levelSelect_load() {
     ssLevelLoad << "Loading CRSB (Level) '" << loadingCrsb << "'";
     YUtils::printDebug(ssLevelLoad.str(),DebugType::VERBOSE);
 
-    auto fileNameCrsb_noext = YUtils::getLowercase(loadingCrsb);
-    auto crsbFilename = fileNameCrsb_noext.append(".crsb");
+    //auto fileNameCrsb_noext = YUtils::getLowercase(loadingCrsb); // Fixed 5-SP_E.crsb
+    auto crsbFilename = loadingCrsb.append(".crsb");
     auto crsbFileVector = this->rom->getByteVectorFromFile(crsbFilename);
     auto crsbData = new LevelSelectData(crsbFileVector);
 

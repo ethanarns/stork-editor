@@ -9,6 +9,11 @@
 // CRSB, go over this again at some point
 LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
     //std::cout << "LevelSelectData" << std::endl;
+    if (crsbBytes.size() == 0) {
+        YUtils::printDebug("CRSB size was 0",DebugType::FATAL);
+        YUtils::popupAlert("LevelSelectData size was 0");
+        exit(EXIT_FAILURE);
+    }
     uint32_t crsbIndex = 0;
     auto magic = YUtils::getUint32FromVec(crsbBytes,crsbIndex);
     crsbIndex += 4;
