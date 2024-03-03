@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <vector>
 
-#include "PixelDelegate.h"
 #include "PixelDelegateEnums.h"
 
 enum LayerMode {

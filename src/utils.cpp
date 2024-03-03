@@ -437,7 +437,7 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
     // Defaults
     result.prettyName = "UNKNOWN";
     result.colType = CollisionType::NONE;
-    result.preview = CollisionDraw::CLEAR;
+    result.preview = CollisionDraw::SQERR;
     switch (colType) {
         case CollisionType::NONE: {
             result.prettyName = "Clear/Erase";
@@ -450,13 +450,39 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
             break;
         }
         case CollisionType::PLATFORM_PASSABLE: {
-            result.prettyName = "Upwards Passable Platform";
+            result.prettyName = "Upwards Passable";
             result.preview = CollisionDraw::ZIG_ZAG;
+            break;
+        }
+        case CollisionType::UP_RIGHT_30: {
+            result.prettyName = "Up Right 30 1";
+            result.preview = CollisionDraw::UP_RIGHT_30_BL;
+            break;
+        }
+        case CollisionType::UP_RIGHT_30_HALFSTART: {
+            result.prettyName = "Up Right 30 2";
+            result.preview = CollisionDraw::UP_RIGHT_30_BR;
+            break;
+        }
+        case CollisionType::UP_RIGHT_STEEP_1: {
+            result.prettyName = "Up Right Steep 1";
+            result.preview = CollisionDraw::UP_RIGHT_STEEP_SHORT;
+            break;
+        }
+        case CollisionType::UP_RIGHT_STEEP_2: {
+            result.prettyName = "Up Right Steep 2";
+            result.preview = CollisionDraw::UP_RIGHT_STEEP_TALL;
             break;
         }
         case CollisionType::STATIC_COIN: {
             result.prettyName = "Static Coin";
-            result.preview = CollisionDraw::COIN_TOP_LEFT;
+            // This could be better... Currently clear, but top right overflows
+            result.preview = CollisionDraw::COIN_BOTTOM_RIGHT;
+            break;
+        }
+        case CollisionType::UP_RIGHT_45: {
+            result.prettyName = "Up Right 45";
+            result.preview = CollisionDraw::DIAG_UP_RIGHT;
             break;
         }
     }

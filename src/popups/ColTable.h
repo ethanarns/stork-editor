@@ -11,4 +11,5 @@ public:
     const static int CELL_PIXEL_DIMS = 32;
 private:
     void updateRow(int row, CollisionType colType);
+    void tableCellClicked(int row, int column);
 };

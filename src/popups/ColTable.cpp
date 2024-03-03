@@ -1,7 +1,9 @@
 #include "ColTable.h"
+
 #include "../PixelDelegate.h"
 #include "../PixelDelegateEnums.h"
 #include "../utils.h"
+#include "../GlobalSettings.h"
 
 #include <iostream>
 
@@ -27,7 +29,8 @@ ColTable::ColTable(QWidget *parent) {
     this->setEditTriggers(QAbstractItemView::NoEditTriggers); // Disable text editing
 
     this->setItemDelegateForColumn(0,new PixelDelegate);
-    
+    connect(this,&QTableWidget::cellClicked,this,&ColTable::tableCellClicked);
+
     for (int row = 0; row < 0xc7; row++) {
         this->updateRow(row,static_cast<CollisionType>(row));
     }
@@ -53,4 +56,9 @@ void ColTable::updateRow(int row, CollisionType colType) {
         this->setItem(row,1,rightItem);
     }
     rightItem->setText(tr(meta.prettyName.c_str()));
+}
+
+void ColTable::tableCellClicked(int row, int column) {
+    Q_UNUSED(column); // We don't care
+    globalSettings.colTypeToDraw = static_cast<CollisionType>(row);
 }

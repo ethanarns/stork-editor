@@ -639,6 +639,11 @@ void DisplayTable::initCellCollision() {
         } else if (curCol == CollisionType::DOWN_RIGHT_STEEP) {
             this->setCellCollision(y  ,x  ,CollisionDraw::DOWN_RIGHT_STEEP_THIN, curCol);
             this->setCellCollision(y+1,x  ,CollisionDraw::DOWN_RIGHT_STEEP_WIDE, curCol);
+        } else if (curCol == CollisionType::NONE) {
+            this->setCellCollision(y,  x,  CollisionDraw::CLEAR, curCol);
+            this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
+            this->setCellCollision(y,  x+1,CollisionDraw::CLEAR, curCol);
+            this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
         } else if (curCol != 0) { // Unknown, draw temp
             this->setCellCollision(y,  x,  CollisionDraw::SQERR, curCol);
             this->setCellCollision(y+1,x,  CollisionDraw::SQERR, curCol);
