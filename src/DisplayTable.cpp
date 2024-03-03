@@ -398,6 +398,7 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                 this->placeNewTileOnMap(yBase+y,xBase+x,tileAttr);
             }
         }
+        emit this->triggerMainWindowUpdate(); // To mark savable
         return;
     } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
         auto curItemUnderCursor = this->itemAt(event->pos());
