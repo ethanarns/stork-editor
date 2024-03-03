@@ -12,7 +12,7 @@
 ColTable::ColTable(QWidget *parent) {
     Q_UNUSED(parent);
     this->setColumnCount(2);
-    this->setRowCount(1);
+    this->setRowCount(0xc7); // Highest known so far
 
     this->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
     this->horizontalHeader()->setMaximumSectionSize(ColTable::CELL_PIXEL_DIMS*1.5);
@@ -27,14 +27,30 @@ ColTable::ColTable(QWidget *parent) {
     this->setEditTriggers(QAbstractItemView::NoEditTriggers); // Disable text editing
 
     this->setItemDelegateForColumn(0,new PixelDelegate);
-
-    for (int row = 0; row < this->rowCount(); row++) {
-        auto curItem = this->item(row,0);
-        if (curItem == nullptr) {
-            curItem = new QTableWidgetItem();
-            this->setItem(row,0,curItem);
-        }
-        curItem->setData(PixelDelegateData::SHOW_COLLISION,true);
-        curItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::SQUARE_DRAW);
+    
+    for (int row = 0; row < 0xc7; row++) {
+        this->updateRow(row,static_cast<CollisionType>(row));
     }
+}
+
+void ColTable::updateRow(int row, CollisionType colType) {
+    if (row >= this->rowCount()) {
+        this->setRowCount(row+1);
+    }
+    auto meta = YUtils::getCollisionMetadata(colType);
+    // Update draw
+    auto leftItem = this->item(row,0);
+    if (leftItem == nullptr) {
+        leftItem = new QTableWidgetItem();
+        this->setItem(row,0,leftItem);
+    }
+    leftItem->setData(PixelDelegateData::SHOW_COLLISION,true);
+    leftItem->setData(PixelDelegateData::COLLISION_DRAW,meta.preview);
+    // Update text
+    auto rightItem = this->item(row,1);
+    if (rightItem == nullptr) {
+        rightItem = new QTableWidgetItem();
+        this->setItem(row,1,rightItem);
+    }
+    rightItem->setText(tr(meta.prettyName.c_str()));
 }

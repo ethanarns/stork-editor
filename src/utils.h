@@ -4,6 +4,7 @@
 #include "Chartile.h"
 #include "constants.h"
 #include "LevelObject.h"
+#include "PixelDelegateEnums.h"
 
 #include <string>
 #include <vector>
@@ -60,6 +61,8 @@ public:
     static void printDebug(std::string msg, DebugType dt = DebugType::VERBOSE);
     static void printQbyte(QByteArray& qb, int newlineBreak = 0x10);
     static void popupAlert(std::string msg);
+
+    static CollisionMetadata getCollisionMetadata(CollisionType colType);
 };
 
 #endif

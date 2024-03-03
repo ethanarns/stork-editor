@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 enum HoverType {
     NO_HOVER,
     HOVER_SQUARE,
@@ -123,4 +125,10 @@ enum CollisionDraw {
     DOWN_RIGHT_STEEP_THIN,
     DOWN_RIGHT_STEEP_WIDE,
     SQERR
+};
+
+struct CollisionMetadata {
+    CollisionType colType;
+    CollisionDraw preview;
+    std::string prettyName;
 };

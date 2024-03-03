@@ -1,6 +1,7 @@
 #include "utils.h"
 #include "constants.h"
 #include "Chartile.h"
+#include "PixelDelegateEnums.h"
 
 // std::cerr, std::endl, std::ios
 #include <iostream>
@@ -429,6 +430,37 @@ void YUtils::popupAlert(std::string msg) {
         "Stork Editor",
         msg.c_str()
     );
+}
+
+CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
+    CollisionMetadata result;
+    // Defaults
+    result.prettyName = "UNKNOWN";
+    result.colType = CollisionType::NONE;
+    result.preview = CollisionDraw::CLEAR;
+    switch (colType) {
+        case CollisionType::NONE: {
+            result.prettyName = "Clear/Erase";
+            result.preview = CollisionDraw::CLEAR;
+            break;
+        }
+        case CollisionType::SQUARE: {
+            result.prettyName = "Solid Square";
+            result.preview = CollisionDraw::SQUARE_DRAW;
+            break;
+        }
+        case CollisionType::PLATFORM_PASSABLE: {
+            result.prettyName = "Upwards Passable Platform";
+            result.preview = CollisionDraw::ZIG_ZAG;
+            break;
+        }
+        case CollisionType::STATIC_COIN: {
+            result.prettyName = "Static Coin";
+            result.preview = CollisionDraw::COIN_TOP_LEFT;
+            break;
+        }
+    }
+    return result;
 }
 
 std::string YUtils::relativeToEscapedAbs(std::string relPath) {
