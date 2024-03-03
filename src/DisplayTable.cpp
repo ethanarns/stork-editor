@@ -179,6 +179,21 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
             this->setHover(y                        ,x+globalSettings.brushW-1,HoverType::HOVER_TR);
             this->setHover(y+globalSettings.brushH-1,x+globalSettings.brushW-1,HoverType::HOVER_BR);
             this->setHover(y+globalSettings.brushH-1,x                        ,HoverType::HOVER_BL);
+        } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
+            this->updateSurrounding(y,x,100);
+            // Round down
+            int roundDownRowY = y;
+            if (roundDownRowY % 2 != 0) { // Odd
+                roundDownRowY--;
+            }
+            int roundDownColX = x;
+            if  (roundDownColX % 2 != 0) { // Odd
+                roundDownColX--;
+            }
+            this->setHover(roundDownRowY+0,roundDownColX+0,HoverType::HOVER_SQUARE);
+            this->setHover(roundDownRowY+1,roundDownColX+0,HoverType::HOVER_BL);
+            this->setHover(roundDownRowY+0,roundDownColX+1,HoverType::HOVER_TR);
+            this->setHover(roundDownRowY+1,roundDownColX+1,HoverType::HOVER_BR);
         }
     }
 }
