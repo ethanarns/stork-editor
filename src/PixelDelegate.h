@@ -13,7 +13,8 @@ enum HoverType {
     HOVER_BOTTOM,
     HOVER_BR,
     HOVER_TR,
-    HOVER_BL
+    HOVER_BL,
+    HOVER_TL
 };
 
 enum PixelDelegateData {

@@ -190,7 +190,7 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
             if  (roundDownColX % 2 != 0) { // Odd
                 roundDownColX--;
             }
-            this->setHover(roundDownRowY+0,roundDownColX+0,HoverType::HOVER_SQUARE);
+            this->setHover(roundDownRowY+0,roundDownColX+0,HoverType::HOVER_TL);
             this->setHover(roundDownRowY+1,roundDownColX+0,HoverType::HOVER_BL);
             this->setHover(roundDownRowY+0,roundDownColX+1,HoverType::HOVER_TR);
             this->setHover(roundDownRowY+1,roundDownColX+1,HoverType::HOVER_BR);
