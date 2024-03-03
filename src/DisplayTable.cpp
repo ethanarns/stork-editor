@@ -160,25 +160,30 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
     if (curCell == nullptr) {
         return;
     } else {
-        if (curCell->isSelected() && globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
-            this->setCursor(Qt::OpenHandCursor);
-        } else {
-            this->setCursor(Qt::CrossCursor);
-        }
         // BG Brush hovering
         if (
             globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
             globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
             globalSettings.layerSelectMode == LayerMode::BG3_LAYER
         ) {
+            // Round down
+            int roundDownRowY = y;
+            if (roundDownRowY % 2 != 0) { // Odd
+                roundDownRowY--;
+            }
+            int roundDownColX = x;
+            if  (roundDownColX % 2 != 0) { // Odd
+                roundDownColX--;
+            }
+            // Clear surroundings
             this->updateSurrounding(y,x,100);
             curCell->setData(PixelDelegateData::HOVER_TYPE,HoverType::HOVER_SQUARE);
  
             // TODO: edges?
 
-            this->setHover(y                        ,x+globalSettings.brushW-1,HoverType::HOVER_TR);
-            this->setHover(y+globalSettings.brushH-1,x+globalSettings.brushW-1,HoverType::HOVER_BR);
-            this->setHover(y+globalSettings.brushH-1,x                        ,HoverType::HOVER_BL);
+            this->setHover(roundDownRowY                        ,roundDownColX+globalSettings.brushW-1,HoverType::HOVER_TR);
+            this->setHover(roundDownRowY+globalSettings.brushH-1,roundDownColX+globalSettings.brushW-1,HoverType::HOVER_BR);
+            this->setHover(roundDownRowY+globalSettings.brushH-1,roundDownColX                        ,HoverType::HOVER_BL);
         } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
             this->updateSurrounding(y,x,100);
             // Round down
@@ -194,6 +199,12 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
             this->setHover(roundDownRowY+1,roundDownColX+0,HoverType::HOVER_BL);
             this->setHover(roundDownRowY+0,roundDownColX+1,HoverType::HOVER_TR);
             this->setHover(roundDownRowY+1,roundDownColX+1,HoverType::HOVER_BR);
+        } else if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
+            if (curCell->isSelected()) {
+                this->setCursor(Qt::OpenHandCursor);
+            } else {
+                this->setCursor(Qt::CrossCursor);
+            }
         }
     }
 }
@@ -397,8 +408,16 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
             YUtils::popupAlert("Brush tiles size unusual");
             return;
         }
-        const uint32_t yBase = curItemUnderCursor->row();
-        const uint32_t xBase = curItemUnderCursor->column();
+        uint32_t yBase = curItemUnderCursor->row();
+        uint32_t xBase = curItemUnderCursor->column();
+        // Round down (TODO add a disable toggle in options?)
+        if (yBase % 2 != 0) { // Odd
+            yBase--;
+        }
+        if  (xBase % 2 != 0) { // Odd
+            xBase--;
+        }
+        
         // Do tile placement loop
         for (int y = 0; y < BrushTable::CELL_COUNT_DIMS; y++) {
             for (int x = 0; x < BrushTable::CELL_COUNT_DIMS; x++) {
