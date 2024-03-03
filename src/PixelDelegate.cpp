@@ -495,7 +495,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             case HoverType::HOVER_BR: {
                 // Bottom line
                 painter->drawLine(
-                    option.rect.x()+1,     option.rect.y()+option.rect.width()-1,
+                    option.rect.x()+1,                     option.rect.y()+option.rect.width()-1,
                     option.rect.x()+option.rect.height()-1,option.rect.y()+option.rect.width()-1
                 );
                 // Right line
@@ -508,8 +508,8 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             case HoverType::HOVER_TR: {
                 // Top line
                 painter->drawLine(
-                    option.rect.x()+1,                      option.rect.y()+1,
-                    option.rect.x()+option.rect.width()-1,  option.rect.y()+1
+                    option.rect.x()+1,                    option.rect.y()+1,
+                    option.rect.x()+option.rect.width()-1,option.rect.y()+1
                 );
                 // Right line
                 painter->drawLine(
@@ -521,11 +521,14 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             case HoverType::HOVER_BL: {
                 // Bottom line
                 painter->drawLine(
-                    option.rect.x()+1                     , option.rect.y()+option.rect.height()-1,
-                    option.rect.x()+option.rect.width()-1, option.rect.y()+option.rect.height()-1
+                    option.rect.x()+1,                    option.rect.y()+option.rect.height()-1,
+                    option.rect.x()+option.rect.width()-1,option.rect.y()+option.rect.height()-1
                 );
                 // Left
-                painter->drawLine(option.rect.x()+1,option.rect.y()+1,option.rect.x()+1,option.rect.y()+option.rect.width()-1);
+                painter->drawLine(
+                    option.rect.x()+1,option.rect.y()+1,
+                    option.rect.x()+1,option.rect.y()+option.rect.width()-1
+                );
                 break;
             }
             case HoverType::HOVER_RIGHT: {
