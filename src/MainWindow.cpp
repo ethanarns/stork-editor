@@ -14,7 +14,6 @@
 #include "popups/PaletteTable.h"
 #include "utils.h"
 #include "DisplayTable.h"
-#include "compression.h"
 #include "GuiObjectList.h"
 #include "data/LevelSelectData.h"
 
@@ -910,6 +909,7 @@ void MainWindow::displayTableClicked() {
 }
 
 void MainWindow::displayTableUpdate(){
+    this->markSavableUpdate();
     auto selectedObjects = this->grid->selectedObjects;
     if (selectedObjects.size() < 1) {
         YUtils::printDebug("No objects selected",DebugType::VERBOSE);
@@ -927,7 +927,6 @@ void MainWindow::displayTableUpdate(){
     }
     this->selectionInfoTable->updateWithLevelObject(lo);
     this->guiObjectList->updateList();
-    this->markSavableUpdate();
 }
 
 void MainWindow::selectionWindowUpdate(LevelObject *sprite) {

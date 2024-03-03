@@ -16,7 +16,7 @@
 // A single drawn tile is 8x8
 const int PIXEL_TILE_DIVISIONS = 8;
 const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
-const QColor selectionColor(255,0,0,50);
+//const QColor selectionColor(255,0,0,50);
 const QColor hardSelectionColor(255,255,255,100);
 QImage COIN_IMAGE(":/assets/coin.png");
 
@@ -199,8 +199,9 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         } else {
             std::stringstream ssBgOrderFail;
             ssBgOrderFail << "Unknown whichBgToDraw in PixelDelegate: 0x" << std::hex << (uint16_t)whichBgToDraw;
-            YUtils::printDebug(ssBgOrderFail.str(),DebugType::FATAL);
-            exit(EXIT_FAILURE);
+            YUtils::printDebug(ssBgOrderFail.str(),DebugType::WARNING);
+            YUtils::printQbyte(layerDrawOrder);
+            return;
         }
     }
 
