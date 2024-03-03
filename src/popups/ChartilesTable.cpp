@@ -33,6 +33,10 @@ ChartilesTable::ChartilesTable(QWidget* parent, YidsRom* rom) {
 }
 
 void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
+    if (this->yidsRom->mapData == nullptr) {
+        YUtils::printDebug("refreshLoadedMapTilesMap: mapData is null",DebugType::WARNING);
+        return;
+    }
     this->whichBgLoaded = whichBg;
     this->wipeTiles();
     std::map<uint32_t,Chartile> tilesMap;
