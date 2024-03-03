@@ -267,6 +267,12 @@ MainWindow::MainWindow() {
     this->button_showSpritePreview->setDisabled(true);
     connect(this->button_showSpritePreview,&QAction::triggered, this, &MainWindow::toolbarClick_spritePreview);
 
+    QPixmap iconBrushWindowShow(":/assets/icon_brushwindow.png");
+    this->button_iconBrush = toolbar->addAction(QIcon(iconBrushWindowShow), tr("Open BG Tile Brush window"));
+    this->button_iconBrush->setObjectName("button_brushWindow");
+    this->button_iconBrush->setDisabled(true);
+    connect(this->button_iconBrush,&QAction::triggered, this,&MainWindow::toolbarClick_brush);
+
     toolbar->addSeparator();
 
     QPixmap iconCollisionShow(":/assets/icon_collision.png");
@@ -550,7 +556,7 @@ void MainWindow::LoadRom() {
         this->button_showSpritePreview->setDisabled(false);
 
         // Brush popup //
-        this->brushWindow->show();
+        this->button_iconBrush->setDisabled(false);
 
         // Palette popup //
         this->palettePopup->resize(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH,PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);
@@ -617,6 +623,14 @@ void MainWindow::toolbarClick_spritePreview() {
         this->objtilesPopup->close();
     } else {
         this->objtilesPopup->show();
+    }
+}
+
+void MainWindow::toolbarClick_brush() {
+    if (this->brushWindow->isVisible()) {
+        this->brushWindow->close();
+    } else {
+        this->brushWindow->show();
     }
 }
 
