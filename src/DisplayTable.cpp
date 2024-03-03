@@ -409,6 +409,22 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
         }
         auto colData = curItemUnderCursor->data(PixelDelegateData::COLLISION_DEBUG).toInt();
         std::cout << "Collision data: 0x" << std::hex << colData << std::endl;
+        // Get scen data TODO MAKE THIS LAYER AGNOSTIC
+        auto scen = this->yidsRom->mapData->getScenByBg(2,true);
+        if (scen == nullptr) {
+            YUtils::printDebug("Layer is null",DebugType::WARNING);
+            YUtils::popupAlert("Layer is null");
+            return;
+        }
+        auto collisionData = this->yidsRom->mapData->getCollisionData();
+        // Coll is in 2x2 segments
+        uint32_t layerWidth = scen->getInfo()->layerWidth / 2;
+        uint32_t colX = curItemUnderCursor->column() / 2;
+        uint32_t rowY = curItemUnderCursor->row() / 2;
+        uint32_t posInColArray = colX + (rowY * layerWidth);
+        collisionData->colData.at(posInColArray) = globalSettings.colTypeToDraw;
+        this->initCellCollision();
+        emit this->triggerMainWindowUpdate();
         return;
     }
     QTableWidget::mousePressEvent(event);
@@ -503,14 +519,15 @@ void DisplayTable::initCellCollision() {
         return;
     }
     const uint32_t cutOff = canvasWidthCol/2;
-    auto collisionTileArray = this->yidsRom->mapData->getCollisionArray();
-    const int CELL_LIST_SIZE = collisionTileArray.size();
+    auto collisionTileArray = this->yidsRom->mapData->getCollisionData();
+    const int CELL_LIST_SIZE = collisionTileArray->colData.size();
     if (CELL_LIST_SIZE < 1) {
         YUtils::printDebug("Collision Tile Array is empty!",DebugType::ERROR);
         return;
     }
+    auto colArray = collisionTileArray->colData;
     for (int colIndex = 0; colIndex < CELL_LIST_SIZE; colIndex++) {
-        const auto curCol = collisionTileArray.at(colIndex);
+        const auto curCol = colArray.at(colIndex);
         uint32_t y = (colIndex / cutOff)*2;
         uint32_t x = (colIndex % cutOff)*2;
         if (curCol == CollisionType::SQUARE) {

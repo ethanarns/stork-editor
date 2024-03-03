@@ -322,18 +322,18 @@ uint32_t MapData::getGreatestCanvasWidth() {
     return greatest;
 }
 
-std::vector<uint8_t> MapData::getCollisionArray() {
+MapCollisionData* MapData::getCollisionData() {
     for (int i = 1; i <= 3; i++) {
         auto possibleScen = this->getScenByBg(i);
         if (possibleScen != nullptr) {
             auto possibleColz = possibleScen->getFirstDataByMagic(Constants::COLZ_MAGIC_NUM,true);
             if (possibleColz != nullptr) {
-                return static_cast<MapCollisionData*>(possibleColz)->colData;
+                return static_cast<MapCollisionData*>(possibleColz);
             }
         }
     }
     YUtils::printDebug("COLZ data not found!",DebugType::ERROR);
-    return std::vector<uint8_t>();
+    return nullptr;
 }
 
 uint32_t MapData::getCollisionCanvasWidth() {

@@ -529,7 +529,8 @@ public:
      * @brief Collision tiles, each taking up a full 16x16 tile. Also handles 
      * static normal coins for some reason
      */
-    std::vector<uint8_t> getCollisionArray();
+    MapCollisionData* getCollisionData();
+
     /**
      * Get the layer width of which SCEN has COLZ data
     */

@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <vector>
 
+#include "PixelDelegate.h"
+
 enum LayerMode {
     BG1_LAYER,
     BG2_LAYER,
@@ -28,6 +30,7 @@ struct GlobalSettings {
     int brushW = 2;
     int brushH = 2;
     LayerMode layerSelectMode;
+    CollisionType colTypeToDraw = CollisionType::SQUARE;
 };
 extern GlobalSettings globalSettings;
 
