@@ -5,6 +5,7 @@
 #include "constants.h"
 #include "LevelObject.h"
 #include "PixelDelegate.h"
+#include "PixelDelegateEnums.h"
 #include "popups/PaletteTable.h"
 #include "Level.h"
 

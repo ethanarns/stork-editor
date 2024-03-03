@@ -28,7 +28,7 @@ src/popups/LevelSelect.h src/Level.h src/FsPacker.h src/InstructionRenderer.h \
 src/GuiObjectList.h src/SelectionInfoTable.h src/data/MapData.h \
 src/data/LevelSelectData.h src/cue_lzss.h src/cue_blz.h \
 src/popups/ObjTilesTable.h src/data/ObjectRenderFile.h src/popups/BrushWindow.h \
-src/popups/BrushTable.h src/popups/ColWindow.h src/popups/ColTable.h
+src/popups/BrushTable.h src/popups/ColWindow.h src/popups/ColTable.h src/PixelDelegateEnums.h
 
 QT += core gui widgets
 

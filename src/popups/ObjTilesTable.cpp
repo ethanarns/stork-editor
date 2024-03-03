@@ -2,6 +2,7 @@
 #include "../yidsrom.h"
 #include "../Chartile.h"
 #include "../PixelDelegate.h"
+#include "../PixelDelegateEnums.h"
 #include "../utils.h"
 #include "../data/ObjectRenderFile.h"
 

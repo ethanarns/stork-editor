@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "PixelDelegate.h"
+#include "PixelDelegateEnums.h"
 
 enum LayerMode {
     BG1_LAYER,

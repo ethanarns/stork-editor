@@ -14,6 +14,7 @@
 #include "constants.h"
 #include "LevelObject.h"
 #include "PixelDelegate.h"
+#include "PixelDelegateEnums.h"
 #include "Level.h"
 
 #include "data/MapData.h"

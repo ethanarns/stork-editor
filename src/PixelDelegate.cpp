@@ -2,6 +2,7 @@
 #define ROMSTRUCTS_H
 
 #include "PixelDelegate.h"
+#include "PixelDelegateEnums.h"
 #include "utils.h"
 
 #include <iostream>

@@ -1,5 +1,6 @@
 #include "DisplayTable.h"
 #include "PixelDelegate.h"
+#include "PixelDelegateEnums.h"
 #include "yidsrom.h"
 #include "utils.h"
 #include "popups/BrushTable.h"

@@ -6,6 +6,7 @@
 #include "Chartile.h"
 #include "yidsrom.h"
 #include "PixelDelegate.h"
+#include "PixelDelegateEnums.h"
 #include "LevelObject.h"
 #include "GlobalSettings.h"
 

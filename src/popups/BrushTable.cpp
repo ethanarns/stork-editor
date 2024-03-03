@@ -1,5 +1,6 @@
 #include "BrushTable.h"
 #include "../PixelDelegate.h"
+#include "../PixelDelegateEnums.h"
 #include "../GlobalSettings.h"
 
 #include <QHeaderView>

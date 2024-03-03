@@ -1,5 +1,6 @@
 #include "ColTable.h"
 #include "../PixelDelegate.h"
+#include "../PixelDelegateEnums.h"
 #include "../utils.h"
 
 #include <iostream>
