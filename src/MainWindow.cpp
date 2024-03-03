@@ -264,6 +264,13 @@ MainWindow::MainWindow() {
     this->button_iconBrush->setDisabled(true);
     connect(this->button_iconBrush,&QAction::triggered, this,&MainWindow::toolbarClick_brush);
 
+    // Collision Window //
+    QPixmap iconColWindowShow(":/assets/collision_edit.png");
+    this->button_colWindow = toolbar->addAction(QIcon(iconColWindowShow), tr("Open Collision Tile window"));
+    this->button_colWindow->setObjectName("button_colWindow");
+    this->button_colWindow->setDisabled(true);
+    connect(this->button_colWindow,&QAction::triggered, this, &MainWindow::toolbarClick_col);
+
     toolbar->addSeparator();
 
     QPixmap iconCollisionShow(":/assets/icon_collision.png");
@@ -287,12 +294,6 @@ MainWindow::MainWindow() {
     connect(this->layerSelectDropdown,&QComboBox::currentTextChanged,this,&MainWindow::toolbarClick_layerSelect);
 
     toolbar->addSeparator();
-
-    /******************************
-     *** CUSTOM TOOLBAR BUTTONS ***
-     ******************************/
-
-    // lol TODO
 
     /**************
      *** LAYOUT ***
@@ -517,6 +518,9 @@ MainWindow::MainWindow() {
     // BrushWindow //
     this->brushWindow = new BrushWindow(this,this->rom);
 
+    // ColWindow //
+    this->colWindow = new ColWindow(this,this->rom);
+
     /*******************
      *** Connections ***
      *******************/
@@ -554,6 +558,9 @@ void MainWindow::LoadRom() {
 
         // Brush popup //
         this->button_iconBrush->setDisabled(false);
+
+        // Col popup //
+        this->button_colWindow->setDisabled(false);
 
         // Palette popup //
         this->palettePopup->resize(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH,PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);
@@ -628,6 +635,14 @@ void MainWindow::toolbarClick_brush() {
         this->brushWindow->close();
     } else {
         this->brushWindow->show();
+    }
+}
+
+void MainWindow::toolbarClick_col() {
+    if (this->colWindow->isVisible()) {
+        this->colWindow->close();
+    } else {
+        this->colWindow->show();
     }
 }
 
@@ -941,5 +956,6 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     this->chartilesPopup->close();
     this->levelSelectPopup->close();
     this->objtilesPopup->close();
+    this->colWindow->close();
     event->accept();
 }
