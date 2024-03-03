@@ -45,7 +45,6 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
 
     this->selectorBand = new QRubberBand(QRubberBand::Rectangle,this);
     this->selectorBand->hide();
-    this->selectorBandOrigin = QPoint(0,0);
 
     QTableWidget::connect(this, &QTableWidget::cellEntered, this, &DisplayTable::cellEnteredTriggered);
     //QTableWidget::connect(this, &QTableWidget::cellClicked, this, &DisplayTable::displayTableClicked);
@@ -353,6 +352,33 @@ void DisplayTable::doBgBrushClick(QTableWidgetItem *curItem) {
     emit this->triggerMainWindowUpdate(); // To mark savable
 }
 
+std::vector<QTableWidgetItem*> DisplayTable::getIntersectedTiles(QRect selectionRect) {
+    std::vector<QTableWidgetItem*> result;
+    if (globalSettings.currentEditingBackground == 0) {
+        YUtils::printDebug("getIntersectedTiles does not support non-bg layers",DebugType::ERROR);
+        YUtils::popupAlert("getIntersectedTiles does not support non-bg layers");
+        return result;
+    }
+    const int ROW_COUNT = this->rowCount();
+    const int COLUMN_COUNT = this->columnCount();
+    for (int row = 0; row < ROW_COUNT; row++) {
+        for (int col = 0; col < COLUMN_COUNT; col++) {
+            auto potentialItem = this->item(row,col);
+            if (potentialItem != nullptr) {
+                auto itemRect = this->visualItemRect(potentialItem);
+                if (selectionRect.intersects(itemRect)) {
+                    result.push_back(potentialItem);
+                }
+            }
+        }
+    }
+    if (result.size() < 1) {
+        YUtils::printDebug("Selection size was 0",DebugType::WARNING);
+        YUtils::popupAlert("Selection size was 0");
+    }
+    return result;
+}
+
 void DisplayTable::mousePressEvent(QMouseEvent *event) {
     if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
         // Something is already selected
@@ -494,25 +520,38 @@ void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
         globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
         globalSettings.layerSelectMode == LayerMode::BG3_LAYER
     ) {
-        bool bandBigEnoughForMultiSelect = false;
-        auto bandWidth = this->selectorBand->width();
-        auto bandHeight = this->selectorBand->height();
-        if (bandWidth > DisplayTable::CELL_SIZE_PX || bandHeight > DisplayTable::CELL_SIZE_PX) {
-            bandBigEnoughForMultiSelect = true;
-        }
-        this->selectorBand->hide();
-
-        if (bandBigEnoughForMultiSelect) {
-            std::cout << "multi select" << std::endl;
-        } else {
-            // Do single
-            auto curItemUnderCursor = this->itemAt(event->pos());
-            if (curItemUnderCursor == nullptr) {
-                YUtils::printDebug("Item under cursor in mouseReleaseEvent for BGX is null", DebugType::ERROR);
-                return;
+        if (event->button() == Qt::LeftButton) {
+            bool bandBigEnoughForMultiSelect = false;
+            auto bandWidth = this->selectorBand->width();
+            auto bandHeight = this->selectorBand->height();
+            if (bandWidth > DisplayTable::CELL_SIZE_PX || bandHeight > DisplayTable::CELL_SIZE_PX) {
+                bandBigEnoughForMultiSelect = true;
             }
-            this->doBgBrushClick(curItemUnderCursor);
+            this->selectorBand->hide();
+
+            if (bandBigEnoughForMultiSelect) {
+                // For some reason QRubberBand's rect() is broken
+                auto bandX = this->selectorBand->x();
+                auto bandY = this->selectorBand->y();
+                QRect rect(bandX,bandY,this->selectorBand->width(),this->selectorBand->height());
+                auto intersectedTiles = this->getIntersectedTiles(rect);
+                std::cout << "tiles selected: 0x" << std::hex << intersectedTiles.size() << std::endl;
+                // TODO: set tiles as selected
+            } else {
+                // Do single
+                auto curItemUnderCursor = this->itemAt(event->pos());
+                if (curItemUnderCursor == nullptr) {
+                    YUtils::printDebug("Item under cursor in mouseReleaseEvent for BGX is null", DebugType::ERROR);
+                    return;
+                }
+                this->doBgBrushClick(curItemUnderCursor);
+            }
+        } else if (event->button() == Qt::RightButton) {
+            std::cout << "Right mouse button release" << std::endl;
+        } else {
+            std::cout << "Unknown mouse button release" << std::endl;
         }
+
     } else {
         QTableWidget::mouseReleaseEvent(event);
     }

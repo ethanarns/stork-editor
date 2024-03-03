@@ -17,6 +17,7 @@
 #include <QByteArray>
 #include <QPoint>
 #include <QRubberBand>
+#include <QRect>
 
 class DisplayTable : public QTableWidget {
     Q_OBJECT
@@ -81,6 +82,7 @@ private:
     void setHover(int row, int column, HoverType hoverType);
 
     void doBgBrushClick(QTableWidgetItem* curItem);
+    std::vector<QTableWidgetItem*> getIntersectedTiles(QRect selectionRect);
 protected:
     QPoint dragStartPosition;
     void mousePressEvent(QMouseEvent *event) override;
