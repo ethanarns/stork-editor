@@ -78,6 +78,8 @@ private:
     QPoint getTopLeftOfSprite(uint32_t levelObjectUuid);
     void updateSurrounding(int row, int column, int distance);
     void setHover(int row, int column, HoverType hoverType);
+
+    void doBgBrushClick(QTableWidgetItem* curItem,QMouseEvent *event);
 protected:
     QPoint dragStartPosition;
     void mousePressEvent(QMouseEvent *event) override;

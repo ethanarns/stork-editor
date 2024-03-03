@@ -307,6 +307,47 @@ void DisplayTable::setHover(int row, int column, HoverType hoverType) {
     }
 }
 
+void DisplayTable::doBgBrushClick(QTableWidgetItem *curItem, QMouseEvent *event) {
+    if (globalSettings.currentBrush == nullptr) {
+        YUtils::printDebug("Brush currently null",DebugType::ERROR);
+        YUtils::popupAlert("Brush currently null");
+        return;
+    }
+    if (globalSettings.currentBrush->tileAttrs.empty()) {
+        YUtils::printDebug("Brush tiles currently empty",DebugType::WARNING);
+        YUtils::popupAlert("Brush tiles currently empty");
+        return;
+    }
+    const uint32_t checkTileAttrsSize = BrushTable::CELL_COUNT_DIMS * BrushTable::CELL_COUNT_DIMS;
+    if (globalSettings.currentBrush->tileAttrs.size() != checkTileAttrsSize) {
+        YUtils::printDebug("Brush tiles size unusual",DebugType::WARNING);
+        YUtils::popupAlert("Brush tiles size unusual");
+        return;
+    }
+    uint32_t yBase = curItem->row();
+    uint32_t xBase = curItem->column();
+    // Round down (TODO add a disable toggle in options?)
+    if (yBase % 2 != 0) { // Odd
+        yBase--;
+    }
+    if  (xBase % 2 != 0) { // Odd
+        xBase--;
+    }
+    
+    // Do tile placement loop
+    for (int y = 0; y < BrushTable::CELL_COUNT_DIMS; y++) {
+        for (int x = 0; x < BrushTable::CELL_COUNT_DIMS; x++) {
+            uint attrPos = x + y*BrushTable::CELL_COUNT_DIMS;
+            auto tileAttr = globalSettings.currentBrush->tileAttrs.at(attrPos);
+            if (tileAttr.compile() == 0) {
+                continue;
+            }
+            this->placeNewTileOnMap(yBase+y,xBase+x,tileAttr);
+        }
+    }
+    emit this->triggerMainWindowUpdate(); // To mark savable
+}
+
 void DisplayTable::mousePressEvent(QMouseEvent *event) {
     if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
         // Something is already selected
@@ -374,6 +415,9 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                 return;
             }
         }
+    /*******************
+     *** BACKGROUNDS ***
+     *******************/
     } else if (
         globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
         globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
@@ -393,44 +437,7 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
         } else {
             YUtils::printDebug("If this is hit, you seriously messed something up",DebugType::ERROR);
         }
-        if (globalSettings.currentBrush == nullptr) {
-            YUtils::printDebug("Brush currently null",DebugType::ERROR);
-            YUtils::popupAlert("Brush currently null");
-            return;
-        }
-        if (globalSettings.currentBrush->tileAttrs.empty()) {
-            YUtils::printDebug("Brush tiles currently empty",DebugType::WARNING);
-            YUtils::popupAlert("Brush tiles currently empty");
-            return;
-        }
-        const uint32_t checkTileAttrsSize = BrushTable::CELL_COUNT_DIMS * BrushTable::CELL_COUNT_DIMS;
-        if (globalSettings.currentBrush->tileAttrs.size() != checkTileAttrsSize) {
-            YUtils::printDebug("Brush tiles size unusual",DebugType::WARNING);
-            YUtils::popupAlert("Brush tiles size unusual");
-            return;
-        }
-        uint32_t yBase = curItemUnderCursor->row();
-        uint32_t xBase = curItemUnderCursor->column();
-        // Round down (TODO add a disable toggle in options?)
-        if (yBase % 2 != 0) { // Odd
-            yBase--;
-        }
-        if  (xBase % 2 != 0) { // Odd
-            xBase--;
-        }
-        
-        // Do tile placement loop
-        for (int y = 0; y < BrushTable::CELL_COUNT_DIMS; y++) {
-            for (int x = 0; x < BrushTable::CELL_COUNT_DIMS; x++) {
-                uint attrPos = x + y*BrushTable::CELL_COUNT_DIMS;
-                auto tileAttr = globalSettings.currentBrush->tileAttrs.at(attrPos);
-                if (tileAttr.compile() == 0) {
-                    continue;
-                }
-                this->placeNewTileOnMap(yBase+y,xBase+x,tileAttr);
-            }
-        }
-        emit this->triggerMainWindowUpdate(); // To mark savable
+        this->doBgBrushClick(curItemUnderCursor,event);
         return;
     } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
         auto curItemUnderCursor = this->itemAt(event->pos());
