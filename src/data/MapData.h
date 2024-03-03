@@ -460,6 +460,7 @@ public:
             auto bottomyVec = YUtils::uint16toVec(bottomy);
             YUtils::appendVector(result,bottomyVec);
         }
+        result = FsPacker::packInstruction(Constants::AREA_MAGIC_NUM,result,false);
         return result;
     }
 
@@ -475,6 +476,19 @@ struct PathSection {
     uint32_t xFine;
     // Y Position starts at, or if last, end Y
     uint32_t yFine;
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        auto angleVec = YUtils::uint16toVec(this->angle);
+        auto distanceVec = YUtils::uint16toVec(this->distance);
+        auto xFineVec = YUtils::uint32toVec(this->xFine);
+        auto yFineVec = YUtils::uint32toVec(this->yFine);
+        YUtils::appendVector(result,angleVec);
+        YUtils::appendVector(result,distanceVec);
+        YUtils::appendVector(result,xFineVec);
+        YUtils::appendVector(result,yFineVec);
+        // do not "pack"
+        return result;
+    };
 };
 
 // PATH
@@ -491,7 +505,17 @@ public:
     std::vector<uint8_t> compile(ScenInfoData &info) {
         Q_UNUSED(info);
         std::vector<uint8_t> result;
-        YUtils::popupAlert("PATH compilation not yet complete!");
+        uint32_t pathCount = this->paths.size();
+        auto pathCountVec = YUtils::uint32toVec(pathCount);
+        YUtils::appendVector(result,pathCountVec);
+        for (uint primaryPathIndex = 0; primaryPathIndex < pathCount; primaryPathIndex++) {
+            uint subPathRecordCount = this->paths.at(primaryPathIndex).size();
+            for (uint subPathIndex = 0; subPathIndex < subPathRecordCount; subPathIndex++) {
+                auto comp = this->paths.at(primaryPathIndex).at(subPathIndex)->compile();
+                YUtils::appendVector(result,comp);
+            }
+        }
+        result = FsPacker::packInstruction(Constants::PATH_MAGIC_NUM,result,false);
         return result;
     }
     std::vector<std::vector<PathSection*>> paths;
