@@ -8,7 +8,11 @@ ColWindow::ColWindow(QWidget *parent, YidsRom *rom) {
     Q_UNUSED(parent);
     this->setWindowTitle(tr("Collision Window"));
     this->setObjectName(tr("colWindow"));
+    this->setMinimumWidth(200);
 
     auto mainLayout = new QVBoxLayout(this);
     this->setLayout(mainLayout);
+
+    this->table = new ColTable(this);
+    mainLayout->addWidget(this->table);
 }
