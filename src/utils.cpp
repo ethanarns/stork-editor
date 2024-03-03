@@ -474,15 +474,40 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
             result.preview = CollisionDraw::UP_RIGHT_STEEP_TALL;
             break;
         }
+        case CollisionType::UP_RIGHT_45: {
+            result.prettyName = "Up Right 45";
+            result.preview = CollisionDraw::DIAG_UP_RIGHT;
+            break;
+        }
         case CollisionType::STATIC_COIN: {
             result.prettyName = "Static Coin";
             // This could be better... Currently clear, but top right overflows
             result.preview = CollisionDraw::COIN_BOTTOM_RIGHT;
             break;
         }
-        case CollisionType::UP_RIGHT_45: {
-            result.prettyName = "Up Right 45";
-            result.preview = CollisionDraw::DIAG_UP_RIGHT;
+        case CollisionType::DOWN_RIGHT_30_2: {
+            result.prettyName = "Down Right 30 2";
+            result.preview = CollisionDraw::DOWN_RIGHT_30_SHORT;
+            break;
+        }
+        case CollisionType::DOWN_RIGHT_30_1: {
+            result.prettyName = "Down Right 30 1";
+            result.preview = CollisionDraw::DOWN_RIGHT_30_TALL;
+            break;
+        }
+        case CollisionType::DOWN_RIGHT_STEEP: {
+            result.prettyName = "Down Right Steep 1";
+            result.preview = CollisionDraw::DOWN_RIGHT_STEEP_THIN;
+            break;
+        }
+        case CollisionType::DOWN_RIGHT_STEEP_HALFSTART: {
+            result.prettyName = "Down Right Steep 2";
+            result.preview = CollisionDraw::DOWN_RIGHT_STEEP_WIDE;
+            break;
+        }
+        case CollisionType::DOWN_RIGHT_45: {
+            result.prettyName = "Down Right 45";
+            result.preview = CollisionDraw::DIAG_DOWN_RIGHT;
             break;
         }
     }
