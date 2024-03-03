@@ -95,14 +95,6 @@ MainWindow::MainWindow() {
     this->menu_save->setDisabled(true);
     connect(this->menu_save, &QAction::triggered, this, &MainWindow::saveRom);
 
-    // Nothing to save as, only export
-    // this->menu_save_as = new QAction("&Save As...",this);
-    // this->menu_save_as->setShortcut(tr("SHIFT+CTRL+S"));
-    // this->menu_save_as->setIcon(QIcon::fromTheme("document-save-as"));
-    // menu_file->addAction(this->menu_save_as);
-    // this->menu_save_as->setDisabled(true);
-    // connect(this->menu_save_as, &QAction::triggered, this, &MainWindow::saveRomAs);
-
     this->menu_export = new QAction("&Export...",this);
     menu_file->addAction(this->menu_export);
     this->menu_export->setDisabled(true);
@@ -295,6 +287,12 @@ MainWindow::MainWindow() {
     connect(this->layerSelectDropdown,&QComboBox::currentTextChanged,this,&MainWindow::toolbarClick_layerSelect);
 
     toolbar->addSeparator();
+
+    /******************************
+     *** CUSTOM TOOLBAR BUTTONS ***
+     ******************************/
+
+    // lol TODO
 
     /**************
      *** LAYOUT ***
