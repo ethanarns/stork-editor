@@ -471,6 +471,10 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     auto hoverType = index.data(PixelDelegateData::HOVER_TYPE);
     if (!hoverType.isNull() && hoverType.toInt() != HoverType::NO_HOVER) {
         HoverType hoverVal = static_cast<HoverType>(hoverType.toInt());
+        QPen hoverPen;
+        hoverPen.setColor(QColor("red"));
+        hoverPen.setWidth(2);
+        painter->setPen(hoverPen);
         switch (hoverVal) {
             case HoverType::HOVER_SQUARE: {
                 auto rectCopy = option.rect;
@@ -478,10 +482,6 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 rectCopy.setY(rectCopy.y()+1);
                 rectCopy.setHeight(option.rect.height()-2);
                 rectCopy.setWidth(option.rect.width()-2);
-                QPen hoverPen;
-                hoverPen.setColor(QColor("red"));
-                hoverPen.setWidth(2);
-                painter->setPen(hoverPen);
                 painter->drawRect(rectCopy);
                 break;
             }
