@@ -534,9 +534,7 @@ void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
                 auto bandX = this->selectorBand->x();
                 auto bandY = this->selectorBand->y();
                 QRect rect(bandX,bandY,this->selectorBand->width(),this->selectorBand->height());
-                auto intersectedTiles = this->getIntersectedTiles(rect);
-                std::cout << "tiles selected: 0x" << std::hex << intersectedTiles.size() << std::endl;
-                // TODO: set tiles as selected
+                globalSettings.selectedItemPointers = this->getIntersectedTiles(rect);
             } else {
                 // Do single
                 auto curItemUnderCursor = this->itemAt(event->pos());

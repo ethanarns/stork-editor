@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <QTableWidgetItem>
 
 #include "PixelDelegateEnums.h"
 
@@ -31,6 +32,7 @@ struct GlobalSettings {
     int brushH = 2;
     LayerMode layerSelectMode;
     CollisionType colTypeToDraw = CollisionType::SQUARE;
+    std::vector<QTableWidgetItem*> selectedItemPointers;
 };
 extern GlobalSettings globalSettings;
 
