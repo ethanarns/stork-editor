@@ -94,12 +94,9 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
         return;
     }
 
-    // if (whichBg == 1) {
-    //     pal += this->yidsRom->paletteOffsetBg1;
-    // } else if (whichBg == 2) { ...
     pal += scen->paletteStartOffset - 1; // -1 is likely because of universal palette
 
-    auto potentialExisting = this->item(y,x);
+    auto bgItem = this->item(y,x);
     auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
     QByteArray layerDrawOrder = this->yidsRom->mapData->getLayerOrder();
     if (layerDrawOrder.size() > 3) {
@@ -107,55 +104,55 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
         YUtils::printQbyte(layerDrawOrder);
         exit(EXIT_FAILURE);
     }
-    if (potentialExisting == nullptr) {
-        potentialExisting = new QTableWidgetItem();
-        this->setItem(y,x,potentialExisting);
+    if (bgItem == nullptr) {
+        bgItem = new QTableWidgetItem();
+        this->setItem(y,x,bgItem);
     }
     if (whichBg == 2) {
         // BG 2 //
-        potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
+        bgItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
         if (!isColorMode256) {
-            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
+            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
         } else {
             // Note: the 256 palettes thing does not always start at 0x10 (including the +1)
             // 1-3, there's a palette missing from the palette screen that made this start at 0xf
-            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(pal+1));
+            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(pal+1));
         }
-        potentialExisting->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
-        potentialExisting->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
-        potentialExisting->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
-        potentialExisting->setData(PixelDelegateData::TILE_ID_BG2,(uint)pren.tileId);
+        bgItem->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
+        bgItem->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
+        bgItem->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
+        bgItem->setData(PixelDelegateData::TILE_ID_BG2,(uint)pren.tileId);
     } else if (whichBg == 1) {
         // BG 1 //
-        potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
+        bgItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
         if (!isColorMode256) {
-            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
+            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
         } else {
-            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->get256Palettes(pal+1));
+            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->get256Palettes(pal+1));
         }
-        potentialExisting->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
-        potentialExisting->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
-        potentialExisting->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
-        potentialExisting->setData(PixelDelegateData::TILE_ID_BG1,(uint)pren.tileId);
+        bgItem->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
+        bgItem->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
+        bgItem->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
+        bgItem->setData(PixelDelegateData::TILE_ID_BG1,(uint)pren.tileId);
     } else if (whichBg == 3) {
         // BG 3 //
-        potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
+        bgItem->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
         if (!isColorMode256) {
-            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
+            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
         } else {
-            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(pal+1));
+            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(pal+1));
         }
-        potentialExisting->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
-        potentialExisting->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);
-        potentialExisting->setData(PixelDelegateData::TILEATTR_BG3,(uint)pren.tileAttr);
-        potentialExisting->setData(PixelDelegateData::TILE_ID_BG3,(uint)pren.tileId);
+        bgItem->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
+        bgItem->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);
+        bgItem->setData(PixelDelegateData::TILEATTR_BG3,(uint)pren.tileAttr);
+        bgItem->setData(PixelDelegateData::TILE_ID_BG3,(uint)pren.tileId);
     }
     // Things to do for every layer:
-    potentialExisting->setData(PixelDelegateData::LAYER_DRAW_ORDER,layerDrawOrder);
-    potentialExisting->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
-    potentialExisting->setData(PixelDelegateData::HOVER_TYPE,HoverType::NO_HOVER);
-    potentialExisting->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
-    potentialExisting->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
+    bgItem->setData(PixelDelegateData::LAYER_DRAW_ORDER,layerDrawOrder);
+    bgItem->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
+    bgItem->setData(PixelDelegateData::HOVER_TYPE,HoverType::NO_HOVER);
+    bgItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
+    bgItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
 }
 
 void DisplayTable::cellEnteredTriggered(int y, int x) {
