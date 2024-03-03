@@ -16,6 +16,7 @@
 #include <QDragEnterEvent>
 #include <QByteArray>
 #include <QPoint>
+#include <QRubberBand>
 
 class DisplayTable : public QTableWidget {
     Q_OBJECT
@@ -79,13 +80,19 @@ private:
     void updateSurrounding(int row, int column, int distance);
     void setHover(int row, int column, HoverType hoverType);
 
-    void doBgBrushClick(QTableWidgetItem* curItem,QMouseEvent *event);
+    void doBgBrushClick(QTableWidgetItem* curItem);
 protected:
     QPoint dragStartPosition;
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;
+
+    QRubberBand* selectorBand;
+    QPoint selectorBandOrigin;
 signals:
     int triggerMainWindowUpdate();
     void updateMainWindowStatus(std::string newStatus);

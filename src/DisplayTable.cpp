@@ -11,6 +11,7 @@
 #include <QMimeData>
 #include <QDrag>
 #include <QApplication>
+#include <QRubberBand>
 
 #include <iostream>
 #include <sstream>
@@ -41,6 +42,10 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     this->setDragDropMode(QAbstractItemView::DragDrop);
 
     setItemDelegate(new PixelDelegate);
+
+    this->selectorBand = new QRubberBand(QRubberBand::Rectangle,this);
+    this->selectorBand->hide();
+    this->selectorBandOrigin = QPoint(0,0);
 
     QTableWidget::connect(this, &QTableWidget::cellEntered, this, &DisplayTable::cellEnteredTriggered);
     //QTableWidget::connect(this, &QTableWidget::cellClicked, this, &DisplayTable::displayTableClicked);
@@ -307,7 +312,7 @@ void DisplayTable::setHover(int row, int column, HoverType hoverType) {
     }
 }
 
-void DisplayTable::doBgBrushClick(QTableWidgetItem *curItem, QMouseEvent *event) {
+void DisplayTable::doBgBrushClick(QTableWidgetItem *curItem) {
     if (globalSettings.currentBrush == nullptr) {
         YUtils::printDebug("Brush currently null",DebugType::ERROR);
         YUtils::popupAlert("Brush currently null");
@@ -437,8 +442,19 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
         } else {
             YUtils::printDebug("If this is hit, you seriously messed something up",DebugType::ERROR);
         }
-        this->doBgBrushClick(curItemUnderCursor,event);
-        return;
+        if (event->button() == Qt::LeftButton) {
+            // TODO start rectangle band
+            this->selectorBandOrigin = event->pos();
+            this->selectorBand->setGeometry(QRect(this->selectorBandOrigin, QSize()));
+            this->selectorBand->show();
+            return;
+        } else if (event->button() == Qt::RightButton) {
+            YUtils::printDebug("TODO: Right click handling");
+            return;
+        } else {
+            YUtils::printDebug("Unhandled mouse click",DebugType::WARNING);
+            return;
+        }
     } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
         auto curItemUnderCursor = this->itemAt(event->pos());
         if (curItemUnderCursor == nullptr) {
@@ -470,6 +486,48 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
         return;
     }
     QTableWidget::mousePressEvent(event);
+}
+
+void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
+    if (
+        globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
+        globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
+        globalSettings.layerSelectMode == LayerMode::BG3_LAYER
+    ) {
+        bool bandBigEnoughForMultiSelect = false;
+        auto bandWidth = this->selectorBand->width();
+        auto bandHeight = this->selectorBand->height();
+        if (bandWidth > DisplayTable::CELL_SIZE_PX || bandHeight > DisplayTable::CELL_SIZE_PX) {
+            bandBigEnoughForMultiSelect = true;
+        }
+        this->selectorBand->hide();
+
+        if (bandBigEnoughForMultiSelect) {
+            std::cout << "multi select" << std::endl;
+        } else {
+            // Do single
+            auto curItemUnderCursor = this->itemAt(event->pos());
+            if (curItemUnderCursor == nullptr) {
+                YUtils::printDebug("Item under cursor in mouseReleaseEvent for BGX is null", DebugType::ERROR);
+                return;
+            }
+            this->doBgBrushClick(curItemUnderCursor);
+        }
+    } else {
+        QTableWidget::mouseReleaseEvent(event);
+    }
+}
+
+void DisplayTable::mouseMoveEvent(QMouseEvent *event) {
+    if (
+        globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
+        globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
+        globalSettings.layerSelectMode == LayerMode::BG3_LAYER
+    ) {
+        this->selectorBand->setGeometry(QRect(this->selectorBandOrigin, event->pos()).normalized());
+    } else {
+        QTableWidget::mouseMoveEvent(event);
+    }
 }
 
 void DisplayTable::dragEnterEvent(QDragEnterEvent *event) {
