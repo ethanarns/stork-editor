@@ -46,8 +46,7 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
 }
 
 /**
- * @brief Places a tile on the DisplayTable. Creates if it doesn't exist, updates
- * if it already exists.
+ * @brief Places a tile on the DisplayTable. Primarily used for init
  * 
  * @param x X Position of tile
  * @param y Y Position of tile
@@ -109,94 +108,54 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
         exit(EXIT_FAILURE);
     }
     if (potentialExisting == nullptr) {
-        // Nothing is here, so lets make a new one and set it!
-        QTableWidgetItem *newItem = new QTableWidgetItem();
-        if (whichBg == 2) {
-            newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
-            if (!isColorMode256) {
-                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
-            } else {
-                // newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(this->yidsRom->paletteOffsetBg2 + 1));
-                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(pal+1));
-            }
-            newItem->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
-            newItem->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
-            newItem->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
-            newItem->setData(PixelDelegateData::TILE_ID_BG2,(uint)pren.tileId);
-        } else if (whichBg == 1) {
-            newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
-            newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
-            newItem->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
-            newItem->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
-            newItem->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
-            newItem->setData(PixelDelegateData::TILE_ID_BG1,(uint)pren.tileId);
-        } else if (whichBg == 3) {
-            newItem->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
-            if (!isColorMode256) {
-                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
-            } else {
-                // Was just 0xf before
-                newItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(pal+1));
-            }
-            newItem->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
-            newItem->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);
-            newItem->setData(PixelDelegateData::TILEATTR_BG3,(uint)pren.tileAttr);
-            newItem->setData(PixelDelegateData::TILE_ID_BG3,(uint)pren.tileId);
-        }
-
-        // Things to do for every layer:
-        newItem->setData(PixelDelegateData::LAYER_DRAW_ORDER,layerDrawOrder);
-        newItem->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
-        newItem->setData(PixelDelegateData::HOVER_TYPE,HoverType::NO_HOVER);
-
-        // Only doing collision here because there's no data for it, so create it
-        newItem->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
-        newItem->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
-
-        this->setItem(y,x,newItem);
-    } else {
-        // There is already an item here, lets just update it
-        if (whichBg == 2) {
-            potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
-            if (!isColorMode256) {
-                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
-            } else {
-                // Note: the 256 palettes thing does not always start at 0x10 (including the +1)
-                // 1-3, there's a palette missing from the palette screen that made this start at 0xf
-                // this will be moot if you separate the 256 palette
-                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(pal+1));
-            }
-            potentialExisting->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
-            potentialExisting->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
-            potentialExisting->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
-            potentialExisting->setData(PixelDelegateData::TILE_ID_BG2,(uint)pren.tileId);
-        } else if (whichBg == 1) {
-            potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
-            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
-            potentialExisting->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
-            potentialExisting->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
-            potentialExisting->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
-            potentialExisting->setData(PixelDelegateData::TILE_ID_BG1,(uint)pren.tileId);
-        } else if (whichBg == 3) {
-            potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
-            if (!isColorMode256) {
-                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
-            } else {
-                // Note: the 256 palettes thing does not always start at 0x10 (including the +1)
-                // 1-3, there's a palette missing from the palette screen
-                // this will be moot if you separate the 256 palette
-                potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(pal+1));
-            }
-            potentialExisting->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
-            potentialExisting->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);
-            potentialExisting->setData(PixelDelegateData::TILEATTR_BG3,(uint)pren.tileAttr);
-            potentialExisting->setData(PixelDelegateData::TILE_ID_BG3,(uint)pren.tileId);
-        }
-        // Things to do for every layer:
-        potentialExisting->setData(PixelDelegateData::LAYER_DRAW_ORDER,layerDrawOrder);
-        potentialExisting->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
-        potentialExisting->setData(PixelDelegateData::HOVER_TYPE,HoverType::NO_HOVER);
+        potentialExisting = new QTableWidgetItem();
+        this->setItem(y,x,potentialExisting);
     }
+    if (whichBg == 2) {
+        // BG 2 //
+        potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
+        if (!isColorMode256) {
+            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
+        } else {
+            // Note: the 256 palettes thing does not always start at 0x10 (including the +1)
+            // 1-3, there's a palette missing from the palette screen that made this start at 0xf
+            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(pal+1));
+        }
+        potentialExisting->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
+        potentialExisting->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
+        potentialExisting->setData(PixelDelegateData::TILEATTR_BG2,(uint)pren.tileAttr);
+        potentialExisting->setData(PixelDelegateData::TILE_ID_BG2,(uint)pren.tileId);
+    } else if (whichBg == 1) {
+        // BG 1 //
+        potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
+        if (!isColorMode256) {
+            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
+        } else {
+            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->get256Palettes(pal+1));
+        }
+        potentialExisting->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
+        potentialExisting->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
+        potentialExisting->setData(PixelDelegateData::TILEATTR_BG1,(uint)pren.tileAttr);
+        potentialExisting->setData(PixelDelegateData::TILE_ID_BG1,(uint)pren.tileId);
+    } else if (whichBg == 3) {
+        // BG 3 //
+        potentialExisting->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
+        if (!isColorMode256) {
+            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
+        } else {
+            potentialExisting->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(pal+1));
+        }
+        potentialExisting->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
+        potentialExisting->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);
+        potentialExisting->setData(PixelDelegateData::TILEATTR_BG3,(uint)pren.tileAttr);
+        potentialExisting->setData(PixelDelegateData::TILE_ID_BG3,(uint)pren.tileId);
+    }
+    // Things to do for every layer:
+    potentialExisting->setData(PixelDelegateData::LAYER_DRAW_ORDER,layerDrawOrder);
+    potentialExisting->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
+    potentialExisting->setData(PixelDelegateData::HOVER_TYPE,HoverType::NO_HOVER);
+    potentialExisting->setData(PixelDelegateData::COLLISION_DRAW,CollisionDraw::CLEAR);
+    potentialExisting->setData(PixelDelegateData::SHOW_COLLISION,this->shouldShowCollision);
 }
 
 void DisplayTable::cellEnteredTriggered(int y, int x) {
