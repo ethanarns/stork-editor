@@ -11,6 +11,8 @@ public:
     BrushTable(QWidget *parent, YidsRom* rom);
     void resetTable();
     void loadTilesToCurBrush();
+    void updateBrushDims();
+
     const static int CELL_COUNT_DIMS = 12;
 protected:
     void mousePressEvent(QMouseEvent *event) override;

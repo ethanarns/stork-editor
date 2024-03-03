@@ -77,6 +77,31 @@ void BrushTable::loadTilesToCurBrush() {
         YUtils::printDebug("No tiles loaded to brush",DebugType::ERROR);
         YUtils::popupAlert("No tiles loaded to brush");
     }
+    this->updateBrushDims();
+}
+
+void BrushTable::updateBrushDims() {
+    globalSettings.brushH = 2;
+    globalSettings.brushW = 2;
+    for (int y = 0; y < this->rowCount(); y++) {
+        for (int x = 0; x < this->columnCount(); x++) {
+            auto item = this->item(y,x);
+            if (item != nullptr) {
+                auto tileId = item->data(PixelDelegateData::TILE_ID_BG1);
+                if (!tileId.isNull() && tileId.toInt() != 0xffff) {
+                    // Okay there's a good tile
+                    if ((x+1) > globalSettings.brushW) {
+                        globalSettings.brushW = (x+1);
+                    }
+                    if ((y+1) > globalSettings.brushH) {
+                        globalSettings.brushH = (y+1);
+                    }
+                }
+            }
+        }
+    }
+    std::cout << globalSettings.brushW << std::endl;
+    std::cout << globalSettings.brushH << std::endl;
 }
 
 void BrushTable::mousePressEvent(QMouseEvent *event) {
