@@ -329,6 +329,7 @@ LevelGradientData::LevelGradientData(std::vector<uint8_t> &mpdzBytes, uint32_t &
     }
 }
 
+// SETD
 LevelObjectData::LevelObjectData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     while (mpdzIndex < stop) {
         auto lo = new LevelObject();

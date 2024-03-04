@@ -14,6 +14,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QCloseEvent>
+#include <QKeyEvent>
 
 #include "yidsrom.h"
 #include "DisplayTable.h"
@@ -47,6 +48,8 @@ public:
     std::string currentFileName = "";
 
     void setWindowStatus(std::string status);
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
 private:
     DisplayTable* grid;
     QWidget* chartilesPopup;

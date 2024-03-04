@@ -2,6 +2,7 @@
 #define DISPLAYTABLE_H
 
 #include <vector>
+#include <cstdint>
 
 #include "Chartile.h"
 #include "yidsrom.h"

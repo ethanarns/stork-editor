@@ -858,6 +858,51 @@ void MainWindow::setWindowStatus(std::string status) {
     QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+    if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
+        if (event->key() == Qt::Key_Delete || event->key() == Qt::Key_Backspace) {
+            // YUtils::printDebug("Delete selected objects",DebugType::VERBOSE);
+            std::vector<uint32_t> selectedUuids = this->grid->selectedObjects;
+            if (selectedUuids.empty()) {
+                YUtils::printDebug("Nothing to delete");
+                return;
+            }
+            for (auto it = selectedUuids.begin(); it != selectedUuids.end(); it++) {
+                this->rom->mapData->deleteSpriteByUUID(*it);
+                this->grid->wipeObject(*it);
+            }
+            this->grid->selectedObjects.clear();
+            this->grid->updateSprites();
+            LevelObject empty;
+            empty.objectId = 0xffff;
+            empty.xPosition = 0;
+            empty.yPosition = 0;
+            empty.uuid = 0;
+            empty.settingsLength = 0;
+            empty.settings.clear();
+            YUtils::printDebug("Updating selection info table with empty object");
+            this->selectionInfoTable->updateWithLevelObject(&empty);
+            this->guiObjectList->updateList();
+            this->grid->clearSelection(); // Default
+            this->markSavableUpdate();
+            return;
+        } else {
+            YUtils::printDebug("Unhandled key in keyPressEvent for Sprites layer",DebugType::VERBOSE);
+            return;
+        }
+    } else if (
+        globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
+        globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
+        globalSettings.layerSelectMode == LayerMode::BG3_LAYER
+    ) {
+        YUtils::printDebug("keyPressEvent: BG Layer",DebugType::VERBOSE);
+    } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
+        YUtils::printDebug("keyPressEvent: Collision layer",DebugType::VERBOSE);
+    } else {
+        MainWindow::keyPressEvent(event);
+    }
+}
+
 void MainWindow::objectListClick() {
     auto selectedItems = this->guiObjectList->selectedItems();
     if (selectedItems.size() == 0) {

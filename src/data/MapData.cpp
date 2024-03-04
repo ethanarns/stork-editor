@@ -415,3 +415,25 @@ LevelData *MapData::getFirstDataByMagic(uint32_t magicNumber, bool silentFail) {
     }
     return nullptr;
 }
+
+bool MapData::deleteSpriteByUUID(uint32_t uuid) {
+    YUtils::printDebug("deleteSpriteByUUID");
+    auto setdMaybe = this->getFirstDataByMagic(Constants::SETD_MAGIC_NUM);
+    if (setdMaybe == nullptr) {
+        YUtils::printDebug("SETD not found in deleteSpriteByUUID",DebugType::ERROR);
+        YUtils::popupAlert("SETD not found when deleting sprite");
+        return false;
+    }
+    auto setd = static_cast<LevelObjectData*>(setdMaybe);
+    for (auto it = setd->levelObjects.begin(); it != setd->levelObjects.end(); it++) {
+        auto sprite = (*it);
+        if (sprite->uuid == uuid) {
+            YUtils::printDebug("UUID found, freeing memory and removing");
+            delete (*it);
+            setd->levelObjects.erase(it);
+            return true;
+        }
+    }
+    YUtils::printDebug("Sprite not found to delete",DebugType::ERROR);
+    return false;
+}
