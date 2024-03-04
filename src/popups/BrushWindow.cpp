@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QCheckBox>
 #include <QFile>
+#include <QLineEdit>
 
 BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     Q_UNUSED(parent);
@@ -28,6 +29,7 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     flipVbox->setText(tr("Flip V"));
     connect(flipVbox,&QCheckBox::stateChanged,this,&BrushWindow::stateChangedV);
     bar1->addWidget(flipVbox);
+
     // Row 2
     auto bar2 = new QHBoxLayout(this);
 
@@ -39,9 +41,24 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     connect(clearBrushButton,&QPushButton::released, this, &BrushWindow::clearBrushClicked);
     bar2->addWidget(clearBrushButton);
 
+    // Row 3 //
+    auto bar3 = new QHBoxLayout(this);
+    // Brush name
+    auto brushName = new QLineEdit(this);
+    brushName->setObjectName("textboxBrushName");
+    brushName->setText("TODO");
+    // ConnectMe
+    bar3->addWidget(brushName);
+    // Save brush
+    auto saveBrush = new QPushButton("&Save YDB",this);
+    saveBrush->setObjectName("buttonSaveBrushYdb");
+    saveBrush->setDisabled(true);
+    // ConnectMe
+    bar3->addWidget(saveBrush);
 
     mainLayout->addLayout(bar1);
     mainLayout->addLayout(bar2);
+    mainLayout->addLayout(bar3);
 
     this->setLayout(mainLayout);
 }

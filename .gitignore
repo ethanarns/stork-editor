@@ -24,3 +24,6 @@ qrc_images.cpp
 *.bin
 *.nds
 *.crsb
+
+# Save files
+*.ydb
