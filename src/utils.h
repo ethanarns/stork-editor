@@ -63,6 +63,7 @@ public:
     static void popupAlert(std::string msg);
 
     static CollisionMetadata getCollisionMetadata(CollisionType colType);
+    static QColor invertColor(QColor in);
 };
 
 #endif

@@ -379,6 +379,32 @@ std::vector<QTableWidgetItem*> DisplayTable::getIntersectedTiles(QRect selection
     return result;
 }
 
+void DisplayTable::updateSelectedTilesVisuals(int whichBg) {
+    const int ROW_COUNT = this->rowCount();
+    const int COLUMN_COUNT = this->columnCount();
+    for (int row = 0; row < ROW_COUNT; row++) {
+        for (int col = 0; col < COLUMN_COUNT; col++) {
+            auto potentialItem = this->item(row,col);
+            if (potentialItem != nullptr) {
+                potentialItem->setData(PixelDelegateData::TILE_SELECTED_BG1,false);
+                potentialItem->setData(PixelDelegateData::TILE_SELECTED_BG2,false);
+                potentialItem->setData(PixelDelegateData::TILE_SELECTED_BG3,false);
+            }
+        }
+    }
+    for (auto it = globalSettings.selectedItemPointers.begin(); it != globalSettings.selectedItemPointers.end(); it++) {
+        if (whichBg == 1) {
+            (*it)->setData(PixelDelegateData::TILE_SELECTED_BG1,true);
+        } else if (whichBg == 2) {
+            (*it)->setData(PixelDelegateData::TILE_SELECTED_BG2,true);
+        } else if (whichBg == 3) {
+            (*it)->setData(PixelDelegateData::TILE_SELECTED_BG3,true);
+        } else {
+            YUtils::printDebug("Unusual whichBg",DebugType::ERROR);
+        }
+    }
+}
+
 void DisplayTable::mousePressEvent(QMouseEvent *event) {
     if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
         // Something is already selected
@@ -535,6 +561,7 @@ void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
                 auto bandY = this->selectorBand->y();
                 QRect rect(bandX,bandY,this->selectorBand->width(),this->selectorBand->height());
                 globalSettings.selectedItemPointers = this->getIntersectedTiles(rect);
+                this->updateSelectedTilesVisuals(globalSettings.currentEditingBackground);
             } else {
                 // Do single
                 auto curItemUnderCursor = this->itemAt(event->pos());

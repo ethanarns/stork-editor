@@ -514,6 +514,14 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
     return result;
 }
 
+QColor YUtils::invertColor(QColor in) {
+    QColor newColor;
+    newColor.setRed(0xff-in.red());
+    newColor.setGreen(0xff-in.green());
+    newColor.setBlue(0xff-in.blue());
+    return newColor;
+}
+
 std::string YUtils::relativeToEscapedAbs(std::string relPath) {
     std::stringstream res;
     auto absPath = std::filesystem::absolute(relPath);

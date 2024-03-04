@@ -43,6 +43,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             /*****************
              *** BG1 TILES ***
             *****************/
+            bool bg1selected = index.data(PixelDelegateData::TILE_SELECTED_BG1).toBool();
             if (index.data(PixelDelegateData::DRAW_BG1).toBool() == true) {
                 QByteArray byteArrayBg1 = index.data(PixelDelegateData::PIXEL_ARRAY_BG1).toByteArray();
                 // Check the byte array size
@@ -79,6 +80,9 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                         firstByte,
                         secondByte
                     );
+                    if (bg1selected) {
+                        qc = YUtils::invertColor(qc);
+                    }
 
                     int x = i % 8;
                     if (index.data(PixelDelegateData::FLIP_H_BG1).toBool() == true) {
@@ -95,6 +99,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             /*****************
              *** BG2 TILES ***
             *****************/
+            bool bg2selected = index.data(PixelDelegateData::TILE_SELECTED_BG2).toBool();
             if (index.data(PixelDelegateData::DRAW_BG2).toBool() == true) {
                 QByteArray byteArrayBg2 = index.data(PixelDelegateData::PIXEL_ARRAY_BG2).toByteArray();
                 // Check the byte array size
@@ -131,6 +136,9 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                         firstByte,
                         secondByte
                     );
+                    if (bg2selected) {
+                        qc = YUtils::invertColor(qc);
+                    }
 
                     int x = i % 8;
                     if (index.data(PixelDelegateData::FLIP_H_BG2).toBool() == true) {
@@ -147,6 +155,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             /*****************
              *** BG3 TILES ***
             *****************/
+            bool bg3selected = index.data(PixelDelegateData::TILE_SELECTED_BG3).toBool();
             if (index.data(PixelDelegateData::DRAW_BG3).toBool() == true) {
                 QByteArray byteArrayBg3 = index.data(PixelDelegateData::PIXEL_ARRAY_BG3).toByteArray();
                 // Check the byte array size
@@ -183,6 +192,9 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                         firstByte,
                         secondByte
                     );
+                    if (bg3selected) {
+                        qc = YUtils::invertColor(qc);
+                    }
 
                     int x = i % 8;
                     if (index.data(PixelDelegateData::FLIP_H_BG3).toBool() == true) {
