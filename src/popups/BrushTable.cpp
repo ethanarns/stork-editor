@@ -101,8 +101,8 @@ void BrushTable::updateBrushDims() {
             }
         }
     }
-    std::cout << globalSettings.brushW << std::endl;
-    std::cout << globalSettings.brushH << std::endl;
+    // std::cout << globalSettings.brushW << std::endl;
+    // std::cout << globalSettings.brushH << std::endl;
 }
 
 void BrushTable::setTile(int row, int column, MapTileRecordData tile) {

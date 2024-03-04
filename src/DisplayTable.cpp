@@ -798,7 +798,7 @@ void DisplayTable::updateShowCollision() {
 void DisplayTable::updateTriggerBoxes() {
     auto triggerBoxDataMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::AREA_MAGIC_NUM,true);
     if (triggerBoxDataMaybe == nullptr) {
-        YUtils::printDebug("No TriggerBoxes (AREA) for this map",DebugType::VERBOSE);
+        //YUtils::printDebug("No TriggerBoxes (AREA) for this map",DebugType::VERBOSE);
         return;
     }
     YUtils::printDebug("Updating TriggerBoxes",DebugType::VERBOSE);
