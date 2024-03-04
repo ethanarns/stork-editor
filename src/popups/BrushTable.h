@@ -12,6 +12,7 @@ public:
     void resetTable();
     void loadTilesToCurBrush();
     void updateBrushDims();
+    void setTile(int row, int column, MapTileRecordData tile);
 
     const static int CELL_COUNT_DIMS = 12;
 protected:

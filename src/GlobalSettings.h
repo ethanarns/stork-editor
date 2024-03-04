@@ -33,6 +33,27 @@ struct GlobalSettings {
     LayerMode layerSelectMode;
     CollisionType colTypeToDraw = CollisionType::SQUARE;
     std::vector<QTableWidgetItem*> selectedItemPointers;
+    int getSelectionWidth() {
+        int leftMost = 0xffff;
+        int rightMost = 0x0000;
+        for (auto it = this->selectedItemPointers.begin(); it != this->selectedItemPointers.end(); it++) {
+            auto item = *it;
+            int curCol = item->column();
+            if (curCol < leftMost) {
+                leftMost = curCol;
+            }
+            if (curCol > rightMost) {
+                rightMost = curCol;
+            }
+        }
+        // A difference of one means there are 2 tiles selected
+        int diff = rightMost - leftMost + 1;
+        if (diff < 1) {
+            return 0;
+        } else {
+            return diff;
+        }
+    };
 };
 extern GlobalSettings globalSettings;
 

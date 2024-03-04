@@ -13,6 +13,8 @@ public:
     BrushTable* brushTable;
     void stateChangedH(int state);
     void stateChangedV(int state);
+    void loadSelectionClicked();
+    void clearBrushClicked();
 private:
     YidsRom* yidsRom;
 };
