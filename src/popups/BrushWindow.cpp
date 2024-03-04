@@ -119,9 +119,62 @@ bool BrushWindow::saveCurrentBrushToFile() {
 
     QFile saveFile(saveName.c_str());
     if (!saveFile.open(QIODevice::WriteOnly)) {
-        qWarning("Couldn't open brush file to save");
+        YUtils::printDebug("Could not save brush file, write only",DebugType::ERROR);
+        YUtils::popupAlert("Could not save brush file, write only");
         return false;
     }
     saveFile.write(QJsonDocument(json).toJson());
+    return true;
+}
+
+bool BrushWindow::loadFileToCurrentBrush(std::string filename) {
+    if (globalSettings.currentEditingBackground == 0) {
+        YUtils::printDebug("Cannot load brush file while not in BG mode",DebugType::WARNING);
+        YUtils::popupAlert("Cannot load brush file while not in BG mode");
+        return false;
+    }
+    QFile loadFile(filename.c_str());
+    if (!loadFile.open(QIODevice::ReadOnly)) {
+        YUtils::printDebug("Could not load brush file, read only",DebugType::ERROR);
+        YUtils::popupAlert("Could not load brush file, read only");
+        return false;
+    }
+    QByteArray fileData = loadFile.readAll();
+    QJsonDocument loadDoc(QJsonDocument::fromJson(fileData));
+    QJsonObject json = loadDoc.object();
+    if (const QJsonValue brushTileset = json["brushTileset"]; brushTileset.isString()) {
+        globalSettings.currentBrush->brushTileset = brushTileset.toString().toStdString();
+    }
+    if (const QJsonValue tileAttrsMaybe = json["tileAttrs"]; tileAttrsMaybe.isArray()) {
+        const QJsonArray tileAttrs = tileAttrsMaybe.toArray();
+        globalSettings.currentBrush->tileAttrs.clear();
+        globalSettings.currentBrush->tileAttrs.reserve(tileAttrs.size());
+        for (const QJsonValue &attrData : tileAttrs) {
+            auto attr = (uint16_t)attrData.toInt();
+            auto attrTile = YUtils::getMapTileRecordDataFromShort(attr);
+            globalSettings.currentBrush->tileAttrs.push_back(attrTile);
+        }
+    }
+    this->brushTable->updateBrushDims();
+    std::map<uint32_t,Chartile> tilesMap = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground)->getVramChartiles();
+    for (int y = 0; y < this->brushTable->rowCount(); y++) {
+        for (int x = 0; x < this->brushTable->columnCount(); x++) {
+            auto item = this->brushTable->item(y,x);
+            uint32_t index = x + (y*this->brushTable->columnCount());
+            auto mapTile = globalSettings.currentBrush->tileAttrs.at(index);
+            if (item == nullptr) {
+                item = new QTableWidgetItem();
+                this->brushTable->setItem(y,x,item);
+                item->setData(PixelDelegateData::DRAW_BG1,true);
+                item->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
+            }
+            item->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tilesMap.at(mapTile.tileId).tiles);
+            item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[mapTile.paletteId]);
+            item->setData(PixelDelegateData::TILE_ID_BG1,mapTile.tileId);
+            item->setData(PixelDelegateData::PALETTE_ID_BG1,mapTile.paletteId);
+            item->setData(PixelDelegateData::FLIP_H_BG1,mapTile.flipH);
+            item->setData(PixelDelegateData::FLIP_V_BG1,mapTile.flipV);
+        }
+    }
     return true;
 }

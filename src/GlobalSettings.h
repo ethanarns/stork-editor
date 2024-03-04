@@ -28,8 +28,8 @@ struct TileBrush {
     QJsonObject toJson() {
         QJsonArray tileArray;
         for (auto it = this->tileAttrs.begin(); it != this->tileAttrs.end(); it++) {
-            // The only numbers in JSON are 64 bit floating points
-            QJsonValue tileAttrDouble = (double)(it->compile());
+            // All JSON numbers are signed
+            QJsonValue tileAttrDouble = (int)(it->compile());
             tileArray.append(tileAttrDouble);
         }
         QJsonValue jstring = this->brushTileset.c_str();

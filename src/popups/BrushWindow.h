@@ -3,6 +3,8 @@
 #include "../yidsrom.h"
 #include "BrushTable.h"
 
+#include <string>
+
 #include <QWidget>
 #include <QCheckBox>
 
@@ -16,6 +18,7 @@ public:
     void loadSelectionClicked();
     void clearBrushClicked();
     bool saveCurrentBrushToFile();
+    bool loadFileToCurrentBrush(std::string filename);
 private:
     YidsRom* yidsRom;
 };
