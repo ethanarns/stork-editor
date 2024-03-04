@@ -15,6 +15,7 @@ public:
     void stateChangedV(int state);
     void loadSelectionClicked();
     void clearBrushClicked();
+    bool saveCurrentBrushToFile();
 private:
     YidsRom* yidsRom;
 };

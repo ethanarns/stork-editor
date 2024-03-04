@@ -5,6 +5,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QCheckBox>
+#include <QFile>
 
 BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     Q_UNUSED(parent);
@@ -110,4 +111,17 @@ void BrushWindow::clearBrushClicked() {
     this->brushTable->resetTable();
     // No pointers, so no need to delete[]
     globalSettings.currentBrush->tileAttrs.clear();
+}
+
+bool BrushWindow::saveCurrentBrushToFile() {
+    auto json = globalSettings.currentBrush->toJson();
+    std::string saveName = globalSettings.currentBrush->name.append(".ydb");
+
+    QFile saveFile(saveName.c_str());
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't open brush file to save");
+        return false;
+    }
+    saveFile.write(QJsonDocument(json).toJson());
+    return true;
 }

@@ -47,6 +47,7 @@ MainWindow::MainWindow() {
     // Set up settings
     globalSettings.currentBrush = new TileBrush();
     globalSettings.currentBrush->tileAttrs = std::vector<MapTileRecordData>();
+    globalSettings.currentBrush->name = "brush01";
     globalSettings.brushes.push_back(globalSettings.currentBrush);
     globalSettings.layerSelectMode = LayerMode::SPRITES_LAYER;
 

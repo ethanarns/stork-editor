@@ -2,8 +2,13 @@
 #define SETTINGSENUM_H
 
 #include <cstdint>
+#include <string>
 #include <vector>
+
 #include <QTableWidgetItem>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonArray>
 
 #include "PixelDelegateEnums.h"
 
@@ -17,7 +22,22 @@ enum LayerMode {
 
 struct TileBrush {
     std::vector<MapTileRecordData> tileAttrs;
+    std::string brushTileset;
+    std::string name;
     const static int BRUSH_DIMS = 16;
+    QJsonObject toJson() {
+        QJsonArray tileArray;
+        for (auto it = this->tileAttrs.begin(); it != this->tileAttrs.end(); it++) {
+            // The only numbers in JSON are 64 bit floating points
+            QJsonValue tileAttrDouble = (double)(it->compile());
+            tileArray.append(tileAttrDouble);
+        }
+        QJsonValue jstring = this->brushTileset.c_str();
+        QJsonObject jobj;
+        jobj["tileAttrs"] = tileArray;
+        jobj["brushTileset"] = jstring;
+        return jobj;
+    };
 };
 
 struct GlobalSettings {
