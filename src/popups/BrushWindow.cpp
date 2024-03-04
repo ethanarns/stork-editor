@@ -103,8 +103,11 @@ void BrushWindow::loadSelectionClicked() {
         int col = tileIndex % width;
         this->brushTable->setTile(row,col,mapTile);
     }
+    this->brushTable->loadTilesToCurBrush();
 }
 
 void BrushWindow::clearBrushClicked() {
     this->brushTable->resetTable();
+    // No pointers, so no need to delete[]
+    globalSettings.currentBrush->tileAttrs.clear();
 }
