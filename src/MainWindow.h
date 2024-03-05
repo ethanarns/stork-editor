@@ -106,7 +106,7 @@ private:
     void menuClick_levelSelect();
     void menuClick_export();
 
-    void buttonClick_levelSelect_load();
+    void mapPopupMpdzSelected(std::string mpdzNameNoExt);
 
     void objectListClick();
     void displayTableClicked();

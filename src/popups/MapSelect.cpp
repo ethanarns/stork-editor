@@ -38,12 +38,14 @@ MapSelect::MapSelect(QWidget *parent, YidsRom *rom) {
     // Buttons
     auto buttonContainer = new QHBoxLayout(this);
     column2->addLayout(buttonContainer);
+
     auto cancelButton = new QPushButton("&Cancel",this);
     buttonContainer->addWidget(cancelButton);
     connect(cancelButton,&QPushButton::pressed,this,&MapSelect::cancelClicked);
 
     auto confirmButton = new QPushButton("&Load",this);
     buttonContainer->addWidget(confirmButton);
+    connect(confirmButton,&QPushButton::pressed,this,&MapSelect::confirmClicked);
 }
 
 void MapSelect::updateLeftList() {
@@ -118,4 +120,23 @@ void MapSelect::currentItemChanged(QListWidgetItem *current, QListWidgetItem *pr
 
 void MapSelect::cancelClicked() {
     this->close();
+}
+
+void MapSelect::confirmClicked() {
+    YUtils::printDebug("confirmClicked()");
+    auto rightSelectedItems = this->rightList->selectedItems();
+    if (rightSelectedItems.size() != 1) {
+        YUtils::printDebug("Unusual right selection size",DebugType::ERROR);
+        YUtils::popupAlert("Unusual right selection size");
+        return;
+    }
+    auto selectedItem = rightSelectedItems.at(0);
+    if (selectedItem == nullptr) {
+        YUtils::printDebug("Selected item was null",DebugType::ERROR);
+        YUtils::popupAlert("Selected item was null");
+        return;
+    }
+    auto mapName = selectedItem->text().toStdString();
+    emit this->mpdzSelected(mapName);
+    this->hide();
 }

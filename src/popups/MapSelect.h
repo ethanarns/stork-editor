@@ -17,4 +17,6 @@ public:
 private:
     QListWidget* leftList;
     QListWidget* rightList;
+signals:
+    void mpdzSelected(std::string mpdzNoExt);
 };

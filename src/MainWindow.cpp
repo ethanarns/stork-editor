@@ -488,8 +488,12 @@ MainWindow::MainWindow() {
     /********************
      *** LEVEL SELECT ***
      ********************/
-    // Initial setup //
     this->mapSelectPopup = new MapSelect(this,this->rom);
+    connect(this->mapSelectPopup,&MapSelect::mpdzSelected,this,&MainWindow::mapPopupMpdzSelected);
+
+    /******************
+     *** STATUS BAR *** 
+     ******************/
 
     this->statusBar()->show();
     this->statusBar()->setStyleSheet("QStatusBar {padding: 0; margin:0;}");
@@ -731,7 +735,8 @@ void MainWindow::menuClick_export() {
  *** WINDOW BUTTON CLICKS ***
  ****************************/
 
-void MainWindow::buttonClick_levelSelect_load() {
+void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
+    YUtils::printDebug(mpdzNoExt);
     // auto potentialCurrentItem = this->levelSelect->currentItem();
     // if (potentialCurrentItem == nullptr) {
     //     return;
