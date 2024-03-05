@@ -694,7 +694,8 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
  *******************/
 
 void MainWindow::menuClick_levelSelect() {
-    std::cout << "Map Select Clicked" << std::endl;
+    //std::cout << "Map Select Clicked" << std::endl;
+    this->mapSelectPopup->updateLeftList();
     if (this->mapSelectPopup->isVisible()) {
         // It's still open, so just bring it to the front
         this->mapSelectPopup->activateWindow();
