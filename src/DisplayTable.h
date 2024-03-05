@@ -62,7 +62,7 @@ public:
     int wipeTable();
     
     void wipeObject(uint32_t uuid);
-    void selectItemByUuid(uint32_t uuid);
+    void selectItemByUuid(uint32_t uuid,bool triggerMainWindowUpdate = true);
     void moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY);
     /// @brief This both updates the grid as well as updates the MapData
     /// @param row Y location on grid and MapData

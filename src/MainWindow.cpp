@@ -930,7 +930,8 @@ void MainWindow::objectListClick() {
     this->selectionInfoTable->updateWithLevelObject(loadedLevelObject);
     if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
         this->grid->clearSelection();
-        this->grid->selectItemByUuid(objectUuid);
+        this->grid->selectItemByUuid(objectUuid,false);
+        this->selectionInfoTable->updateWithLevelObject(loadedLevelObject);
     }
 }
 

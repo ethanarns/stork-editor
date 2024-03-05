@@ -643,7 +643,7 @@ void DisplayTable::dropEvent(QDropEvent *event) {
     }
 }
 
-void DisplayTable::selectItemByUuid(uint32_t uuid) {
+void DisplayTable::selectItemByUuid(uint32_t uuid, bool triggerMainWindowUpdate) {
     if (globalSettings.layerSelectMode != LayerMode::SPRITES_LAYER) {
         YUtils::printDebug("Items should not be selected when not in SPRITES_LAYER mode",DebugType::ERROR);
         return;
@@ -663,7 +663,10 @@ void DisplayTable::selectItemByUuid(uint32_t uuid) {
             }
         }
     }
-    emit this->triggerMainWindowUpdate();
+    if (triggerMainWindowUpdate) {
+        // Links to displayTableUpdate
+        emit this->triggerMainWindowUpdate();
+    }
 }
 
 void DisplayTable::setCellCollision(int row, int column, CollisionDraw colType, uint8_t _colDebug) {
