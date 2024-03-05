@@ -116,6 +116,7 @@ void YidsRom::updateSpriteMeta() {
         exit(EXIT_FAILURE);
     }
     this->spriteMetadata = std::vector<SpriteMeta>();
+    spriteFile.readLine(); // Skip the header
     while (!spriteFile.atEnd()) {
         QByteArray line = spriteFile.readLine();
         auto stringSplit = line.split(',');
