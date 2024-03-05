@@ -10,6 +10,7 @@ Sprite ID,Sprite name,Info,Len,Setings 0,Settings 1,Settings 2,Setting 3
 0x21,Piranha Plant,No settings,0,,,,
 0x22,Piranha Plant (upside-down),No settings,0,,,,
 0x23,Green Pipe,Graphical-only,4,"uint8 direction (0 is down, 1 is upwards, 2 is right, 3 is left)","uint8 unknown, trace",uint8 length,"uint8 unknown, maybe not padding, trace"
+0x25,Red Switch,Step on it to activate something,4,,,,
 0x28,Flower Collectible,No settings,0,,,,
 0x2d,Winged Cloud (Activator),Lots of settings; takes up 8 bytes,8,"uint8 activatorType (0 activates stairs or sunflower immediately, 1 red switch, 2 red switch, 3 red switch (I think 2+ doesn't matter))",uint8 unknown2 (might not do anything and the former is uint16),uint8 targetIndex,
 0x36,Yellow Shy Guy,4 bytes,4,"0 = wander, 2 = chase",next 3 bytes are likely padding,,
@@ -24,7 +25,9 @@ Sprite ID,Sprite name,Info,Len,Setings 0,Settings 1,Settings 2,Setting 3
 0x4e,Nipper Dandylion,Holds Nipper Spores,4,,,,
 0x54,Crazee Dayzee,4 bytes,4,?,,,
 0x5b,Shyguy Spawner,4 bytes,4,,,,
-0x91,Pinwheel,,8,?,,,
+0x7f,Fly Guy (Carry?),4 bytes,4,uint8 unknown,"uint8 item (0 = coins, 1 = red coin, 2 = 1up, 3 = nothing, 4 = nothing...)",<Likely padding>,
+0x81,Middle Ring,Midway point,4,,,,
+0x91,Pinwheel,Spinning platforms,8,?,,,
 0x93,Stairs Outline,Made with winged clouds,4,,,,
 0x94,Breakable Floating Dirt Block,See 1-3,0,,,,
 0x9a,Red Arrow Sign,A classic decoration,4,"uint8 whichSign (0x0 is left signpost, 0x1 is right signpost, 0x2 is up, 0x3 is up-right, 0x4 is right decal, 0x5 is down right decal, 0x6 is down decal, 0x7 is down left decal, 0x8 is left decal, 0x9 is up left decal, 0xA is left signpost, 0xB is left signpost, 0xC is invisible/broken)","uint8 isBehind (0xfe is in front of Yoshi, 0xff is behind)",<Padding>,
@@ -32,3 +35,4 @@ Sprite ID,Sprite name,Info,Len,Setings 0,Settings 1,Settings 2,Setting 3
 0x9c,Sunflower Seed Spawn,,4,uint8 unknown1,uint8 targetMaybe,,
 0x9f,Hint Block,,4,uint16 message,<Padding>,,
 0xa1,Grow Block,,4,"uint8 growOffset (strange, increasing it by 1 makes it move up one, but no further?)",?,,
+0xda,Background Alpha Activator,All zeroes on 1-1 coin run,4,,,,

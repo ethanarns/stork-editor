@@ -257,6 +257,10 @@ def handleArea(data: bytearray, index: int, stop: int):
     if index != stop:
         print(ind(2) + "Warning: unequal ending in AREA")
 
+def handleALPH(data: bytearray, index: int, stop: int):
+    print(data[index:stop])
+    pass
+
 def handlePath(data: bytearray, index: int, stop: int):
     pathCount = readUint32(data,index)
     print(ind(2) + "Path Count: " + hex(pathCount))
@@ -332,9 +336,14 @@ def handleMpdz(filename):
             handleArea(mpdz,readIndex+0,readIndex+topLength)
         elif topMagic == "PATH":
             handlePath(mpdz,readIndex+0,readIndex+topLength)
+        elif topMagic == "ALPH":
+            handleALPH(mpdz,readIndex+0,readIndex+topLength)
         else:
             print("Unhandled top-length instruction")
         readIndex += topLength
+    if readIndex != topLoopStop:
+        print("Didn't match end: readIndex vs topLoopStop")
+        print(hex(readIndex) + " vs " + hex(topLoopStop))
     # Not hit!
     if scenCount > 3:
         print("ERROR: UNUSUAL SCEN COUNT: " + str(scenCount))

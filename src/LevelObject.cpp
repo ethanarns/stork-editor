@@ -215,6 +215,14 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tileWidth = 2;
             break;
         }
+        case 0xdb: { // Outline coin
+            meta.tilesSectorOffset = 0x0;
+            meta.paletteSectorOffset = 0x7e;
+            meta.tilesCount = 4;
+            meta.tileWidth = 2;
+            meta.subTile = 12; // Flip to transparency frame
+            break;
+        }
         case 0xe7: { // M Block that only shows up when carrying baby Mario
             meta.tilesSectorOffset = 0x5f;
             meta.paletteSectorOffset = 0xe3;
