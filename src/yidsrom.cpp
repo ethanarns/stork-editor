@@ -103,8 +103,10 @@ void YidsRom::openRom(std::string fileName) {
     this->objectFiles[ObjectFileName::OBJSBBLOCK] = this->getObjPltFile("objsbblock.arc");
     this->objectFiles[ObjectFileName::OBJSBKACHIKACHI] = this->getObjPltFile("objsbkachikachi.arcz");
 
+    this->updateSpriteMeta();
+
+    // May replace this with manual
     std::string crsbFileName = this->getLevelFileNameFromMapIndex(0,0);
-    //auto crsb = this->loadCrsb(crsbFileName);
 
     // New way
     auto fileNameCrsb_noext = YUtils::getLowercase(crsbFileName);

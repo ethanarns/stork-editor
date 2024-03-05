@@ -61,15 +61,15 @@ void SelectionInfoTable::setText(int x, int y, std::string text, bool editable) 
 
 void SelectionInfoTable::updateWithLevelObject(LevelObject *lo) {
     this->spritePointer = lo;
-    auto textMetadata = LevelObject::getObjectTextMetadata(lo->objectId);
+    auto textMetadata = this->yidsRom->getSpriteMetadata(lo->objectId);
     std::stringstream s0;
     s0 << "0x" << std::hex << std::setw(2) << std::setfill('0') << lo->objectId;
     this->setText(1,0,s0.str(),false);
     std::stringstream s1;
     s1 << "0x" << std::hex << std::setw(2) << std::setfill('0') << lo->uuid;
     this->setText(1,1,s1.str(),false);
-    this->setText(1,2,textMetadata.prettyName,false);
-    this->setText(1,3,textMetadata.description,false);
+    this->setText(1,2,textMetadata.name,false);
+    this->setText(1,3,textMetadata.info,false);
     std::stringstream sX;
     sX << "0x" << std::hex << std::setw(2) << std::setfill('0') << lo->xPosition;
     std::stringstream sY;

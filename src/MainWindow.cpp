@@ -916,8 +916,7 @@ void MainWindow::objectListClick() {
         return;
     }
     QListWidgetItem* selectedItem = selectedItems.at(0);
-    auto objectId = (uint16_t)selectedItem->data(GuiObjectList::LEVEL_OBJECT_ID).toUInt();
-    auto textData = LevelObject::getObjectTextMetadata(objectId);
+    //auto objectId = (uint16_t)selectedItem->data(GuiObjectList::LEVEL_OBJECT_ID).toUInt();
     uint32_t objectUuid = (uint32_t)selectedItem->data(GuiObjectList::LEVEL_OBJECT_UUID).toUInt();
     std::stringstream ss;
     ss << "Selected object list object with UUID 0x" << std::hex << objectUuid;

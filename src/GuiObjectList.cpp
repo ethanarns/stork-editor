@@ -26,8 +26,8 @@ void GuiObjectList::updateList() {
         ++objItP
     ) {
         auto objIt = (*objItP);
-        ObjectTextMetadata textData = LevelObject::getObjectTextMetadata(objIt->objectId);
-        QListWidgetItem* item = new QListWidgetItem(tr(textData.prettyName.c_str()));
+        auto textData = this->yidsRom->getSpriteMetadata(objIt->objectId);
+        QListWidgetItem* item = new QListWidgetItem(tr(textData.name.c_str()));
         item->setData(GuiObjectList::LEVEL_OBJECT_UUID,objIt->uuid);
         item->setData(GuiObjectList::LEVEL_OBJECT_ID,objIt->objectId);
         this->addItem(item);

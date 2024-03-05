@@ -1081,7 +1081,7 @@ void DisplayTable::updateSprites() {
         // if (it->objectId == 0x94) {
         //     std::cout << objectGraphicsMeta.whichObjectFile << std::endl;
         // }
-        auto objectTextMeta = LevelObject::getObjectTextMetadata(it->objectId);
+        auto objectTextMeta = this->yidsRom->getSpriteMetadata(it->objectId);
         if (objectGraphicsMeta.tilesCount == 0) {
             // top left I think
             potentialExisting->setData(PixelDelegateData::OBJECT_ID,(uint32_t)it->objectId);
@@ -1091,9 +1091,9 @@ void DisplayTable::updateSprites() {
             std::stringstream ss;
             ss << "0x" << std::hex << (uint32_t)it->objectId;
             ss << std::endl;
-            ss << objectTextMeta.prettyName;
+            ss << objectTextMeta.name;
             ss << std::endl;
-            ss << objectTextMeta.description;
+            ss << objectTextMeta.info;
             potentialExisting->setToolTip(tr(ss.str().c_str()));
             // Top Right
             auto topRight = this->item(y,x+1);

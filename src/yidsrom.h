@@ -32,6 +32,18 @@ struct RomMetadata {
     uint32_t fatSize;
 };
 
+/**
+ * Everything needed to place and get info on a Sprite
+ * Doesn't contain much render data
+*/
+struct SpriteMeta {
+    uint16_t spriteId;
+    std::string name;
+    std::string info;
+    // ONLY use this for creating the object itself
+    uint16_t createdSettingsLen;
+};
+
 class YidsRom {
 public:
     const char* GAME_CODE = "AYWE";
@@ -39,6 +51,9 @@ public:
     std::vector<uint8_t> uncompedRomVector;
     RomMetadata metadata;
     MapData* mapData;
+
+    std::vector<SpriteMeta> spriteMetadata;
+    SpriteMeta getSpriteMetadata(uint32_t spriteId);
 
     QByteArray universalPalette;
 
@@ -89,6 +104,8 @@ public:
 private:
     void initArm9RomData(std::string fileName, std::vector<uint8_t> &compedRom);
     ObjectFile getMajorObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes);
+
+    void updateSpriteMeta();
 };
 
 #endif

@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <vector>
+#include <QFile>
 
 void YidsRom::loadMpdz(std::string fileName_noext) {
     std::stringstream ssMpdzLoad;
@@ -102,6 +103,61 @@ ObjectFile YidsRom::getMajorObjPltFile(std::string objset_filename, std::map<uin
         YUtils::printDebug("Pulled zero PLTB records",DebugType::ERROR);
     }
     return objFileData;
+}
+
+void YidsRom::updateSpriteMeta() {
+    YUtils::printDebug("Updating sprite metadata");
+    QFile spriteFile("sprites.csv");
+    if (!spriteFile.open(QIODevice::ReadOnly)) {
+        YUtils::printDebug(spriteFile.errorString().toStdString());
+        YUtils::popupAlert(spriteFile.errorString().toStdString());
+        return;
+    }
+    this->spriteMetadata = std::vector<SpriteMeta>();
+    while (!spriteFile.atEnd()) {
+        QByteArray line = spriteFile.readLine();
+        auto stringSplit = line.split(',');
+        if (stringSplit.size() < 4) {
+            YUtils::printDebug("StringSplit was small, skipping",DebugType::WARNING);
+            continue;
+        }
+        auto spriteId = stringSplit.at(0).toUInt(nullptr,16);
+        if (spriteId > 0xffff) {
+            YUtils::printDebug("Sprite ID too high, skipping",DebugType::ERROR);
+            continue;
+        }
+        auto spriteName = stringSplit.at(1).toStdString();
+        auto textDetails = stringSplit.at(2).toStdString();
+        auto settingsLength = stringSplit.at(3).toUInt(nullptr,10);
+        if (settingsLength % 4 != 0) {
+            YUtils::printDebug("Settings length retrieved was not divisible by 4, skipping",DebugType::ERROR);
+            continue;
+        }
+        SpriteMeta smetta;
+        smetta.spriteId = (uint16_t)spriteId;
+        smetta.name = spriteName;
+        smetta.info = textDetails;
+        smetta.createdSettingsLen = settingsLength; // remember, ONLY for new objects
+        spriteMetadata.push_back(smetta);
+    }
+    // spriteMetadata should be filled
+}
+
+SpriteMeta YidsRom::getSpriteMetadata(uint32_t spriteId) {
+    for (auto it = this->spriteMetadata.begin(); it != this->spriteMetadata.end(); it++) {
+        if (it->spriteId == spriteId) {
+            return *it;
+        }
+    }
+    //YUtils::printDebug("Sprite metadata not found",DebugType::VERBOSE);
+    SpriteMeta blank;
+    std::stringstream ssName;
+    ssName << "Sprite 0x" << std::hex << spriteId;
+    blank.name = ssName.str();
+    blank.info = "Undocumented";
+    blank.createdSettingsLen = 4; // ONLY use this for sprite creation
+    blank.spriteId = (uint16_t)spriteId;
+    return blank;
 }
 
 ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
