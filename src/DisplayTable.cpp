@@ -1121,7 +1121,7 @@ void DisplayTable::updateSprites() {
             // Bottom Left
             auto bottomLeft = this->item(y+1,x);
             if (bottomLeft == nullptr) {
-                topRight = new QTableWidgetItem();
+                bottomLeft = new QTableWidgetItem();
             }
             bottomLeft->setData(PixelDelegateData::OBJECT_ID,(uint32_t)it->objectId);
             bottomLeft->setData(PixelDelegateData::OBJECT_UUID,it->uuid);

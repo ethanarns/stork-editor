@@ -107,7 +107,7 @@ ObjectFile YidsRom::getMajorObjPltFile(std::string objset_filename, std::map<uin
 
 void YidsRom::updateSpriteMeta() {
     YUtils::printDebug("Updating sprite metadata");
-    QFile spriteFile("sprites.csv");
+    QFile spriteFile(":/sprites.csv");
     if (!spriteFile.open(QIODevice::ReadOnly)) {
         std::stringstream ssMetaFileLoadFail;
         ssMetaFileLoadFail << "Failed to load sprites.csv: " << spriteFile.errorString().toStdString();
