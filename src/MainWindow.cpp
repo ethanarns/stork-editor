@@ -924,6 +924,7 @@ void MainWindow::objectListClick() {
     auto loadedLevelObject = this->rom->mapData->getLevelObjectByUuid(objectUuid);
     if (loadedLevelObject == nullptr) {
         YUtils::printDebug("Loaded Level Object with that UUID not found",DebugType::ERROR);
+        YUtils::popupAlert("Loaded Level Object with that UUID not found");
         return;
     }
     this->selectionInfoTable->updateWithLevelObject(loadedLevelObject);
@@ -931,6 +932,13 @@ void MainWindow::objectListClick() {
         this->grid->clearSelection();
         this->grid->selectItemByUuid(objectUuid,false);
         this->selectionInfoTable->updateWithLevelObject(loadedLevelObject);
+        auto itemTile = this->grid->item(loadedLevelObject->yPosition,loadedLevelObject->xPosition);
+        if (itemTile == nullptr) {
+            YUtils::printDebug("WidgetItem trying to scroll to is null",DebugType::ERROR);
+            YUtils::popupAlert("WidgetItem trying to scroll to is null");
+            return;
+        }
+        this->grid->scrollToItem(itemTile);
     }
 }
 
