@@ -428,3 +428,15 @@ PathData::PathData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_
     }
     //std::cout << "Got " << std::hex << this->paths.size() << " Path vectors in PATH";
 }
+
+AlphaData::AlphaData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    YUtils::printDebug("ALPH data not yet handled, but will probably recompile",DebugType::WARNING);
+    this->byte1 = mpdzBytes.at(mpdzIndex);
+    mpdzIndex++;
+    this->byte2 = mpdzBytes.at(mpdzIndex);
+    mpdzIndex++;
+    this->byte3 = mpdzBytes.at(mpdzIndex);
+    mpdzIndex++;
+    this->byte4 = mpdzBytes.at(mpdzIndex);
+    mpdzIndex++;
+}

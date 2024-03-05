@@ -232,6 +232,33 @@ public:
     std::vector<Chartile> chartiles;
 };
 
+// ALPH
+class AlphaData : public LevelData {
+public:
+    AlphaData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    std::string toString() {
+        std::stringstream ss;
+        ss << "ALPH { todo";
+        ss << " }";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
+        std::vector<uint8_t> result;
+        result.push_back(this->byte1);
+        result.push_back(this->byte2);
+        result.push_back(this->byte3);
+        result.push_back(this->byte4);
+        return FsPacker::packInstruction(Constants::ALPH_MAGIC_NUM,result,false);
+    };
+    uint32_t getMagic() { return Constants::ALPH_MAGIC_NUM; }
+
+    uint8_t byte1;
+    uint8_t byte2;
+    uint8_t byte3;
+    uint8_t byte4;
+};
+
 // MPBZ
 class MapTilesData : public LevelData {
 public:

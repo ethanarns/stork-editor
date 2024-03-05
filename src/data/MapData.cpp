@@ -223,6 +223,9 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
         } else if (subMagic == Constants::PATH_MAGIC_NUM) {
             auto path = new PathData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subData.push_back(path);
+        } else if (subMagic == Constants::ALPH_MAGIC_NUM) {
+            auto alph = new AlphaData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subData.push_back(alph);
         } else {
             std::stringstream ssSubNotFound;
             ssSubNotFound << "Unknown MPDZ data: ";
