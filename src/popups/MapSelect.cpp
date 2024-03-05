@@ -97,7 +97,7 @@ void MapSelect::currentItemChanged(QListWidgetItem *current, QListWidgetItem *pr
         return;
     }
     auto crsbData = new LevelSelectData(crsbVector);
-    YUtils::printDebug("Updating right list",DebugType::VERBOSE);
+    //YUtils::printDebug("Updating right list",DebugType::VERBOSE);
     for (int i = 0; i < this->rightList->count(); i++) {
         delete this->rightList->item(i);
     }
@@ -123,6 +123,7 @@ void MapSelect::cancelClicked() {
 }
 
 void MapSelect::confirmClicked() {
+    this->hide();
     //YUtils::printDebug("confirmClicked()");
     auto rightSelectedItems = this->rightList->selectedItems();
     if (rightSelectedItems.size() != 1) {
@@ -138,5 +139,4 @@ void MapSelect::confirmClicked() {
     }
     auto mapName = selectedItem->text().toStdString();
     emit this->mpdzSelected(mapName);
-    this->hide();
 }
