@@ -736,42 +736,22 @@ void MainWindow::menuClick_export() {
  ****************************/
 
 void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
-    YUtils::printDebug(mpdzNoExt);
-    // auto potentialCurrentItem = this->levelSelect->currentItem();
-    // if (potentialCurrentItem == nullptr) {
-    //     return;
-    // }
-    // auto potentialItemCrsb = potentialCurrentItem->data(LevelSelect::ITEM_DATA_ID_CRSB);
-    // if (potentialCurrentItem == NULL || potentialCurrentItem == nullptr) {
-    //     YUtils::printDebug("Invalid CRSB data attached to item",DebugType::ERROR);
-    //     return;
-    // }
-    // this->grid->wipeTable();
-    // this->guiObjectList->wipeList();
-    // this->rom->wipeLevelData();
-    // auto loadingCrsb = potentialItemCrsb.toString().toStdString();
-    // std::stringstream ssLevelLoad;
-    // ssLevelLoad << "Loading CRSB (Level) '" << loadingCrsb << "'";
-    // YUtils::printDebug(ssLevelLoad.str(),DebugType::VERBOSE);
-
-    // //auto fileNameCrsb_noext = YUtils::getLowercase(loadingCrsb); // Fixed 5-SP_E.crsb
-    // auto crsbFilename = loadingCrsb.append(".crsb");
-    // auto crsbFileVector = this->rom->getByteVectorFromFile(crsbFilename);
-    // auto crsbData = new LevelSelectData(crsbFileVector);
-
-    // auto firstMapName = crsbData->levels.at(0)->mpdzFileNoExtension;
-    // this->rom->loadMpdz(firstMapName);
-    // this->mapSelectPopup->close(); //this->levelSelectPopup->close();
-    // // Visual updates
-    // this->grid->firstLayerDrawDone = false;
-    // this->grid->updateBg();
-    // this->grid->initCellCollision();
-    // this->grid->updateSprites();
-    // this->grid->setLayerDraw(4,true);
-    // //this->chartilesTable->refreshLoadedMapTilesMap(2);
-    // this->paletteTable->refreshLoadedTiles();
-    // this->guiObjectList->updateList();
-    // this->grid->updateTriggerBoxes();
+    std::stringstream ssMapPopup;
+    ssMapPopup << "Loading MPDZ from popup: " << mpdzNoExt;
+    YUtils::printDebug(ssMapPopup.str());
+    this->grid->wipeTable();
+    this->guiObjectList->wipeList();
+    this->rom->wipeLevelData();
+    this->rom->loadMpdz(mpdzNoExt);
+    // Visual updates
+    this->grid->firstLayerDrawDone = false;
+    this->grid->updateBg();
+    this->grid->initCellCollision();
+    this->grid->updateSprites();
+    this->grid->setLayerDraw(4,true);
+    this->paletteTable->refreshLoadedTiles();
+    this->guiObjectList->updateList();
+    this->grid->updateTriggerBoxes();
 }
 
 void MainWindow::menuClick_viewBg1(bool checked) {

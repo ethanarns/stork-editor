@@ -123,7 +123,7 @@ void MapSelect::cancelClicked() {
 }
 
 void MapSelect::confirmClicked() {
-    YUtils::printDebug("confirmClicked()");
+    //YUtils::printDebug("confirmClicked()");
     auto rightSelectedItems = this->rightList->selectedItems();
     if (rightSelectedItems.size() != 1) {
         YUtils::printDebug("Unusual right selection size",DebugType::ERROR);
