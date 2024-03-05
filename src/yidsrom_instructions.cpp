@@ -109,9 +109,11 @@ void YidsRom::updateSpriteMeta() {
     YUtils::printDebug("Updating sprite metadata");
     QFile spriteFile("sprites.csv");
     if (!spriteFile.open(QIODevice::ReadOnly)) {
-        YUtils::printDebug(spriteFile.errorString().toStdString());
-        YUtils::popupAlert(spriteFile.errorString().toStdString());
-        return;
+        std::stringstream ssMetaFileLoadFail;
+        ssMetaFileLoadFail << "Failed to load sprites.csv: " << spriteFile.errorString().toStdString();
+        YUtils::printDebug(ssMetaFileLoadFail.str());
+        YUtils::popupAlert(ssMetaFileLoadFail.str());
+        exit(EXIT_FAILURE);
     }
     this->spriteMetadata = std::vector<SpriteMeta>();
     while (!spriteFile.atEnd()) {
