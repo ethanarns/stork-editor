@@ -430,13 +430,13 @@ PathData::PathData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_
 }
 
 AlphaData::AlphaData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
-    YUtils::printDebug("ALPH data not yet handled, but will probably recompile",DebugType::WARNING);
-    this->byte1 = mpdzBytes.at(mpdzIndex);
-    mpdzIndex++;
-    this->byte2 = mpdzBytes.at(mpdzIndex);
-    mpdzIndex++;
-    this->byte3 = mpdzBytes.at(mpdzIndex);
-    mpdzIndex++;
-    this->byte4 = mpdzBytes.at(mpdzIndex);
-    mpdzIndex++;
+    Q_UNUSED(stop);
+    YUtils::printDebug("ALPH data not yet fully understood, but will (probably) recompile correctly",DebugType::WARNING);
+    this->byte1 = mpdzBytes.at(mpdzIndex++);
+    this->byte2 = mpdzBytes.at(mpdzIndex++);
+    this->byte3 = mpdzBytes.at(mpdzIndex++);
+    this->byte4 = mpdzBytes.at(mpdzIndex++);
+    if (mpdzIndex != stop) {
+        YUtils::printDebug("ALPH decompilation length mismatch",DebugType::ERROR);
+    }
 }

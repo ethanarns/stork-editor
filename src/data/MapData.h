@@ -238,7 +238,7 @@ public:
     AlphaData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
     std::string toString() {
         std::stringstream ss;
-        ss << "ALPH { todo";
+        ss << "ALPH { UNHANDLED";
         ss << " }";
         return ss.str();
     };
