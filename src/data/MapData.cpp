@@ -226,7 +226,7 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
         } else {
             std::stringstream ssSubNotFound;
             ssSubNotFound << "Unknown MPDZ data: ";
-            ssSubNotFound << std::hex << subMagic;
+            ssSubNotFound << std::hex << YUtils::magicToAscii(subMagic);
             YUtils::printDebug(ssSubNotFound.str(),DebugType::WARNING);
             ssSubNotFound << ", saving the level may corrupt it!";
             YUtils::popupAlert(ssSubNotFound.str());

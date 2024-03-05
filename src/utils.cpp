@@ -522,6 +522,19 @@ QColor YUtils::invertColor(QColor in) {
     return newColor;
 }
 
+std::string YUtils::magicToAscii(uint32_t hexText) {
+    uint32_t lastByte = hexText >> 24;
+    uint32_t thirdByte = hexText >> 16 % 0x100;
+    uint32_t secondByte = hexText >> 8 % 0x100;
+    uint32_t firstByte = hexText % 0x100;
+    std::string result;
+    result.push_back((char)firstByte);
+    result.push_back((char)secondByte);
+    result.push_back((char)thirdByte);
+    result.push_back((char)lastByte);
+    return result;
+}
+
 std::string YUtils::relativeToEscapedAbs(std::string relPath) {
     std::stringstream res;
     auto absPath = std::filesystem::absolute(relPath);
