@@ -418,6 +418,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
      *** OBJECTS ***
      ***************/
     if (index.data(PixelDelegateData::DRAW_OBJECTS).isNull() || index.data(PixelDelegateData::DRAW_OBJECTS).toBool() == true) {
+        bool spriteSelected = index.data(PixelDelegateData::SPRITE_SELECTED).toBool();
         int objectId = index.data(PixelDelegateData::OBJECT_ID).toInt();
         Q_UNUSED(objectId);
 
@@ -435,6 +436,9 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                     objectPalette.at(whichPalette*2),
                     objectPalette.at(whichPalette*2+1)
                 );
+                if (spriteSelected) {
+                    qc = YUtils::invertColor(qc);
+                }
                 int x = i % 8;
                 // if (index.data(PixelDelegateData::FLIP_H_BG1).toBool() == true) {
                 //     x = (8 - x - 1);
@@ -454,7 +458,11 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             auto rectCopy = option.rect;
             rectCopy.setHeight(option.rect.height());
             rectCopy.setWidth(option.rect.width());
-            painter->fillRect(rectCopy,"purple");
+            if (spriteSelected) {
+                painter->fillRect(rectCopy,"pink");
+            } else {
+                painter->fillRect(rectCopy,"purple");
+            }
         }
     }
     

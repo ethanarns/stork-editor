@@ -72,7 +72,8 @@ enum PixelDelegateData {
 
     TILE_SELECTED_BG1 = 135,
     TILE_SELECTED_BG2 = 136,
-    TILE_SELECTED_BG3 = 137
+    TILE_SELECTED_BG3 = 137,
+    SPRITE_SELECTED = 138
 };
 
 enum CollisionType {

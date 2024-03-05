@@ -424,6 +424,7 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                 YUtils::printDebug("Mismatch in selected item and cursor item, deselecting",DebugType::VERBOSE);
                 this->clearSelection();
                 this->selectedObjects.clear();
+                this->clearVisualSpriteSelection();
                 return;
             }
             if (cursorUuidMaybe.toUInt() == selectedObjectUuid) {
@@ -469,6 +470,7 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                 YUtils::printDebug("Area clicked does not have an item UUID, deselecting all");
                 this->clearSelection();
                 this->selectedObjects.clear();
+                this->clearVisualSpriteSelection();
                 return;
             }
         }
@@ -654,12 +656,14 @@ void DisplayTable::selectItemByUuid(uint32_t uuid, bool triggerMainWindowUpdate)
         YUtils::printDebug("Zero sprites given text data!",DebugType::WARNING);
         return;
     }
+    this->clearVisualSpriteSelection();
     for (int i = 0; i < allItems.size(); i++) {
         auto potentialItem = allItems.at(i);
         if (potentialItem != nullptr) {
             uint32_t foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt();
             if (foundUuid == uuid) {
                 potentialItem->setSelected(true);
+                potentialItem->setData(PixelDelegateData::SPRITE_SELECTED,true);
             }
         }
     }
@@ -956,6 +960,19 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
     uint32_t index = column + (row * scen->getInfo()->layerWidth);
     mpbz->tileRenderData.at(index) = mapRecord.compile();
     return true;
+}
+
+void DisplayTable::clearVisualSpriteSelection() {
+    const int ROW_COUNT = this->rowCount();
+    const int COLUMN_COUNT = this->columnCount();
+    for (int row = 0; row < ROW_COUNT; row++) {
+        for (int col = 0; col < COLUMN_COUNT; col++) {
+            auto potentialItem = this->item(row,col);
+            if (potentialItem != nullptr) {
+                potentialItem->setData(PixelDelegateData::SPRITE_SELECTED,false);
+            }
+        }
+    }
 }
 
 void DisplayTable::setLayerDraw(uint whichLayer, bool shouldDraw) {
