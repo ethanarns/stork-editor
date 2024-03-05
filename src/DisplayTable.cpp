@@ -589,9 +589,10 @@ void DisplayTable::mouseMoveEvent(QMouseEvent *event) {
         globalSettings.layerSelectMode == LayerMode::BG3_LAYER
     ) {
         this->selectorBand->setGeometry(QRect(this->selectorBandOrigin, event->pos()).normalized());
-    } else {
-        QTableWidget::mouseMoveEvent(event);
+        
     }
+    // Does too much stuff, such as drag and cell entering, to not do
+    QTableWidget::mouseMoveEvent(event);
 }
 
 void DisplayTable::dragEnterEvent(QDragEnterEvent *event) {
