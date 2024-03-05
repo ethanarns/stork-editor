@@ -704,7 +704,7 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
         return;
     }
     YUtils::printDebug(ss.str(),DebugType::VERBOSE);
-    this->grid->clearSelection();
+    this->grid->clearVisualSpriteSelection();
 }
 
 /*******************
@@ -885,7 +885,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
             YUtils::printDebug("Updating selection info table with empty object");
             this->selectionInfoTable->updateWithLevelObject(&empty);
             this->guiObjectList->updateList();
-            this->grid->clearSelection(); // Default
+            this->grid->clearVisualSpriteSelection();
             this->markSavableUpdate();
             return;
         } else {
@@ -929,7 +929,7 @@ void MainWindow::objectListClick() {
     }
     this->selectionInfoTable->updateWithLevelObject(loadedLevelObject);
     if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
-        this->grid->clearSelection();
+        this->grid->clearVisualSpriteSelection();
         this->grid->selectItemByUuid(objectUuid,false);
         this->selectionInfoTable->updateWithLevelObject(loadedLevelObject);
         auto itemTile = this->grid->item(loadedLevelObject->yPosition,loadedLevelObject->xPosition);
@@ -1000,7 +1000,7 @@ void MainWindow::displayTableUpdate(){
 void MainWindow::selectionWindowUpdate(LevelObject *sprite) {
     this->grid->wipeObject(sprite->uuid);
     this->grid->updateSprites();
-    this->grid->clearSelection();
+    this->grid->clearVisualSpriteSelection();
     this->grid->selectedObjects.clear();
     this->grid->selectItemByUuid(sprite->uuid);
 }

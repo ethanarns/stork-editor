@@ -205,7 +205,7 @@ void DisplayTable::cellEnteredTriggered(int y, int x) {
             this->setHover(roundDownRowY+0,roundDownColX+1,HoverType::HOVER_TR);
             this->setHover(roundDownRowY+1,roundDownColX+1,HoverType::HOVER_BR);
         } else if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
-            if (curCell->isSelected()) {
+            if (curCell->data(PixelDelegateData::SPRITE_SELECTED).toBool() == true) {
                 this->setCursor(Qt::OpenHandCursor);
             } else {
                 this->setCursor(Qt::CrossCursor);
@@ -422,7 +422,6 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
             auto cursorUuidMaybe = curItemUnderCursor->data(PixelDelegateData::OBJECT_UUID);
             if (cursorUuidMaybe.isNull()) {
                 YUtils::printDebug("Mismatch in selected item and cursor item, deselecting",DebugType::VERBOSE);
-                this->clearSelection();
                 this->selectedObjects.clear();
                 this->clearVisualSpriteSelection();
                 return;
@@ -441,7 +440,7 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                 return;
             } else {
                 //YUtils::printDebug("Clicked a different object, selecting it");
-                this->clearSelection();
+                this->clearVisualSpriteSelection();
                 this->selectedObjects.clear();
                 this->selectItemByUuid(cursorUuidMaybe.toUInt());
                 return;
@@ -460,7 +459,7 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                     return;
                 }
                 // Change the following 2 lines when multiple item selection is enabled
-                this->clearSelection();
+                this->clearVisualSpriteSelection();
                 this->selectedObjects.clear();
 
                 YUtils::printDebug("Doing item selection in mousePressEvent");
@@ -468,7 +467,6 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                 return;
             } else {
                 YUtils::printDebug("Area clicked does not have an item UUID, deselecting all");
-                this->clearSelection();
                 this->selectedObjects.clear();
                 this->clearVisualSpriteSelection();
                 return;
@@ -656,13 +654,11 @@ void DisplayTable::selectItemByUuid(uint32_t uuid, bool triggerMainWindowUpdate)
         YUtils::printDebug("Zero sprites given text data!",DebugType::WARNING);
         return;
     }
-    this->clearVisualSpriteSelection();
     for (int i = 0; i < allItems.size(); i++) {
         auto potentialItem = allItems.at(i);
         if (potentialItem != nullptr) {
             uint32_t foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt();
             if (foundUuid == uuid) {
-                potentialItem->setSelected(true);
                 potentialItem->setData(PixelDelegateData::SPRITE_SELECTED,true);
             }
         }
@@ -844,7 +840,7 @@ void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
     this->wipeObject(uuid);
     this->yidsRom->moveObjectTo(uuid,newX,newY);
     this->updateSprites();
-    this->clearSelection();
+    this->clearVisualSpriteSelection();
     this->selectedObjects.clear();
     this->selectItemByUuid(uuid);
 }
