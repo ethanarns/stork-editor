@@ -22,11 +22,11 @@
 #include "popups/PaletteTable.h"
 #include "popups/ObjTilesTable.h"
 #include "GlobalSettings.h"
-#include "popups/LevelSelect.h"
 #include "GuiObjectList.h"
 #include "SelectionInfoTable.h"
 #include "popups/BrushWindow.h"
 #include "popups/ColWindow.h"
+#include "popups/MapSelect.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -65,8 +65,7 @@ private:
     QSpinBox* spritePaletteSelect;
 
     QWidget* palettePopup;
-    QWidget* levelSelectPopup;
-    LevelSelect* levelSelect;
+    MapSelect* mapSelectPopup;
     QComboBox* layerSelectDropdown;
     GuiObjectList* guiObjectList;
 
@@ -107,7 +106,6 @@ private:
     void menuClick_levelSelect();
     void menuClick_export();
 
-    void buttonClick_levelSelect_cancel();
     void buttonClick_levelSelect_load();
 
     void objectListClick();

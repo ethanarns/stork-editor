@@ -106,7 +106,7 @@ MainWindow::MainWindow() {
 
     menu_file->addSeparator();
 
-    this->menu_levelSelect = new QAction("&Select Level...",this);
+    this->menu_levelSelect = new QAction("&Select Map...",this);
     this->menu_levelSelect->setShortcut(tr("CTRL+U"));
     //this->menu_levelSelect->setIcon(QIcon::fromTheme("document-page-setup"));
     menu_file->addAction(this->menu_levelSelect);
@@ -489,25 +489,7 @@ MainWindow::MainWindow() {
      *** LEVEL SELECT ***
      ********************/
     // Initial setup //
-    this->levelSelectPopup = new QWidget;
-    QVBoxLayout* levelSelectLayout = new QVBoxLayout(this);
-    this->levelSelect = new LevelSelect(this,this->rom);
-    levelSelectLayout->addWidget(this->levelSelect);
-    this->levelSelectPopup->setLayout(levelSelectLayout);
-    // Load and Cancel buttons //
-    QHBoxLayout* levelSelectButtonsLayout = new QHBoxLayout(this);
-    levelSelectLayout->addLayout(levelSelectButtonsLayout);
-    // Load/Okay
-    QPushButton* levelSelectButton_okay = new QPushButton("&Load",this);
-    levelSelectButtonsLayout->addWidget(levelSelectButton_okay);
-    connect(levelSelectButton_okay,&QPushButton::released, this, &MainWindow::buttonClick_levelSelect_load);
-    // Cancel
-    QPushButton* levelSelectButton_cancel = new QPushButton("&Cancel", this);
-    levelSelectButtonsLayout->addWidget(levelSelectButton_cancel);
-    connect(levelSelectButton_cancel,&QPushButton::released, this, &MainWindow::buttonClick_levelSelect_cancel);
-    
-    // Remaining qualities //
-    this->levelSelectPopup->setWindowTitle("Select a level");
+    this->mapSelectPopup = new MapSelect(this,this->rom);
 
     this->statusBar()->show();
     this->statusBar()->setStyleSheet("QStatusBar {padding: 0; margin:0;}");
@@ -712,15 +694,15 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
  *******************/
 
 void MainWindow::menuClick_levelSelect() {
-    //cout << "Level Select Clicked" << endl;
-    if (this->levelSelectPopup->isVisible()) {
+    std::cout << "Map Select Clicked" << std::endl;
+    if (this->mapSelectPopup->isVisible()) {
         // It's still open, so just bring it to the front
-        this->levelSelectPopup->activateWindow();
-        this->levelSelectPopup->raise();
+        this->mapSelectPopup->activateWindow();
+        this->mapSelectPopup->raise();
         return;
     }
-    this->levelSelectPopup->show();
-    this->levelSelect->updateList();
+    this->mapSelectPopup->show();
+    //this->levelSelect->updateList();
 }
 
 void MainWindow::menuClick_export() {
@@ -749,45 +731,41 @@ void MainWindow::menuClick_export() {
  ****************************/
 
 void MainWindow::buttonClick_levelSelect_load() {
-    auto potentialCurrentItem = this->levelSelect->currentItem();
-    if (potentialCurrentItem == nullptr) {
-        return;
-    }
-    auto potentialItemCrsb = potentialCurrentItem->data(LevelSelect::ITEM_DATA_ID_CRSB);
-    if (potentialCurrentItem == NULL || potentialCurrentItem == nullptr) {
-        YUtils::printDebug("Invalid CRSB data attached to item",DebugType::ERROR);
-        return;
-    }
-    this->grid->wipeTable();
-    this->guiObjectList->wipeList();
-    this->rom->wipeLevelData();
-    auto loadingCrsb = potentialItemCrsb.toString().toStdString();
-    std::stringstream ssLevelLoad;
-    ssLevelLoad << "Loading CRSB (Level) '" << loadingCrsb << "'";
-    YUtils::printDebug(ssLevelLoad.str(),DebugType::VERBOSE);
+    // auto potentialCurrentItem = this->levelSelect->currentItem();
+    // if (potentialCurrentItem == nullptr) {
+    //     return;
+    // }
+    // auto potentialItemCrsb = potentialCurrentItem->data(LevelSelect::ITEM_DATA_ID_CRSB);
+    // if (potentialCurrentItem == NULL || potentialCurrentItem == nullptr) {
+    //     YUtils::printDebug("Invalid CRSB data attached to item",DebugType::ERROR);
+    //     return;
+    // }
+    // this->grid->wipeTable();
+    // this->guiObjectList->wipeList();
+    // this->rom->wipeLevelData();
+    // auto loadingCrsb = potentialItemCrsb.toString().toStdString();
+    // std::stringstream ssLevelLoad;
+    // ssLevelLoad << "Loading CRSB (Level) '" << loadingCrsb << "'";
+    // YUtils::printDebug(ssLevelLoad.str(),DebugType::VERBOSE);
 
-    //auto fileNameCrsb_noext = YUtils::getLowercase(loadingCrsb); // Fixed 5-SP_E.crsb
-    auto crsbFilename = loadingCrsb.append(".crsb");
-    auto crsbFileVector = this->rom->getByteVectorFromFile(crsbFilename);
-    auto crsbData = new LevelSelectData(crsbFileVector);
+    // //auto fileNameCrsb_noext = YUtils::getLowercase(loadingCrsb); // Fixed 5-SP_E.crsb
+    // auto crsbFilename = loadingCrsb.append(".crsb");
+    // auto crsbFileVector = this->rom->getByteVectorFromFile(crsbFilename);
+    // auto crsbData = new LevelSelectData(crsbFileVector);
 
-    auto firstMapName = crsbData->levels.at(0)->mpdzFileNoExtension;
-    this->rom->loadMpdz(firstMapName);
-    this->levelSelectPopup->close();
-    // Visual updates
-    this->grid->firstLayerDrawDone = false;
-    this->grid->updateBg();
-    this->grid->initCellCollision();
-    this->grid->updateSprites();
-    this->grid->setLayerDraw(4,true);
-    //this->chartilesTable->refreshLoadedMapTilesMap(2);
-    this->paletteTable->refreshLoadedTiles();
-    this->guiObjectList->updateList();
-    this->grid->updateTriggerBoxes();
-}
-
-void MainWindow::buttonClick_levelSelect_cancel() {
-    this->levelSelectPopup->close();
+    // auto firstMapName = crsbData->levels.at(0)->mpdzFileNoExtension;
+    // this->rom->loadMpdz(firstMapName);
+    // this->mapSelectPopup->close(); //this->levelSelectPopup->close();
+    // // Visual updates
+    // this->grid->firstLayerDrawDone = false;
+    // this->grid->updateBg();
+    // this->grid->initCellCollision();
+    // this->grid->updateSprites();
+    // this->grid->setLayerDraw(4,true);
+    // //this->chartilesTable->refreshLoadedMapTilesMap(2);
+    // this->paletteTable->refreshLoadedTiles();
+    // this->guiObjectList->updateList();
+    // this->grid->updateTriggerBoxes();
 }
 
 void MainWindow::menuClick_viewBg1(bool checked) {
@@ -1009,7 +987,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     this->brushWindow->close();
     this->palettePopup->close();
     this->chartilesPopup->close();
-    this->levelSelectPopup->close();
+    this->mapSelectPopup->close(); //this->levelSelectPopup->close();
     this->objtilesPopup->close();
     this->colWindow->close();
     event->accept();
