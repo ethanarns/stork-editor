@@ -422,6 +422,10 @@ void DisplayTable::handleSpritesRightClickPress(QMouseEvent *event) {
         YUtils::printDebug("colX less than 0",DebugType::ERROR);
         return;
     }
+    // Knock out a few early errors
+    this->selectedObjects.clear();
+    this->clearSelection();
+
     uint32_t spriteId = globalSettings.currentSpriteIdToAdd;
     auto spriteMeta = this->yidsRom->getSpriteMetadata(spriteId);
     LevelObject newSprite;
@@ -434,10 +438,8 @@ void DisplayTable::handleSpritesRightClickPress(QMouseEvent *event) {
     newSprite.settings.resize(newSprite.settingsLength); // Should fill with zeroes
     newSprite.objectId = spriteId;
     auto newObjectPointer = this->yidsRom->mapData->addSpriteData(newSprite);
-    this->selectedObjects.clear();
     this->clearVisualSpriteSelection();
     this->updateSprites();
-    this->selectedObjects.push_back(newObjectPointer->uuid);
     this->selectItemByUuid(newObjectPointer->uuid,false);
     emit this->triggerMainWindowUpdate();
 }
