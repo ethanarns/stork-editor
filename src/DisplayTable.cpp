@@ -1189,9 +1189,9 @@ void DisplayTable::updateSprites() {
         } else {
             this->placeObjectTile(
                 (uint32_t)x,(uint32_t)y,
-                objectGraphicsMeta.tilesSectorOffset,
+                objectGraphicsMeta.indexOfTiles,
                 objectGraphicsMeta.subTile,
-                objectGraphicsMeta.paletteSectorOffset,
+                objectGraphicsMeta.indexOfPalette,
                 objectGraphicsMeta.tileWidth,
                 objectGraphicsMeta.tilesCount,
                 objectGraphicsMeta.whichPaletteFile,
@@ -1233,21 +1233,17 @@ void DisplayTable::placeObjectTile(
     uint32_t yPixelOffset,
     uint32_t uuid
 ) {
-    auto objectPalette = this->yidsRom->backgroundPalettes[0]; // Default
-    if (paletteFile == ObjectFileName::OBJSET) {
-        objectPalette = this->yidsRom->objsetPalettes[paletteOffset].paletteData;
-    } else if (paletteFile == ObjectFileName::OBJEFFECT) {
-        objectPalette = this->yidsRom->effectPalettes[paletteOffset].paletteData;
-    } else {
-        objectPalette = this->yidsRom->objectFiles[objectFile].objectPalettes[paletteOffset].paletteData;
+    QByteArray objectPalette = this->yidsRom->backgroundPalettes[0]; // Default
+    try {
+        objectPalette = this->yidsRom->objectFiles[paletteFile].objectPalettes[paletteOffset].paletteData;
+    } catch (...) {
+        std::stringstream ssPalFail;
+        ssPalFail << "Failed to get object palette for object with uuid 0x" << std::hex << uuid;
+        ssPalFail << ", using backgroundPalettes[0]";
+        YUtils::printDebug(ssPalFail.str(),DebugType::ERROR);
     }
 
-    std::vector<uint8_t> objectVector;
-    if (objectFile == ObjectFileName::OBJSET) {
-        objectVector = this->yidsRom->objsetPixelTiles[objectOffset];
-    } else {
-        objectVector = this->yidsRom->objectFiles[objectFile].objectPixelTiles[objectOffset];
-    }
+    std::vector<uint8_t> objectVector = this->yidsRom->objectFiles[objectFile].objectPixelTiles[objectOffset];
 
     if (objectPalette.size() < 0xf) {
         std::stringstream ssEmptyPalette;

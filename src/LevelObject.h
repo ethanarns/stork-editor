@@ -28,14 +28,14 @@ struct ObjectGraphicMetadata {
      * @brief The offset/index of the OBJB data.
      * This is hard-coded in the code sadly, no tables
      */
-    uint32_t tilesSectorOffset;
+    uint32_t indexOfTiles;
     ObjectFileName whichPaletteFile;
     ObjectFileName whichObjectFile;
     /**
      * @brief The offset/index of the PLTB data.
      * This is hard-coded in the code sadly, no tables
      */
-    uint32_t paletteSectorOffset;
+    uint32_t indexOfPalette;
     /**
      * @brief How many tiles (8x8) wide this is before looping
      */

@@ -18,8 +18,8 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     meta.yPixelOffset = 0;
     switch(objectId) {
         case 0x0: { // Basic yellow coin
-            meta.tilesSectorOffset = 0x0;
-            meta.paletteSectorOffset = 0x7e; // 020267c4
+            meta.indexOfTiles = 0x0;
+            meta.indexOfPalette = 0x7e; // 020267c4
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             break;
@@ -29,8 +29,8 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         case 0x20: { // Falling donuts
-            meta.tilesSectorOffset = 0x11;
-            meta.paletteSectorOffset = 0x87;
+            meta.indexOfTiles = 0x11;
+            meta.indexOfPalette = 0x87;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             break;
@@ -41,8 +41,8 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             Q_UNUSED(HORIZONTAL_PIPE_TILES);
             //uint32_t pipeHeight = (uint32_t)lo.settings.at(2)*2;
             int32_t pipeHeight = 6;
-            meta.tilesSectorOffset = VERTICAL_PIPE_TILES;
-            meta.paletteSectorOffset = 0x89;
+            meta.indexOfTiles = VERTICAL_PIPE_TILES;
+            meta.indexOfPalette = 0x89;
             meta.tilesCount = 4 * pipeHeight;
             meta.tileWidth = 4;
             meta.subTile = 0;
@@ -54,15 +54,15 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         case 0x28: { // Flower
-            meta.tilesSectorOffset = 0x16;
-            meta.paletteSectorOffset = 0x9b;
+            meta.indexOfTiles = 0x16;
+            meta.indexOfPalette = 0x9b;
             meta.tilesCount = 16;
             meta.tileWidth = 4;
             break;
         }
         case 0x2b: { // Poundable Pillar
-            meta.tilesSectorOffset = 0x17;
-            meta.paletteSectorOffset = 0x8d;
+            meta.indexOfTiles = 0x17;
+            meta.indexOfPalette = 0x8d;
             meta.tileWidth = 2;
             meta.tilesCount = 4;
             // TODO: How far can it repeat down?
@@ -70,60 +70,60 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         }
         case 0x2c: { // One-way gate
             // TODO: Render bottom half as mirror and handle reverse
-            meta.tilesSectorOffset = 0x19;
-            meta.paletteSectorOffset = 0x8e;
+            meta.indexOfTiles = 0x19;
+            meta.indexOfPalette = 0x8e;
             meta.tileWidth = 2;
             meta.tilesCount = 2 * 6;
             break;
         }
         case 0x3b: { // Red coin
-            meta.tilesSectorOffset = 0;
-            meta.paletteSectorOffset = 0x7e;
+            meta.indexOfTiles = 0;
+            meta.indexOfPalette = 0x7e;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             meta.subTile = 6;
             break;
         }
         case 0x3c: { // Timer Block
-            meta.tilesSectorOffset = 0x1e;
-            meta.paletteSectorOffset = 0xe3;
+            meta.indexOfTiles = 0x1e;
+            meta.indexOfPalette = 0xe3;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             break;
         }
         case 0x40: { // Nipper plant
-            meta.tilesSectorOffset = 0x20;
-            meta.paletteSectorOffset = 0x8f;
+            meta.indexOfTiles = 0x20;
+            meta.indexOfPalette = 0x8f;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             break;
         }
         case 0x4e: { // Dandylion
-            meta.tilesSectorOffset = 0x2f;
-            meta.paletteSectorOffset = 0x8f;
+            meta.indexOfTiles = 0x2f;
+            meta.indexOfPalette = 0x8f;
             meta.tilesCount = 4*6;
             meta.tileWidth = 4;
             break;
         }
         case 0x50: { // Poundable Box (stars?)
-            meta.tilesSectorOffset = 0x35;
-            meta.paletteSectorOffset = 0xAD;
+            meta.indexOfTiles = 0x35;
+            meta.indexOfPalette = 0xAD;
             meta.tilesCount = 8*8;
             meta.tileWidth = 8;
             break;
         }
         case 0x8e: { // Large breakable rock squares
-            meta.tilesSectorOffset = 0x48;
+            meta.indexOfTiles = 0x48;
             // See 020db27c for other potential palettes
-            meta.paletteSectorOffset = 0xCD;
+            meta.indexOfPalette = 0xCD;
             meta.tilesCount = 4 * 4;
             meta.tileWidth = 4;
             break;
         }
         case 0x92: { // Stairs
             // TODO: special print me
-            meta.tilesSectorOffset = 0x54;
-            meta.paletteSectorOffset = 0xe2;
+            meta.indexOfTiles = 0x54;
+            meta.indexOfPalette = 0xe2;
             meta.tilesCount = 8;
             meta.tileWidth = 4;
             break;
@@ -133,24 +133,23 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tilesCount = 4*5;
             meta.tileWidth = 4;
             meta.subTile = 0;
-            meta.tilesSectorOffset = 0;
+            meta.indexOfTiles = 0;
             meta.whichObjectFile = ObjectFileName::OBJSBBLOCK;
-            // TODO: Make the palette work
             meta.whichPaletteFile = ObjectFileName::OBJSBBLOCK;
-            meta.paletteSectorOffset = 0;
+            meta.indexOfPalette = 2;
             meta.xPixelOffset = 8;
             break;
         }
         case 0x97: { // Ghost Guy
-            meta.tilesSectorOffset = 0x56;
-            meta.paletteSectorOffset = 0xda;
+            meta.indexOfTiles = 0x56;
+            meta.indexOfPalette = 0xda;
             meta.tilesCount = 6;
             meta.tileWidth = 2;
             break;
         }
         case 0x9A: { // Red arrow signs
-            meta.tilesSectorOffset = 0x5A;
-            meta.paletteSectorOffset = 0xDC;
+            meta.indexOfTiles = 0x5A;
+            meta.indexOfPalette = 0xDC;
             // Defaults to classic red arrow sign
             meta.tilesCount = 12;
             meta.tileWidth = 4;
@@ -190,16 +189,16 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         case 0x9f: { // Info/hint block
-            meta.tilesSectorOffset = 0x5d;
-            meta.paletteSectorOffset = 0xa9;
+            meta.indexOfTiles = 0x5d;
+            meta.indexOfPalette = 0xa9;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             break;
         }
         case 0xa1: { // Block that expands when you hit it
-            meta.tilesSectorOffset = 0x5e;
+            meta.indexOfTiles = 0x5e;
             meta.whichPaletteFile = ObjectFileName::OBJEFFECT;
-            meta.paletteSectorOffset = 0x2a-2; // Is in objeffect.arcz, strange offset
+            meta.indexOfPalette = 0x2a-2; // Is in objeffect.arcz, strange offset
             // 02096680 is where the function to get the palette address is
             // Actual function is at 020e448c. Doesn't SEEM to have any offset, but might skip the first few?
             meta.tilesCount = 4;
@@ -207,25 +206,25 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         case 0xd2: { // Yellow egg block
-            meta.tilesSectorOffset = 0x1;
+            meta.indexOfTiles = 0x1;
             meta.whichPaletteFile = ObjectFileName::OBJEFFECT;
-            meta.paletteSectorOffset = 0x2a-2;
+            meta.indexOfPalette = 0x2a-2;
             meta.subTile = 4; // TODO: Get from object data values
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             break;
         }
         case 0xdb: { // Outline coin
-            meta.tilesSectorOffset = 0x0;
-            meta.paletteSectorOffset = 0x7e;
+            meta.indexOfTiles = 0x0;
+            meta.indexOfPalette = 0x7e;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             meta.subTile = 12; // Flip to transparency frame
             break;
         }
         case 0xe7: { // M Block that only shows up when carrying baby Mario
-            meta.tilesSectorOffset = 0x5f;
-            meta.paletteSectorOffset = 0xe3;
+            meta.indexOfTiles = 0x5f;
+            meta.indexOfPalette = 0xe3;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             break;
@@ -236,8 +235,8 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         default: {
-            meta.tilesSectorOffset = 0;
-            meta.paletteSectorOffset = 0;
+            meta.indexOfTiles = 0;
+            meta.indexOfPalette = 0;
             meta.tilesCount = 0;
             meta.tileWidth = 0;
             break;
