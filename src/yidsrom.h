@@ -103,7 +103,6 @@ public:
     ~YidsRom();
 private:
     void initArm9RomData(std::string fileName, std::vector<uint8_t> &compedRom);
-    ObjectFile getMajorObjPltFile(std::string objset_filename, std::map<uint32_t,std::vector<uint8_t>>& pixelTiles, std::map<uint32_t,ObjectPalette>& palettes);
 
     void updateSpriteMeta();
 };
