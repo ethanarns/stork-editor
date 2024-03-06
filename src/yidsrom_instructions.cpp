@@ -190,8 +190,8 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
 
     const uint32_t objsetEndIndex = fullObjsetLength + 8; // Exclusive, but shouldn't matter
 
-    uint32_t currentPaletteIndex = 0;
-    uint32_t curTileStartOffset = 0;
+    // Accessed universally, not by type index
+    uint32_t obarSectionIndex = 0;
     while (indexObjset < objsetEndIndex) {
         auto instructionCheck = YUtils::getUint32FromVec(objsetUncompressedVec,indexObjset);
 
@@ -207,7 +207,7 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
             if (instructionCheck == Constants::OBJZ_MAGIC_NUM) {
                 subsection = YCompression::lz10decomp(subsection);
             }
-            objFileData.objectPixelTiles[curTileStartOffset] = subsection;
+            objFileData.objectPixelTiles[obarSectionIndex] = subsection;
         } else if (instructionCheck == Constants::PLTB_MAGIC_NUM) {
             /************
              *** PLTB ***
@@ -224,16 +224,15 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
             for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
                 currentLoadingPalette.paletteData[curPaletteIndex] = subsection.at(curPaletteIndex);
             }
-            currentLoadingPalette.index = currentPaletteIndex;
+            currentLoadingPalette.index = obarSectionIndex;
             currentLoadingPalette.address = indexObjset;
-            objFileData.objectPalettes[currentPaletteIndex] = currentLoadingPalette;
-            currentPaletteIndex++;
+            objFileData.objectPalettes[obarSectionIndex] = currentLoadingPalette;
         } else {
             std::cerr << "[ERROR] Known objset magic number not found! Instead found ";
             std::cerr << hex << instructionCheck << " at " << std::hex << (indexObjset - 4) << std::endl;
             exit(EXIT_FAILURE);
         }
-        curTileStartOffset++;
+        obarSectionIndex++;
         indexObjset += currentInstructionLength;
     }
     if (objFileData.objectPixelTiles.size() < 1) {

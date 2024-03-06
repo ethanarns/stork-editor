@@ -97,9 +97,9 @@ void YidsRom::openRom(std::string fileName) {
     // }
 
     auto objsetFile = this->getMajorObjPltFile("objset.arcz",this->objsetPixelTiles,this->objsetPalettes);
-    this->objectFiles[ObjectFileName::OBJSET] = objsetFile;
     auto effectFile = this->getMajorObjPltFile("objeffect.arcz",this->effectPixelTiles,this->effectPalettes);
-    this->objectFiles[ObjectFileName::OBJEFFECT] = effectFile;
+    this->objectFiles[ObjectFileName::OBJSET] = this->getObjPltFile("objset.arcz");
+    this->objectFiles[ObjectFileName::OBJEFFECT] = this->getObjPltFile("objeffect.arcz");
     this->objectFiles[ObjectFileName::OBJSBBLOCK] = this->getObjPltFile("objsbblock.arc");
     this->objectFiles[ObjectFileName::OBJSBKACHIKACHI] = this->getObjPltFile("objsbkachikachi.arcz");
 
