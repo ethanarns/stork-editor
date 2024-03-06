@@ -100,6 +100,7 @@ void YidsRom::openRom(std::string fileName) {
     this->objectFiles[ObjectFileName::OBJEFFECT] = this->getObjPltFile("objeffect.arcz");
     this->objectFiles[ObjectFileName::OBJSBBLOCK] = this->getObjPltFile("objsbblock.arc");
     this->objectFiles[ObjectFileName::OBJSBKACHIKACHI] = this->getObjPltFile("objsbkachikachi.arcz");
+    this->objectFiles[ObjectFileName::OBJKANTERA] = this->getObjPltFile("objkantera.arcz");
 
     this->updateSpriteMeta();
 

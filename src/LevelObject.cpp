@@ -11,7 +11,7 @@
 ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     ObjectGraphicMetadata meta;
     auto objectId = lo.objectId;
-    meta.subTile = 0;
+    meta.frame = 0;
     meta.whichPaletteFile = ObjectFileName::OBJSET;
     meta.whichObjectFile = ObjectFileName::OBJSET;
     meta.xPixelOffset = 0;
@@ -45,7 +45,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0x89;
             meta.tilesCount = 4 * pipeHeight;
             meta.tileWidth = 4;
-            meta.subTile = 0;
+            meta.frame = 0;
             // TODO: Special rendering to repeat downwards
             meta.specialRender = ([](){
                 std::vector<RenderInstruction> instructions;
@@ -79,7 +79,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x36: { // Yellow Shy Guy
             meta.whichObjectFile = ObjectFileName::OBJSET;
             meta.indexOfTiles = 0x21; // 0202de24
-            meta.subTile = 0x1;
+            meta.frame = 0x1;
             meta.tileWidth = 2;
             meta.tilesCount = 2 * 3;
             meta.whichPaletteFile = ObjectFileName::OBJSET;
@@ -90,7 +90,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x37: { // Green Shy Guy
             meta.whichObjectFile = ObjectFileName::OBJSET;
             meta.indexOfTiles = 0x21; // 0202de24
-            meta.subTile = 0x1;
+            meta.frame = 0x1;
             meta.tileWidth = 2;
             meta.tilesCount = 2 * 3;
             meta.whichPaletteFile = ObjectFileName::OBJSET;
@@ -101,7 +101,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x38: { // Blue Shy Guy
             meta.whichObjectFile = ObjectFileName::OBJSET;
             meta.indexOfTiles = 0x21; // 0202de24
-            meta.subTile = 0x1;
+            meta.frame = 0x1;
             meta.tileWidth = 2;
             meta.tilesCount = 2 * 3;
             meta.whichPaletteFile = ObjectFileName::OBJSET;
@@ -112,7 +112,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x39: { // Red Shy Guy
             meta.whichObjectFile = ObjectFileName::OBJSET;
             meta.indexOfTiles = 0x21; // 0202de24
-            meta.subTile = 0x1;
+            meta.frame = 0x1;
             meta.tileWidth = 2;
             meta.tilesCount = 2 * 3;
             meta.whichPaletteFile = ObjectFileName::OBJSET;
@@ -125,7 +125,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0x7e;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
-            meta.subTile = 6;
+            meta.frame = 6;
             break;
         }
         case 0x3c: { // Timer Block
@@ -140,6 +140,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0x8f;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
+            meta.frame = 1;
             break;
         }
         case 0x4e: { // Dandylion
@@ -162,7 +163,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfTiles = 0x37;
             meta.tileWidth = 2;
             meta.tilesCount = 2 * 4;
-            meta.subTile = 0;
+            meta.frame = 0;
             meta.indexOfPalette = 0xb0;
             break;
         }
@@ -186,7 +187,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             // From an arc file: "objsbblock.arc"
             meta.tilesCount = 4*5;
             meta.tileWidth = 4;
-            meta.subTile = 0;
+            meta.frame = 0;
             meta.indexOfTiles = 0;
             meta.whichObjectFile = ObjectFileName::OBJSBBLOCK;
             meta.whichPaletteFile = ObjectFileName::OBJSBBLOCK;
@@ -214,7 +215,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                 break;
             }
             auto firstSettingsByte = (uint32_t)lo.settings.at(0);
-            meta.subTile = firstSettingsByte;
+            meta.frame = firstSettingsByte;
             switch(firstSettingsByte) {
                 case 0x1: { // Classic right pointing signpost
                     meta.tilesCount = 3 * 4;
@@ -225,7 +226,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                     // TODO: ROTATED, NEEDS SPECIAL RENDER
                     meta.tilesCount = 4;
                     meta.tileWidth = 2;
-                    meta.subTile = 3;
+                    meta.frame = 3;
                     break;
                 }
                 case 0x6: { // Upwards pointing arrow
@@ -263,7 +264,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfTiles = 0x1;
             meta.whichPaletteFile = ObjectFileName::OBJEFFECT;
             meta.indexOfPalette = 0x2a-2;
-            meta.subTile = 4; // TODO: Get from object data values
+            meta.frame = 4; // TODO: Get from object data values
             meta.tilesCount = 4;
             meta.tileWidth = 2;
             break;
@@ -273,7 +274,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0x7e;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
-            meta.subTile = 12; // Flip to transparency frame
+            meta.frame = 12; // Flip to transparency frame
             break;
         }
         case 0xe7: { // M Block that only shows up when carrying baby Mario
@@ -281,6 +282,16 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0xe3;
             meta.tilesCount = 4;
             meta.tileWidth = 2;
+            break;
+        }
+        case 0xe9: { // Lantern Ghost, 020ba7f4
+            meta.whichObjectFile = ObjectFileName::OBJKANTERA;
+            meta.whichPaletteFile = ObjectFileName::OBJKANTERA;
+            meta.indexOfTiles = 0;
+            meta.tileWidth = 4;
+            meta.tilesCount = 4 * 3;
+            meta.frame = 0;
+            meta.indexOfPalette = 1;
             break;
         }
         case 0x112: { // Locked minigame hut

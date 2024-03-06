@@ -20,7 +20,8 @@ enum ObjectFileName {
     OBJSET,
     OBJEFFECT,
     OBJSBBLOCK,
-    OBJSBKACHIKACHI
+    OBJSBKACHIKACHI,
+    OBJKANTERA
 };
 
 struct ObjectGraphicMetadata {
@@ -45,7 +46,7 @@ struct ObjectGraphicMetadata {
      */
     uint32_t tilesCount;
 
-    uint32_t subTile;
+    uint32_t frame;
 
     /**
      * Sometimes the rounding is off. Use this to adjust the rounding enough to place

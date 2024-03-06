@@ -1190,7 +1190,7 @@ void DisplayTable::updateSprites() {
             this->placeObjectTile(
                 (uint32_t)x,(uint32_t)y,
                 objectGraphicsMeta.indexOfTiles,
-                objectGraphicsMeta.subTile,
+                objectGraphicsMeta.frame,
                 objectGraphicsMeta.indexOfPalette,
                 objectGraphicsMeta.tileWidth,
                 objectGraphicsMeta.tilesCount,
