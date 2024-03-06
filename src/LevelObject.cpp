@@ -76,6 +76,46 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tilesCount = 2 * 6;
             break;
         }
+        case 0x36: { // Yellow Shy Guy
+            meta.whichObjectFile = ObjectFileName::OBJSET;
+            meta.indexOfTiles = 0x21; // 0202de24
+            meta.subTile = 0x1;
+            meta.tileWidth = 2;
+            meta.tilesCount = 2 * 3;
+            meta.whichPaletteFile = ObjectFileName::OBJSET;
+            meta.indexOfPalette = 0x91; // 0202de18 see above
+            break;
+        }
+        case 0x37: { // Green Shy Guy
+            meta.whichObjectFile = ObjectFileName::OBJSET;
+            meta.indexOfTiles = 0x21; // 0202de24
+            meta.subTile = 0x1;
+            meta.tileWidth = 2;
+            meta.tilesCount = 2 * 3;
+            meta.whichPaletteFile = ObjectFileName::OBJSET;
+            meta.indexOfPalette = 0x92; // 0202de18 see above
+            break;
+        }
+        case 0x38: { // Blue Shy Guy
+            meta.whichObjectFile = ObjectFileName::OBJSET;
+            meta.indexOfTiles = 0x21; // 0202de24
+            meta.subTile = 0x1;
+            meta.tileWidth = 2;
+            meta.tilesCount = 2 * 3;
+            meta.whichPaletteFile = ObjectFileName::OBJSET;
+            meta.indexOfPalette = 0x93; // 0202de18 see above
+            break;
+        }
+        case 0x39: { // Red Shy Guy
+            meta.whichObjectFile = ObjectFileName::OBJSET;
+            meta.indexOfTiles = 0x21; // 0202de24
+            meta.subTile = 0x1;
+            meta.tileWidth = 2;
+            meta.tilesCount = 2 * 3;
+            meta.whichPaletteFile = ObjectFileName::OBJSET;
+            meta.indexOfPalette = 0x90; // 0202de18 see above
+            break;
+        }
         case 0x3b: { // Red coin
             meta.indexOfTiles = 0;
             meta.indexOfPalette = 0x7e;
