@@ -526,7 +526,6 @@ void MainWindow::LoadRom() {
     if (fileName.isEmpty()) {
         YUtils::printDebug("Canceled file dialog",DebugType::VERBOSE);
     } else {
-        this->spritePickerWindow->show(); // TODO: make this a button
         this->statusLabel->setText(tr("Unpacking ROM..."));
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
         YCompression::unpackRom(fileName.toStdString());
@@ -553,6 +552,9 @@ void MainWindow::LoadRom() {
 
         // Col popup //
         this->button_colWindow->setDisabled(false);
+
+        this->spritePickerWindow->show(); // TODO: make this a button
+        this->spritePickerWindow->updateSpriteList("");
 
         // Palette popup //
         this->palettePopup->resize(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH,PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);
@@ -977,8 +979,9 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     this->brushWindow->close();
     this->palettePopup->close();
     this->chartilesPopup->close();
-    this->mapSelectPopup->close(); //this->levelSelectPopup->close();
+    this->mapSelectPopup->close();
     this->objtilesPopup->close();
     this->colWindow->close();
+    this->spritePickerWindow->close();
     event->accept();
 }

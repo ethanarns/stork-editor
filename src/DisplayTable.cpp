@@ -422,7 +422,7 @@ void DisplayTable::handleSpritesRightClickPress(QMouseEvent *event) {
         YUtils::printDebug("colX less than 0",DebugType::ERROR);
         return;
     }
-    uint32_t spriteId = 0;
+    uint32_t spriteId = globalSettings.currentSpriteIdToAdd;
     auto spriteMeta = this->yidsRom->getSpriteMetadata(spriteId);
     LevelObject newSprite;
     newSprite.uuid = 0xffff; // UUID is actually set when adding to SETD

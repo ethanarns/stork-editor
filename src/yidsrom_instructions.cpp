@@ -158,7 +158,7 @@ SpriteMeta YidsRom::getSpriteMetadata(uint32_t spriteId) {
     ssName << "Sprite 0x" << std::hex << spriteId;
     blank.name = ssName.str();
     blank.info = "Undocumented";
-    blank.createdSettingsLen = 4; // ONLY use this for sprite creation
+    blank.createdSettingsLen = 0xff; // ONLY use this for sprite creation
     blank.spriteId = (uint16_t)spriteId;
     return blank;
 }
