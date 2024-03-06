@@ -86,6 +86,7 @@ private:
     void doBgBrushClick(QTableWidgetItem* curItem);
     std::vector<QTableWidgetItem*> getIntersectedTiles(QRect selectionRect);
     void updateSelectedTilesVisuals(int whichBg);
+    void handleSpritesRightClickPress(QMouseEvent *event);
 protected:
     QPoint dragStartPosition;
     void mousePressEvent(QMouseEvent *event) override;

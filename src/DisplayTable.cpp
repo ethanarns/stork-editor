@@ -405,81 +405,124 @@ void DisplayTable::updateSelectedTilesVisuals(int whichBg) {
     }
 }
 
+void DisplayTable::handleSpritesRightClickPress(QMouseEvent *event) {
+    //YUtils::printDebug("Right mouse sprites click");
+    auto curItemUnderCursor = this->itemAt(event->pos());
+    if (curItemUnderCursor == nullptr) {
+        YUtils::printDebug("Item under cursor in handleSpritesRightClickPress is null", DebugType::ERROR);
+        return;
+    }
+    auto rowY = curItemUnderCursor->row();
+    if (rowY < 0) {
+        YUtils::printDebug("rowY less than 0",DebugType::ERROR);
+        return;
+    }
+    auto colX = curItemUnderCursor->column();
+    if (colX < 0) {
+        YUtils::printDebug("colX less than 0",DebugType::ERROR);
+        return;
+    }
+    uint32_t spriteId = 0;
+    auto spriteMeta = this->yidsRom->getSpriteMetadata(spriteId);
+    LevelObject newSprite;
+    newSprite.uuid = 0xffff; // UUID is actually set when adding to SETD
+    newSprite.xPosition = curItemUnderCursor->column();
+    newSprite.yPosition = curItemUnderCursor->row();
+    // This is literally the one place you can use createdSettingsLen
+    newSprite.settingsLength = spriteMeta.createdSettingsLen;
+    newSprite.settings = std::vector<uint8_t>();
+    newSprite.settings.resize(newSprite.settingsLength); // Should fill with zeroes
+    newSprite.objectId = spriteId;
+    auto newObjectPointer = this->yidsRom->mapData->addSpriteData(newSprite);
+    this->selectedObjects.clear();
+    this->clearVisualSpriteSelection();
+    this->updateSprites();
+    this->selectedObjects.push_back(newObjectPointer->uuid);
+    this->selectItemByUuid(newObjectPointer->uuid,false);
+    emit this->triggerMainWindowUpdate();
+}
+
 void DisplayTable::mousePressEvent(QMouseEvent *event) {
     if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
-        // Something is already selected
-        if (this->selectedObjects.size() > 0) {
-            if (this->selectedObjects.size() > 1) {
-                YUtils::printDebug("Multiple object selection not yet supported",DebugType::WARNING);
-            }
-            uint32_t selectedObjectUuid = this->selectedObjects.at(0);
-            auto curItemUnderCursor = this->itemAt(event->pos());
-            if (curItemUnderCursor == nullptr) {
-                YUtils::printDebug("Item under cursor in mousePressEvent is null", DebugType::ERROR);
-                return;
-            }
-            // Do they match?
-            auto cursorUuidMaybe = curItemUnderCursor->data(PixelDelegateData::OBJECT_UUID);
-            if (cursorUuidMaybe.isNull()) {
-                YUtils::printDebug("Mismatch in selected item and cursor item, deselecting",DebugType::VERBOSE);
-                this->selectedObjects.clear();
-                this->clearVisualSpriteSelection();
-                return;
-            }
-            if (cursorUuidMaybe.toUInt() == selectedObjectUuid) {
-                YUtils::printDebug("Selected and clicked match! Starting drag...",DebugType::VERBOSE);
-                QPoint underCursorPos(curItemUnderCursor->column(),curItemUnderCursor->row());
-                this->dragStartPosition = underCursorPos;
-                QDrag *drag = new QDrag(this);
-                QMimeData *mimeData = new QMimeData();
-                QByteArray uuidBytes;
-                uuidBytes.setNum(this->selectedObjects.at(0));
-                mimeData->setData("application/x-stork-sprite-uuid",uuidBytes);
-                drag->setMimeData(mimeData);
-                drag->exec(Qt::MoveAction);
-                return;
-            } else {
-                //YUtils::printDebug("Clicked a different object, selecting it");
-                this->clearVisualSpriteSelection();
-                this->selectedObjects.clear();
-                this->selectItemByUuid(cursorUuidMaybe.toUInt());
-                return;
-            }
-        } else {
-            // Nothing is selected
-            auto curItemUnderCursor = this->itemAt(event->pos());
-            if (curItemUnderCursor == nullptr) {
-                YUtils::printDebug("No item loaded under cursor",DebugType::ERROR);
-                return;
-            }
-            if (!curItemUnderCursor->data(PixelDelegateData::OBJECT_UUID).isNull()) {
-                uint32_t cursorItemUuid = curItemUnderCursor->data(PixelDelegateData::OBJECT_UUID).toUInt();
-                if (cursorItemUuid < 1) {
-                    YUtils::printDebug("Cursor Item UUID is less than 1",DebugType::ERROR);
+        if (event->button() == Qt::LeftButton) {
+            // Something is already selected?
+            if (this->selectedObjects.size() > 0) {
+                if (this->selectedObjects.size() > 1) {
+                    YUtils::printDebug("Multiple object selection not yet supported",DebugType::WARNING);
+                }
+                uint32_t selectedObjectUuid = this->selectedObjects.at(0);
+                auto curItemUnderCursor = this->itemAt(event->pos());
+                if (curItemUnderCursor == nullptr) {
+                    YUtils::printDebug("Item under cursor in mousePressEvent is null", DebugType::ERROR);
                     return;
                 }
-                // Change the following 2 lines when multiple item selection is enabled
-                this->clearVisualSpriteSelection();
-                this->selectedObjects.clear();
-
-                YUtils::printDebug("Doing item selection in mousePressEvent");
-                this->selectItemByUuid(cursorItemUuid);
-                return;
+                // Do they match?
+                auto cursorUuidMaybe = curItemUnderCursor->data(PixelDelegateData::OBJECT_UUID);
+                if (cursorUuidMaybe.isNull()) {
+                    YUtils::printDebug("Mismatch in selected item and cursor item, deselecting",DebugType::VERBOSE);
+                    this->selectedObjects.clear();
+                    this->clearVisualSpriteSelection();
+                    return;
+                }
+                if (cursorUuidMaybe.toUInt() == selectedObjectUuid) {
+                    YUtils::printDebug("Selected and clicked match! Starting drag...",DebugType::VERBOSE);
+                    QPoint underCursorPos(curItemUnderCursor->column(),curItemUnderCursor->row());
+                    this->dragStartPosition = underCursorPos;
+                    QDrag *drag = new QDrag(this);
+                    QMimeData *mimeData = new QMimeData();
+                    QByteArray uuidBytes;
+                    uuidBytes.setNum(this->selectedObjects.at(0));
+                    mimeData->setData("application/x-stork-sprite-uuid",uuidBytes);
+                    drag->setMimeData(mimeData);
+                    drag->exec(Qt::MoveAction);
+                    return;
+                } else {
+                    //YUtils::printDebug("Clicked a different object, selecting it");
+                    this->clearVisualSpriteSelection();
+                    this->selectedObjects.clear();
+                    this->selectItemByUuid(cursorUuidMaybe.toUInt());
+                    return;
+                }
             } else {
-                YUtils::printDebug("Area clicked does not have an item UUID, deselecting all");
-                this->selectedObjects.clear();
-                this->clearVisualSpriteSelection();
-                return;
+                // Nothing is selected
+                auto curItemUnderCursor = this->itemAt(event->pos());
+                if (curItemUnderCursor == nullptr) {
+                    YUtils::printDebug("No item loaded under cursor",DebugType::ERROR);
+                    return;
+                }
+                if (!curItemUnderCursor->data(PixelDelegateData::OBJECT_UUID).isNull()) {
+                    uint32_t cursorItemUuid = curItemUnderCursor->data(PixelDelegateData::OBJECT_UUID).toUInt();
+                    if (cursorItemUuid < 1) {
+                        YUtils::printDebug("Cursor Item UUID is less than 1",DebugType::ERROR);
+                        return;
+                    }
+                    // Change the following 2 lines when multiple item selection is enabled
+                    this->clearVisualSpriteSelection();
+                    this->selectedObjects.clear();
+
+                    YUtils::printDebug("Doing item selection in mousePressEvent");
+                    this->selectItemByUuid(cursorItemUuid);
+                    return;
+                } else {
+                    YUtils::printDebug("Area clicked does not have an item UUID, deselecting all");
+                    this->selectedObjects.clear();
+                    this->clearVisualSpriteSelection();
+                    return;
+                }
             }
+        } else if (event->button() == Qt::RightButton) {
+            this->handleSpritesRightClickPress(event);
+        } else {
+           YUtils::printDebug("Unhandled mouse click in DisplayTable"); 
         }
-    /*******************
-     *** BACKGROUNDS ***
-     *******************/
     } else if (
         globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
         globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
         globalSettings.layerSelectMode == LayerMode::BG3_LAYER
     ) {
+        /*******************
+         *** BACKGROUNDS ***
+         *******************/
         auto curItemUnderCursor = this->itemAt(event->pos());
         if (curItemUnderCursor == nullptr) {
             YUtils::printDebug("Item under cursor in mousePressEvent for BGX is null", DebugType::ERROR);
@@ -970,6 +1013,8 @@ void DisplayTable::clearVisualSpriteSelection() {
             }
         }
     }
+    // Just in case there was the default selection somehow
+    this->clearSelection();
 }
 
 void DisplayTable::setLayerDraw(uint whichLayer, bool shouldDraw) {

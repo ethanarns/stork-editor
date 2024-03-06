@@ -440,3 +440,19 @@ bool MapData::deleteSpriteByUUID(uint32_t uuid) {
     YUtils::printDebug("Sprite not found to delete",DebugType::ERROR);
     return false;
 }
+
+LevelObject* MapData::addSpriteData(LevelObject lo) {
+    YUtils::printDebug("Adding new sprite data to MapData",DebugType::VERBOSE);
+    auto newLevelObject = new LevelObject(lo);
+    auto setdMaybe = this->getFirstDataByMagic(Constants::SETD_MAGIC_NUM);
+    if (setdMaybe == nullptr) {
+        YUtils::printDebug("SETD not found in addSpriteData",DebugType::ERROR);
+        YUtils::popupAlert("SETD not found when adding sprite");
+        return newLevelObject;
+    }
+    auto setd = static_cast<LevelObjectData*>(setdMaybe);
+    // Ensure unique UUID
+    newLevelObject->uuid = setd->uuidIndex++;
+    setd->levelObjects.push_back(newLevelObject);
+    return newLevelObject;
+}

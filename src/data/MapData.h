@@ -120,7 +120,6 @@ public:
     uint32_t getMagic() { return Constants::SETD_MAGIC_NUM; }
 
     std::vector<LevelObject*> levelObjects;
-private:
     uint32_t uuidIndex = 1;
 };
 
@@ -595,6 +594,7 @@ public:
     LevelData* getFirstDataByMagic(uint32_t magicNumber, bool silentFail = false);
     std::string filename;
     bool deleteSpriteByUUID(uint32_t uuid);
+    LevelObject* addSpriteData(LevelObject lo);
 private:    
     std::vector<LevelData*> subData;
     QByteArray layerOrderCache;
