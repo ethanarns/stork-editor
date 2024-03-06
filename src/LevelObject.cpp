@@ -84,6 +84,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tilesCount = 2 * 3;
             meta.whichPaletteFile = ObjectFileName::OBJSET;
             meta.indexOfPalette = 0x91; // 0202de18 see above
+            // todo: fix x offset?
             break;
         }
         case 0x37: { // Green Shy Guy
@@ -94,6 +95,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tilesCount = 2 * 3;
             meta.whichPaletteFile = ObjectFileName::OBJSET;
             meta.indexOfPalette = 0x92; // 0202de18 see above
+            // todo: fix x offset?
             break;
         }
         case 0x38: { // Blue Shy Guy
@@ -104,6 +106,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tilesCount = 2 * 3;
             meta.whichPaletteFile = ObjectFileName::OBJSET;
             meta.indexOfPalette = 0x93; // 0202de18 see above
+            // todo: fix x offset?
             break;
         }
         case 0x39: { // Red Shy Guy
@@ -114,6 +117,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tilesCount = 2 * 3;
             meta.whichPaletteFile = ObjectFileName::OBJSET;
             meta.indexOfPalette = 0x90; // 0202de18 see above
+            // todo: fix x offset?
             break;
         }
         case 0x3b: { // Red coin
@@ -150,6 +154,16 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0xAD;
             meta.tilesCount = 8*8;
             meta.tileWidth = 8;
+            break;
+        }
+        case 0x54: { // Crayzee Dayzee
+            meta.whichObjectFile = ObjectFileName::OBJSET;
+            meta.whichPaletteFile = ObjectFileName::OBJSET;
+            meta.indexOfTiles = 0x37;
+            meta.tileWidth = 2;
+            meta.tilesCount = 2 * 4;
+            meta.subTile = 0;
+            meta.indexOfPalette = 0xb0;
             break;
         }
         case 0x8e: { // Large breakable rock squares
