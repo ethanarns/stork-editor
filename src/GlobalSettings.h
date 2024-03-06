@@ -53,6 +53,8 @@ struct GlobalSettings {
     LayerMode layerSelectMode;
     CollisionType colTypeToDraw = CollisionType::SQUARE;
     std::vector<QTableWidgetItem*> selectedItemPointers;
+    uint32_t currentSpriteIdToAdd = 0;
+
     int getSelectionWidth() {
         int leftMost = 0xffff;
         int rightMost = 0x0000;

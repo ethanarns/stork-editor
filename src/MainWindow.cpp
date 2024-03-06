@@ -509,6 +509,9 @@ MainWindow::MainWindow() {
     // ColWindow //
     this->colWindow = new ColWindow(this,this->rom);
 
+    // SpritePickerWindow //
+    this->spritePickerWindow = new SpritePickerWindow(this,this->rom);
+
     /*******************
      *** Connections ***
      *******************/
@@ -523,6 +526,7 @@ void MainWindow::LoadRom() {
     if (fileName.isEmpty()) {
         YUtils::printDebug("Canceled file dialog",DebugType::VERBOSE);
     } else {
+        this->spritePickerWindow->show(); // TODO: make this a button
         this->statusLabel->setText(tr("Unpacking ROM..."));
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
         YCompression::unpackRom(fileName.toStdString());
@@ -882,9 +886,9 @@ void MainWindow::objectListClick() {
     QListWidgetItem* selectedItem = selectedItems.at(0);
     //auto objectId = (uint16_t)selectedItem->data(GuiObjectList::LEVEL_OBJECT_ID).toUInt();
     uint32_t objectUuid = (uint32_t)selectedItem->data(GuiObjectList::LEVEL_OBJECT_UUID).toUInt();
-    std::stringstream ss;
-    ss << "Selected object list object with UUID 0x" << std::hex << objectUuid;
-    YUtils::printDebug(ss.str(),DebugType::VERBOSE);
+    // std::stringstream ss;
+    // ss << "Selected object list object with UUID 0x" << std::hex << objectUuid;
+    // YUtils::printDebug(ss.str(),DebugType::VERBOSE);
     auto loadedLevelObject = this->rom->mapData->getLevelObjectByUuid(objectUuid);
     if (loadedLevelObject == nullptr) {
         YUtils::printDebug("Loaded Level Object with that UUID not found",DebugType::ERROR);
