@@ -36,8 +36,8 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             auto mpbz = new MapTilesData(mpdzBytes,mpdzIndex,mpdzIndex+subLength, this);
             this->subScenData.push_back(mpbz);
         } else if (subMagic == Constants::IMBZ_MAGIC_NUM) {
-            YUtils::printDebug("Unhandled IMBZ",DebugType::WARNING);
-            mpdzIndex += subLength;
+            auto imbz = new ImbzLayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength,this->getInfo()->colorMode);
+            this->subScenData.push_back(imbz);
         } else {
             std::stringstream unknownMagic;
             unknownMagic << "Unknown magic number in LayerData: 0x" << std::hex << subMagic;
@@ -439,4 +439,61 @@ AlphaData::AlphaData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
     if (mpdzIndex != stop) {
         YUtils::printDebug("ALPH decompilation length mismatch",DebugType::ERROR);
     }
+}
+
+ImbzLayerData::ImbzLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, BgColorMode bgColMode) {
+    //YUtils::printDebug("ImbzLayerData");
+    auto sub = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
+    auto uncompressedImbz = YCompression::lz10decomp(sub);
+
+    // Use ints since they're natural and not stored excessively anyway
+    int currentTileIndex = 0; // The index of the tile within list of tiles
+    int imbzIndex = 0; // Goes up by 0x20/32 each time, offset it
+    const int imbzLength = uncompressedImbz.size();
+    if (imbzLength < 1) {
+        YUtils::printDebug("IMBZ data size is 0!",DebugType::ERROR);
+        return;
+    }
+
+        // Do it 0x20 by 0x20 (32)
+    while (imbzIndex < imbzLength) { // Kill when equal to length, meaning it's outside
+        Chartile curTile;
+        curTile.index = currentTileIndex;
+        curTile.tiles.resize(64);
+        if (bgColMode == BgColorMode::MODE_16) {
+            curTile.bgColMode = BgColorMode::MODE_16;
+            // Go up by 2 since you split the bytes
+            for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
+                uint8_t curByte = uncompressedImbz.at(imbzIndex + currentTileBuildIndex);
+                uint8_t highBit = curByte >> 4;
+                uint8_t lowBit = curByte % 0x10;
+                int innerPosition = currentTileBuildIndex*2;
+                curTile.tiles[innerPosition+1] = highBit;
+                curTile.tiles[innerPosition+0] = lowBit;
+            }
+        } else {
+            curTile.bgColMode = BgColorMode::MODE_256;
+            for (int currentTileIndex = 0; currentTileIndex < 64; currentTileIndex++) {
+                uint8_t curByte = uncompressedImbz.at(imbzIndex + currentTileIndex);
+                curTile.tiles[currentTileIndex] = curByte;
+            }
+        }
+        this->chartiles.push_back(curTile);
+        
+        if (bgColMode == BgColorMode::MODE_16) {
+            // Skip ahead by 0x20/32
+            imbzIndex += Constants::CHARTILE_DATA_SIZE;
+        } else {
+            imbzIndex += 64;
+        }
+        currentTileIndex++;
+    }
+
+    // Jump to the end
+    mpdzIndex = stop;
+}
+
+ImbzLayerData::~ImbzLayerData() {
+    this->chartiles.clear();
+    this->chartiles.shrink_to_fit();
 }

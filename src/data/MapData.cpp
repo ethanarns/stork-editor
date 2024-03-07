@@ -25,7 +25,7 @@ std::map<uint32_t, Chartile> LayerData::getVramChartiles() {
             auto info = static_cast<ScenInfoData*>(curSection);
             auto imbzFilename = info->imbzFilename; // Similar to IMGB
             if (imbzFilename.empty()) {
-                YUtils::printDebug("No IMBZ filename in info, skipping", DebugType::VERBOSE);
+                //YUtils::printDebug("No IMBZ filename in info, skipping", DebugType::VERBOSE);
                 continue;
             }
             auto tileVector = this->parseImbzFromFile(imbzFilename,info->colorMode);
@@ -57,6 +57,17 @@ std::map<uint32_t, Chartile> LayerData::getVramChartiles() {
                 YUtils::popupAlert("Another SCEN chartile section loaded before IMGB");
             }
             this->magicOfChartilesSource = Constants::IMGB_MAGIC_NUM;
+        } else if (curSection->getMagic() == Constants::IMBZ_MAGIC_NUM) {
+            auto imbz = static_cast<ImbzLayerData*>(curSection);
+            auto tileVector = imbz->chartiles;
+            for (uint j = 0; j < tileVector.size(); j++) {
+                pixelTiles[chartileIndex++] = tileVector.at(j);
+            }
+            if (this->magicOfChartilesSource != 0) {
+                YUtils::printDebug("Another SCEN chartile section loaded before IMBZ",DebugType::ERROR);
+                YUtils::popupAlert("Another SCEN chartile section loaded before IMBZ");
+            }
+            this->magicOfChartilesSource = Constants::IMBZ_MAGIC_NUM;
         }
     }
     this->cachedVramTiles = pixelTiles;

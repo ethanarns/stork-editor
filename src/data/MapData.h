@@ -152,6 +152,35 @@ public:
     std::vector<Chartile> chartiles;
 };
 
+// IMBZ
+class ImbzLayerData : public LevelData {
+public:
+    ImbzLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, BgColorMode colorMode);
+    ~ImbzLayerData();
+    std::string toString() {
+        std::stringstream ss;
+        ss << "IMBZ { records: 0x";
+        ss << " }";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
+        std::vector<uint8_t> result;
+        for (auto it = this->chartiles.begin(); it != this->chartiles.end(); it++) {
+            auto tiles = it->tiles;
+            for (int i = 0; i < tiles.size(); i += 2) {
+                auto tile0 = tiles.at(i);
+                auto tile1 = tiles.at(i+1);
+                result.push_back((tile1 << 4) + tile0);
+            }
+        }
+        return FsPacker::packInstruction(Constants::IMBZ_MAGIC_NUM,result,false);
+    };
+    uint32_t getMagic() { return Constants::IMBZ_MAGIC_NUM; }
+
+    std::vector<Chartile> chartiles;
+};
+
 // COLZ
 class MapCollisionData : public LevelData {
 public:
