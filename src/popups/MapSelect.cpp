@@ -68,7 +68,8 @@ void MapSelect::updateLeftList() {
         // QT has a crapton of neat helpers, use them
         QString pathString(pathName.c_str());
         if (pathString.toLower().endsWith(".crsb")) {
-            auto fileName = pathString.split("/").last();
+            // Handle dumb windows crap
+            auto fileName = pathString.split("/").last().split("\\").last();
             crsbFilenames.push_back(fileName);
         }
     }
