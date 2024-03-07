@@ -7,6 +7,7 @@
         <file>assets/icon_tiles.png</file>
         <file>assets/icon_brushwindow.png</file>
         <file>assets/collision_edit.png</file>
+        <file>assets/blooper.png</file>
         <file>sprites.csv</file>
     </qresource>
 </RCC>
