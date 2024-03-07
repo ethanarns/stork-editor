@@ -60,8 +60,8 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                     };
                     byteArrayBg1 = QByteArray::fromRawData(testArrayPrimitive, 64);
                 } else if (byteArrayBg1.size() != PIXEL_TILE_TOTAL) {
-                    cerr << "Attempting to paint without " << PIXEL_TILE_TOTAL;
-                    cerr << " pixels! Found " << byteArrayBg1.size() << " pixels instead." << endl;
+                    std::cerr << "Attempting to paint without 0x" << std::hex << PIXEL_TILE_TOTAL;
+                    std::cerr << " pixels! Found " << byteArrayBg1.size() << " pixels instead." << std::endl;
                     return;
                 }
                 auto paletteBg1 = index.data(PixelDelegateData::PALETTE_ARRAY_BG1).toByteArray();

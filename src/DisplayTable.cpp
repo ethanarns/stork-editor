@@ -1053,6 +1053,7 @@ void DisplayTable::setLayerDraw(uint whichLayer, bool shouldDraw) {
 }
 
 void DisplayTable::updateBg() {
+    this->yidsRom->mapData->wipeLayerOrderCache();
     auto newCanvasHeight = this->yidsRom->mapData->getGreatestCanvasHeight();
     if (newCanvasHeight == 0) {
         YUtils::printDebug("Canvas height calculation failed!",DebugType::ERROR);
