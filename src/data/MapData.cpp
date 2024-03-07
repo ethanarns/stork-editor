@@ -383,15 +383,18 @@ QByteArray MapData::getLayerOrder() {
             // whichBackground value and layerOrder value OFTEN match, but not always
             // Also, reverse them (4 minus 1 through 3 reverses it), as lower numbers drawn first
             // Then subtract 1 because indexes start at 0 not 1
-            result[4-orderValueForLayer-1] = scen->getInfo()->whichBackground;
+            // result[4-orderValueForLayer-1] = scen->getInfo()->whichBackground;
+            // TODO: What is the layer order value even for??
+            // If you get an error about it look here
+            Q_UNUSED(orderValueForLayer);
+            result[4-scen->getInfo()->whichBackground-1] = scen->getInfo()->whichBackground;
         }
     }
     this->layerOrderCache = result;
     return result;
 }
 
-bool MapData::wipeLayerOrderCache()
-{
+bool MapData::wipeLayerOrderCache() {
     if (this->layerOrderCache.size() == 0) {
         return false;
     } else if (this->layerOrderCache.size() > 3) {
