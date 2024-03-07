@@ -174,7 +174,7 @@ public:
                 result.push_back((tile1 << 4) + tile0);
             }
         }
-        return FsPacker::packInstruction(Constants::IMBZ_MAGIC_NUM,result,false);
+        return FsPacker::packInstruction(Constants::IMBZ_MAGIC_NUM,result,true);
     };
     uint32_t getMagic() { return Constants::IMBZ_MAGIC_NUM; }
 
