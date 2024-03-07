@@ -585,6 +585,7 @@ void MainWindow::LoadRom() {
         this->grid->setLayerDraw(4,true); // 4 here means objects
 
         // Triggers //
+        this->grid->shouldShowTriggers = true;
         this->grid->updateTriggerBoxes();
 
         // Misc menu items //
