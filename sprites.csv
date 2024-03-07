@@ -14,6 +14,8 @@ Sprite ID,Sprite name,Info,Len,Construction Function,Setings 0,Settings 1,Settin
 0x15,Null,Constructor removed from game,0,020d6430,,,,
 0x1c,Swinging Rope,See if multiple types of grab rope,4,,,,,
 0x1d,Spring Ball (Small?),4 bytes,4,,,,,
+0x1f,Another Pinwheel?,How is this different?,4,,,,,
+0x20,Falling Donut,It falls after you stand on it,0,,,,,
 0x21,Piranha Plant,No settings,0,,,,,
 0x22,Piranha Plant (upside-down),No settings,0,,,,,
 0x23,Green Pipe,Direction; Unknown; Length; Unknown,4,,"uint8 direction (0 is down, 1 is upwards, 2 is right, 3 is left)","uint8 unknown, analyzer says usually 0, sometimes 1, rarely 76? Confirm",uint8 length,"uint8 Not padding, but still rare. Trace?"
@@ -33,6 +35,7 @@ Sprite ID,Sprite name,Info,Len,Construction Function,Setings 0,Settings 1,Settin
 0x39,Red Shy Guy,u8: 0 = wander; 2 = chase,4,0202dd7c,"uint8 ai (0 = wander, 2 = chase)",,Remaining 3 bytes are padding,
 0x3a,End Goal Ring,No settings,0,,,,,
 0x3b,Red Coin,No settings,0,,,,,
+0x3f,Path Pinwheel,Follows a line,12,,,,,
 0x40,Nipper Plant,No settings,0,,,,,
 0x42,Fan ,"Pretty vast settings, doesn't seem connected to flowers",16,,,,,
 0x43,Woozy Guy,Frontflipping Shy Guy (at least 3 bytes used),4,,,,,
@@ -45,7 +48,9 @@ Sprite ID,Sprite name,Info,Len,Construction Function,Setings 0,Settings 1,Settin
 0x54,Crazee Dayzee,4 bytes,4,,?,,,
 0x57,Waterfall,Sporadically falling water,16,,,,,
 0x5b,Shyguy Spawner,4 bytes,4,,,,,
+0x5f,Moving Platform,Usually along a line bg graphic,16,,,,,
 0x6a,Poundable Post (Item),Hides an item,4,,,,,
+0x74,Question Wheel Platform,Hit it with eggs to move. 20!!,20,,,,,
 0x7f,Fly Guy,4 bytes,4,,"uint8 flightType (0 = wander, 1 = fly in)","uint8 item (0 = coins, 1 = red coin, 2 = 1up, 3 = nothing)","uint8 flyInDirection (0 = fromRight, 1 = fromLeft)",99% sure the rest is padding
 0x81,Middle Ring,Midway point,4,,,,,
 0x8e,Smashable Rock,"Usually destroyed with eggs, but they bounce",4,,,,,
