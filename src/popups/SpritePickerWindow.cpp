@@ -63,8 +63,8 @@ void SpritePickerWindow::searchTextChanged(const QString &text) {
 void SpritePickerWindow::currentSpriteChanged(QListWidgetItem *current, QListWidgetItem *previous) {
     Q_UNUSED(previous);
     if (current == nullptr) {
-        YUtils::printDebug("Selected sprite list item was null",DebugType::ERROR);
-        YUtils::popupAlert("Selected sprite list item was null");
+        YUtils::printDebug("Selected sprite list item was null",DebugType::WARNING);
+        //YUtils::popupAlert("Selected sprite list item was null");
         return;
     }
     globalSettings.currentSpriteIdToAdd = current->data(0xff).toUInt();

@@ -134,7 +134,7 @@ void MapSelect::confirmClicked() {
     }
     auto selectedItem = rightSelectedItems.at(0);
     if (selectedItem == nullptr) {
-        YUtils::printDebug("Selected item was null",DebugType::ERROR);
+        YUtils::printDebug("Selected item was null",DebugType::WARNING);
         return;
     }
     auto mapName = selectedItem->text().toStdString();
