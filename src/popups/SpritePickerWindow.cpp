@@ -43,6 +43,13 @@ void SpritePickerWindow::updateSpriteList(QString filter) {
         // Should it be added?
         if (spriteString.contains(filter,Qt::CaseSensitivity::CaseInsensitive)) {
             auto item = new QListWidgetItem(spriteString);
+            if (spriteString.contains("Null")) {
+                item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+            }
+            if (it->createdSettingsLen > 0xff) {
+                // It's got unknown settings length
+                item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+            }
             item->setData(0xff,(uint)it->spriteId);
             this->spriteList->addItem(item);
         }

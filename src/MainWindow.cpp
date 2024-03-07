@@ -273,7 +273,7 @@ MainWindow::MainWindow() {
     this->button_colWindow->setDisabled(true);
     connect(this->button_colWindow,&QAction::triggered, this, &MainWindow::toolbarClick_col);
 
-    QPixmap iconSpriteWindow(":/assets/blooper.png");
+    QPixmap iconSpriteWindow(":/assets/coin.png");
     this->button_addSpriteWindow = toolbar->addAction(QIcon(iconSpriteWindow), tr("Open Sprite Picker"));
     this->button_addSpriteWindow->setObjectName("button_spritePickerWindow");
     this->button_addSpriteWindow->setDisabled(true);
