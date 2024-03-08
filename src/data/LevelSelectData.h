@@ -41,11 +41,26 @@ namespace LevelSelectEnums {
     };
 
     enum MapEntranceAnimation {
-        JUMP_IN_FROM_LEFT = 0x00, // Default for starting levels
-        SLOW_FALL = 0x04, // Slowly fall for a bit, then gravity resumes. "Big pipes" or ground holes
+        SPAWN_STATIC_RIGHT = 0x00, // Default for starting levels
+        SPAWN_STATIC_LEFT = 0x01,
+        WALK_OUT_RIGHT = 0x02,
+        WALK_OUT_LEFT = 0x03,
+        SLOW_FALL_FACE_RIGHT = 0x04, // Slowly fall for a bit, then gravity resumes. "Big pipes" or ground holes
+        SLOW_FALL_FACE_LEFT = 0x05,
+        OUT_OF_PIPE_UPWARDS_SILENT_RIGHT = 0x06, // Right
+        OUT_OF_PIPE_UPWARDS_SILENT_LEFT = 0x07,
+        FLY_UP_RIGHT = 0x08,
         FLY_UP_LEFT = 0x09, // Being shot up from underground, or going up to a cloud area usually
-        OUT_OF_PIPE_UPWARDS = 0x0B,
-        OUT_OF_PIPE_DOWNWARDS = 0x0C
+        LOCKED_BLUE_DOOR_RIGHT = 0x0A,
+        OUT_OF_PIPE_UPWARDS_RIGHTFACE = 0x0B,
+        OUT_OF_PIPE_DOWNWARDS_RIGHTFACE = 0x0C,
+        OUT_OF_PIPE_UPWARDS_LEFTFACE = 0x0D,
+        OUT_OF_PIPE_DOWNWARDS_LEFTFACE = 0x0E,
+        OUT_OF_PIPE_RIGHTWARDS = 0x0F,
+        OUT_OF_PIPE_LEFTWARDS = 0x10,
+        LOCKED_BLUE_DOOR_LEFT = 0x11,
+        YOSHI_IS_INVISIBLE = 0x012,
+        // Then 0x13 and 0x14 is spawn static left.. broken past 0x11 or 0x12 probably
     };
 
     enum CscnYoshiStartScreen {
@@ -149,24 +164,80 @@ struct MapEntrance {
         std::stringstream ss;
         ss << "0x" << std::hex << (uint16_t)enterAnim << " (";
         switch (enterAnim) {
-            case LevelSelectEnums::MapEntranceAnimation::JUMP_IN_FROM_LEFT: {
-                ss << "Jump from left";
+            case LevelSelectEnums::MapEntranceAnimation::SPAWN_STATIC_RIGHT: {
+                ss << "Spawn static (Right)";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::SPAWN_STATIC_LEFT: {
+                ss << "Spawn static (Left)";
                 break;
             }
             case LevelSelectEnums::MapEntranceAnimation::FLY_UP_LEFT: {
-                ss << "Fly up leftwards";
+                ss << "Shot upwards (Left)";
                 break;
             }
-            case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_UPWARDS: {
-                ss << "Pipe exit upwards";
+            case LevelSelectEnums::MapEntranceAnimation::FLY_UP_RIGHT: {
+                ss << "Shot upwards (Right)";
                 break;
             }
-            case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_DOWNWARDS: {
-                ss << "Pipe exit downwards";
+            case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_UPWARDS_RIGHTFACE: {
+                ss << "Pipe exit upwards (Right)";
                 break;
             }
-            case LevelSelectEnums::MapEntranceAnimation::SLOW_FALL: {
-                ss << "Slow fall";
+            case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_UPWARDS_LEFTFACE: {
+                ss << "Pipe exit upwards (Left)";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_DOWNWARDS_RIGHTFACE: {
+                ss << "Pipe exit down (Right)";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_DOWNWARDS_LEFTFACE: {
+                ss << "Pipe exit down (Left)";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::SLOW_FALL_FACE_RIGHT: {
+                ss << "Slow fall (Right)";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::SLOW_FALL_FACE_LEFT: {
+                ss << "Slow fall (Left)";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_UPWARDS_SILENT_LEFT: {
+                ss << "Silent pipe upwards (Left)";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_UPWARDS_SILENT_RIGHT: {
+                ss << "Silent pipe upwards (Right)";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::WALK_OUT_LEFT: {
+                ss << "Walk out left";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::WALK_OUT_RIGHT: {
+                ss << "Walk out right";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::LOCKED_BLUE_DOOR_RIGHT: {
+                ss << "Locked blue door (Right)";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::LOCKED_BLUE_DOOR_LEFT: {
+                ss << "Locked blue door (Left)";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_LEFTWARDS: {
+                ss << "Walk left out of pipe";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_RIGHTWARDS: {
+                ss << "Walk right out of pipe";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::YOSHI_IS_INVISIBLE: {
+                ss << "Spawn Yoshi invisible";
                 break;
             }
             default: {
