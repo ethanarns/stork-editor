@@ -277,6 +277,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.frame = 12; // Flip to transparency frame
             break;
         }
+        case 0xa5: // Somehow these are duplicates, but this has fewer settings
         case 0xe7: { // M Block that only shows up when carrying baby Mario
             meta.indexOfTiles = 0x5f;
             meta.indexOfPalette = 0xe3;
