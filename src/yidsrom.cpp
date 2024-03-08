@@ -96,12 +96,8 @@ void YidsRom::openRom(std::string fileName) {
     //     curFileId++;
     // }
 
-    // Preload
+    // Large and common, so preload
     this->loadObjectRenderFile("objset.arcz");
-    this->loadObjectRenderFile("objeffect.arcz");
-    this->loadObjectRenderFile("objsbblock.arc");
-    this->loadObjectRenderFile("objsbkachikachi.arcz");
-    this->loadObjectRenderFile("objkantera.arcz");
 
     this->updateSpriteMeta();
 

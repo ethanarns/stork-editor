@@ -165,6 +165,10 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
 }
 
 bool YidsRom::loadObjectRenderFile(std::string obarFileFull) {
+    if (obarFileFull.empty()) {
+        YUtils::printDebug("Given empty OBAR file name",DebugType::WARNING);
+        return false;
+    }
     // It's already loaded if the count isn't 0
     if (this->objectRenderFiles.count(obarFileFull) > 0) {
         return false;

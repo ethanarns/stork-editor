@@ -69,7 +69,6 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
             crsbIndex += 2;
             curEnter->whichDsScreen = returnAnimAndScreen >> 14;
             curEnter->enterMapAnimation = (LevelSelectEnums::MapEntranceAnimation)(returnAnimAndScreen % 0x1000);
-            std::cout << curEnter->toString() << std::endl;
             levelMeta->entrances.push_back(curEnter);
             enterIntoMapIndex++;
         }
@@ -91,7 +90,6 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
             crsbIndex++;
             curExit->whichEntranceTo = crsbBytes.at(crsbIndex);
             crsbIndex++;
-            std::cout << curExit->toString() << std::endl;
             levelMeta->exits.push_back(curExit);
             exitIndex++; // Loop increment
         }

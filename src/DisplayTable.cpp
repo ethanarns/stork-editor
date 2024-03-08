@@ -1234,6 +1234,9 @@ void DisplayTable::placeObjectTile(
     uint32_t yPixelOffset,
     uint32_t uuid
 ) {
+    // Will skip if already loaded
+    this->yidsRom->loadObjectRenderFile(objectFile);
+    this->yidsRom->loadObjectRenderFile(paletteFile);
     QByteArray objectPalette = this->yidsRom->backgroundPalettes[0]; // Default
     try {
         objectPalette = this->yidsRom->objectRenderFiles[paletteFile].objectPalettes[paletteOffset].paletteData;
