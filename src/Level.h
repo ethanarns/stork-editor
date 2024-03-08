@@ -69,7 +69,6 @@ enum ExitStartType {
 };
 
 enum CscnYoshiStartScreen {
-    START_TOP_MAYBE = 0,
     START_TOP = 1,
     START_BOTTOM = 2
 };

@@ -9,9 +9,9 @@
 #include <sstream>
 
 namespace LevelSelectEnums {
-    enum MapExitAnimation {
-        JUMP_INTO_LEVEL = 0x00,
-        JUMP_OUT_TO_LEFT = 0x09,
+    enum MapEntranceAnimation {
+        JUMP_IN_FROM_LEFT = 0x00,
+        JUMP_IN_FROM_RIGHT = 0x09,
         OUT_OF_PIPE_UPWARDS = 0x0B
     };
     // Reference: https://www.youtube.com/watch?v=Zb9jvSQg9sw
@@ -60,10 +60,10 @@ struct MapExitData {
     uint8_t whichEntranceTo;
     std::string toString() {
         std::stringstream ssExit;
-        ssExit << "MapExitData { target x/y: " << std::hex << this->exitLocationX;
-        ssExit << "/" << std::hex << this->exitLocationY << ", ";
-        ssExit << "whichMapTo: " << std::hex << (int)this->whichMapTo << ", exitStartType: " << std::hex << this->exitStartType;
-        ssExit << ", whichMapEntranceTo: " << std::hex << (int)this->whichEntranceTo << " }";
+        ssExit << "MapExitData { Exit loc x/y: 0x" << std::hex << this->exitLocationX;
+        ssExit << "/0x" << std::hex << this->exitLocationY << ", ";
+        ssExit << "whichMapTo: 0x" << std::hex << (int)this->whichMapTo << ", exitStartType: 0x" << std::hex << this->exitStartType;
+        ssExit << ", whichMapEntranceTo: 0x" << std::hex << (int)this->whichEntranceTo << " }";
         return ssExit.str();
     }
     std::vector<uint8_t> compile() {
@@ -86,17 +86,17 @@ struct MapExitData {
  * to places where he returns to this level (ie coming back out of
  * a shy guy pipe)
  */
-struct MapEnterIntoMap {
+struct MapEntrance {
     uint16_t entranceX;
     uint16_t entranceY;
-    LevelSelectEnums::MapExitAnimation enterMapAnimation;
-    uint8_t screen; // CscnYoshiStartScreen
+    LevelSelectEnums::MapEntranceAnimation enterMapAnimation;
+    uint8_t whichDsScreen; // CscnYoshiStartScreen
     std::string toString() {
         std::stringstream ssReturnEnter;
-        ssReturnEnter << "MapEnterIntoMap { x/y loc of spawn: " << std::hex << this->entranceX;
-        ssReturnEnter << "/" << std::hex << this->entranceY << ", ";
-        ssReturnEnter << "entering map anim: " << std::hex << this->enterMapAnimation << ", ";
-        ssReturnEnter << "which screen: " << std::hex << (int)this->screen << " }";
+        ssReturnEnter << "MapEntrance { x/y spawn: 0x" << std::hex << this->entranceX;
+        ssReturnEnter << "/0x" << std::hex << this->entranceY << ", ";
+        ssReturnEnter << "Entrance animation: 0x" << std::hex << this->enterMapAnimation << ", ";
+        ssReturnEnter << "Starting DS screen: 0x" << std::hex << (uint16_t)this->whichDsScreen << " }";
         return ssReturnEnter.str();
     }
     std::vector<uint8_t> compile() {
@@ -106,7 +106,7 @@ struct MapEnterIntoMap {
         YUtils::appendVector(result,entranceXvec);
         YUtils::appendVector(result,entranceYvec);
         uint16_t thirdWord = (uint16_t)this->enterMapAnimation; // The right part is now here
-        thirdWord += ((uint16_t)this->screen) << 14; // Make the 0x80xx
+        thirdWord += ((uint16_t)this->whichDsScreen) << 14; // Make the 0x80xx
         auto thirdWordVec = YUtils::uint16toVec(thirdWord);
         YUtils::appendVector(result,thirdWordVec);
         return result;
@@ -117,7 +117,7 @@ struct MapEnterIntoMap {
 struct LevelMetadata {
     LevelSelectEnums::MapMusicId musicId; // 1 byte, but enums are stored as 4 bytes
     std::string mpdzFileNoExtension;
-    std::vector<MapEnterIntoMap*> entrances;
+    std::vector<MapEntrance*> entrances;
     std::vector<MapExitData*> exits;
 };
 

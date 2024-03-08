@@ -60,15 +60,16 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
         crsbIndex += 0x10; // 02033224
         uint enterIntoMapIndex = 0;
         while (enterIntoMapIndex < numMapEnters) {
-            auto curEnter = new MapEnterIntoMap(); // We want to be able to edit it
+            auto curEnter = new MapEntrance(); // We want to be able to edit it
             curEnter->entranceX = YUtils::getUint16FromVec(crsbBytes,crsbIndex);
             crsbIndex += 2;
             curEnter->entranceY = YUtils::getUint16FromVec(crsbBytes,crsbIndex);
             crsbIndex += 2;
             auto returnAnimAndScreen = YUtils::getUint16FromVec(crsbBytes,crsbIndex);
             crsbIndex += 2;
-            curEnter->screen = returnAnimAndScreen >> 14;
-            curEnter->enterMapAnimation = (LevelSelectEnums::MapExitAnimation)(returnAnimAndScreen % 0x1000);
+            curEnter->whichDsScreen = returnAnimAndScreen >> 14;
+            curEnter->enterMapAnimation = (LevelSelectEnums::MapEntranceAnimation)(returnAnimAndScreen % 0x1000);
+            std::cout << curEnter->toString() << std::endl;
             levelMeta->entrances.push_back(curEnter);
             enterIntoMapIndex++;
         }
@@ -90,6 +91,7 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
             crsbIndex++;
             curExit->whichEntranceTo = crsbBytes.at(crsbIndex);
             crsbIndex++;
+            std::cout << curExit->toString() << std::endl;
             levelMeta->exits.push_back(curExit);
             exitIndex++; // Loop increment
         }
