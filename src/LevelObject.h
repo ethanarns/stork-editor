@@ -16,13 +16,13 @@
 
 #include "InstructionRenderer.h"
 
-enum ObjectFileName {
-    OBJSET,
-    OBJEFFECT,
-    OBJSBBLOCK,
-    OBJSBKACHIKACHI,
-    OBJKANTERA
-};
+// enum ObjectFileName {
+//     OBJSET,
+//     OBJEFFECT,
+//     OBJSBBLOCK,
+//     OBJSBKACHIKACHI,
+//     OBJKANTERA
+// };
 
 struct ObjectGraphicMetadata {
     /**
@@ -30,8 +30,8 @@ struct ObjectGraphicMetadata {
      * This is hard-coded in the code sadly, no tables
      */
     uint32_t indexOfTiles;
-    ObjectFileName whichPaletteFile;
-    ObjectFileName whichObjectFile;
+    std::string whichPaletteFile;
+    std::string whichObjectFile;
     /**
      * @brief The offset/index of the PLTB data.
      * This is hard-coded in the code sadly, no tables

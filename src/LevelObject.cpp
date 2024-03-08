@@ -12,8 +12,8 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     ObjectGraphicMetadata meta;
     auto objectId = lo.objectId;
     meta.frame = 0;
-    meta.whichPaletteFile = ObjectFileName::OBJSET;
-    meta.whichObjectFile = ObjectFileName::OBJSET;
+    meta.whichPaletteFile = "objset.arcz";
+    meta.whichObjectFile = "objset.arcz";
     meta.xPixelOffset = 0;
     meta.yPixelOffset = 0;
     switch(objectId) {
@@ -77,45 +77,37 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         case 0x36: { // Yellow Shy Guy
-            meta.whichObjectFile = ObjectFileName::OBJSET;
             meta.indexOfTiles = 0x21; // 0202de24
             meta.frame = 0x1;
             meta.tileWidth = 2;
             meta.tilesCount = 2 * 3;
-            meta.whichPaletteFile = ObjectFileName::OBJSET;
             meta.indexOfPalette = 0x91; // 0202de18 see above
             // todo: fix x offset?
             break;
         }
         case 0x37: { // Green Shy Guy
-            meta.whichObjectFile = ObjectFileName::OBJSET;
             meta.indexOfTiles = 0x21; // 0202de24
             meta.frame = 0x1;
             meta.tileWidth = 2;
             meta.tilesCount = 2 * 3;
-            meta.whichPaletteFile = ObjectFileName::OBJSET;
             meta.indexOfPalette = 0x92; // 0202de18 see above
             // todo: fix x offset?
             break;
         }
         case 0x38: { // Blue Shy Guy
-            meta.whichObjectFile = ObjectFileName::OBJSET;
             meta.indexOfTiles = 0x21; // 0202de24
             meta.frame = 0x1;
             meta.tileWidth = 2;
             meta.tilesCount = 2 * 3;
-            meta.whichPaletteFile = ObjectFileName::OBJSET;
             meta.indexOfPalette = 0x93; // 0202de18 see above
             // todo: fix x offset?
             break;
         }
         case 0x39: { // Red Shy Guy
-            meta.whichObjectFile = ObjectFileName::OBJSET;
             meta.indexOfTiles = 0x21; // 0202de24
             meta.frame = 0x1;
             meta.tileWidth = 2;
             meta.tilesCount = 2 * 3;
-            meta.whichPaletteFile = ObjectFileName::OBJSET;
             meta.indexOfPalette = 0x90; // 0202de18 see above
             // todo: fix x offset?
             break;
@@ -158,8 +150,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         case 0x54: { // Crayzee Dayzee
-            meta.whichObjectFile = ObjectFileName::OBJSET;
-            meta.whichPaletteFile = ObjectFileName::OBJSET;
             meta.indexOfTiles = 0x37;
             meta.tileWidth = 2;
             meta.tilesCount = 2 * 4;
@@ -189,8 +179,8 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tileWidth = 4;
             meta.frame = 0;
             meta.indexOfTiles = 0;
-            meta.whichObjectFile = ObjectFileName::OBJSBBLOCK;
-            meta.whichPaletteFile = ObjectFileName::OBJSBBLOCK;
+            meta.whichObjectFile = "objsbblock.arc";
+            meta.whichPaletteFile = "objsbblock.arc";
             meta.indexOfPalette = 2;
             meta.xPixelOffset = 8;
             break;
@@ -252,7 +242,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         }
         case 0xa1: { // Block that expands when you hit it
             meta.indexOfTiles = 0x5e;
-            meta.whichPaletteFile = ObjectFileName::OBJEFFECT;
+            meta.whichPaletteFile = "objeffect.arcz";
             meta.indexOfPalette = 0x2a-2; // Is in objeffect.arcz, strange offset
             // 02096680 is where the function to get the palette address is
             // Actual function is at 020e448c. Doesn't SEEM to have any offset, but might skip the first few?
@@ -262,7 +252,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         }
         case 0xd2: { // Yellow egg block
             meta.indexOfTiles = 0x1;
-            meta.whichPaletteFile = ObjectFileName::OBJEFFECT;
+            meta.whichPaletteFile = "objeffect.arcz";
             meta.indexOfPalette = 0x2a-2;
             meta.frame = 4; // TODO: Get from object data values
             meta.tilesCount = 4;
@@ -286,8 +276,8 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         case 0xe9: { // Lantern Ghost, 020ba7f4
-            meta.whichObjectFile = ObjectFileName::OBJKANTERA;
-            meta.whichPaletteFile = ObjectFileName::OBJKANTERA;
+            meta.whichObjectFile = "objkantera.arcz";
+            meta.whichPaletteFile = "objkantera.arcz";
             meta.indexOfTiles = 0;
             meta.tileWidth = 4;
             meta.tilesCount = 4 * 3;

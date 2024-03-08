@@ -163,3 +163,12 @@ ObjectFile YidsRom::getObjPltFile(std::string objset_filename) {
     }
     return objFileData;
 }
+
+bool YidsRom::loadObjectRenderFile(std::string obarFileFull) {
+    // It's already loaded if the count isn't 0
+    if (this->objectRenderFiles.count(obarFileFull) > 0) {
+        return false;
+    }
+    this->objectRenderFiles[obarFileFull] = this->getObjPltFile(obarFileFull);
+    return true;
+}

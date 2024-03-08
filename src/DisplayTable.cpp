@@ -1228,15 +1228,15 @@ void DisplayTable::placeObjectTile(
     uint32_t paletteOffset,
     uint32_t spriteWidth,
     uint32_t tilesLength,
-    ObjectFileName paletteFile,
-    ObjectFileName objectFile,
+    std::string paletteFile,
+    std::string objectFile,
     uint32_t xPixelOffset,
     uint32_t yPixelOffset,
     uint32_t uuid
 ) {
     QByteArray objectPalette = this->yidsRom->backgroundPalettes[0]; // Default
     try {
-        objectPalette = this->yidsRom->objectFiles[paletteFile].objectPalettes[paletteOffset].paletteData;
+        objectPalette = this->yidsRom->objectRenderFiles[paletteFile].objectPalettes[paletteOffset].paletteData;
     } catch (...) {
         std::stringstream ssPalFail;
         ssPalFail << "Failed to get object palette for object with uuid 0x" << std::hex << uuid;
@@ -1244,7 +1244,7 @@ void DisplayTable::placeObjectTile(
         YUtils::printDebug(ssPalFail.str(),DebugType::ERROR);
     }
 
-    std::vector<uint8_t> objectVector = this->yidsRom->objectFiles[objectFile].objectPixelTiles[objectOffset];
+    std::vector<uint8_t> objectVector = this->yidsRom->objectRenderFiles[objectFile].objectPixelTiles[objectOffset];
 
     if (objectPalette.size() < 0xf) {
         std::stringstream ssEmptyPalette;

@@ -59,8 +59,6 @@ public:
 
     QByteArray backgroundPalettes[0x20];
 
-    std::map<uint32_t,ObjectFile> objectFiles;
-
     std::map<std::string,ObjectFile> objectRenderFiles;
 
     bool filesLoaded = false;
@@ -82,6 +80,7 @@ public:
 
     std::vector<uint8_t> getByteVectorFromFile(std::string fileName);
     ObjectFile getObjPltFile(std::string objset_filename);
+    bool loadObjectRenderFile(std::string obarFileFull);
 
     // template<typename T>
     // T getNumberAt(Address addr){

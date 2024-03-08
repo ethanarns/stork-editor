@@ -46,8 +46,8 @@ public:
         uint32_t paletteOffset,
         uint32_t spriteWidth,
         uint32_t tilesLength,
-        ObjectFileName paletteFile,
-        ObjectFileName objectFile,
+        std::string paletteFile,
+        std::string objectFile,
         uint32_t xPixelOffset,
         uint32_t yPixelOffset,
         uint32_t uuid

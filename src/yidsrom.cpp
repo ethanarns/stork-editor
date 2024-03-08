@@ -96,11 +96,16 @@ void YidsRom::openRom(std::string fileName) {
     //     curFileId++;
     // }
 
-    this->objectFiles[ObjectFileName::OBJSET] = this->getObjPltFile("objset.arcz");
-    this->objectFiles[ObjectFileName::OBJEFFECT] = this->getObjPltFile("objeffect.arcz");
-    this->objectFiles[ObjectFileName::OBJSBBLOCK] = this->getObjPltFile("objsbblock.arc");
-    this->objectFiles[ObjectFileName::OBJSBKACHIKACHI] = this->getObjPltFile("objsbkachikachi.arcz");
-    this->objectFiles[ObjectFileName::OBJKANTERA] = this->getObjPltFile("objkantera.arcz");
+    //this->objectFiles[ObjectFileName::OBJSET] = this->getObjPltFile("objset.arcz");
+    this->loadObjectRenderFile("objset.arcz");
+    //this->objectFiles[ObjectFileName::OBJEFFECT] = this->getObjPltFile("objeffect.arcz");
+    this->loadObjectRenderFile("objeffect.arcz");
+    //this->objectFiles[ObjectFileName::OBJSBBLOCK] = this->getObjPltFile("objsbblock.arc");
+    this->loadObjectRenderFile("objsbblock.arc");
+    //this->objectFiles[ObjectFileName::OBJSBKACHIKACHI] = this->getObjPltFile("objsbkachikachi.arcz");
+    this->loadObjectRenderFile("objsbkachikachi.arcz");
+    //this->objectFiles[ObjectFileName::OBJKANTERA] = this->getObjPltFile("objkantera.arcz");
+    this->loadObjectRenderFile("objkantera.arcz");
 
     this->updateSpriteMeta();
 
