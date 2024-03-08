@@ -16,14 +16,6 @@
 
 #include "InstructionRenderer.h"
 
-// enum ObjectFileName {
-//     OBJSET,
-//     OBJEFFECT,
-//     OBJSBBLOCK,
-//     OBJSBKACHIKACHI,
-//     OBJKANTERA
-// };
-
 struct ObjectGraphicMetadata {
     /**
      * @brief The offset/index of the OBJB data.
