@@ -33,11 +33,23 @@ namespace LevelSelectEnums {
     };
 
     enum MapExitStartType {
+        WALK_TO_RIGHT = 0x00,
         WALK_TO_LEFT = 0x01,
-        PRESS_DOWN_PIPE = 0x04,
-        BLUE_DOOR = 0x05,
+        TOUCH_PIPE_UP = 0x02, // Touching it does the pipe warp up, no button needed
+        PRESS_UP_PIPE = 0x03, // Requires pressing up key
+        PRESS_DOWN_PIPE = 0x04, // Use on 1-1 a lot
+        BLUE_DOOR = 0x05, // Good for forts
+        BLUE_DOOR_LOCKED = 0x06, // Requires a key
+        BOSS_DOOR = 0x07, // Red, only for boss rooms
+        UNKNOWN_1 = 0x08,// 0x8 I could not get to trigger when replacing down pipe on 1-1
+        WALK_RIGHT_QUIT_MAP = 0x09, // Quits the map when you walk right??
+        PRESS_RIGHT_PIPE = 0x0A,
         PRESS_LEFT_PIPE = 0x0B,
-        AREA_TRIGGER_UP = 0x0C
+        AREA_TRIGGER_PIPE = 0x0C, // Simply jumping into the area triggers the exit
+        UNKNOWN_2 = 0x0D, // 0x0D does not seem to trigger with 1-1 pipe replace
+        AREA_TRIGGER_SILENT = 0x0E, // Silently changes maps
+        // 0x0F I could not get to trigger
+        // 0x10 neither. 0xE might be the last one
     };
 
     enum MapEntranceAnimation {
@@ -103,19 +115,63 @@ struct MapExitData {
         ss << "0x" << std::hex << (uint16_t)exitType << " (";
         switch(exitType) {
             case LevelSelectEnums::MapExitStartType::PRESS_DOWN_PIPE: {
-                ss << "Down Pipe";
+                ss << "Down Button Pipe";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::PRESS_UP_PIPE: {
+                ss << "Up Button Pipe";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::PRESS_LEFT_PIPE: {
+                ss << "Left Button Pipe";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::PRESS_RIGHT_PIPE: {
+                ss << "Right Button Pipe";
                 break;
             }
             case LevelSelectEnums::MapExitStartType::BLUE_DOOR: {
                 ss << "Blue Door";
                 break;
             }
-            case LevelSelectEnums::MapExitStartType::AREA_TRIGGER_UP: {
-                ss << "Area Trigger";
+            case LevelSelectEnums::MapExitStartType::BLUE_DOOR_LOCKED: {
+                ss << "Blue Door (Needs key)";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::BOSS_DOOR: {
+                ss << "Boss Door";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::AREA_TRIGGER_PIPE: {
+                ss << "Area Trigger (Pipe sound)";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::AREA_TRIGGER_SILENT: {
+                ss << "Area Trigger (Silent)";
                 break;
             }
             case LevelSelectEnums::MapExitStartType::WALK_TO_LEFT: {
                 ss << "Walk Left";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::WALK_TO_RIGHT: {
+                ss << "Walk Right";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::WALK_RIGHT_QUIT_MAP: {
+                ss << "Walk Right (Quit to level select)";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::TOUCH_PIPE_UP: {
+                ss << "Automatic Up Pipe";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::UNKNOWN_1: {
+                ss << "Unknown 1";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::UNKNOWN_2: {
+                ss << "Unknown 2";
                 break;
             }
             default: {
