@@ -23,38 +23,10 @@
 #include "Chartile.h"
 #include "compression.h"
 
-class Instruction {
-public:
-    virtual std::string toString() = 0;
-    virtual std::vector<uint8_t> compile() = 0;
-    uint32_t magicNum = 0;
-};
-
 struct ObjectPalette {
     QByteArray paletteData;
     uint32_t index;
     uint32_t address;
-};
-
-/**
- * @brief MPDZ file
- */
-struct MapFile : public Instruction {
-    uint32_t magicNum = Constants::MPDZ_MAGIC_NUM;
-    std::vector<Instruction*> majorInstructions;
-
-    std::string toString() {
-        return "MapFile {}";
-    };
-    std::vector<uint8_t> compile() {
-        std::vector<uint8_t> result;
-        result = FsPacker::packInstruction(Constants::MPDZ_MAGIC_NUM,result);
-        return result;
-    };
-    ~MapFile() {
-        // This trick deletes all the data's memory in the vector
-        std::vector<Instruction*>().swap(this->majorInstructions);
-    }
 };
 
 struct ObjectFile {
