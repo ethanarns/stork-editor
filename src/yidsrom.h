@@ -59,15 +59,6 @@ public:
 
     QByteArray backgroundPalettes[0x20];
 
-    /**
-     * @brief "Characters", or the pixel arrangement of tiles. From OBJ data, for OAM
-     */
-    std::map<uint32_t,std::vector<uint8_t>> objsetPixelTiles;
-
-    std::map<uint32_t,ObjectPalette> objsetPalettes;
-
-    std::map<uint32_t,std::vector<uint8_t>> effectPixelTiles;
-    std::map<uint32_t,ObjectPalette> effectPalettes;
     std::map<uint32_t,ObjectFile> objectFiles;
 
     std::map<std::string,ObjectFile> objectRenderFiles;
