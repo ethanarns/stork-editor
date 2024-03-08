@@ -8,12 +8,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace LevelSelectEnums {
-    enum MapEntranceAnimation {
-        JUMP_IN_FROM_LEFT = 0x00,
-        JUMP_IN_FROM_RIGHT = 0x09,
-        OUT_OF_PIPE_UPWARDS = 0x0B
-    };
+namespace LevelSelectEnums {    
     // Reference: https://www.youtube.com/watch?v=Zb9jvSQg9sw
     // Usually comes in as uint8_t, but this is stored as int
     // To find these, break on 2013208, load 1-1, and edit 0231e307
@@ -39,11 +34,21 @@ namespace LevelSelectEnums {
 
     enum MapExitStartType {
         WALK_TO_LEFT = 0x01,
-        PRESS_DOWN_PIPE = 0x04
+        PRESS_DOWN_PIPE = 0x04,
+        BLUE_DOOR = 0x05,
+        PRESS_LEFT_PIPE = 0x0B,
+        AREA_TRIGGER_UP = 0x0C
     };
 
-    enum MapYoshiStartScreen {
-        START_TOP_MAYBE = 0,
+    enum MapEntranceAnimation {
+        JUMP_IN_FROM_LEFT = 0x00, // Default for starting levels
+        SLOW_FALL = 0x04, // Slowly fall for a bit, then gravity resumes. "Big pipes" or ground holes
+        FLY_UP_LEFT = 0x09, // Being shot up from underground, or going up to a cloud area usually
+        OUT_OF_PIPE_UPWARDS = 0x0B,
+        OUT_OF_PIPE_DOWNWARDS = 0x0C
+    };
+
+    enum CscnYoshiStartScreen {
         START_TOP = 1,
         START_BOTTOM = 2
     };
@@ -62,7 +67,7 @@ struct MapExitData {
         std::stringstream ssExit;
         ssExit << "MapExitData { Exit loc x/y: 0x" << std::hex << this->exitLocationX;
         ssExit << "/0x" << std::hex << this->exitLocationY << ", ";
-        ssExit << "whichMapTo: 0x" << std::hex << (int)this->whichMapTo << ", exitStartType: 0x" << std::hex << this->exitStartType;
+        ssExit << "whichMapTo: 0x" << std::hex << (int)this->whichMapTo << ", exitStartType: " << MapExitData::printExitStartType(this->exitStartType);
         ssExit << ", whichMapEntranceTo: 0x" << std::hex << (int)this->whichEntranceTo << " }";
         return ssExit.str();
     }
@@ -78,6 +83,34 @@ struct MapExitData {
         result.push_back(this->whichEntranceTo);
         return result;
     }
+    static std::string printExitStartType(LevelSelectEnums::MapExitStartType exitType) {
+        std::stringstream ss;
+        ss << "0x" << std::hex << (uint16_t)exitType << " (";
+        switch(exitType) {
+            case LevelSelectEnums::MapExitStartType::PRESS_DOWN_PIPE: {
+                ss << "Down Pipe";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::BLUE_DOOR: {
+                ss << "Blue Door";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::AREA_TRIGGER_UP: {
+                ss << "Area Trigger";
+                break;
+            }
+            case LevelSelectEnums::MapExitStartType::WALK_TO_LEFT: {
+                ss << "Walk Left";
+                break;
+            }
+            default: {
+                ss << "Unknown";
+                break;
+            }
+        }
+        ss << ")";
+        return ss.str();
+    };
 };
 
 /**
@@ -95,7 +128,7 @@ struct MapEntrance {
         std::stringstream ssReturnEnter;
         ssReturnEnter << "MapEntrance { x/y spawn: 0x" << std::hex << this->entranceX;
         ssReturnEnter << "/0x" << std::hex << this->entranceY << ", ";
-        ssReturnEnter << "Entrance animation: 0x" << std::hex << this->enterMapAnimation << ", ";
+        ssReturnEnter << "Entering animation: " << MapEntrance::printEntranceAnimation(this->enterMapAnimation) << ", ";
         ssReturnEnter << "Starting DS screen: 0x" << std::hex << (uint16_t)this->whichDsScreen << " }";
         return ssReturnEnter.str();
     }
@@ -111,6 +144,39 @@ struct MapEntrance {
         YUtils::appendVector(result,thirdWordVec);
         return result;
     }
+    // Entering animation
+    static std::string printEntranceAnimation(LevelSelectEnums::MapEntranceAnimation enterAnim) {
+        std::stringstream ss;
+        ss << "0x" << std::hex << (uint16_t)enterAnim << " (";
+        switch (enterAnim) {
+            case LevelSelectEnums::MapEntranceAnimation::JUMP_IN_FROM_LEFT: {
+                ss << "Jump from left";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::FLY_UP_LEFT: {
+                ss << "Fly up leftwards";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_UPWARDS: {
+                ss << "Pipe exit upwards";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_DOWNWARDS: {
+                ss << "Pipe exit downwards";
+                break;
+            }
+            case LevelSelectEnums::MapEntranceAnimation::SLOW_FALL: {
+                ss << "Slow fall";
+                break;
+            }
+            default: {
+                ss << "Unknown";
+                break;
+            }
+        }
+        ss << ")";
+        return ss.str();
+    };
 };
 
 // CSCN
