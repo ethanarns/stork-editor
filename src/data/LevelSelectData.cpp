@@ -67,7 +67,17 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
             crsbIndex += 2;
             auto returnAnimAndScreen = YUtils::getUint16FromVec(crsbBytes,crsbIndex);
             crsbIndex += 2;
-            curEnter->whichDsScreen = returnAnimAndScreen >> 14;
+            uint16_t whichScreenUint = (returnAnimAndScreen >> 14);
+            if (whichScreenUint == 1) {
+                curEnter->whichDsScreen = LevelSelectEnums::StartingDsScreen::START_TOP;
+            } else if (whichScreenUint == 2) {
+                curEnter->whichDsScreen = LevelSelectEnums::StartingDsScreen::START_BOTTOM;
+            } else {
+                std::stringstream ssDsScreen;
+                ssDsScreen << "Unusual whichDsScreen value: 0x" << std::hex << whichScreenUint;
+                YUtils::popupAlert(ssDsScreen.str());
+                YUtils::printDebug(ssDsScreen.str(),WARNING);
+            }
             curEnter->enterMapAnimation = (LevelSelectEnums::MapEntranceAnimation)(returnAnimAndScreen % 0x1000);
             levelMeta->entrances.push_back(curEnter);
             enterIntoMapIndex++;

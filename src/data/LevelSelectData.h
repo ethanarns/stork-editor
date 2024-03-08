@@ -41,16 +41,16 @@ namespace LevelSelectEnums {
     };
 
     enum MapEntranceAnimation {
-        SPAWN_STATIC_RIGHT = 0x00, // Default for starting levels
-        SPAWN_STATIC_LEFT = 0x01,
+        SPAWN_STATIC_RIGHT = 0x00, // If first map entrance, this is jump in from left. Pretty much always uses this
+        SPAWN_STATIC_LEFT = 0x01,  // If first map entrance, this is jump in from right. Unsure if used in base game
         WALK_OUT_RIGHT = 0x02,
         WALK_OUT_LEFT = 0x03,
         SLOW_FALL_FACE_RIGHT = 0x04, // Slowly fall for a bit, then gravity resumes. "Big pipes" or ground holes
         SLOW_FALL_FACE_LEFT = 0x05,
-        OUT_OF_PIPE_UPWARDS_SILENT_RIGHT = 0x06, // Right
+        OUT_OF_PIPE_UPWARDS_SILENT_RIGHT = 0x06, // Pipe animation shown, but no sound places
         OUT_OF_PIPE_UPWARDS_SILENT_LEFT = 0x07,
-        FLY_UP_RIGHT = 0x08,
-        FLY_UP_LEFT = 0x09, // Being shot up from underground, or going up to a cloud area usually
+        FLY_UP_RIGHT = 0x08, // Being shot up from underground, or going up to a cloud area usually
+        FLY_UP_LEFT = 0x09,
         LOCKED_BLUE_DOOR_RIGHT = 0x0A,
         OUT_OF_PIPE_UPWARDS_RIGHTFACE = 0x0B,
         OUT_OF_PIPE_DOWNWARDS_RIGHTFACE = 0x0C,
@@ -59,11 +59,11 @@ namespace LevelSelectEnums {
         OUT_OF_PIPE_RIGHTWARDS = 0x0F,
         OUT_OF_PIPE_LEFTWARDS = 0x10,
         LOCKED_BLUE_DOOR_LEFT = 0x11,
-        YOSHI_IS_INVISIBLE = 0x012,
+        YOSHI_IS_INVISIBLE = 0x012, // Special case? Investigate in code
         // Then 0x13 and 0x14 is spawn static left.. broken past 0x11 or 0x12 probably
     };
 
-    enum CscnYoshiStartScreen {
+    enum StartingDsScreen {
         START_TOP = 1,
         START_BOTTOM = 2
     };
@@ -138,7 +138,7 @@ struct MapEntrance {
     uint16_t entranceX;
     uint16_t entranceY;
     LevelSelectEnums::MapEntranceAnimation enterMapAnimation;
-    uint8_t whichDsScreen; // CscnYoshiStartScreen
+    LevelSelectEnums::StartingDsScreen whichDsScreen;
     std::string toString() {
         std::stringstream ssReturnEnter;
         ssReturnEnter << "MapEntrance { x/y spawn: 0x" << std::hex << this->entranceX;
