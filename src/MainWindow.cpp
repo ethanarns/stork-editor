@@ -938,8 +938,6 @@ void MainWindow::objectListClick() {
     }
     this->selectionInfoTable->updateWithLevelObject(loadedLevelObject);
     if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
-        this->grid->clearVisualSpriteSelection();
-        this->grid->selectItemByUuid(objectUuid,false);
         this->selectionInfoTable->updateWithLevelObject(loadedLevelObject);
         auto itemTile = this->grid->item(loadedLevelObject->yPosition,loadedLevelObject->xPosition);
         if (itemTile == nullptr) {
@@ -948,6 +946,10 @@ void MainWindow::objectListClick() {
             return;
         }
         this->grid->scrollToItem(itemTile);
+        this->grid->clearVisualSpriteSelection();
+        this->grid->clearSelection();
+        this->grid->selectedObjects.clear();
+        this->grid->selectItemByUuid(objectUuid,false);
     }
 }
 
