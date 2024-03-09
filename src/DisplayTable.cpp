@@ -573,7 +573,7 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
         }
         auto collisionData = this->yidsRom->mapData->getCollisionData();
         // Coll is in 2x2 segments
-        uint32_t layerWidth = scen->getInfo()->layerWidth / 2;
+        uint32_t layerWidth = this->yidsRom->mapData->getCollisionCanvasWidth() / 2;
         uint32_t colX = curItemUnderCursor->column() / 2;
         uint32_t rowY = curItemUnderCursor->row() / 2;
         uint32_t posInColArray = colX + (rowY * layerWidth);
