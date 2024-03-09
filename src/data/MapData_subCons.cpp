@@ -41,15 +41,18 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
         } else {
             std::stringstream unknownMagic;
             unknownMagic << "Unknown magic number in LayerData: 0x" << std::hex << subMagic;
+            unknownMagic << " (" << YUtils::magicToAscii(subMagic) << ")";
             YUtils::printDebug(unknownMagic.str(),DebugType::ERROR);
             mpdzIndex += subLength;
         }
         if (mpdzIndex != tempEnd) {
             std::stringstream ssEndNotMatch;
-            ssEndNotMatch << "Mismatch in end index. Current Index: " << std::hex;
+            ssEndNotMatch << "Mismatch in LayerData end index. Current Index: " << std::hex;
             ssEndNotMatch << mpdzIndex << ", Temp End: " << tempEnd;
-            ssEndNotMatch << ", Magic Number: " << std::hex << subMagic;
+            ssEndNotMatch << ", Magic Number: " << std::hex << subMagic << " (" << YUtils::magicToAscii(subMagic) << ")";
+            mpdzIndex = tempEnd;
             YUtils::printDebug(ssEndNotMatch.str(),DebugType::ERROR);
+            YUtils::printDebug("Setting the mpdzIndex to tempEnd as a temporary fix",DebugType::WARNING);
         }
     }
 }
