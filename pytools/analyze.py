@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 from genericpath import isfile
-from time import perf_counter
-from tkinter import Toplevel
 import ndspy.lz10
 import argparse, os
-
-from pkg_resources import UnknownExtra
 
 parser = argparse.ArgumentParser("analyzer")
 parser.add_argument("filename")
