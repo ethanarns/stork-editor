@@ -56,6 +56,7 @@ void MapSelect::updateLeftList() {
         return;
     }
     YUtils::printDebug("Refreshing leftList",DebugType::VERBOSE);
+    this->leftList->clearSelection();
     for (int i = 0; i < this->leftList->count(); i++) {
         delete this->leftList->item(i);
     }
@@ -99,6 +100,7 @@ void MapSelect::currentItemChanged(QListWidgetItem *current, QListWidgetItem *pr
     }
     auto crsbData = new LevelSelectData(crsbVector);
     //YUtils::printDebug("Updating right list",DebugType::VERBOSE);
+    this->rightList->clearSelection();
     for (int i = 0; i < this->rightList->count(); i++) {
         delete this->rightList->item(i);
     }

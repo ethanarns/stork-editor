@@ -146,7 +146,7 @@ struct MapExitData {
                 return "Walk Right";
             }
             case LevelSelectEnums::MapExitStartType::WALK_RIGHT_QUIT_MAP: {
-                return "Walk Right (Quit to level select)";
+                return "Walk Right (Quit to stages)";
             }
             case LevelSelectEnums::MapExitStartType::TOUCH_PIPE_UP: {
                 return "Automatic Up Pipe";

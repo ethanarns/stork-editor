@@ -88,10 +88,21 @@ void LevelWindow::refreshLists() {
         YUtils::printDebug("CRSB data with that MPDZ was null",DebugType::ERROR);
         return;
     }
+
+    // Wipe entrance list widget
+    this->entranceListWidget->clearSelection();
+    for (int entranceDelIndex = 0; entranceDelIndex < this->entranceListWidget->count(); entranceDelIndex++) {
+        delete this->entranceListWidget->item(entranceDelIndex);
+    }
+    this->entranceListWidget->clear();
+
+    // Is this the first map?
+    bool isFirstMap = false; // TODO: find out
+
     uint entranceIndex = 0;
     for (auto enit = curLevelData->entrances.begin(); enit != curLevelData->entrances.end(); enit++) {
         std::stringstream ssEnter;
-        if (entranceIndex == 0) {
+        if (entranceIndex == 0 && isFirstMap == true) {
             ssEnter << "0x0: Level Start"; // Different settings than normal
         } else {
             auto entranceTypeStr = MapEntrance::printEntranceAnimation((*enit)->enterMapAnimation);
@@ -103,6 +114,13 @@ void LevelWindow::refreshLists() {
         entranceIndex++;
     }
 
+    // Wipe exit list widget
+    this->exitListWidget->clearSelection();
+    for (int exitDelIndex = 0; exitDelIndex < this->exitListWidget->count(); exitDelIndex++) {
+        delete this->exitListWidget->item(exitDelIndex);
+    }
+    this->exitListWidget->clear();
+
     uint exitIndex = 0;
     for (auto xit = curLevelData->exits.begin(); xit != curLevelData->exits.end(); xit++) {
         std::stringstream ssExit;
@@ -110,7 +128,7 @@ void LevelWindow::refreshLists() {
         auto levelTo = this->yidsRom->latestLevelSelectData->levels.at(mapIndex);
         auto exitType = MapExitData::printExitStartType((*xit)->exitStartType);
         ssExit << exitType << " to " << levelTo->mpdzFileNoExtension;
-        ssExit << " 0x" << std::hex << (*xit)->whichEntranceTo;
+        ssExit << " 0x" << std::hex << (uint16_t)((*xit)->whichEntranceTo);
         QListWidgetItem* exitItem = new QListWidgetItem(tr(ssExit.str().c_str()));
         exitItem->setData(LevelWindowDataKey::EXIT_INDEX,exitIndex);
         this->exitListWidget->addItem(exitItem);
