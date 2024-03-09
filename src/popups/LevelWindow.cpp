@@ -12,6 +12,11 @@
 #include <QListWidget>
 #include <QLabel>
 
+enum LevelWindowDataKey {
+    ENTRANCE_INDEX = 0x20,
+    EXIT_INDEX = 0x21
+};
+
 LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     Q_UNUSED(parent);
     this->yidsRom = rom;
@@ -86,9 +91,14 @@ void LevelWindow::refreshLists() {
     uint entranceIndex = 0;
     for (auto enit = curLevelData->entrances.begin(); enit != curLevelData->entrances.end(); enit++) {
         std::stringstream ssEnter;
-        ssEnter << "Entrance 0x" << std::hex << entranceIndex;
+        if (entranceIndex == 0) {
+            ssEnter << "0x0: Level Start"; // Different settings than normal
+        } else {
+            auto entranceTypeStr = MapEntrance::printEntranceAnimation((*enit)->enterMapAnimation);
+            ssEnter << "0x" << std::hex << entranceIndex << ": " << entranceTypeStr;
+        }
         QListWidgetItem* entranceItem = new QListWidgetItem(tr(ssEnter.str().c_str()));
-        entranceItem->setData(0x20,entranceIndex);
+        entranceItem->setData(LevelWindowDataKey::ENTRANCE_INDEX,entranceIndex);
         this->entranceListWidget->addItem(entranceItem);
         entranceIndex++;
     }
@@ -96,9 +106,13 @@ void LevelWindow::refreshLists() {
     uint exitIndex = 0;
     for (auto xit = curLevelData->exits.begin(); xit != curLevelData->exits.end(); xit++) {
         std::stringstream ssExit;
-        ssExit << "Exit 0x" << std::hex << exitIndex;
+        uint32_t mapIndex = (*xit)->whichMapTo;
+        auto levelTo = this->yidsRom->latestLevelSelectData->levels.at(mapIndex);
+        auto exitType = MapExitData::printExitStartType((*xit)->exitStartType);
+        ssExit << exitType << " to " << levelTo->mpdzFileNoExtension;
+        ssExit << " 0x" << std::hex << (*xit)->whichEntranceTo;
         QListWidgetItem* exitItem = new QListWidgetItem(tr(ssExit.str().c_str()));
-        exitItem->setData(0x20,exitIndex);
+        exitItem->setData(LevelWindowDataKey::EXIT_INDEX,exitIndex);
         this->exitListWidget->addItem(exitItem);
         exitIndex++;
     }

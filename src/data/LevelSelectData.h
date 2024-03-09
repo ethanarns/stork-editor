@@ -111,76 +111,56 @@ struct MapExitData {
         return result;
     }
     static std::string printExitStartType(LevelSelectEnums::MapExitStartType exitType) {
-        std::stringstream ss;
-        ss << "0x" << std::hex << (uint16_t)exitType << " (";
         switch(exitType) {
             case LevelSelectEnums::MapExitStartType::PRESS_DOWN_PIPE: {
-                ss << "Down Button Pipe";
-                break;
+                return "Down Button Pipe";
             }
             case LevelSelectEnums::MapExitStartType::PRESS_UP_PIPE: {
-                ss << "Up Button Pipe";
-                break;
+                return "Up Button Pipe";
             }
             case LevelSelectEnums::MapExitStartType::PRESS_LEFT_PIPE: {
-                ss << "Left Button Pipe";
-                break;
+                return "Left Button Pipe";
             }
             case LevelSelectEnums::MapExitStartType::PRESS_RIGHT_PIPE: {
-                ss << "Right Button Pipe";
-                break;
+                return "Right Button Pipe";
             }
             case LevelSelectEnums::MapExitStartType::BLUE_DOOR: {
-                ss << "Blue Door";
-                break;
+                return "Blue Door";
             }
             case LevelSelectEnums::MapExitStartType::BLUE_DOOR_LOCKED: {
-                ss << "Blue Door (Needs key)";
-                break;
+                return "Locked Blue Door";
             }
             case LevelSelectEnums::MapExitStartType::BOSS_DOOR: {
-                ss << "Boss Door";
-                break;
+                return "Boss Door";
             }
             case LevelSelectEnums::MapExitStartType::AREA_TRIGGER_PIPE: {
-                ss << "Area Trigger (Pipe sound)";
-                break;
+                return "Area Trigger (Pipe sound)";
             }
             case LevelSelectEnums::MapExitStartType::AREA_TRIGGER_SILENT: {
-                ss << "Area Trigger (Silent)";
-                break;
+                return "Area Trigger (Silent)";
             }
             case LevelSelectEnums::MapExitStartType::WALK_TO_LEFT: {
-                ss << "Walk Left";
-                break;
+                return "Walk Left";
             }
             case LevelSelectEnums::MapExitStartType::WALK_TO_RIGHT: {
-                ss << "Walk Right";
-                break;
+                return "Walk Right";
             }
             case LevelSelectEnums::MapExitStartType::WALK_RIGHT_QUIT_MAP: {
-                ss << "Walk Right (Quit to level select)";
-                break;
+                return "Walk Right (Quit to level select)";
             }
             case LevelSelectEnums::MapExitStartType::TOUCH_PIPE_UP: {
-                ss << "Automatic Up Pipe";
-                break;
+                return "Automatic Up Pipe";
             }
             case LevelSelectEnums::MapExitStartType::UNKNOWN_1: {
-                ss << "Unknown 1";
-                break;
+                return "Unknown 1";
             }
             case LevelSelectEnums::MapExitStartType::UNKNOWN_2: {
-                ss << "Unknown 2";
-                break;
+                return "Unknown 2";
             }
             default: {
-                ss << "Unknown";
-                break;
+                return "Unknown";
             }
         }
-        ss << ")";
-        return ss.str();
     };
 };
 
@@ -217,92 +197,68 @@ struct MapEntrance {
     }
     // Entering animation
     static std::string printEntranceAnimation(LevelSelectEnums::MapEntranceAnimation enterAnim) {
-        std::stringstream ss;
-        ss << "0x" << std::hex << (uint16_t)enterAnim << " (";
         switch (enterAnim) {
             case LevelSelectEnums::MapEntranceAnimation::SPAWN_STATIC_RIGHT: {
-                ss << "Spawn static (Right)";
-                break;
+                return "Spawn static (Right)";
             }
             case LevelSelectEnums::MapEntranceAnimation::SPAWN_STATIC_LEFT: {
-                ss << "Spawn static (Left)";
-                break;
+                return "Spawn static (Left)";
             }
             case LevelSelectEnums::MapEntranceAnimation::FLY_UP_LEFT: {
-                ss << "Shot upwards (Left)";
-                break;
+                return "Shot upwards (Left)";
             }
             case LevelSelectEnums::MapEntranceAnimation::FLY_UP_RIGHT: {
-                ss << "Shot upwards (Right)";
-                break;
+                return "Shot upwards (Right)";
             }
             case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_UPWARDS_RIGHTFACE: {
-                ss << "Pipe exit upwards (Right)";
-                break;
+                return "Pipe exit upwards (Right)";
             }
             case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_UPWARDS_LEFTFACE: {
-                ss << "Pipe exit upwards (Left)";
-                break;
+                return "Pipe exit upwards (Left)";
             }
             case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_DOWNWARDS_RIGHTFACE: {
-                ss << "Pipe exit down (Right)";
-                break;
+                return "Pipe exit down (Right)";
             }
             case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_DOWNWARDS_LEFTFACE: {
-                ss << "Pipe exit down (Left)";
-                break;
+                return "Pipe exit down (Left)";
             }
             case LevelSelectEnums::MapEntranceAnimation::SLOW_FALL_FACE_RIGHT: {
-                ss << "Slow fall (Right)";
-                break;
+                return "Slow fall (Right)";
             }
             case LevelSelectEnums::MapEntranceAnimation::SLOW_FALL_FACE_LEFT: {
-                ss << "Slow fall (Left)";
-                break;
+                return "Slow fall (Left)";
             }
             case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_UPWARDS_SILENT_LEFT: {
-                ss << "Silent pipe upwards (Left)";
-                break;
+                return "Silent pipe upwards (Left)";
             }
             case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_UPWARDS_SILENT_RIGHT: {
-                ss << "Silent pipe upwards (Right)";
-                break;
+                return "Silent pipe upwards (Right)";
             }
             case LevelSelectEnums::MapEntranceAnimation::WALK_OUT_LEFT: {
-                ss << "Walk out left";
-                break;
+                return "Walk out left";
             }
             case LevelSelectEnums::MapEntranceAnimation::WALK_OUT_RIGHT: {
-                ss << "Walk out right";
-                break;
+                return "Walk out right";
             }
             case LevelSelectEnums::MapEntranceAnimation::LOCKED_BLUE_DOOR_RIGHT: {
-                ss << "Locked blue door (Right)";
-                break;
+                return "Locked blue door (Right)";
             }
             case LevelSelectEnums::MapEntranceAnimation::LOCKED_BLUE_DOOR_LEFT: {
-                ss << "Locked blue door (Left)";
-                break;
+                return "Locked blue door (Left)";
             }
             case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_LEFTWARDS: {
-                ss << "Walk left out of pipe";
-                break;
+                return "Walk left out of pipe";
             }
             case LevelSelectEnums::MapEntranceAnimation::OUT_OF_PIPE_RIGHTWARDS: {
-                ss << "Walk right out of pipe";
-                break;
+                return "Walk right out of pipe";
             }
             case LevelSelectEnums::MapEntranceAnimation::YOSHI_IS_INVISIBLE: {
-                ss << "Spawn Yoshi invisible";
-                break;
+                return "Spawn Yoshi invisible";
             }
             default: {
-                ss << "Unknown";
-                break;
+                return "Unknown";
             }
         }
-        ss << ")";
-        return ss.str();
     };
 };
 

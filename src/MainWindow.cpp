@@ -1022,5 +1022,6 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     this->objtilesPopup->close();
     this->colWindow->close();
     this->spritePickerWindow->close();
+    this->levelWindow->close();
     event->accept();
 }
