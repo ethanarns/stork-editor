@@ -108,9 +108,8 @@ void YidsRom::openRom(std::string fileName) {
     auto fileNameCrsb_noext = YUtils::getLowercase(crsbFileName);
     auto crsbFilename = fileNameCrsb_noext.append(".crsb");
     auto crsbFileVector = this->getByteVectorFromFile(crsbFilename);
-    auto levelSelectData = new LevelSelectData(crsbFileVector);
-    //TODO: this->romFile.close();
-    this->loadMpdz(levelSelectData->levels.at(0)->mpdzFileNoExtension);
+    this->latestLevelSelectData = new LevelSelectData(crsbFileVector);
+    this->loadMpdz(this->latestLevelSelectData->levels.at(0)->mpdzFileNoExtension);
 }
 
 YidsRom::~YidsRom() {

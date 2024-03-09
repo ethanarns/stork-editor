@@ -85,6 +85,7 @@ enum CollisionType {
     UP_RIGHT_STEEP_1 = 0x5,
     UP_RIGHT_STEEP_2 = 0x6,
     UP_RIGHT_45 = 0x7,
+    KILL_SPIKES_MAYBE = 0x8,
     STATIC_COIN = 0x1a,
     SOFT_ROCK = 0x1b,
     CLIMBABLE_VINE_CEILING = 0x1c,

@@ -115,8 +115,10 @@ void MapSelect::currentItemChanged(QListWidgetItem *current, QListWidgetItem *pr
         return;
     }
     this->rightList->addItems(mpdzList);
-    // TODO: save CRSB to yidsrom
-    delete crsbData;
+    if (this->yidsRom->latestLevelSelectData != nullptr) {
+        delete this->yidsRom->latestLevelSelectData;
+    }
+    this->yidsRom->latestLevelSelectData = crsbData;
 }
 
 void MapSelect::cancelClicked() {

@@ -18,6 +18,7 @@
 #include "Level.h"
 
 #include "data/MapData.h"
+#include "data/LevelSelectData.h"
 
 #include <QByteArray>
 
@@ -50,7 +51,10 @@ public:
 
     std::vector<uint8_t> uncompedRomVector;
     RomMetadata metadata;
+    // MPDZ
     MapData* mapData;
+    // CRSB
+    LevelSelectData* latestLevelSelectData;
 
     std::vector<SpriteMeta> spriteMetadata;
     SpriteMeta getSpriteMetadata(uint32_t spriteId);

@@ -934,7 +934,7 @@ void MainWindow::displayTableClicked() {
     if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
         auto selectedObjects = this->grid->selectedObjects;
         if (selectedObjects.size() < 1) {
-            YUtils::printDebug("No objects selected",DebugType::VERBOSE);
+            YUtils::printDebug("No objects selected in displayTableClicked->sprites",DebugType::VERBOSE);
             return;
         } else if (selectedObjects.size() > 1) {
             std::stringstream ss;
