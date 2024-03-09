@@ -106,3 +106,15 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
         this->levels.push_back(levelMeta);
     }
 }
+
+LevelMetadata *LevelSelectData::getLevelByMpdz(std::string mpdzFilename) {
+    for (auto it = this->levels.begin(); it != this->levels.end(); it++) {
+        auto mpdzNoExt = (*it)->mpdzFileNoExtension;
+        mpdzNoExt.append(".mpdz");
+        if (mpdzFilename.compare(mpdzNoExt) == 0) {
+            return *it;
+        }
+    }
+    YUtils::printDebug("No level with that MPDZ found",DebugType::ERROR);
+    return nullptr;
+}

@@ -10,6 +10,7 @@ public:
     LevelWindow(QWidget *parent, YidsRom* rom);
     QListWidget* entranceListWidget;
     QListWidget* exitListWidget;
+    void refreshLists();
 private:
     YidsRom* yidsRom;
 };

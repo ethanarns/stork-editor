@@ -569,6 +569,7 @@ void MainWindow::LoadRom() {
 
         // Level window //
         this->levelWindow->show();
+        this->levelWindow->refreshLists();
 
         // Palette popup //
         this->palettePopup->resize(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH,PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);

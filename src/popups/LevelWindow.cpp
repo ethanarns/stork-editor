@@ -2,6 +2,9 @@
 
 #include "../yidsrom.h"
 
+#include <string>
+#include <sstream>
+
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -28,12 +31,14 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     // Column 1: list
     this->entranceListWidget = new QListWidget(this);
     row2->addWidget(this->entranceListWidget);
-    //  Column 2: Options
+    // Column 2: Options
     auto entranceOptions = new QVBoxLayout(this);
+    // Entrance Animation
     auto entranceAnimLabel = new QLabel(tr("Entrance Animation"),this);
     entranceOptions->addWidget(entranceAnimLabel);
     auto entranceAnim = new QComboBox(this);
     entranceOptions->addWidget(entranceAnim);
+    // Entrance screen data
     auto entranceScreenLabel = new QLabel(tr("Entrance Screen Data"),this);
     entranceOptions->addWidget(entranceScreenLabel);
     auto entranceScreen = new QComboBox(this);
@@ -65,4 +70,36 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     // Add to main layout
     row3->addLayout(exitOptions);
     mainLayout->addLayout(row3);
+}
+
+void LevelWindow::refreshLists() {
+    auto mapFilename = this->yidsRom->mapData->filename;
+    if (mapFilename.empty()) {
+        YUtils::printDebug("MPDZ filename was empty",DebugType::ERROR);
+        return;
+    }
+    auto curLevelData = this->yidsRom->latestLevelSelectData->getLevelByMpdz(mapFilename);
+    if (curLevelData == nullptr) {
+        YUtils::printDebug("CRSB data with that MPDZ was null",DebugType::ERROR);
+        return;
+    }
+    uint entranceIndex = 0;
+    for (auto enit = curLevelData->entrances.begin(); enit != curLevelData->entrances.end(); enit++) {
+        std::stringstream ssEnter;
+        ssEnter << "Entrance 0x" << std::hex << entranceIndex;
+        QListWidgetItem* entranceItem = new QListWidgetItem(tr(ssEnter.str().c_str()));
+        entranceItem->setData(0x20,entranceIndex);
+        this->entranceListWidget->addItem(entranceItem);
+        entranceIndex++;
+    }
+
+    uint exitIndex = 0;
+    for (auto xit = curLevelData->exits.begin(); xit != curLevelData->exits.end(); xit++) {
+        std::stringstream ssExit;
+        ssExit << "Exit 0x" << std::hex << exitIndex;
+        QListWidgetItem* exitItem = new QListWidgetItem(tr(ssExit.str().c_str()));
+        exitItem->setData(0x20,exitIndex);
+        this->exitListWidget->addItem(exitItem);
+        exitIndex++;
+    }
 }
