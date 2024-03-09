@@ -518,6 +518,9 @@ MainWindow::MainWindow() {
 
     // SpritePickerWindow //
     this->spritePickerWindow = new SpritePickerWindow(this,this->rom);
+    
+    // Level data window //
+    this->levelWindow = new LevelWindow(this,this->rom);
 
     /*******************
      *** Connections ***
@@ -563,6 +566,9 @@ void MainWindow::LoadRom() {
         // Sprite Window //
         this->button_addSpriteWindow->setDisabled(false);
         this->spritePickerWindow->updateSpriteList("");
+
+        // Level window //
+        this->levelWindow->show();
 
         // Palette popup //
         this->palettePopup->resize(PaletteTable::PALETTE_TABLE_WINDOW_WIDTH,PaletteTable::PALETTE_TABLE_WINDOW_HEIGHT);

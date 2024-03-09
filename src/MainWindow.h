@@ -28,6 +28,7 @@
 #include "popups/ColWindow.h"
 #include "popups/MapSelect.h"
 #include "popups/SpritePickerWindow.h"
+#include "popups/LevelWindow.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -46,6 +47,7 @@ public:
     BrushWindow* brushWindow;
     ColWindow* colWindow;
     SpritePickerWindow* spritePickerWindow;
+    LevelWindow* levelWindow;
 
     std::string currentFileName = "";
 
