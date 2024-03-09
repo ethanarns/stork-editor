@@ -75,7 +75,7 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
             } else {
                 std::stringstream ssDsScreen;
                 ssDsScreen << "Unusual whichDsScreen value: 0x" << std::hex << whichScreenUint;
-                YUtils::popupAlert(ssDsScreen.str());
+                //YUtils::popupAlert(ssDsScreen.str());
                 YUtils::printDebug(ssDsScreen.str(),WARNING);
             }
             curEnter->enterMapAnimation = (LevelSelectEnums::MapEntranceAnimation)(returnAnimAndScreen % 0x1000);

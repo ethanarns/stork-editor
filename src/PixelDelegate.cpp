@@ -23,7 +23,7 @@ QImage COIN_IMAGE(":/assets/coin.png");
 
 const QColor collisionColor(     0,255,0  ,100);
 const QColor collisionColorAlt(200,255,200,180);
-const QColor collisionColorErr(255,0,0,180);
+const QColor collisionColorRed(255,0,0,180);
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
     using namespace std;
@@ -223,14 +223,6 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
      *****************/
     CollisionDraw colDrawType = static_cast<CollisionDraw>(index.data(PixelDelegateData::COLLISION_DRAW).toInt());
     if (index.data(PixelDelegateData::SHOW_COLLISION).toBool() == true) {
-        QColor qcBlack("black");
-        QPen qpB(qcBlack);
-        qpB.setStyle(Qt::PenStyle::SolidLine);
-
-        QColor qcWhite("white");
-        QPen qpW(qcWhite);
-        qpW.setStyle(Qt::PenStyle::DotLine);
-
         const int X_WIDTH = option.rect.width();
         const int Y_HEIGHT = option.rect.height();
         const int X_BASE = option.rect.x();
@@ -254,6 +246,15 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE));
                 path.addPolygon(poly);
                 painter->fillPath(path,collisionColorAlt);
+                break;
+            }
+            case CollisionDraw::ZIG_ZAG_UPSIDE_DOWN_RED: {
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE,(double)Y_BASE+Y_HEIGHT) << QPointF((double)(X_BASE+X_WIDTH/2),(double)(Y_BASE));
+                poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColorRed);
                 break;
             }
             case CollisionDraw::DIAG_DOWN_RIGHT: {
@@ -405,7 +406,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             case CollisionDraw::SQERR: {
                 QPainterPath path;
                 path.addRect(X_BASE,Y_BASE,X_WIDTH,Y_HEIGHT);
-                painter->fillPath(path,collisionColorErr);
+                painter->fillPath(path,collisionColorRed);
                 break;
             }
             case CollisionDraw::CLEAR:
