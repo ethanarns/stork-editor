@@ -1094,7 +1094,7 @@ void DisplayTable::updateBg() {
         if (mapTiles.size() == 0) {
             std::stringstream ssEmptyPreRender;
             ssEmptyPreRender << "No MPBZ file for background " << std::hex;
-            ssEmptyPreRender << bgIndex << " found";
+            ssEmptyPreRender << (uint16_t)bgIndex << " found";
             YUtils::printDebug(ssEmptyPreRender.str(),DebugType::WARNING);
             continue; // Proceed to next BG
         }

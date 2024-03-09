@@ -29,7 +29,9 @@ namespace LevelSelectEnums {
         JUNGLE = 0x0C,
         CASTLE_AND_FORTRESS = 0x0D,
         IN_THE_CLOUDS = 0x0E,
-        WILDLANDS = 0x0F
+        WILDLANDS = 0x0F,
+        MINIGAME_SONG = 0x10,
+        PREBOSS_SONG = 0x11
     };
 
     enum MapExitStartType {

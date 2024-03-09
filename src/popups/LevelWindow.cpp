@@ -29,6 +29,15 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     row1->addWidget(musicIdLabel);
     auto musicIdDropdown = new QComboBox(this);
     musicIdDropdown->setObjectName("levelMusicIdDropdown");
+    // Fill with music
+    const int LATEST_MAX_MUSIC = 0x11; // TODO: more (beat the game first)
+    // Less than or equal to because we want it to hit the max
+    for (int musicId = 0; musicId <= LATEST_MAX_MUSIC; musicId++) {
+        std::stringstream ssMusic;
+        ssMusic << "0x" << std::hex << musicId;
+        musicIdDropdown->addItem(tr(ssMusic.str().c_str()));
+    }
+
     row1->addWidget(musicIdDropdown);
     mainLayout->addLayout(row1);
     // Bar 2: Level Entrances //
