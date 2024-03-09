@@ -84,6 +84,7 @@ private:
     QAction* menu_levelSelect;
     QAction* menu_save;
     QAction* menu_export;
+    QAction* menu_levelSettings;
 
     QAction* action_viewBg1;
     QAction* action_viewBg2;
@@ -111,6 +112,7 @@ private:
 
     void menuClick_levelSelect();
     void menuClick_export();
+    void menuClick_levelSettings();
 
     void mapPopupMpdzSelected(std::string mpdzNameNoExt);
 

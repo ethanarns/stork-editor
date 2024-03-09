@@ -218,12 +218,20 @@ MainWindow::MainWindow() {
     // Tools menu //
     QMenu* menu_tools = menuBar()->addMenu("&Tools");
 
-    auto action_settings = new QAction("&Settings...",this);
+    auto action_settings = new QAction("&Preferences...",this);
     action_settings->setShortcut(tr("CTRL+U"));
     action_settings->setIcon(QIcon::fromTheme("document-properties"));
     menu_tools->addAction(action_settings);
     action_settings->setDisabled(true); // Once implemented, never disable
     // Connect
+
+    menu_tools->addSeparator();
+
+    this->menu_levelSettings = new QAction("&Level Settings...",this);
+    this->menu_levelSettings->setShortcut(tr("CTRL+L"));
+    menu_tools->addAction(this->menu_levelSettings);
+    this->menu_levelSettings->setDisabled(true);
+    connect(this->menu_levelSettings, &QAction::triggered,this,&MainWindow::menuClick_levelSettings);
 
     QMenu* menu_help = menuBar()->addMenu("&Help");
 
@@ -568,7 +576,6 @@ void MainWindow::LoadRom() {
         this->spritePickerWindow->updateSpriteList("");
 
         // Level window //
-        this->levelWindow->show();
         this->levelWindow->refreshLists();
 
         // Palette popup //
@@ -605,6 +612,7 @@ void MainWindow::LoadRom() {
         this->grid->updateTriggerBoxes();
         this->menu_save->setDisabled(false);
         this->menu_export->setDisabled(false);
+        this->menu_levelSettings->setDisabled(false);
 
         this->guiObjectList->updateList();
         this->statusLabel->setText(tr("ROM Loaded"));
@@ -762,6 +770,11 @@ void MainWindow::menuClick_export() {
     }
 }
 
+void MainWindow::menuClick_levelSettings() {
+    YUtils::printDebug("Opening level settings window",DebugType::VERBOSE);
+    this->levelWindow->show();
+}
+
 /****************************
  *** WINDOW BUTTON CLICKS ***
  ****************************/
@@ -781,6 +794,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     this->grid->updateSprites();
     this->grid->setLayerDraw(4,true);
     this->paletteTable->refreshLoadedTiles();
+    this->levelWindow->refreshLists();
     this->guiObjectList->updateList();
     this->grid->updateTriggerBoxes();
 }
