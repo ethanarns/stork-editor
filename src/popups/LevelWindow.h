@@ -4,6 +4,7 @@
 
 #include <QWidget>
 #include <QListWidget>
+#include <QComboBox>
 
 class LevelWindow : public QWidget {
 public:
@@ -13,4 +14,5 @@ public:
     void refreshLists();
 private:
     YidsRom* yidsRom;
+    QComboBox* exitMapTarget;
 };

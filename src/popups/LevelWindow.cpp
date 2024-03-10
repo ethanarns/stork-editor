@@ -51,6 +51,11 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     auto entranceAnimLabel = new QLabel(tr("Entrance Animation"),this);
     entranceOptions->addWidget(entranceAnimLabel);
     auto entranceAnim = new QComboBox(this);
+    // Fill with data, max known is 0x12
+    for (int entranceAnimIndex = 0; entranceAnimIndex < 0x12; entranceAnimIndex++) {
+        auto entranceAnimName = MapEntrance::printEntranceAnimation(static_cast<LevelSelectEnums::MapEntranceAnimation>(entranceAnimIndex));
+        entranceAnim->addItem(tr(entranceAnimName.c_str()));
+    }
     entranceOptions->addWidget(entranceAnim);
     // Entrance screen data
     auto entranceScreenLabel = new QLabel(tr("Entrance Screen Data"),this);
@@ -70,12 +75,17 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     auto exitTypeLabel = new QLabel(tr("Exit Type"),this);
     exitOptions->addWidget(exitTypeLabel);
     auto exitTypeCombo = new QComboBox(this);
+    // Fix exit type with... exit types. Last known working one is 0xE
+    for (int exitTypeIndex = 0; exitTypeIndex <= 0xE; exitTypeIndex++) {
+        auto exitTypeName = MapExitData::printExitStartType(static_cast<LevelSelectEnums::MapExitStartType>(exitTypeIndex));
+        exitTypeCombo->addItem(tr(exitTypeName.c_str()));
+    }
     exitOptions->addWidget(exitTypeCombo);
     // Target map
     auto exitMapTargetLabel = new QLabel(tr("Target Map"),this);
     exitOptions->addWidget(exitMapTargetLabel);
-    auto exitMapTarget = new QComboBox(this);
-    exitOptions->addWidget(exitMapTarget);
+    this->exitMapTarget = new QComboBox(this);
+    exitOptions->addWidget(this->exitMapTarget);
     // Target entrance
     auto exitEntranceTargetLabel = new QLabel(tr("Target Entrance"), this);
     exitOptions->addWidget(exitEntranceTargetLabel);
@@ -142,5 +152,12 @@ void LevelWindow::refreshLists() {
         exitItem->setData(LevelWindowDataKey::EXIT_INDEX,exitIndex);
         this->exitListWidget->addItem(exitItem);
         exitIndex++;
+    }
+
+    // Populate with available maps
+    this->exitMapTarget->clear(); // Will this cause a memory leak?
+    auto mapList = this->yidsRom->latestLevelSelectData->levels;
+    for (int mapListIndex = 0; mapListIndex < mapList.size(); mapListIndex++) {
+        this->exitMapTarget->addItem(mapList.at(mapListIndex)->mpdzFileNoExtension.c_str());
     }
 }
