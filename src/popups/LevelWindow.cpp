@@ -169,7 +169,10 @@ void LevelWindow::musicIdChanged(const QString text) {
     
     // Do updates for everything else //
     auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
-    curLevel->musicId = static_cast<LevelSelectEnums::MapMusicId>(musicIdIndex);
+    if (curLevel->musicId != musicIdIndex) {
+        curLevel->musicId = static_cast<LevelSelectEnums::MapMusicId>(musicIdIndex);
+        YUtils::printDebug("Modifying CRSB: Music ID",DebugType::VERBOSE);
+    }
 }
 
 void LevelWindow::entranceAnimChanged(const QString text) {

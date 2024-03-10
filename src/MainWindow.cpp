@@ -849,6 +849,18 @@ void MainWindow::saveRom() {
         YUtils::printDebug("No existing file found, creating new",DebugType::VERBOSE);
     }
     YUtils::writeByteVectorToFile(finalOut,outFile.str());
+
+    // Now do the CRSB //
+    auto compiledCrsb = this->rom->currentLevelSelectData->compile();
+    auto crsbFilename = this->rom->currentLevelSelectData->filename;
+    std::stringstream crsbOutFile;
+    crsbOutFile << "_nds_unpack" << "/data/file/" << crsbFilename;
+    YUtils::writeByteVectorToFile(compiledCrsb,crsbOutFile.str());
+    std::stringstream crsbResult;
+    crsbResult << "Wrote CRSB to '" << crsbOutFile.str() << "'";
+    YUtils::printDebug(crsbResult.str(),DebugType::VERBOSE);
+
+    // Done!
     YUtils::printDebug("Map save successful");
     this->statusLabel->setText(tr("Map save successful"));
     QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
