@@ -278,4 +278,6 @@ public:
     LevelSelectData(std::vector<uint8_t> crsbBytes);
     std::vector<LevelMetadata*> levels;
     LevelMetadata* getLevelByMpdz(std::string mpdzFilename);
+
+    std::string filename;
 };

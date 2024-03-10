@@ -99,6 +99,7 @@ void MapSelect::currentItemChanged(QListWidgetItem *current, QListWidgetItem *pr
         return;
     }
     auto crsbData = new LevelSelectData(crsbVector);
+    crsbData->filename = crsbFilename.toStdString();
     //YUtils::printDebug("Updating right list",DebugType::VERBOSE);
     this->rightList->clearSelection();
     for (int i = 0; i < this->rightList->count(); i++) {
@@ -117,10 +118,10 @@ void MapSelect::currentItemChanged(QListWidgetItem *current, QListWidgetItem *pr
         return;
     }
     this->rightList->addItems(mpdzList);
-    if (this->yidsRom->latestLevelSelectData != nullptr) {
-        delete this->yidsRom->latestLevelSelectData;
+    if (this->yidsRom->currentLevelSelectData != nullptr) {
+        delete this->yidsRom->currentLevelSelectData;
     }
-    this->yidsRom->latestLevelSelectData = crsbData;
+    this->yidsRom->currentLevelSelectData = crsbData;
 }
 
 void MapSelect::cancelClicked() {

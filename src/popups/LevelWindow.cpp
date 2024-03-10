@@ -115,7 +115,7 @@ void LevelWindow::refreshLists() {
         YUtils::printDebug("MPDZ filename was empty",DebugType::ERROR);
         return;
     }
-    auto curLevelData = this->yidsRom->latestLevelSelectData->getLevelByMpdz(mapFilename);
+    auto curLevelData = this->yidsRom->currentLevelSelectData->getLevelByMpdz(mapFilename);
     if (curLevelData == nullptr) {
         YUtils::printDebug("CRSB data with that MPDZ was null",DebugType::ERROR);
         return;
@@ -136,7 +136,7 @@ void LevelWindow::refreshLists() {
     for (auto xit = curLevelData->exits.begin(); xit != curLevelData->exits.end(); xit++) {
         std::stringstream ssExit;
         uint32_t mapIndex = (*xit)->whichMapTo;
-        auto levelTo = this->yidsRom->latestLevelSelectData->levels.at(mapIndex);
+        auto levelTo = this->yidsRom->currentLevelSelectData->levels.at(mapIndex);
         auto exitType = MapExitData::printExitStartType((*xit)->exitStartType);
         ssExit << exitType << " to " << levelTo->mpdzFileNoExtension;
         ssExit << " 0x" << std::hex << (uint16_t)((*xit)->whichEntranceTo);
@@ -148,7 +148,7 @@ void LevelWindow::refreshLists() {
 
     // Populate with available maps
     this->exitMapTarget->clear(); // Will this cause a memory leak?
-    auto mapList = this->yidsRom->latestLevelSelectData->levels;
+    auto mapList = this->yidsRom->currentLevelSelectData->levels;
     for (uint mapListIndex = 0; mapListIndex < mapList.size(); mapListIndex++) {
         this->exitMapTarget->addItem(mapList.at(mapListIndex)->mpdzFileNoExtension.c_str());
     }
@@ -168,7 +168,7 @@ void LevelWindow::musicIdChanged(const QString text) {
     }
     
     // Do updates for everything else //
-    auto curLevel = this->yidsRom->latestLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
     curLevel->musicId = static_cast<LevelSelectEnums::MapMusicId>(musicIdIndex);
 }
 
@@ -246,7 +246,7 @@ void LevelWindow::targetEntranceChanged(const QString text) {
 }
 
 void LevelWindow::refreshTargetEntrances(int currentSelectedExitMap) {
-    auto entranceTargetList = this->yidsRom->latestLevelSelectData->levels.at(currentSelectedExitMap)->entrances;
+    auto entranceTargetList = this->yidsRom->currentLevelSelectData->levels.at(currentSelectedExitMap)->entrances;
     if (entranceTargetList.size() < 1) {
         YUtils::printDebug("entranceTargetList in targetMapChanged is empty",DebugType::WARNING);
         return;
@@ -267,7 +267,7 @@ void LevelWindow::refreshEntranceList() {
         YUtils::printDebug("MPDZ filename was empty",DebugType::ERROR);
         return;
     }
-    auto curLevelData = this->yidsRom->latestLevelSelectData->getLevelByMpdz(mapFilename);
+    auto curLevelData = this->yidsRom->currentLevelSelectData->getLevelByMpdz(mapFilename);
     if (curLevelData == nullptr) {
         YUtils::printDebug("CRSB data with that MPDZ was null",DebugType::ERROR);
         return;
@@ -311,7 +311,7 @@ void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem 
         YUtils::printDebug("MPDZ filename was empty",DebugType::ERROR);
         return;
     }
-    auto curLevelData = this->yidsRom->latestLevelSelectData->getLevelByMpdz(mapFilename);
+    auto curLevelData = this->yidsRom->currentLevelSelectData->getLevelByMpdz(mapFilename);
     if (curLevelData == nullptr) {
         YUtils::printDebug("CRSB data with that MPDZ was null",DebugType::ERROR);
         return;
@@ -345,7 +345,7 @@ void LevelWindow::exitItemChanged(QListWidgetItem *current, QListWidgetItem *pre
         YUtils::printDebug("MPDZ filename was empty",DebugType::ERROR);
         return;
     }
-    auto curLevelData = this->yidsRom->latestLevelSelectData->getLevelByMpdz(mapFilename);
+    auto curLevelData = this->yidsRom->currentLevelSelectData->getLevelByMpdz(mapFilename);
     if (curLevelData == nullptr) {
         YUtils::printDebug("CRSB data with that MPDZ was null",DebugType::ERROR);
         return;

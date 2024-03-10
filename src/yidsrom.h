@@ -54,7 +54,7 @@ public:
     // MPDZ
     MapData* mapData;
     // CRSB
-    LevelSelectData* latestLevelSelectData;
+    LevelSelectData* currentLevelSelectData;
 
     std::vector<SpriteMeta> spriteMetadata;
     SpriteMeta getSpriteMetadata(uint32_t spriteId);
