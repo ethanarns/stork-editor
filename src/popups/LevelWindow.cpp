@@ -117,30 +117,10 @@ void LevelWindow::refreshLists() {
         return;
     }
 
-    // Wipe entrance list widget
-    this->entranceListWidget->clearSelection();
-    for (int entranceDelIndex = 0; entranceDelIndex < this->entranceListWidget->count(); entranceDelIndex++) {
-        delete this->entranceListWidget->item(entranceDelIndex);
-    }
-    this->entranceListWidget->clear();
+    // Update music
+    this->musicIdDropdown->setCurrentIndex(curLevelData->musicId);
 
-    // Is this the first map?
-    bool isFirstMap = false; // TODO: find out
-
-    uint entranceIndex = 0;
-    for (auto enit = curLevelData->entrances.begin(); enit != curLevelData->entrances.end(); enit++) {
-        std::stringstream ssEnter;
-        if (entranceIndex == 0 && isFirstMap == true) {
-            ssEnter << "0x0: Level Start"; // Different settings than normal
-        } else {
-            auto entranceTypeStr = MapEntrance::printEntranceAnimation((*enit)->enterMapAnimation);
-            ssEnter << "0x" << std::hex << entranceIndex << ": " << entranceTypeStr;
-        }
-        QListWidgetItem* entranceItem = new QListWidgetItem(tr(ssEnter.str().c_str()));
-        entranceItem->setData(LevelWindowDataKey::ENTRANCE_INDEX,entranceIndex);
-        this->entranceListWidget->addItem(entranceItem);
-        entranceIndex++;
-    }
+    this->updateEntranceData();
 
     // Wipe exit list widget
     this->exitListWidget->clearSelection();
@@ -185,6 +165,8 @@ void LevelWindow::musicIdChanged(const QString text) {
     }
     
     // Do updates for everything else //
+    auto curLevel = this->yidsRom->latestLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    curLevel->musicId = static_cast<LevelSelectEnums::MapMusicId>(musicIdIndex);
 }
 
 void LevelWindow::entranceAnimChanged(const QString text) {
@@ -272,5 +254,43 @@ void LevelWindow::refreshTargetEntrances(int currentSelectedExitMap) {
         ssEntranceTarget << "0x" << std::hex << entranceTargetIndex << ": ";
         ssEntranceTarget << MapEntrance::printEntranceAnimation(entranceTargetList.at(entranceTargetIndex)->enterMapAnimation);
         this->exitEntranceTarget->addItem(ssEntranceTarget.str().c_str(),entranceTargetIndex);
+    }
+}
+
+void LevelWindow::updateEntranceData() {
+    auto mapFilename = this->yidsRom->mapData->filename;
+    if (mapFilename.empty()) {
+        YUtils::printDebug("MPDZ filename was empty",DebugType::ERROR);
+        return;
+    }
+    auto curLevelData = this->yidsRom->latestLevelSelectData->getLevelByMpdz(mapFilename);
+    if (curLevelData == nullptr) {
+        YUtils::printDebug("CRSB data with that MPDZ was null",DebugType::ERROR);
+        return;
+    }
+
+    // Wipe entrance list widget
+    this->entranceListWidget->clearSelection();
+    for (int entranceDelIndex = 0; entranceDelIndex < this->entranceListWidget->count(); entranceDelIndex++) {
+        delete this->entranceListWidget->item(entranceDelIndex);
+    }
+    this->entranceListWidget->clear();
+
+    // Is this the first map?
+    bool isFirstMap = false; // TODO: find out
+
+    uint entranceIndex = 0;
+    for (auto enit = curLevelData->entrances.begin(); enit != curLevelData->entrances.end(); enit++) {
+        std::stringstream ssEnter;
+        if (entranceIndex == 0 && isFirstMap == true) {
+            ssEnter << "0x0: Level Start"; // Different settings than normal
+        } else {
+            auto entranceTypeStr = MapEntrance::printEntranceAnimation((*enit)->enterMapAnimation);
+            ssEnter << "0x" << std::hex << entranceIndex << ": " << entranceTypeStr;
+        }
+        QListWidgetItem* entranceItem = new QListWidgetItem(tr(ssEnter.str().c_str()));
+        entranceItem->setData(LevelWindowDataKey::ENTRANCE_INDEX,entranceIndex);
+        this->entranceListWidget->addItem(entranceItem);
+        entranceIndex++;
     }
 }

@@ -34,4 +34,5 @@ private:
     void targetEntranceChanged(const QString text);
 
     void refreshTargetEntrances(int currentSelectedExitMap);
+    void updateEntranceData();
 };
