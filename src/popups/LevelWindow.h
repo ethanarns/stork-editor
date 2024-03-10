@@ -14,5 +14,13 @@ public:
     void refreshLists();
 private:
     YidsRom* yidsRom;
+
+    QComboBox* musicIdDropdown;
+
+    QComboBox* entranceAnim;
+    QComboBox* entranceScreen;
+
+    QComboBox* exitTypeCombo;
     QComboBox* exitMapTarget;
+    QComboBox* exitEntranceTarget;
 };

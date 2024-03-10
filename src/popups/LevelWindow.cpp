@@ -27,18 +27,18 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     auto row1 = new QHBoxLayout(this);
     auto musicIdLabel = new QLabel(tr("Music ID"),this);
     row1->addWidget(musicIdLabel);
-    auto musicIdDropdown = new QComboBox(this);
-    musicIdDropdown->setObjectName("levelMusicIdDropdown");
+    this->musicIdDropdown = new QComboBox(this);
+    this->musicIdDropdown->setObjectName("levelMusicIdDropdown");
     // Fill with music
     const int LATEST_MAX_MUSIC = 0x11; // TODO: more (beat the game first)
     // Less than or equal to because we want it to hit the max
     for (int musicId = 0; musicId <= LATEST_MAX_MUSIC; musicId++) {
         std::stringstream ssMusic;
         ssMusic << "0x" << std::hex << musicId;
-        musicIdDropdown->addItem(tr(ssMusic.str().c_str()));
+        this->musicIdDropdown->addItem(tr(ssMusic.str().c_str()));
     }
 
-    row1->addWidget(musicIdDropdown);
+    row1->addWidget(this->musicIdDropdown);
     mainLayout->addLayout(row1);
     // Bar 2: Level Entrances //
     auto row2 = new QHBoxLayout(this);
@@ -50,18 +50,18 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     // Entrance Animation
     auto entranceAnimLabel = new QLabel(tr("Entrance Animation"),this);
     entranceOptions->addWidget(entranceAnimLabel);
-    auto entranceAnim = new QComboBox(this);
+    this->entranceAnim = new QComboBox(this);
     // Fill with data, max known is 0x12
     for (int entranceAnimIndex = 0; entranceAnimIndex < 0x12; entranceAnimIndex++) {
         auto entranceAnimName = MapEntrance::printEntranceAnimation(static_cast<LevelSelectEnums::MapEntranceAnimation>(entranceAnimIndex));
-        entranceAnim->addItem(tr(entranceAnimName.c_str()));
+        this->entranceAnim->addItem(tr(entranceAnimName.c_str()));
     }
-    entranceOptions->addWidget(entranceAnim);
+    entranceOptions->addWidget(this->entranceAnim);
     // Entrance screen data
     auto entranceScreenLabel = new QLabel(tr("Entrance Screen Data"),this);
     entranceOptions->addWidget(entranceScreenLabel);
-    auto entranceScreen = new QComboBox(this);
-    entranceOptions->addWidget(entranceScreen);
+    this->entranceScreen = new QComboBox(this);
+    entranceOptions->addWidget(this->entranceScreen);
     row2->addLayout(entranceOptions);
     mainLayout->addLayout(row2);
     // Bar 3: Level Exits //
@@ -74,13 +74,13 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     // Exit Type
     auto exitTypeLabel = new QLabel(tr("Exit Type"),this);
     exitOptions->addWidget(exitTypeLabel);
-    auto exitTypeCombo = new QComboBox(this);
+    this->exitTypeCombo = new QComboBox(this);
     // Fix exit type with... exit types. Last known working one is 0xE
     for (int exitTypeIndex = 0; exitTypeIndex <= 0xE; exitTypeIndex++) {
         auto exitTypeName = MapExitData::printExitStartType(static_cast<LevelSelectEnums::MapExitStartType>(exitTypeIndex));
-        exitTypeCombo->addItem(tr(exitTypeName.c_str()));
+        this->exitTypeCombo->addItem(tr(exitTypeName.c_str()),exitTypeIndex);//itemData(n).toInt()
     }
-    exitOptions->addWidget(exitTypeCombo);
+    exitOptions->addWidget(this->exitTypeCombo);
     // Target map
     auto exitMapTargetLabel = new QLabel(tr("Target Map"),this);
     exitOptions->addWidget(exitMapTargetLabel);
@@ -89,8 +89,8 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     // Target entrance
     auto exitEntranceTargetLabel = new QLabel(tr("Target Entrance"), this);
     exitOptions->addWidget(exitEntranceTargetLabel);
-    auto exitEntranceTarget = new QComboBox(this);
-    exitOptions->addWidget(exitEntranceTarget);
+    this->exitEntranceTarget = new QComboBox(this);
+    exitOptions->addWidget(this->exitEntranceTarget);
     // Add to main layout
     row3->addLayout(exitOptions);
     mainLayout->addLayout(row3);
@@ -157,7 +157,17 @@ void LevelWindow::refreshLists() {
     // Populate with available maps
     this->exitMapTarget->clear(); // Will this cause a memory leak?
     auto mapList = this->yidsRom->latestLevelSelectData->levels;
-    for (int mapListIndex = 0; mapListIndex < mapList.size(); mapListIndex++) {
+    for (uint mapListIndex = 0; mapListIndex < mapList.size(); mapListIndex++) {
         this->exitMapTarget->addItem(mapList.at(mapListIndex)->mpdzFileNoExtension.c_str());
+    }
+    // Populate with entrances on that map
+    this->exitEntranceTarget->clear(); // Will this cause a memory leak?
+    auto currentSelectedExitMap = this->exitMapTarget->currentIndex();
+    auto entranceTargetList = this->yidsRom->latestLevelSelectData->levels.at(currentSelectedExitMap)->entrances;
+    for (uint entranceTargetIndex = 0; entranceTargetIndex < entranceTargetList.size(); entranceTargetIndex++) {
+        std::stringstream ssEntranceTarget;
+        ssEntranceTarget << "0x" << std::hex << entranceTargetIndex << ": ";
+        ssEntranceTarget << MapEntrance::printEntranceAnimation(entranceTargetList.at(entranceTargetIndex)->enterMapAnimation);
+        this->exitEntranceTarget->addItem(ssEntranceTarget.str().c_str());
     }
 }
