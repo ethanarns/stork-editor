@@ -170,49 +170,107 @@ void LevelWindow::refreshLists() {
         this->exitMapTarget->addItem(mapList.at(mapListIndex)->mpdzFileNoExtension.c_str());
     }
     // Populate with entrances on that map
-    this->exitEntranceTarget->clear(); // Will this cause a memory leak?
     auto currentSelectedExitMap = this->exitMapTarget->currentIndex();
-    auto entranceTargetList = this->yidsRom->latestLevelSelectData->levels.at(currentSelectedExitMap)->entrances;
-    for (uint entranceTargetIndex = 0; entranceTargetIndex < entranceTargetList.size(); entranceTargetIndex++) {
-        std::stringstream ssEntranceTarget;
-        ssEntranceTarget << "0x" << std::hex << entranceTargetIndex << ": ";
-        ssEntranceTarget << MapEntrance::printEntranceAnimation(entranceTargetList.at(entranceTargetIndex)->enterMapAnimation);
-        this->exitEntranceTarget->addItem(ssEntranceTarget.str().c_str());
-    }
+    this->refreshTargetEntrances(currentSelectedExitMap);
 }
 
 void LevelWindow::musicIdChanged(const QString text) {
     Q_UNUSED(text);
-    std::cout << "musicIdChanged" << std::endl;
-    std::cout << this->musicIdDropdown->currentIndex() << std::endl;
+    // std::cout << "musicIdChanged" << std::endl;
+    // std::cout << this->musicIdDropdown->currentIndex() << std::endl;
+    auto musicIdIndex = this->musicIdDropdown->currentIndex();
+    if (musicIdIndex < 0) {
+        // Will temporarily be -1 during changes
+        return;
+    }
+    
+    // Do updates for everything else //
 }
 
 void LevelWindow::entranceAnimChanged(const QString text) {
     Q_UNUSED(text);
-    std::cout << "entranceAnimChanged" << std::endl;
-    std::cout << this->entranceAnim->currentIndex() << std::endl;
+    // std::cout << "entranceAnimChanged" << std::endl;
+    // std::cout << this->entranceAnim->currentIndex() << std::endl;
+    auto entranceAnimIndex = this->entranceAnim->currentIndex();
+    if (entranceAnimIndex < 0) {
+        // Will temporarily be -1 during changes
+        return;
+    }
+
+    // Do updates for everything else //
 }
 
 void LevelWindow::entranceScreenChanged(const QString text) {
     Q_UNUSED(text);
-    std::cout << "entranceScreenChanged" << std::endl;
-    std::cout << this->entranceScreen->currentIndex() << std::endl;
+    // std::cout << "entranceScreenChanged" << std::endl;
+    // std::cout << this->entranceScreen->currentIndex() << std::endl;
+    auto entranceScreenComboIndex = this->entranceScreen->currentIndex();
+    if (entranceScreenComboIndex < 0) {
+        // Will temporarily be -1 during changes
+        return;
+    }
+
+    // Do updates for everything else //
 }
 
 void LevelWindow::exitTypeChanged(const QString text) {
     Q_UNUSED(text);
-    std::cout << "exitTypeChanged" << std::endl;
-    std::cout << this->exitTypeCombo->currentIndex() << std::endl;
+    // std::cout << "exitTypeChanged" << std::endl;
+    // std::cout << this->exitTypeCombo->currentIndex() << std::endl;
+    auto exitTypeComboIndex = this->exitTypeCombo->currentIndex();
+    if (exitTypeComboIndex < 0) {
+        // Will temporarily be -1 during changes
+        return;
+    }
+
+    // Do updates for everything else //
 }
 
 void LevelWindow::targetMapChanged(const QString text) {
     Q_UNUSED(text);
-    std::cout << "targetMapChanged" << std::endl;
-    std::cout << this->exitMapTarget->currentIndex() << std::endl;
+    //std::cout << "targetMapChanged" << std::endl;
+    //std::cout << this->exitMapTarget->currentIndex() << std::endl;
+    // ONLY update the available entrances
+    auto currentSelectedExitMap = this->exitMapTarget->currentIndex();
+    if (currentSelectedExitMap < 0) {
+        // Will temporarily be -1 when updating
+        //YUtils::printDebug("Invalid currentSelectedExitMap in targetMapChanged",DebugType::ERROR);
+        return;
+    }
+    this->refreshTargetEntrances(currentSelectedExitMap);
+
+    // Do updates for everything else //
 }
 
 void LevelWindow::targetEntranceChanged(const QString text) {
     Q_UNUSED(text);
-    std::cout << "targetEntranceChanged" << std::endl;
-    std::cout << this->exitEntranceTarget->currentIndex() << std::endl;
+    // std::cout << "targetEntranceChanged" << std::endl;
+    // std::cout << this->exitEntranceTarget->currentIndex() << std::endl;
+    if (this->exitEntranceTarget == nullptr) {
+        YUtils::printDebug("exitEntranceTarget was null in targetEntranceChanged",DebugType::ERROR);
+        YUtils::popupAlert("exitEntranceTarget was null in targetEntranceChanged");
+        return;
+    }
+    auto currentSelectedExitMap = this->exitEntranceTarget->currentIndex();
+    if (currentSelectedExitMap < 0) {
+        // Will temporarily be -1
+        return;
+    }
+
+    // Do updates for everything else //
+}
+
+void LevelWindow::refreshTargetEntrances(int currentSelectedExitMap) {
+    auto entranceTargetList = this->yidsRom->latestLevelSelectData->levels.at(currentSelectedExitMap)->entrances;
+    if (entranceTargetList.size() < 1) {
+        YUtils::printDebug("entranceTargetList in targetMapChanged is empty",DebugType::WARNING);
+        return;
+    }
+    this->exitEntranceTarget->clear();
+    for (uint entranceTargetIndex = 0; entranceTargetIndex < entranceTargetList.size(); entranceTargetIndex++) {
+        std::stringstream ssEntranceTarget;
+        ssEntranceTarget << "0x" << std::hex << entranceTargetIndex << ": ";
+        ssEntranceTarget << MapEntrance::printEntranceAnimation(entranceTargetList.at(entranceTargetIndex)->enterMapAnimation);
+        this->exitEntranceTarget->addItem(ssEntranceTarget.str().c_str(),entranceTargetIndex);
+    }
 }

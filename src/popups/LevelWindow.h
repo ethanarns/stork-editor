@@ -32,4 +32,6 @@ private:
     void exitTypeChanged(const QString text);
     void targetMapChanged(const QString text);
     void targetEntranceChanged(const QString text);
+
+    void refreshTargetEntrances(int currentSelectedExitMap);
 };
