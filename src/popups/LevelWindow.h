@@ -23,4 +23,13 @@ private:
     QComboBox* exitTypeCombo;
     QComboBox* exitMapTarget;
     QComboBox* exitEntranceTarget;
+
+    void musicIdChanged(const QString text);
+
+    void entranceAnimChanged(const QString text);
+    void entranceScreenChanged(const QString text);
+
+    void exitTypeChanged(const QString text);
+    void targetMapChanged(const QString text);
+    void targetEntranceChanged(const QString text);
 };

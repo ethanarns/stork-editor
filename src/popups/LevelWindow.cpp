@@ -94,6 +94,15 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     // Add to main layout
     row3->addLayout(exitOptions);
     mainLayout->addLayout(row3);
+
+    // CONNECTIONS //
+    connect(this->musicIdDropdown,&QComboBox::currentTextChanged,this,&LevelWindow::musicIdChanged);
+    connect(this->entranceAnim,&QComboBox::currentTextChanged,this,&LevelWindow::entranceAnimChanged);
+    connect(this->entranceScreen,&QComboBox::currentTextChanged,this,&LevelWindow::entranceScreenChanged);
+
+    connect(this->exitTypeCombo,&QComboBox::currentTextChanged,this,&LevelWindow::exitTypeChanged);
+    connect(this->exitMapTarget,&QComboBox::currentTextChanged,this,&LevelWindow::targetMapChanged);
+    connect(this->exitEntranceTarget,&QComboBox::currentTextChanged,this,&LevelWindow::targetEntranceChanged);
 }
 
 void LevelWindow::refreshLists() {
@@ -170,4 +179,40 @@ void LevelWindow::refreshLists() {
         ssEntranceTarget << MapEntrance::printEntranceAnimation(entranceTargetList.at(entranceTargetIndex)->enterMapAnimation);
         this->exitEntranceTarget->addItem(ssEntranceTarget.str().c_str());
     }
+}
+
+void LevelWindow::musicIdChanged(const QString text) {
+    Q_UNUSED(text);
+    std::cout << "musicIdChanged" << std::endl;
+    std::cout << this->musicIdDropdown->currentIndex() << std::endl;
+}
+
+void LevelWindow::entranceAnimChanged(const QString text) {
+    Q_UNUSED(text);
+    std::cout << "entranceAnimChanged" << std::endl;
+    std::cout << this->entranceAnim->currentIndex() << std::endl;
+}
+
+void LevelWindow::entranceScreenChanged(const QString text) {
+    Q_UNUSED(text);
+    std::cout << "entranceScreenChanged" << std::endl;
+    std::cout << this->entranceScreen->currentIndex() << std::endl;
+}
+
+void LevelWindow::exitTypeChanged(const QString text) {
+    Q_UNUSED(text);
+    std::cout << "exitTypeChanged" << std::endl;
+    std::cout << this->exitTypeCombo->currentIndex() << std::endl;
+}
+
+void LevelWindow::targetMapChanged(const QString text) {
+    Q_UNUSED(text);
+    std::cout << "targetMapChanged" << std::endl;
+    std::cout << this->exitMapTarget->currentIndex() << std::endl;
+}
+
+void LevelWindow::targetEntranceChanged(const QString text) {
+    Q_UNUSED(text);
+    std::cout << "targetEntranceChanged" << std::endl;
+    std::cout << this->exitEntranceTarget->currentIndex() << std::endl;
 }
