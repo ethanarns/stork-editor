@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../utils.h"
+#include "../FsPacker.h"
 
 #include <string>
 #include <vector>
@@ -280,4 +281,50 @@ public:
     LevelMetadata* getLevelByMpdz(std::string mpdzFilename);
 
     std::string filename;
+    std::vector<uint8_t> compile() {
+        std::vector<uint8_t> result;
+        auto sizeVec = YUtils::uint32toVec(this->levels.size());
+        YUtils::appendVector(result,sizeVec);
+        // CSCN Loop
+        for (uint cscnIndex = 0; cscnIndex < this->levels.size(); cscnIndex++) {
+            std::vector<uint8_t> cscnResult;
+            auto curCscn = this->levels.at(cscnIndex);
+
+            auto entranceCountVec = YUtils::uint16toVec(curCscn->entrances.size());
+            YUtils::appendVector(cscnResult,entranceCountVec);
+            cscnResult.push_back((uint8_t)curCscn->exits.size()); // Just 1 byte
+            cscnResult.push_back(static_cast<uint8_t>(curCscn->musicId)); // Signed cast
+            auto mpdzVec = YUtils::stringToVector(curCscn->mpdzFileNoExtension);
+            if (curCscn->mpdzFileNoExtension.size() + 1 != 8) {
+                YUtils::printDebug("MPDZ filename plus nullterm size not 8!",DebugType::ERROR);
+                YUtils::popupAlert("MPDZ filename plus nullterm size not 8!");
+            }
+            YUtils::appendVector(cscnResult,mpdzVec);
+            for (int autoBoost = 0; autoBoost < 8; autoBoost++) {
+                cscnResult.push_back(0x00); // Why??
+            }
+            // entrances
+            for (uint enterIndex = 0; enterIndex < curCscn->entrances.size(); enterIndex++) {
+                auto enterVec = curCscn->entrances.at(enterIndex)->compile();
+                YUtils::appendVector(cscnResult,enterVec);
+            }
+            // 4 byte padding
+            while (cscnResult.size() % 4 != 0) {
+                cscnResult.push_back(0x00);
+            }
+            // exits
+            for (uint exitIndex = 0; exitIndex < curCscn->exits.size(); exitIndex++) {
+                auto exitVec = curCscn->exits.at(exitIndex)->compile();
+                YUtils::appendVector(cscnResult,exitVec);
+            }
+            // 4 byte padding
+            while (cscnResult.size() % 4 != 0) {
+                cscnResult.push_back(0x00);
+            }
+
+            cscnResult = FsPacker::packInstruction(Constants::CSCN_MAGIC_NUM,cscnResult,false);
+            YUtils::appendVector(result,cscnResult);
+        }
+        return FsPacker::packInstruction(Constants::CRSB_MAGIC_NUM,result,false);
+    };
 };

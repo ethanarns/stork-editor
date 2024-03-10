@@ -80,8 +80,7 @@ void LayerData::clearVramChartilesCache() {
     this->cachedVramTiles.clear();
 }
 
-ScenInfoData *LayerData::getInfo()
-{
+ScenInfoData *LayerData::getInfo() {
     auto potentialInfo = this->getFirstDataByMagic(Constants::INFO_MAGIC_NUM);
     if (potentialInfo == nullptr) {
         YUtils::printDebug("Failed to find SCEN INFO",DebugType::ERROR);
