@@ -186,6 +186,13 @@ void LevelWindow::entranceAnimChanged(const QString text) {
     }
 
     // Do updates for everything else //
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    auto curEntranceSelected = this->entranceListWidget->currentRow();
+    auto curEntrance = curLevel->entrances.at(curEntranceSelected);
+    if (curEntrance->enterMapAnimation != entranceAnimIndex) {
+        YUtils::printDebug("Modifying CRSB: Entrance Animation",DebugType::VERBOSE);
+        curEntrance->enterMapAnimation = static_cast<LevelSelectEnums::MapEntranceAnimation>(entranceAnimIndex);
+    }
 }
 
 void LevelWindow::entranceScreenChanged(const QString text) {
