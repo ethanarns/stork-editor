@@ -34,5 +34,8 @@ private:
     void targetEntranceChanged(const QString text);
 
     void refreshTargetEntrances(int currentSelectedExitMap);
-    void updateEntranceData();
+    void refreshEntranceList();
+
+    void entranceItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void exitItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 };
