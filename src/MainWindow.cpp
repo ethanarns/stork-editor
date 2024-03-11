@@ -307,6 +307,7 @@ MainWindow::MainWindow() {
     this->layerSelectDropdown->addItem("BG2");
     this->layerSelectDropdown->addItem("BG3");
     this->layerSelectDropdown->addItem("Colliders");
+    this->layerSelectDropdown->addItem("Portals");
     this->layerSelectDropdown->setCurrentText("Sprites");
     toolbar->addWidget(this->layerSelectDropdown);
     connect(this->layerSelectDropdown,&QComboBox::currentTextChanged,this,&MainWindow::toolbarClick_layerSelect);
@@ -542,7 +543,7 @@ MainWindow::MainWindow() {
     /***************
      *** OVERLAY ***
      ***************/
-    this->gridOverlay = new GridOverlay(this->grid->viewport(),this->rom);
+    this->gridOverlay = new GridOverlay(this->grid->viewport());
     this->gridOverlay->updateSizeToGrid(this->grid->rowCount(),this->grid->columnCount());
 }
 
@@ -727,6 +728,10 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
         globalSettings.layerSelectMode = LayerMode::COLLISION_LAYER;
         globalSettings.currentEditingBackground = 0;
         ss << "Colliders";
+    } else if (str.compare("Portals") == 0) {
+        globalSettings.layerSelectMode = LayerMode::PORTALS_LAYER;
+        globalSettings.currentEditingBackground = 0;
+        ss << "Portals";
     } else {
         std::stringstream ssLayerSelect;
         ssLayerSelect << "Unknown layer selected in dropdown: ";
@@ -928,6 +933,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         YUtils::printDebug("keyPressEvent: BG Layer",DebugType::VERBOSE);
     } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
         YUtils::printDebug("keyPressEvent: Collision layer",DebugType::VERBOSE);
+    } else if (globalSettings.layerSelectMode == LayerMode::PORTALS_LAYER) {
+        YUtils::printDebug("keyPressEvent: Entrance/Exit layer",DebugType::VERBOSE);
     } else {
         MainWindow::keyPressEvent(event);
     }

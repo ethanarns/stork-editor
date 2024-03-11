@@ -8,7 +8,6 @@ class GridOverlay : public QFrame {
 public:
     GridOverlay(QWidget* viewport);
     void updateSizeToGrid(int rows, int columns);
-    void drawExitAt(QPainter &painter, int row, int column);
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
 };

@@ -11,13 +11,15 @@
 #include <QJsonArray>
 
 #include "PixelDelegateEnums.h"
+#include "Chartile.h"
 
 enum LayerMode {
     BG1_LAYER,
     BG2_LAYER,
     BG3_LAYER,
     SPRITES_LAYER,
-    COLLISION_LAYER
+    COLLISION_LAYER,
+    PORTALS_LAYER
 };
 
 struct TileBrush {
