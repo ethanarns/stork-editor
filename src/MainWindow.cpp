@@ -542,9 +542,8 @@ MainWindow::MainWindow() {
     /***************
      *** OVERLAY ***
      ***************/
-    auto qf = new GridOverlay(this->grid->viewport());
-    qf->updateSizeToGrid(this->grid->rowCount(),this->grid->columnCount());
-    qf->show();
+    this->gridOverlay = new GridOverlay(this->grid->viewport(),this->rom);
+    this->gridOverlay->updateSizeToGrid(this->grid->rowCount(),this->grid->columnCount());
 }
 
 void MainWindow::LoadRom() {

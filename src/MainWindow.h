@@ -29,6 +29,7 @@
 #include "popups/MapSelect.h"
 #include "popups/SpritePickerWindow.h"
 #include "popups/LevelWindow.h"
+#include "GridOverlay.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -56,6 +57,7 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 private:
     DisplayTable* grid;
+    GridOverlay* gridOverlay;
     QWidget* chartilesPopup;
     ChartilesTable* chartilesTable;
 
