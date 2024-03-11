@@ -16,6 +16,7 @@
 #include "DisplayTable.h"
 #include "GuiObjectList.h"
 #include "data/LevelSelectData.h"
+#include "GridOverlay.h"
 
 #include <QtCore>
 #include <QObject>
@@ -36,6 +37,7 @@
 #include <QStatusBar>
 #include <QMessageBox>
 #include <QSpinBox>
+#include <QFrame>
 
 #include <iostream>
 #include <filesystem>
@@ -509,7 +511,6 @@ MainWindow::MainWindow() {
     /******************
      *** STATUS BAR *** 
      ******************/
-
     this->statusBar()->show();
     this->statusBar()->setStyleSheet("QStatusBar {padding: 0; margin:0;}");
     this->statusLabel = new QLabel("Your Message");
@@ -537,6 +538,13 @@ MainWindow::MainWindow() {
     connect(this->grid, &DisplayTable::triggerMainWindowUpdate,this,&MainWindow::displayTableUpdate);
     connect(this->selectionInfoTable, &SelectionInfoTable::updateMainWindow,this,&MainWindow::selectionWindowUpdate);
     connect(this->grid,&DisplayTable::updateMainWindowStatus,this,&MainWindow::setWindowStatus);
+
+    /***************
+     *** OVERLAY ***
+     ***************/
+    auto qf = new GridOverlay(this->grid->viewport());
+    qf->updateSizeToGrid(this->grid->rowCount(),this->grid->columnCount());
+    qf->show();
 }
 
 void MainWindow::LoadRom() {
