@@ -333,6 +333,7 @@ public:
 // PLTB
 class LayerPaletteData : public LevelData {
 public:
+    LayerPaletteData();
     LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, uint32_t &globalPaletteIndex);
     ~LayerPaletteData();
     std::string toString() {

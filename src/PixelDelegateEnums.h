@@ -86,6 +86,7 @@ enum CollisionType {
     UP_RIGHT_STEEP_2 = 0x6,
     UP_RIGHT_45 = 0x7,
     KILL_SPIKES = 0x8,
+    ICY_SQUARE = 0xb, // Discovered on 4-6, if you're looking to test
     STATIC_COIN = 0x1a,
     SOFT_ROCK = 0x1b,
     CLIMBABLE_VINE_CEILING = 0x1c,

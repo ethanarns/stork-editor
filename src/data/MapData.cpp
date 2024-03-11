@@ -13,7 +13,7 @@ std::map<uint32_t, Chartile> LayerData::getVramChartiles() {
     if (this->cachedVramTiles.size() > 0) {
         return this->cachedVramTiles;
     }
-    YUtils::printDebug("Refreshing vramChartilesCache");
+    //YUtils::printDebug("Refreshing vramChartilesCache");
     this->magicOfChartilesSource = 0;
     this->hasAnmzChartiles = false;
     std::map<uint32_t, Chartile> pixelTiles;
@@ -90,10 +90,11 @@ ScenInfoData *LayerData::getInfo() {
 }
 
 LayerPaletteData *LayerData::getPalette() {
-    auto potentialPalette = this->getFirstDataByMagic(Constants::PLTB_MAGIC_NUM);
+    auto potentialPalette = this->getFirstDataByMagic(Constants::PLTB_MAGIC_NUM,true);
     if (potentialPalette == nullptr) {
-        YUtils::printDebug("Failed to find PLTB info",DebugType::ERROR);
-        return nullptr;
+        // Fail silently, as some SCENs do not have PLTBs and thus just don't contribute
+        LayerPaletteData* blankPal = new LayerPaletteData(); // Return empty
+        return blankPal;
     }
     return static_cast<LayerPaletteData*>(potentialPalette);
 }

@@ -106,6 +106,10 @@ ScenInfoData::ScenInfoData() {
     YUtils::printDebug("Creating empty ScenInfoData",DebugType::VERBOSE);
 }
 
+LayerPaletteData::LayerPaletteData() {
+    this->palettes.clear(); // Sanity check
+}
+
 LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, uint32_t &globalPaletteIndex) {
     while (mpdzIndex < stop) {
         auto currentLoadingPalette = new QByteArray();
