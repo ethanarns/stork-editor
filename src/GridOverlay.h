@@ -1,18 +1,14 @@
 #pragma once
 
-#include "yidsrom.h"
-
 #include <QFrame>
 #include <QWidget>
 
 class GridOverlay : public QFrame {
     Q_OBJECT
 public:
-    GridOverlay(QWidget* viewport, YidsRom* rom);
+    GridOverlay(QWidget* viewport);
     void updateSizeToGrid(int rows, int columns);
-    void drawPortals(QPainter &painter);
+    void drawExitAt(QPainter &painter, int row, int column);
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
-private:
-    YidsRom* yidsrom;
 };

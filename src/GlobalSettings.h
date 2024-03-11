@@ -54,6 +54,7 @@ struct GlobalSettings {
     CollisionType colTypeToDraw = CollisionType::SQUARE;
     std::vector<QTableWidgetItem*> selectedItemPointers;
     uint32_t currentSpriteIdToAdd = 0;
+    uint32_t gridCellSizePx = 8;
 
     int getSelectionWidth() {
         int leftMost = 0xffff;
