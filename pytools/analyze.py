@@ -67,11 +67,11 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
 
             unkThird = data[tempIndex]
             tempIndex += 1
-            print(ind(3) + "Unknown 3rd Byte: " + hex(unkThird))
+            print(ind(3) + "Char/tile Base Block: " + hex(unkThird))
 
             screenBaseBlockMaybe = data[tempIndex]
             tempIndex += 1
-            print(ind(3) + "Base Block (Maybe): " + hex(screenBaseBlockMaybe))
+            print(ind(3) + "Screen/map Base Block: " + hex(screenBaseBlockMaybe))
 
             colorMode = readUint32(data, tempIndex)
             tempIndex += 4

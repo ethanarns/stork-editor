@@ -84,7 +84,7 @@ public:
     uint32_t xScrollOffset;
     uint32_t yScrollOffset;
     uint8_t whichBackground;
-    uint8_t layerOrder;
+    uint8_t layerOrder; // Usually matches whichBg
     uint8_t charBaseBlock; // Where in VRAM stored https://mtheall.com/vram.html, separate!
     uint8_t screenBaseBlock; // Likely unimportant, map tiles are definitely not shared
     BgColorMode colorMode;
