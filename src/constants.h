@@ -50,6 +50,7 @@ namespace Constants {
     inline constexpr int PALETTE_SIZE{0x20};
     inline constexpr int CHARTILE_DATA_SIZE{0x20};
     inline constexpr int SINGLE_TILE_DIM{0x8};
+    inline constexpr int EXTPAL_256_SIZE_BYTES(0x200); // 256 * 2
 }
 
 // Value pertaining to file-relative address (Starts at 0x0)

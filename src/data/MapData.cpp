@@ -218,7 +218,7 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
             auto pltb = scen->getPalette()->palettes;
             for (auto plit = pltb.begin(); plit != pltb.end(); plit++) {
                 auto curPal = (*plit);
-                bgPalettesRef[this->paletteRamIndex] = *curPal;
+                bgPalettesRef[this->paletteRamIndex] = curPal;
                 this->paletteRamIndex++;
             }
             this->subData.push_back(scen);
@@ -374,7 +374,7 @@ std::vector<QByteArray> MapData::getBackgroundPalettes(QByteArray universalPalet
             auto scen = static_cast<LayerData*>(*subit);
             auto curPalettes = scen->getPalette()->palettes;
             for (uint i = 0; i < curPalettes.size(); i++) {
-                result.push_back(*curPalettes.at(i));
+                result.push_back(curPalettes.at(i));
             }
         }
     }

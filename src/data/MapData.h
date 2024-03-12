@@ -329,7 +329,7 @@ public:
 class LayerPaletteData : public LevelData {
 public:
     LayerPaletteData();
-    LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, uint32_t &globalPaletteIndex);
+    LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, BgColorMode colMode);
     ~LayerPaletteData();
     std::string toString() {
         std::stringstream ss;
@@ -340,11 +340,16 @@ public:
         return ss.str();
     };
     std::vector<uint8_t> compile(ScenInfoData &info) {
-        Q_UNUSED(info);
         std::vector<uint8_t> result;
-        for (auto it = this->palettes.cbegin(); it != this->palettes.cend(); it++) {
-            for (uint pIndex = 0; pIndex < Constants::PALETTE_SIZE; pIndex++) {
-                result.push_back((*it)->at(pIndex));
+        if (info.colorMode == BgColorMode::MODE_16) {
+            for (auto it = this->palettes.cbegin(); it != this->palettes.cend(); it++) {
+                for (uint pIndex = 0; pIndex < Constants::PALETTE_SIZE; pIndex++) {
+                    result.push_back(it->at(pIndex));
+                }
+            }
+        } else { // Extended mode/256
+            for (uint eIndex = 0; eIndex < this->extendedPalette.size(); eIndex++) {
+                result.push_back(this->extendedPalette.at(eIndex));
             }
         }
         result = FsPacker::packInstruction(Constants::PLTB_MAGIC_NUM,result,false);
@@ -352,7 +357,8 @@ public:
     };
     uint32_t getMagic() { return Constants::PLTB_MAGIC_NUM; }
 
-    std::vector<QByteArray*> palettes;
+    std::vector<QByteArray> palettes;
+    QByteArray extendedPalette;
 };
 
 // SCEN

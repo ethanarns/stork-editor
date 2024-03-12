@@ -366,19 +366,6 @@ void YidsRom::wipeLevelData() {
     delete this->mapData;
 }
 
-QByteArray YidsRom::get256Palettes(uint32_t offset) {
-    QByteArray qbResult;
-    qbResult.resize(256*2);
-    int qbIndex = 0;
-    for (int whichPaletteIndex = 0; whichPaletteIndex < 0x10; whichPaletteIndex++) {
-        for (int whichColorIndex = 0; whichColorIndex < Constants::PALETTE_SIZE; whichColorIndex++) {
-            qbResult[qbIndex] = this->backgroundPalettes[whichPaletteIndex+offset].at(whichColorIndex);
-            qbIndex++;
-        }
-    }
-    return qbResult;
-}
-
 void YidsRom::moveObject(uint32_t objectUuid, int xOffset, int yOffset) {
     auto levelObjects = this->mapData->getAllLevelObjects();
     for (uint32_t currentObjectIndex = 0; currentObjectIndex < levelObjects.size(); currentObjectIndex++) {

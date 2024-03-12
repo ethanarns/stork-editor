@@ -27,7 +27,7 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             this->subScenData.push_back(imgb);
         } else if (subMagic == Constants::PLTB_MAGIC_NUM) {
             this->paletteStartOffset = globalPaletteIndex;
-            auto pltb = new LayerPaletteData(mpdzBytes,mpdzIndex,mpdzIndex+subLength,globalPaletteIndex);
+            auto pltb = new LayerPaletteData(mpdzBytes,mpdzIndex,mpdzIndex+subLength,this->getInfo()->colorMode);
             this->subScenData.push_back(pltb);
         } else if (subMagic == Constants::COLZ_MAGIC_NUM) {
             auto colz = new MapCollisionData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
@@ -110,25 +110,36 @@ LayerPaletteData::LayerPaletteData() {
     this->palettes.clear(); // Sanity check
 }
 
-LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, uint32_t &globalPaletteIndex) {
-    while (mpdzIndex < stop) {
-        auto currentLoadingPalette = new QByteArray();
-        currentLoadingPalette->resize(Constants::PALETTE_SIZE);
-        for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
-            (*currentLoadingPalette)[curPaletteIndex] = mpdzBytes.at(mpdzIndex);
-            mpdzIndex++;
+LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, BgColorMode colMode) {
+    if (colMode == BgColorMode::MODE_16) {
+        while (mpdzIndex < stop) {
+            QByteArray currentLoadingPalette;
+            currentLoadingPalette.resize(Constants::PALETTE_SIZE);
+            for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
+                currentLoadingPalette[curPaletteIndex] = mpdzBytes.at(mpdzIndex);
+                mpdzIndex++;
+            }
+            this->palettes.push_back(currentLoadingPalette);
         }
-        this->palettes.push_back(currentLoadingPalette);
-        Q_UNUSED(globalPaletteIndex);
-        //globalPaletteIndex++;
+    } else if (colMode == BgColorMode::MODE_256) {
+        if (stop - mpdzIndex != Constants::EXTPAL_256_SIZE_BYTES) {
+            YUtils::printDebug("256 extended color layer doesn't have 256 records",DebugType::ERROR);
+        }
+        QByteArray extPal;
+        extPal.resize(Constants::EXTPAL_256_SIZE_BYTES);
+        for (uint i = 0; i < Constants::EXTPAL_256_SIZE_BYTES; i++) {
+            extPal[i] = mpdzBytes.at(mpdzIndex++);
+        }
+        this->extendedPalette = extPal;
     }
 }
 
 LayerPaletteData::~LayerPaletteData() {
-    for (auto it = this->palettes.begin(); it != this->palettes.end(); ) {
-        delete (*it);
-        it = this->palettes.erase(it);
-    }
+    // for (auto it = this->palettes.begin(); it != this->palettes.end(); ) {
+    //     delete (*it);
+    //     it = this->palettes.erase(it);
+    // }
+    this->palettes.clear();
     this->palettes.shrink_to_fit();
 }
 

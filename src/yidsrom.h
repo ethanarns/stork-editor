@@ -76,7 +76,6 @@ public:
     //CrsbData loadCrsb(std::string fileName_noext);
     void loadMpdz(std::string fileName_noext);
     void wipeLevelData();
-    QByteArray get256Palettes(uint32_t offset);
 
     void moveObject(uint32_t objectUuid, int xOffset, int yOffset);
     void moveObjectTo(uint32_t objectUuid, uint32_t newX, uint32_t newY);

@@ -121,7 +121,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
         } else {
             // Note: the 256 palettes thing does not always start at 0x10 (including the +1)
             // 1-3, there's a palette missing from the palette screen that made this start at 0xf
-            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(pal+1));
+            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,scen->getPalette()->extendedPalette);
         }
         bgItem->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
         bgItem->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
@@ -133,7 +133,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
         if (!isColorMode256) {
             bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
         } else {
-            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->get256Palettes(pal+1));
+            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,scen->getPalette()->extendedPalette);
         }
         bgItem->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
         bgItem->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
@@ -145,7 +145,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
         if (!isColorMode256) {
             bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
         } else {
-            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(pal+1));
+            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,scen->getPalette()->extendedPalette);
         }
         bgItem->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
         bgItem->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);
@@ -961,7 +961,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         if (!isColorMode256) {
             curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
         } else {
-            curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->get256Palettes(pal+1));
+            curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,scen->getPalette()->extendedPalette);
         }
         curItem->setData(PixelDelegateData::PALETTE_ID_BG1,pal);
         curItem->setData(PixelDelegateData::FLIP_H_BG1,mapRecord.flipH);
@@ -974,7 +974,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         if (!isColorMode256) {
             curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
         } else {
-            curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->get256Palettes(pal+1));
+            curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,scen->getPalette()->extendedPalette);
         }
         curItem->setData(PixelDelegateData::PALETTE_ID_BG2,pal);
         curItem->setData(PixelDelegateData::FLIP_H_BG2,mapRecord.flipH);
@@ -987,7 +987,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         if (!isColorMode256) {
             curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
         } else {
-            curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->get256Palettes(pal+1));
+            curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,scen->getPalette()->extendedPalette);
         }
         curItem->setData(PixelDelegateData::PALETTE_ID_BG3,pal);
         curItem->setData(PixelDelegateData::FLIP_H_BG3,mapRecord.flipH);
