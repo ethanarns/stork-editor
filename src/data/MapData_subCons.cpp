@@ -83,9 +83,9 @@ ScenInfoData::ScenInfoData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
     mpdzIndex++;
     this->layerOrder = mpdzBytes.at(mpdzIndex);
     mpdzIndex++;
-    this->unkThird = mpdzBytes.at(mpdzIndex);
+    this->charBaseBlock = mpdzBytes.at(mpdzIndex);
     mpdzIndex++;
-    this->baseBlockMaybe = mpdzBytes.at(mpdzIndex);
+    this->screenBaseBlock = mpdzBytes.at(mpdzIndex);
     mpdzIndex++;
     auto colorMode = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
     this->colorMode = colorMode == 0 ? BgColorMode::MODE_16 : BgColorMode::MODE_256;

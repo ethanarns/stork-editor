@@ -38,8 +38,8 @@ public:
         ss << "  Y Scroll Offset: 0x" << this->yScrollOffset << std::endl;
         ss << "  Background Index: 0x" << (uint16_t)this->whichBackground << std::endl;
         ss << "  Layer Order: 0x" << (uint16_t)this->layerOrder << std::endl;
-        ss << "  Unknown 3rd: 0x" << (uint16_t)this->unkThird << std::endl;
-        ss << "  Base Block (Maybe): 0x" << (uint16_t)this->baseBlockMaybe << std::endl;
+        ss << "  Char Base Block: 0x" << (uint16_t)this->charBaseBlock << std::endl;
+        ss << "  Screen Base Block: 0x" << (uint16_t)this->screenBaseBlock << std::endl;
         ss << "  Color Mode (Maybe): 0x" << this->colorMode << std::endl;
         if (!this->imbzFilename.empty()) {
             ss << "  IMBZ File: " << this->imbzFilename;
@@ -63,8 +63,8 @@ public:
         // Single bytes
         result.push_back(this->whichBackground);
         result.push_back(this->layerOrder);
-        result.push_back(this->unkThird);
-        result.push_back(this->baseBlockMaybe);
+        result.push_back(this->charBaseBlock);
+        result.push_back(this->screenBaseBlock);
         auto colorMode = YUtils::uint32toVec((uint32_t)this->colorMode);
         YUtils::appendVector(result,colorMode);
         if (!this->imbzFilename.empty()) {
@@ -90,8 +90,8 @@ public:
     // Setting that to 3 makes only SOME tiles messed up
     // Setting it to 1 makes the background stop being transparent, now it's all opaque diagonal lines. Rest screwed up too
     // Only 1-4 available. Definitely tile related
-    uint8_t unkThird;
-    uint8_t baseBlockMaybe;
+    uint8_t charBaseBlock;
+    uint8_t screenBaseBlock;
     BgColorMode colorMode;
     std::string imbzFilename;
 };
