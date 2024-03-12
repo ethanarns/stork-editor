@@ -85,13 +85,8 @@ public:
     uint32_t yScrollOffset;
     uint8_t whichBackground;
     uint8_t layerOrder;
-    // Not related to which other SCEN sub-datas present
-    // Switching from 4 to 2 on first 1-1 level causes tiles to fuck up. Vertical lines. Maybe compression related?
-    // Setting that to 3 makes only SOME tiles messed up
-    // Setting it to 1 makes the background stop being transparent, now it's all opaque diagonal lines. Rest screwed up too
-    // Only 1-4 available. Definitely tile related
-    uint8_t charBaseBlock;
-    uint8_t screenBaseBlock;
+    uint8_t charBaseBlock; // Where in VRAM stored https://mtheall.com/vram.html, separate!
+    uint8_t screenBaseBlock; // Likely unimportant, map tiles are definitely not shared
     BgColorMode colorMode;
     std::string imbzFilename;
 };
