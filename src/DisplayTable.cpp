@@ -85,7 +85,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
         YUtils::printDebug("SCEN for this BG is nullptr, skipping",DebugType::WARNING);
         return;
     }
-    auto vramChartiles = scen->getVramChartiles();
+    auto vramChartiles = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock]; //scen->getVramChartiles();
     try {
         loadedTile = vramChartiles.at(pren.tileId);
     } catch (...) {
@@ -936,7 +936,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         YUtils::popupAlert("256-bit color mode layers not yet supported");
         return false;
     }
-    auto vramChartiles = scen->getVramChartiles();
+    auto vramChartiles = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];//scen->getVramChartiles();
     Chartile loadedTile;
     try {
         loadedTile = vramChartiles.at(mapRecord.tileId);
@@ -1058,6 +1058,7 @@ void DisplayTable::setLayerDraw(uint whichLayer, bool shouldDraw) {
 }
 
 void DisplayTable::updateBg() {
+    this->yidsRom->reloadChartileVram(0);
     this->yidsRom->mapData->wipeLayerOrderCache();
     auto newCanvasHeight = this->yidsRom->mapData->getGreatestCanvasHeight();
     if (newCanvasHeight == 0) {

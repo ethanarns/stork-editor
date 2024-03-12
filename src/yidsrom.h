@@ -63,6 +63,9 @@ public:
 
     QByteArray backgroundPalettes[0x20];
 
+    std::map<uint8_t,std::map<uint32_t, Chartile>> chartileVram;
+    void reloadChartileVram(uint frame = 0);
+
     std::map<std::string,ObjectFile> objectRenderFiles;
 
     bool filesLoaded = false;

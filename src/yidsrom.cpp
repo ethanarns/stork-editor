@@ -410,3 +410,77 @@ void YidsRom::moveObjectTo(uint32_t objectUuid, uint32_t newX, uint32_t newY) {
     ssMove << "Could not move-to object, UUID not found: 0x" << std::hex << objectUuid;
     YUtils::popupAlert(ssMove.str());
 }
+
+void YidsRom::reloadChartileVram(uint frame) {
+    Q_UNUSED(frame);
+    if (this->mapData == nullptr) {
+        YUtils::printDebug("Chartile VRAM update failed: no MapData",DebugType::ERROR);
+        return;
+    }
+    for (uint8_t whichbg = 1; whichbg <= 3; whichbg++) {
+        auto scen = this->mapData->getScenByBg(whichbg);
+        if (scen == nullptr) {
+            YUtils::printDebug("SCEN for bg not found, skipping",DebugType::WARNING);
+            continue;
+        }
+        auto colorMode = scen->getInfo()->colorMode;
+        auto charBaseBlock = scen->getInfo()->charBaseBlock;
+        uint32_t magicOfChartilesSource = 0;
+        std::map<uint32_t, Chartile> pixelTiles;
+        uint32_t chartileIndex = 0;
+        // Loop through the SCEN subdata //
+        for (uint32_t i = 0; i < scen->subScenData.size(); i++) {
+            auto curSection = scen->subScenData.at(i);
+            if (curSection->getMagic() == Constants::INFO_MAGIC_NUM) {
+                auto info = static_cast<ScenInfoData*>(curSection);
+                auto imbzFilename = info->imbzFilename; // Similar to IMGB
+                if (imbzFilename.empty()) {
+                    //YUtils::printDebug("No IMBZ filename in info, skipping", DebugType::VERBOSE);
+                    continue;
+                }
+                auto tileVector = scen->parseImbzFromFile(imbzFilename,info->colorMode);
+                for (uint j = 0; j < tileVector.size(); j++) {
+                    pixelTiles[chartileIndex++] = tileVector.at(j);
+                }
+                if (magicOfChartilesSource != 0) {
+                    YUtils::printDebug("Another SCEN chartile section loaded before INFO-IMBZ",DebugType::ERROR);
+                    YUtils::popupAlert("Another SCEN chartile section loaded before INFO-IMBZ");
+                }
+                magicOfChartilesSource = Constants::INFO_MAGIC_NUM;
+            } else if (curSection->getMagic() == Constants::ANMZ_MAGIC_NUM) {
+                auto anmz = static_cast<AnimatedMapData*>(curSection);
+                chartileIndex = (uint32_t)anmz->vramOffset;
+                auto tileVector = anmz->chartiles;
+                for (uint j = 0; j < tileVector.size(); j++) {
+                    pixelTiles[chartileIndex++] = tileVector.at(j);
+                }
+                chartileIndex = 0; // Reset after ANMZ
+            } else if (curSection->getMagic() == Constants::IMGB_MAGIC_NUM) {
+                auto imbz = static_cast<ImgbLayerData*>(curSection);
+                auto tileVector = imbz->chartiles;
+                for (uint j = 0; j < tileVector.size(); j++) {
+                    pixelTiles[chartileIndex++] = tileVector.at(j);
+                }
+                if (magicOfChartilesSource != 0) {
+                    YUtils::printDebug("Another SCEN chartile section loaded before IMGB",DebugType::ERROR);
+                    YUtils::popupAlert("Another SCEN chartile section loaded before IMGB");
+                }
+                magicOfChartilesSource = Constants::IMGB_MAGIC_NUM;
+            } else if (curSection->getMagic() == Constants::IMBZ_MAGIC_NUM) {
+                auto imbz = static_cast<ImbzLayerData*>(curSection);
+                auto tileVector = imbz->chartiles;
+                for (uint j = 0; j < tileVector.size(); j++) {
+                    pixelTiles[chartileIndex++] = tileVector.at(j);
+                }
+                if (magicOfChartilesSource != 0) {
+                    YUtils::printDebug("Another SCEN chartile section loaded before IMBZ",DebugType::ERROR);
+                    YUtils::popupAlert("Another SCEN chartile section loaded before IMBZ");
+                }
+                magicOfChartilesSource = Constants::IMBZ_MAGIC_NUM;
+            }
+        }
+
+        this->chartileVram[charBaseBlock] = pixelTiles;
+    }
+    
+}

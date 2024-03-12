@@ -395,8 +395,8 @@ public:
     uint32_t paletteStartOffset;
     uint32_t magicOfChartilesSource = 0;
     bool hasAnmzChartiles = false;
-private:
     std::vector<LevelData*> subScenData;
+private:
 
     std::string cachedImbzFilenameNoExt;
     std::vector<Chartile> cachedImbzTileData;
