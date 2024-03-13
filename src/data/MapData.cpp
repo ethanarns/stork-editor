@@ -214,7 +214,7 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
         mpdzIndex += 4;
         auto idealStop = mpdzIndex+subLength;
         if (subMagic == Constants::SCEN_MAGIC_NUM) {
-            auto scen = new LayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength,this->paletteRamIndex);
+            auto scen = new LayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             auto pltb = scen->getPalette()->palettes;
             for (auto plit = pltb.begin(); plit != pltb.end(); plit++) {
                 auto curPal = (*plit);

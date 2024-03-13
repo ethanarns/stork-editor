@@ -9,7 +9,7 @@
 #include <fstream>
 #include <QByteArray>
 
-LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, uint32_t &globalPaletteIndex) {
+LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     while (mpdzIndex < stop) {
         uint32_t subMagic = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
         mpdzIndex += 4;

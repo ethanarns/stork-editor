@@ -1179,7 +1179,6 @@ void DisplayTable::updateBg() {
             YUtils::printDebug(ssEmptyPreRender.str(),DebugType::WARNING);
             continue; // Proceed to next BG
         }
-        BgColorMode colorMode = curScen->getInfo()->colorMode;
         const uint32_t preRenderSize = mapTiles.size();
         const uint32_t cutOffBg = curScen->getInfo()->layerWidth;
         uint32_t bgLeftOffset = 0;
