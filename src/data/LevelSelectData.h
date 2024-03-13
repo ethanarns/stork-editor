@@ -53,6 +53,7 @@ namespace LevelSelectEnums {
         AREA_TRIGGER_SILENT = 0x0E, // Silently changes maps
         // 0x0F I could not get to trigger
         // 0x10 neither. 0xE might be the last one
+        NO_EXIT = 0xFF // null value
     };
 
     enum MapEntranceAnimation {
@@ -76,6 +77,7 @@ namespace LevelSelectEnums {
         LOCKED_BLUE_DOOR_LEFT = 0x11,
         YOSHI_IS_INVISIBLE = 0x012, // Special case? Investigate in code
         // Then 0x13 and 0x14 is spawn static left.. broken past 0x11 or 0x12 probably
+        NO_ENTRANCE = 0xff // Null value
     };
 
     enum StartingDsScreen {

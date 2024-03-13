@@ -610,6 +610,9 @@ void MainWindow::LoadRom() {
         this->grid->shouldShowTriggers = true;
         this->grid->updateTriggerBoxes();
 
+        // Portals //
+        this->grid->updatePortals();
+
         // Misc menu items //
         this->action_showCollision->setDisabled(false);
         this->action_viewBg1->setDisabled(false);
@@ -735,9 +738,10 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
     } else {
         std::stringstream ssLayerSelect;
         ssLayerSelect << "Unknown layer selected in dropdown: ";
-        ssLayerSelect << strToCompare;
+        ssLayerSelect << strToCompare << ", resetting to Sprites";
         YUtils::printDebug(ssLayerSelect.str(),DebugType::ERROR);
         globalSettings.currentEditingBackground = 0;
+        globalSettings.layerSelectMode = LayerMode::SPRITES_LAYER;
         return;
     }
     YUtils::printDebug(ss.str(),DebugType::VERBOSE);
@@ -809,6 +813,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     this->levelWindow->refreshLists();
     this->guiObjectList->updateList();
     this->grid->updateTriggerBoxes();
+    this->grid->updatePortals();
 }
 
 void MainWindow::menuClick_viewBg1(bool checked) {

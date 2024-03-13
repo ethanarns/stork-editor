@@ -444,6 +444,76 @@ void DisplayTable::handleSpritesRightClickPress(QMouseEvent *event) {
     emit this->triggerMainWindowUpdate();
 }
 
+void DisplayTable::updatePortals() {
+    YUtils::printDebug("Updating level entrances and exits",DebugType::VERBOSE);
+    if (this->yidsRom == nullptr) {
+        YUtils::printDebug("Cannot update portals, rom is null",DebugType::ERROR);
+        return;
+    }
+    if (this->yidsRom->currentLevelSelectData == nullptr) {
+        YUtils::printDebug("Cannot update portals, CRSB data is null",DebugType::ERROR);
+        return;
+    }
+    if (this->yidsRom->mapData == nullptr) {
+        YUtils::printDebug("Cannot update portals, map data is null",DebugType::ERROR);
+        return;
+    }
+    if (this->yidsRom->mapData->filename.empty()) {
+        YUtils::printDebug("Cannot update portals, no map data file name",DebugType::ERROR);
+        return;
+    }
+    const int ROW_COUNT = this->rowCount();
+    const int COLUMN_COUNT = this->columnCount();
+    for (int row = 0; row < ROW_COUNT; row++) {
+        for (int col = 0; col < COLUMN_COUNT; col++) {
+            auto potentialItem = this->item(row,col);
+            if (potentialItem != nullptr) {
+                potentialItem->setData(PixelDelegateData::ENTRANCE_INDEX,0xff);
+                potentialItem->setData(PixelDelegateData::ENTRANCE_TYPE,LevelSelectEnums::MapEntranceAnimation::NO_ENTRANCE);
+                potentialItem->setData(PixelDelegateData::EXIT_INDEX,0xff);
+                potentialItem->setData(PixelDelegateData::EXIT_TYPE,LevelSelectEnums::MapExitStartType::NO_EXIT);
+            }
+        }
+    }
+    auto levelData = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    uint entranceIndex = 0;
+    for (auto eit = levelData->entrances.begin(); eit != levelData->entrances.end(); eit++) {
+        uint32_t colX = (*eit)->entranceX;
+        uint32_t rowY = (*eit)->entranceY;
+        auto curItem = this->item(rowY,colX);
+        if (curItem == nullptr) {
+            YUtils::printDebug("Could not place entrance, tile null",DebugType::ERROR);
+            continue;
+        }
+        int entranceType = (*eit)->enterMapAnimation;
+        curItem->setData(PixelDelegateData::ENTRANCE_INDEX,entranceIndex);
+        curItem->setData(PixelDelegateData::ENTRANCE_TYPE,entranceType);
+        std::stringstream ssEnterTooltip;
+        ssEnterTooltip << "Entrance Index: 0x" << std::hex << entranceIndex << std::endl; // New line
+        ssEnterTooltip << "Entrance Anim: " << MapEntrance::printEntranceAnimation((*eit)->enterMapAnimation);
+        curItem->setToolTip(tr(ssEnterTooltip.str().c_str()));
+        entranceIndex++;
+    }
+    uint exitIndex = 0;
+    for (auto xit = levelData->exits.begin(); xit != levelData->exits.end(); xit++) {
+        uint32_t colX = (*xit)->exitLocationX;
+        uint32_t rowY = (*xit)->exitLocationY;
+        auto curItem = this->item(rowY,colX);
+        if (curItem == nullptr) {
+            YUtils::printDebug("Could not place exit, tile null",DebugType::ERROR);
+            continue;
+        }
+        int exitType = (*xit)->exitStartType;
+        curItem->setData(PixelDelegateData::EXIT_INDEX,exitIndex);
+        curItem->setData(PixelDelegateData::EXIT_TYPE,exitType);
+        std::stringstream ssExitTooltip;
+        ssExitTooltip << "Exit Index: 0x" << std::hex << exitIndex << std::endl; // New line
+        ssExitTooltip << "Exit Type: " << MapExitData::printExitStartType((*xit)->exitStartType);
+        curItem->setToolTip(tr(ssExitTooltip.str().c_str()));
+        exitIndex++;
+    }
+}
+
 void DisplayTable::mousePressEvent(QMouseEvent *event) {
     if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
         if (event->button() == Qt::LeftButton) {

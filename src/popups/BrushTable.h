@@ -19,5 +19,5 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
 private:
     YidsRom* yidsRom;
-    const static int CELL_SIZE_PX = 32;
+    const static int CELL_SIZE_PX = 16;
 };

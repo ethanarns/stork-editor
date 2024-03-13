@@ -13,8 +13,8 @@
 #include <QLabel>
 
 enum LevelWindowDataKey {
-    ENTRANCE_INDEX = 0x20,
-    EXIT_INDEX = 0x21
+    ENTRANCE_INDEX_WINDOW = 0x20,
+    EXIT_INDEX_WINDOW = 0x21
 };
 
 LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
@@ -141,7 +141,7 @@ void LevelWindow::refreshLists() {
         ssExit << exitType << " to " << levelTo->mpdzFileNoExtension;
         ssExit << " 0x" << std::hex << (uint16_t)((*xit)->whichEntranceTo);
         QListWidgetItem* exitItem = new QListWidgetItem(tr(ssExit.str().c_str()));
-        exitItem->setData(LevelWindowDataKey::EXIT_INDEX,exitIndex);
+        exitItem->setData(LevelWindowDataKey::EXIT_INDEX_WINDOW,exitIndex);
         this->exitListWidget->addItem(exitItem);
         exitIndex++;
     }
@@ -302,7 +302,7 @@ void LevelWindow::refreshEntranceList() {
             ssEnter << "0x" << std::hex << entranceIndex << ": " << entranceTypeStr;
         }
         QListWidgetItem* entranceItem = new QListWidgetItem(tr(ssEnter.str().c_str()));
-        entranceItem->setData(LevelWindowDataKey::ENTRANCE_INDEX,entranceIndex);
+        entranceItem->setData(LevelWindowDataKey::ENTRANCE_INDEX_WINDOW,entranceIndex);
         this->entranceListWidget->addItem(entranceItem);
         entranceIndex++;
     }
@@ -327,7 +327,7 @@ void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem 
         return;
     }
 
-    auto entranceIndexQVariant = current->data(LevelWindowDataKey::ENTRANCE_INDEX);
+    auto entranceIndexQVariant = current->data(LevelWindowDataKey::ENTRANCE_INDEX_WINDOW);
     if (entranceIndexQVariant.isNull()) {
         YUtils::printDebug("No data in entrance item",DebugType::ERROR);
         return;
@@ -360,7 +360,7 @@ void LevelWindow::exitItemChanged(QListWidgetItem *current, QListWidgetItem *pre
         YUtils::printDebug("CRSB data with that MPDZ was null",DebugType::ERROR);
         return;
     }
-    auto exitIndex = current->data(LevelWindowDataKey::EXIT_INDEX).toUInt();
+    auto exitIndex = current->data(LevelWindowDataKey::EXIT_INDEX_WINDOW).toUInt();
     
     auto exitData = curLevelData->exits.at(exitIndex);
     this->exitTypeCombo->setCurrentIndex(exitData->exitStartType);

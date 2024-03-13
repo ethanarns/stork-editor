@@ -20,6 +20,8 @@ const int PIXEL_TILE_TOTAL = PIXEL_TILE_DIVISIONS * PIXEL_TILE_DIVISIONS;
 //const QColor selectionColor(255,0,0,50);
 const QColor hardSelectionColor(255,255,255,100);
 QImage COIN_IMAGE(":/assets/coin.png");
+QImage ENTRANCE_IMAGE(":/assets/entrance.png");
+QImage EXIT_IMAGE(":/assets/exit.png");
 
 const QColor collisionColor(     0,255,0  ,100);
 const QColor collisionColorAlt(200,255,200,180);
@@ -485,6 +487,38 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             Y_HEIGHT,
             boxColor
         );
+    }
+
+    /***************
+     *** PORTALS *** 
+     ***************/
+    // Entrances //
+    auto entranceData = index.data(PixelDelegateData::ENTRANCE_INDEX);
+    if (!entranceData.isNull() && entranceData.toUInt() != 0xff) {
+        if (ENTRANCE_IMAGE.isNull()) {
+            ENTRANCE_IMAGE = QImage(":/assets/entrance.png");
+        }
+        const int X_WIDTH = option.rect.width();
+        const int Y_HEIGHT = option.rect.height();
+        const int X_BASE = option.rect.x();
+        const int Y_BASE = option.rect.y();
+        ENTRANCE_IMAGE = ENTRANCE_IMAGE.scaled(X_WIDTH,Y_HEIGHT);
+        painter->drawImage(X_BASE,Y_BASE,ENTRANCE_IMAGE,0,0,X_WIDTH,Y_HEIGHT);
+                // COIN_IMAGE = COIN_IMAGE.scaled(X_WIDTH*2,Y_HEIGHT*2); // Only need to do this once
+                // painter->drawImage(X_BASE,Y_BASE,COIN_IMAGE,0,0,X_WIDTH*2,Y_HEIGHT*2);
+    }
+    // Exits //
+    auto exitData = index.data(PixelDelegateData::EXIT_INDEX);
+    if (!exitData.isNull() && exitData.toUInt() != 0xff) {
+        if (EXIT_IMAGE.isNull()) {
+            EXIT_IMAGE = QImage(":/assets/exit.png");
+        }
+        const int X_WIDTH = option.rect.width();
+        const int Y_HEIGHT = option.rect.height();
+        const int X_BASE = option.rect.x();
+        const int Y_BASE = option.rect.y();
+        EXIT_IMAGE = EXIT_IMAGE.scaled(X_WIDTH,Y_HEIGHT);
+        painter->drawImage(X_BASE,Y_BASE,EXIT_IMAGE,0,0,X_WIDTH,Y_HEIGHT);
     }
 
     /*************

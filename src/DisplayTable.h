@@ -71,6 +71,7 @@ public:
     /// @return true if place successful, false if failed
     bool placeNewTileOnMap(int row, int column, MapTileRecordData pren);
     void clearVisualSpriteSelection();
+    void updatePortals();
 private:
     const static int CELL_SIZE_PX = 8;
     const static int CELL_COUNT_W = 0xff*4;
