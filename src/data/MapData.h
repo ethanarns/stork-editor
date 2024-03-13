@@ -398,7 +398,6 @@ public:
     std::vector<MapTileRecordData> getMapTiles();
     std::vector<Chartile> parseImbzFromFile(std::string filename_noExt, BgColorMode bgColMode = BgColorMode::MODE_16);
 
-    uint32_t paletteStartOffset;
     uint32_t magicOfChartilesSource = 0;
     bool hasAnmzChartiles = false;
     std::vector<LevelData*> subScenData;

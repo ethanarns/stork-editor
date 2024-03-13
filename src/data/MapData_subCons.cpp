@@ -26,7 +26,6 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             auto imgb = new ImgbLayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subScenData.push_back(imgb);
         } else if (subMagic == Constants::PLTB_MAGIC_NUM) {
-            this->paletteStartOffset = globalPaletteIndex;
             auto pltb = new LayerPaletteData(mpdzBytes,mpdzIndex,mpdzIndex+subLength,this->getInfo()->colorMode);
             this->subScenData.push_back(pltb);
         } else if (subMagic == Constants::COLZ_MAGIC_NUM) {
