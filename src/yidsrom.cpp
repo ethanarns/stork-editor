@@ -468,6 +468,7 @@ void YidsRom::reloadChartileVram(uint frame) {
         }
 
         this->chartileVram[charBaseBlock] = pixelTiles;
+        this->chartileVramPaletteOffset[charBaseBlock] = scen->getPalette()->bgOffset;
     }
     
 }

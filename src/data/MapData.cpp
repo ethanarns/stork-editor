@@ -4,6 +4,7 @@
 #include "../compression.h"
 #include "../constants.h"
 #include "../Chartile.h"
+#include "../GlobalSettings.h"
 
 #include <vector>
 #include <fstream>
@@ -191,6 +192,7 @@ std::vector<Chartile> LayerData::parseImbzFromFile(std::string filename_noExt, B
 
 MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgPalettesRef[0x20]) {
     this->paletteRamIndex = 1;
+    globalSettings.temp_paletteOffset = 0;
     if (compressed) {
         mpdzBytes = YCompression::lz10decomp(mpdzBytes);
     }
@@ -215,11 +217,13 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
         auto idealStop = mpdzIndex+subLength;
         if (subMagic == Constants::SCEN_MAGIC_NUM) {
             auto scen = new LayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            scen->getPalette()->bgOffset = globalSettings.temp_paletteOffset; // Set before increment
             auto pltb = scen->getPalette()->palettes;
             for (auto plit = pltb.begin(); plit != pltb.end(); plit++) {
                 auto curPal = (*plit);
                 bgPalettesRef[this->paletteRamIndex] = curPal;
                 this->paletteRamIndex++;
+                globalSettings.temp_paletteOffset++;
             }
             this->subData.push_back(scen);
         } else if (subMagic == Constants::GRAD_MAGIC_NUM) {

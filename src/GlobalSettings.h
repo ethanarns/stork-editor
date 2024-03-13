@@ -58,6 +58,8 @@ struct GlobalSettings {
     uint32_t currentSpriteIdToAdd = 0;
     uint32_t gridCellSizePx = 8;
 
+    uint32_t temp_paletteOffset = 0;
+
     int getSelectionWidth() {
         int leftMost = 0xffff;
         int rightMost = 0x0000;

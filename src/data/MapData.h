@@ -359,6 +359,7 @@ public:
 
     std::vector<QByteArray> palettes;
     QByteArray extendedPalette;
+    uint32_t bgOffset;
 };
 
 // SCEN
