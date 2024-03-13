@@ -123,7 +123,7 @@ LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
         }
     } else if (colMode == BgColorMode::MODE_256) {
         if (stop - mpdzIndex != Constants::EXTPAL_256_SIZE_BYTES) {
-            YUtils::printDebug("256 extended color layer doesn't have 256 records",DebugType::ERROR);
+            YUtils::printDebug("256 extended color palette data doesn't have 256 records",DebugType::ERROR);
         }
         QByteArray extPal;
         extPal.resize(Constants::EXTPAL_256_SIZE_BYTES);
@@ -131,6 +131,10 @@ LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
             extPal[i] = mpdzBytes.at(mpdzIndex++);
         }
         this->extendedPalette = extPal;
+    } else {
+        YUtils::printDebug("Somehow, an invalid BgColorMode was passed to LayerPaletteData",DebugType::FATAL);
+        YUtils::popupAlert("Invalid color mode when initializing palette");
+        exit(EXIT_FAILURE);
     }
 }
 

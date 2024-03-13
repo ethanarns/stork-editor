@@ -410,7 +410,6 @@ void YidsRom::reloadChartileVram(uint frame) {
             YUtils::printDebug("SCEN for bg not found, skipping",DebugType::WARNING);
             continue;
         }
-        auto colorMode = scen->getInfo()->colorMode;
         auto charBaseBlock = scen->getInfo()->charBaseBlock;
         uint32_t magicOfChartilesSource = 0;
         std::map<uint32_t, Chartile> pixelTiles;
