@@ -95,12 +95,16 @@ private:
     QAction* action_viewTriggers;
     QAction* action_showCollision;
     QAction* action_showTriggerBoxes;
+    QAction* action_showEntrances;
+    QAction* action_showExits;
 
     void menuClick_viewBg1(bool checked);
     void menuClick_viewBg2(bool checked);
     void menuClick_viewBg3(bool checked);
     void menuClick_viewObjects(bool checked);
     void menuClick_viewTriggers(bool checked);
+    void menuClick_viewEntrances(bool checked);
+    void menuClick_viewExits(bool checked);
 
     void toolbarClick_palette();
     void toolbarClick_tiles();

@@ -29,6 +29,8 @@ public:
     bool drawObjects;
     bool shouldShowCollision;
     bool shouldShowTriggers;
+    bool shouldDrawEntrances;
+    bool shouldDrawExits;
     /**
      * A list/vector of uint32_t UUIDs of selected objects, usually LevelObjects
     */
@@ -71,7 +73,7 @@ public:
     /// @return true if place successful, false if failed
     bool placeNewTileOnMap(int row, int column, MapTileRecordData pren);
     void clearVisualSpriteSelection();
-    void updatePortals();
+    void updatePortals(bool drawEntrances, bool drawExits);
 private:
     const static int CELL_SIZE_PX = 8;
     const static int CELL_COUNT_W = 0xff*4;

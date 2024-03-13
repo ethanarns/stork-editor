@@ -19,6 +19,8 @@
 DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     Q_UNUSED(parent);
     this->shouldShowCollision = true;
+    this->shouldDrawEntrances = true;
+    this->shouldDrawExits = true;
     this->firstLayerDrawDone = false;
 
     this->yidsRom = rom;
@@ -444,7 +446,7 @@ void DisplayTable::handleSpritesRightClickPress(QMouseEvent *event) {
     emit this->triggerMainWindowUpdate();
 }
 
-void DisplayTable::updatePortals() {
+void DisplayTable::updatePortals(bool drawEntrances, bool drawExits) {
     YUtils::printDebug("Updating level entrances and exits",DebugType::VERBOSE);
     if (this->yidsRom == nullptr) {
         YUtils::printDebug("Cannot update portals, rom is null",DebugType::ERROR);
@@ -462,6 +464,9 @@ void DisplayTable::updatePortals() {
         YUtils::printDebug("Cannot update portals, no map data file name",DebugType::ERROR);
         return;
     }
+    // Update main to match
+    this->shouldDrawEntrances = drawEntrances;
+    this->shouldDrawExits = drawExits;
     const int ROW_COUNT = this->rowCount();
     const int COLUMN_COUNT = this->columnCount();
     for (int row = 0; row < ROW_COUNT; row++) {
@@ -472,6 +477,8 @@ void DisplayTable::updatePortals() {
                 potentialItem->setData(PixelDelegateData::ENTRANCE_TYPE,LevelSelectEnums::MapEntranceAnimation::NO_ENTRANCE);
                 potentialItem->setData(PixelDelegateData::EXIT_INDEX,0xff);
                 potentialItem->setData(PixelDelegateData::EXIT_TYPE,LevelSelectEnums::MapExitStartType::NO_EXIT);
+                potentialItem->setData(PixelDelegateData::DRAW_ENTRANCES,drawEntrances);
+                potentialItem->setData(PixelDelegateData::DRAW_EXITS,drawExits);
             }
         }
     }

@@ -217,6 +217,22 @@ MainWindow::MainWindow() {
     menu_view->addAction(this->action_showTriggerBoxes);
     connect(this->action_showTriggerBoxes, &QAction::triggered,this, &MainWindow::menuClick_viewTriggers);
 
+    this->action_showEntrances = new QAction("&Show Entrances");
+    this->action_showEntrances->setShortcut(tr("CTRL+7"));
+    this->action_showEntrances->setCheckable(true);
+    this->action_showEntrances->setChecked(true);
+    this->action_showEntrances->setDisabled(true);
+    menu_view->addAction(this->action_showEntrances);
+    connect(this->action_showEntrances, &QAction::triggered, this, &MainWindow::menuClick_viewEntrances);
+
+    this->action_showExits = new QAction("&Show Exits");
+    this->action_showExits->setShortcut(tr("CTRL+8"));
+    this->action_showExits->setCheckable(true);
+    this->action_showExits->setChecked(true);
+    this->action_showExits->setDisabled(true);
+    menu_view->addAction(this->action_showExits);
+    connect(this->action_showExits, &QAction::triggered, this, &MainWindow::menuClick_viewExits);
+
     // Tools menu //
     QMenu* menu_tools = menuBar()->addMenu("&Tools");
 
@@ -611,7 +627,11 @@ void MainWindow::LoadRom() {
         this->grid->updateTriggerBoxes();
 
         // Portals //
-        this->grid->updatePortals();
+        this->grid->shouldDrawEntrances = true;
+        this->grid->shouldDrawExits = true;
+        this->grid->updatePortals(this->grid->shouldDrawEntrances,this->grid->shouldDrawExits);
+        this->action_showEntrances->setDisabled(false);
+        this->action_showExits->setDisabled(false);
 
         // Misc menu items //
         this->action_showCollision->setDisabled(false);
@@ -791,6 +811,14 @@ void MainWindow::menuClick_levelSettings() {
     this->levelWindow->show();
 }
 
+void MainWindow::menuClick_viewExits(bool checked) {
+    this->grid->updatePortals(this->grid->shouldDrawEntrances,checked);
+}
+
+void MainWindow::menuClick_viewEntrances(bool checked) {
+    this->grid->updatePortals(checked,this->grid->shouldDrawExits);
+}
+
 /****************************
  *** WINDOW BUTTON CLICKS ***
  ****************************/
@@ -813,7 +841,8 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     this->levelWindow->refreshLists();
     this->guiObjectList->updateList();
     this->grid->updateTriggerBoxes();
-    this->grid->updatePortals();
+    // If it was hidden last time, hide it again
+    this->grid->updatePortals(this->grid->shouldDrawEntrances,this->grid->shouldDrawExits);
 }
 
 void MainWindow::menuClick_viewBg1(bool checked) {
