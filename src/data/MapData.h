@@ -307,8 +307,8 @@ public:
             // Padding header built
         }
         bool isColorMode16 = info.colorMode == BgColorMode::MODE_16;
-        for (uint i = startOffset; i < this->tileRenderData.size(); i++) {
-            uint16_t curShort = this->tileRenderData.at(i);
+        for (uint i = startOffset; i < this->mapTiles.size(); i++) {
+            uint16_t curShort = this->mapTiles.at(i).compile();
             if (isColorMode16) {
                 curShort -= 0x1000;
             }
@@ -322,7 +322,6 @@ public:
 
     uint16_t tileOffset;
     uint16_t bottomTrim;
-    std::vector<uint16_t> tileRenderData;
     std::vector<MapTileRecordData> mapTiles;
 };
 

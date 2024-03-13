@@ -1085,7 +1085,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
     auto mpbzMaybe = scen->getFirstDataByMagic(Constants::MPBZ_MAGIC_NUM);
     auto mpbz = static_cast<MapTilesData*>(mpbzMaybe);
     uint32_t index = column + (row * scen->getInfo()->layerWidth);
-    mpbz->tileRenderData.at(index) = mapRecord.compile();
+    mpbz->mapTiles.at(index) = mapRecord;
     return true;
 }
 
