@@ -355,14 +355,15 @@ std::vector<uint8_t> YidsRom::getByteVectorFromFile(std::string fileName) {
 
 void YidsRom::wipeLevelData() {
     // 1: Skip the universal palette at index 0
-    for (uint32_t palDelIndex = 1; palDelIndex < 0x20; palDelIndex++) {
-        // 0x10 * 2: Each color is 2 bytes
-        for (uint32_t colDelIndex = 0; colDelIndex < (0x10*2); colDelIndex++) {
-            // palDelIndex + 1: create a "rainbow" to debug target
-            //this->currentPalettes[palDelIndex][colDelIndex] = palDelIndex + 1;
-            this->backgroundPalettes[palDelIndex][colDelIndex] = palDelIndex + 1;
-        }
-    }
+    // TODO: Something else?
+    // for (uint32_t palDelIndex = 1; palDelIndex < 0x20; palDelIndex++) {
+    //     // 0x10 * 2: Each color is 2 bytes
+    //     for (uint32_t colDelIndex = 0; colDelIndex < (0x10*2); colDelIndex++) {
+    //         // palDelIndex + 1: create a "rainbow" to debug target
+    //         //this->currentPalettes[palDelIndex][colDelIndex] = palDelIndex + 1;
+    //         this->backgroundPalettes[palDelIndex][colDelIndex] = palDelIndex + 1;
+    //     }
+    // }
     delete this->mapData;
 }
 

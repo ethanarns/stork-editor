@@ -99,7 +99,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
         return;
     }
 
-    pal += scen->paletteStartOffset - 1; // -1 is likely because of universal palette
+    //pal += scen->paletteStartOffset - 1; // -1 is likely because of universal palette
 
     auto bgItem = this->item(y,x);
     auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
@@ -953,7 +953,10 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         return false;
     }
     auto pal = mapRecord.paletteId;
-    pal += scen->paletteStartOffset - 1;
+    if (pal > 16) {
+        std::cout << "wat? so high 0x" << std::hex << (uint16_t)pal << std::endl;
+    }
+    //pal += scen->paletteStartOffset - 1;
     auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
     if (globalSettings.currentEditingBackground == 1) {
         // BG 1 //

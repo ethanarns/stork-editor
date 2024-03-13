@@ -123,7 +123,10 @@ LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
         }
     } else if (colMode == BgColorMode::MODE_256) {
         if (stop - mpdzIndex != Constants::EXTPAL_256_SIZE_BYTES) {
-            YUtils::printDebug("256 extended color palette data doesn't have 256 records",DebugType::ERROR);
+            std::stringstream ssSizeError;
+            ssSizeError << "256 extended color palette data doesn't have 256 records, had 0x";
+            ssSizeError << std::hex << ((stop - mpdzIndex)/2); // Each record is 2 bytes
+            YUtils::printDebug(ssSizeError.str(),DebugType::WARNING);
         }
         QByteArray extPal;
         extPal.resize(Constants::EXTPAL_256_SIZE_BYTES);
