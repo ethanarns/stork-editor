@@ -1195,8 +1195,7 @@ void DisplayTable::updateBg() {
                     std::cout << "X too big (x vs width): " << std::hex << x << " vs " << std::hex << (canvasWidth-1) << std::endl;
                     continue;
                 }
-                MapTileRecordData curPren = YUtils::getMapTileRecordDataFromShort(mapTiles.at(preRenderIndex),colorMode);
-                this->putTileBg(x,y,curPren,bgIndex);
+                this->putTileBg(x,y,mapTiles.at(preRenderIndex),bgIndex);
             }
             bgLeftOffset += cutOffBg;
         }

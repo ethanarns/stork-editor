@@ -323,6 +323,7 @@ public:
     uint16_t tileOffset;
     uint16_t bottomTrim;
     std::vector<uint16_t> tileRenderData;
+    std::vector<MapTileRecordData> mapTiles;
 };
 
 // PLTB
@@ -395,7 +396,7 @@ public:
     LevelData* getFirstDataByMagic(uint32_t magicNumber, bool silentFail = false);
     /// @brief Return the two-byte map tile vector representing the VRAM
     /// @return Vector of uint16s representing ROM map tiles (see Map Address in No$GBA)
-    std::vector<uint16_t> getMapTiles();
+    std::vector<MapTileRecordData> getMapTiles();
     std::vector<Chartile> parseImbzFromFile(std::string filename_noExt, BgColorMode bgColMode = BgColorMode::MODE_16);
 
     uint32_t paletteStartOffset;

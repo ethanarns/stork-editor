@@ -169,8 +169,15 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
         this->bottomTrim = YUtils::getUint16FromVec(mpbzData,mIndex);
         mIndex += 2;
         uint32_t offset = this->tileOffset * info->layerWidth;
+        MapTileRecordData blankTile;
+        blankTile.tileId = 0x00;
+        blankTile.tileAttr = 0x0000;
+        blankTile.paletteId = 0x00;
+        blankTile.flipH = false;
+        blankTile.flipV = false;
         for (uint32_t offsetWriteIndex = 0; offsetWriteIndex < offset; offsetWriteIndex++) {
             this->tileRenderData.push_back(0x0000);
+            this->mapTiles.push_back(blankTile);
         } 
         //mIndex += 3; // 0x0201c714 Huh? This doesn't make sense. Goes ahead 4, but changing to -1 breaks
     } else {
@@ -186,6 +193,9 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
             curShort += 0x1000; // 0201c730
         }
         this->tileRenderData.push_back(curShort);
+        // New way
+        MapTileRecordData tileData = YUtils::getMapTileRecordDataFromShort(curShort);
+        this->mapTiles.push_back(tileData);
     }
     mpdzIndex += compressed.size();
 }
@@ -193,6 +203,8 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
 MapTilesData::~MapTilesData() {
     this->tileRenderData.clear();
     this->tileRenderData.shrink_to_fit();
+    this->mapTiles.clear();
+    this->mapTiles.shrink_to_fit();
 }
 
 AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop, BgColorMode &colorMode) {

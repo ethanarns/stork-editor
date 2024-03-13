@@ -114,14 +114,14 @@ LevelData* LayerData::getFirstDataByMagic(uint32_t magicNumber, bool silentFail)
     return nullptr;
 }
 
-std::vector<uint16_t> LayerData::getMapTiles() {
+std::vector<MapTileRecordData> LayerData::getMapTiles() {
     auto mpbzMaybe = this->getFirstDataByMagic(Constants::MPBZ_MAGIC_NUM);
     if (mpbzMaybe == nullptr) {
         YUtils::printDebug("MPBZ empty, returning empty vector",DebugType::ERROR);
-        return std::vector<uint16_t>();
+        return std::vector<MapTileRecordData>();
     }
     auto mpbz = static_cast<MapTilesData*>(mpbzMaybe);
-    return mpbz->tileRenderData;
+    return mpbz->mapTiles;
 }
 
 std::vector<Chartile> LayerData::parseImbzFromFile(std::string filename_noExt, BgColorMode bgColMode) {
