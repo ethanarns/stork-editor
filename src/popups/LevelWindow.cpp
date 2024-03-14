@@ -258,8 +258,13 @@ void LevelWindow::exitTypeChanged(const QString text) {
         // Will temporarily be -1 during changes
         return;
     }
-
-    // Do updates for everything else //
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    auto curExitSelected = this->exitListWidget->currentRow();
+    auto curExit = curLevel->exits.at(curExitSelected);
+    if(curExit->exitStartType != exitTypeComboIndex) {
+        YUtils::printDebug("Modifying CRSB: Exit Type",DebugType::VERBOSE);
+        curExit->exitStartType = static_cast<LevelSelectEnums::MapExitStartType>(exitTypeComboIndex);
+    }
 }
 
 void LevelWindow::targetMapChanged(const QString text) {
