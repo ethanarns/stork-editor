@@ -237,6 +237,10 @@ void LevelWindow::entranceAnimChanged(const QString text) {
     // Do updates for everything else //
     auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
     auto curEntranceSelected = this->entranceListWidget->currentRow();
+    if (curEntranceSelected < 0) {
+        YUtils::printDebug("Invalid entrance selected in entranceAnimChanged",DebugType::WARNING);
+        return;
+    }
     auto curEntrance = curLevel->entrances.at(curEntranceSelected);
     if (curEntrance->enterMapAnimation != entranceAnimIndex) {
         YUtils::printDebug("Modifying CRSB: Entrance Animation",DebugType::VERBOSE);
@@ -260,6 +264,10 @@ void LevelWindow::entranceScreenChanged(const QString text) {
     }
     auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
     auto curEntranceSelected = this->entranceListWidget->currentRow();
+    if (curEntranceSelected < 0) {
+        YUtils::printDebug("Invald entrance selected in entranceScreenChanged",DebugType::WARNING);
+        return;
+    }
     auto curEntrance = curLevel->entrances.at(curEntranceSelected);
     if (curEntrance->whichDsScreen != entranceScreenComboIndex) {
         YUtils::printDebug("Modifying CRSB: Entrance Screen",DebugType::VERBOSE);
@@ -283,6 +291,10 @@ void LevelWindow::exitTypeChanged(const QString text) {
     }
     auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
     auto curExitSelected = this->exitListWidget->currentRow();
+    if (curExitSelected < 0) {
+        YUtils::printDebug("curExitSelected invalid in exitTypeChanged",DebugType::WARNING);
+        return;
+    }
     auto curExit = curLevel->exits.at(curExitSelected);
     if(curExit->exitStartType != exitTypeComboIndex) {
         YUtils::printDebug("Modifying CRSB: Exit Type",DebugType::VERBOSE);
