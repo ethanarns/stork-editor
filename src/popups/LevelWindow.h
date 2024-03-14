@@ -30,6 +30,8 @@ private:
     QSpinBox* entranceX;
     QSpinBox* entranceY;
 
+    bool detectChanges = false;
+
     void musicIdChanged(const QString text);
 
     void entranceAnimChanged(const QString text);
@@ -44,4 +46,7 @@ private:
 
     void entranceItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void exitItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+
+    void entrancePositionChangedX();
+    void entrancePositionChangedY();
 };

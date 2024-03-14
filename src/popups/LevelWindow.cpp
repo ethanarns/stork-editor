@@ -20,6 +20,7 @@ enum LevelWindowDataKey {
 LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     Q_UNUSED(parent);
     this->yidsRom = rom;
+    this->detectChanges = false;
     this->setWindowTitle(tr("Level Window"));
     this->setObjectName(tr("levelWindow"));
     auto mainLayout = new QVBoxLayout(this);
@@ -74,11 +75,14 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     this->entranceX->setDisplayIntegerBase(16);
     this->entranceX->setToolTip(tr("X Position"));
     this->entranceX->setMaximum(0xffff);
+    // connect(chartilePaletteSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->chartilesTable,&ChartilesTable::paletteValueChanged);
+    connect(this->entranceX,QOverload<int>::of(&QSpinBox::valueChanged),this,&LevelWindow::entrancePositionChangedX);
     entranceCoords->addWidget(this->entranceX);
     this->entranceY = new QSpinBox(this);
     this->entranceY->setDisplayIntegerBase(16);
     this->entranceY->setToolTip(tr("Y Position"));
     this->entranceY->setMaximum(0xffff);
+    connect(this->entranceY,QOverload<int>::of(&QSpinBox::valueChanged),this,&LevelWindow::entrancePositionChangedY);
     entranceCoords->addWidget(this->entranceY);
     entranceOptions->addLayout(entranceCoords);
 
@@ -143,9 +147,12 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     //currentItemChanged
     connect(this->entranceListWidget,&QListWidget::currentItemChanged,this,&LevelWindow::entranceItemChanged);
     connect(this->exitListWidget,&QListWidget::currentItemChanged,this,&LevelWindow::exitItemChanged);
+
+    this->detectChanges = true;
 }
 
 void LevelWindow::refreshLists() {
+    this->detectChanges = false;
     auto mapFilename = this->yidsRom->mapData->filename;
     if (mapFilename.empty()) {
         YUtils::printDebug("MPDZ filename was empty",DebugType::ERROR);
@@ -191,6 +198,7 @@ void LevelWindow::refreshLists() {
     // Populate with entrances on that map
     auto currentSelectedExitMap = this->exitMapTarget->currentIndex();
     this->refreshTargetEntrances(currentSelectedExitMap);
+    this->detectChanges = true;
 }
 
 void LevelWindow::musicIdChanged(const QString text) {
@@ -213,6 +221,10 @@ void LevelWindow::musicIdChanged(const QString text) {
 
 void LevelWindow::entranceAnimChanged(const QString text) {
     Q_UNUSED(text);
+    if (this->detectChanges == false) {
+        YUtils::printDebug("Change detection deactivated (Entrance Anim)");
+        return;
+    }
     // std::cout << "entranceAnimChanged" << std::endl;
     // std::cout << this->entranceAnim->currentIndex() << std::endl;
     auto entranceAnimIndex = this->entranceAnim->currentIndex();
@@ -233,6 +245,10 @@ void LevelWindow::entranceAnimChanged(const QString text) {
 
 void LevelWindow::entranceScreenChanged(const QString text) {
     Q_UNUSED(text);
+    if (this->detectChanges == false) {
+        YUtils::printDebug("Change detection deactivated (Entrance Screen)");
+        return;
+    }
     // std::cout << "entranceScreenChanged" << std::endl;
     // std::cout << this->entranceScreen->currentIndex() << std::endl;
     auto entranceScreenComboIndex = this->entranceScreen->currentIndex();
@@ -251,6 +267,10 @@ void LevelWindow::entranceScreenChanged(const QString text) {
 
 void LevelWindow::exitTypeChanged(const QString text) {
     Q_UNUSED(text);
+    if (this->detectChanges == false) {
+        YUtils::printDebug("Change detection deactivated (Exit Type)");
+        return;
+    }
     // std::cout << "exitTypeChanged" << std::endl;
     // std::cout << this->exitTypeCombo->currentIndex() << std::endl;
     auto exitTypeComboIndex = this->exitTypeCombo->currentIndex();
@@ -269,6 +289,10 @@ void LevelWindow::exitTypeChanged(const QString text) {
 
 void LevelWindow::targetMapChanged(const QString text) {
     Q_UNUSED(text);
+    if (this->detectChanges == false) {
+        YUtils::printDebug("Change detection deactivated (Target map)");
+        return;
+    }
     //std::cout << "targetMapChanged" << std::endl;
     //std::cout << this->exitMapTarget->currentIndex() << std::endl;
     // ONLY update the available entrances
@@ -278,7 +302,9 @@ void LevelWindow::targetMapChanged(const QString text) {
         //YUtils::printDebug("Invalid currentSelectedExitMap in targetMapChanged",DebugType::ERROR);
         return;
     }
+    this->detectChanges = false;
     this->refreshTargetEntrances(currentSelectedExitMap);
+    this->detectChanges = true;
 
     auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
     auto curExitSelected = this->exitListWidget->currentRow();
@@ -295,6 +321,10 @@ void LevelWindow::targetMapChanged(const QString text) {
 
 void LevelWindow::targetEntranceChanged(const QString text) {
     Q_UNUSED(text);
+    if (this->detectChanges == false) {
+        YUtils::printDebug("Change detection deactivated (Target entrance)");
+        return;
+    }
     // std::cout << "targetEntranceChanged" << std::endl;
     // std::cout << this->exitEntranceTarget->currentIndex() << std::endl;
     if (this->exitEntranceTarget == nullptr) {
@@ -433,9 +463,67 @@ void LevelWindow::exitItemChanged(QListWidgetItem *current, QListWidgetItem *pre
     
     auto exitData = curLevelData->exits.at(exitIndex);
     //YUtils::printDebug(exitData->toString());
+    this->detectChanges = false;
     this->exitTypeCombo->setCurrentIndex(exitData->exitStartType);
     this->exitMapTarget->setCurrentIndex(exitData->whichMapTo);
     this->exitX->setValue((int)exitData->exitLocationX);
     this->exitY->setValue((int)exitData->exitLocationY);
     this->refreshTargetEntrances(exitData->whichMapTo);
+    this->detectChanges = true;
+}
+
+void LevelWindow::entrancePositionChangedX() {
+    if (this->detectChanges == false) {
+        YUtils::printDebug("Change detection deactivated (X)");
+        return;
+    }
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    auto curEntranceSelected = this->entranceListWidget->currentRow();
+    if (curEntranceSelected < 0) {
+        YUtils::printDebug("curEntranceSelected negative",DebugType::VERBOSE);
+        return;
+    }
+    auto curEntrance = curLevel->entrances.at(curEntranceSelected);
+    auto xValue = this->entranceX->value();
+    if (xValue < 0) {
+        YUtils::printDebug("Entrance X change value negative",DebugType::ERROR);
+        return;
+    }
+    if ((uint32_t)xValue > this->yidsRom->mapData->getGreatestCanvasWidth()) {
+        YUtils::printDebug("Entrance X change value too high",DebugType::ERROR);
+        return;
+    }
+    if (curEntrance->entranceX != (uint16_t)xValue) {
+        YUtils::printDebug("Modifying CRSB: Entrance X",DebugType::VERBOSE);
+        std::cout << std::hex << (uint16_t)xValue << std::endl;
+        curEntrance->entranceX = (uint16_t)xValue;
+    }
+}
+
+void LevelWindow::entrancePositionChangedY() {
+    if (this->detectChanges == false) {
+        YUtils::printDebug("Change detection deactivated (Y)");
+        return;
+    }
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    auto curEntranceSelected = this->entranceListWidget->currentRow();
+    if (curEntranceSelected < 0) {
+        YUtils::printDebug("curEntranceSelected negative",DebugType::VERBOSE);
+        return;
+    }
+    auto curEntrance = curLevel->entrances.at(curEntranceSelected);
+    auto yValue = this->entranceY->value();
+    if (yValue < 0) {
+        YUtils::printDebug("Entrance Y change value negative",DebugType::ERROR);
+        return;
+    }
+    if ((uint32_t)yValue > this->yidsRom->mapData->getGreatestCanvasHeight()) {
+        YUtils::printDebug("Entrance Y change value too high",DebugType::ERROR);
+        return;
+    }
+    if (curEntrance->entranceY != (uint16_t)yValue) {
+        YUtils::printDebug("Modifying CRSB: Entrance Y",DebugType::VERBOSE);
+        std::cout << std::hex << (uint16_t)yValue << std::endl;
+        curEntrance->entranceY = (uint16_t)yValue;
+    }
 }
