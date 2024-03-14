@@ -1044,6 +1044,9 @@ void MainWindow::displayTableClicked() {
         YUtils::printDebug("MainWindow clicked while in BG3 mode");
     } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
         YUtils::printDebug("MainWindow clicked while in COLL mode");
+    } else if (globalSettings.layerSelectMode == LayerMode::PORTALS_LAYER) {
+        YUtils::printDebug("MainWindow clicked while in PORTALS mode");
+        YUtils::popupAlert("Portals mode selection not yet implemented");
     } else {
         YUtils::printDebug("MainWindow clicked while in UNKNOWN mode");
     }
