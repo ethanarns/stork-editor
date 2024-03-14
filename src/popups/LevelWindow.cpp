@@ -413,6 +413,11 @@ void LevelWindow::refreshEntranceList() {
 void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem *previous) {
     Q_UNUSED(previous);
 
+    if (this->detectChanges == false) {
+        YUtils::printDebug("Change detection deactivated (entranceItemChanged)");
+        return;
+    }
+
     if (current == nullptr) {
         // Will do this a lot while updating
         return;
@@ -449,6 +454,11 @@ void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem 
 
 void LevelWindow::exitItemChanged(QListWidgetItem *current, QListWidgetItem *previous) {
     Q_UNUSED(previous);
+
+    if (this->detectChanges == false) {
+        YUtils::printDebug("Change detection deactivated (exitItemChanged)");
+        return;
+    }
 
     if (current == nullptr) {
         // Will do this during updates

@@ -118,10 +118,7 @@ void MapSelect::currentItemChanged(QListWidgetItem *current, QListWidgetItem *pr
         return;
     }
     this->rightList->addItems(mpdzList);
-    if (this->yidsRom->currentLevelSelectData != nullptr) {
-        delete this->yidsRom->currentLevelSelectData;
-    }
-    this->yidsRom->currentLevelSelectData = crsbData;
+    this->crsbTemp = crsbData;
 }
 
 void MapSelect::cancelClicked() {
@@ -130,7 +127,8 @@ void MapSelect::cancelClicked() {
 
 void MapSelect::confirmClicked() {
     this->hide();
-    //YUtils::printDebug("confirmClicked()");
+    // Copy data to NEW pointer, don't transfer pointer
+    this->yidsRom->currentLevelSelectData = new LevelSelectData(*this->crsbTemp);
     auto rightSelectedItems = this->rightList->selectedItems();
     if (rightSelectedItems.size() != 1) {
         YUtils::printDebug("Unusual right selection size",DebugType::ERROR);

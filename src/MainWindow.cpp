@@ -807,8 +807,10 @@ void MainWindow::menuClick_export() {
 }
 
 void MainWindow::menuClick_levelSettings() {
-    YUtils::printDebug("Opening level settings window",DebugType::VERBOSE);
+    //YUtils::printDebug("Opening level settings window",DebugType::VERBOSE);
     this->levelWindow->show();
+    this->spritePickerWindow->raise();
+    this->levelWindow->activateWindow();
 }
 
 void MainWindow::menuClick_viewExits(bool checked) {
@@ -1090,4 +1092,5 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 void MainWindow::portalsUpdated() {
     this->grid->updatePortals(this->grid->shouldDrawEntrances,this->grid->shouldDrawExits);
+    this->markSavableUpdate();
 }

@@ -17,6 +17,7 @@ public:
 private:
     QListWidget* leftList;
     QListWidget* rightList;
+    LevelSelectData* crsbTemp;
 signals:
     void mpdzSelected(std::string mpdzNoExt);
 };
