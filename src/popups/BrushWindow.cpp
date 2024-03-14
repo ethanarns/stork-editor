@@ -178,6 +178,7 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filename) {
     this->brushTable->updateBrushDims();
     auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
     std::map<uint32_t,Chartile> tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
+    uint8_t paletteOffset = (uint8_t)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
     for (int y = 0; y < this->brushTable->rowCount(); y++) {
         for (int x = 0; x < this->brushTable->columnCount(); x++) {
             auto item = this->brushTable->item(y,x);
@@ -189,10 +190,11 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filename) {
                 item->setData(PixelDelegateData::DRAW_BG1,true);
                 item->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
             }
+            auto pal = mapTile.paletteId + paletteOffset;
             item->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tilesMap.at(mapTile.tileId).tiles);
-            item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[mapTile.paletteId]);
+            item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[pal]);
             item->setData(PixelDelegateData::TILE_ID_BG1,mapTile.tileId);
-            item->setData(PixelDelegateData::PALETTE_ID_BG1,mapTile.paletteId);
+            item->setData(PixelDelegateData::PALETTE_ID_BG1,pal);
             item->setData(PixelDelegateData::FLIP_H_BG1,mapTile.flipH);
             item->setData(PixelDelegateData::FLIP_V_BG1,mapTile.flipV);
         }

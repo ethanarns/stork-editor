@@ -64,7 +64,7 @@ public:
     QByteArray backgroundPalettes[0x20];
 
     std::map<uint8_t,std::map<uint32_t, Chartile>> chartileVram;
-    std::map<uint8_t,uint32_t> chartileVramPaletteOffset; // Linked with above
+    std::map<uint8_t,uint8_t> chartileVramPaletteOffset; // Linked with above, visual only
     void reloadChartileVram(uint frame = 0);
 
     std::map<std::string,ObjectFile> objectRenderFiles;

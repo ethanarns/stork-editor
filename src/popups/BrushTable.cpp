@@ -114,10 +114,12 @@ void BrushTable::setTile(int row, int column, MapTileRecordData tile) {
     
     auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
     std::map<uint32_t,Chartile> tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
+    auto palOffset = this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
+    uint8_t pal = tile.paletteId + palOffset;
     //std::cout << "Updating tile on BrushTable" << std::endl;
     item->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tilesMap.at(tile.tileId).tiles);
-    item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[tile.paletteId]);
-    item->setData(PixelDelegateData::PALETTE_ID_BG1,tile.paletteId);
+    item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[pal]);
+    item->setData(PixelDelegateData::PALETTE_ID_BG1,pal);
     item->setData(PixelDelegateData::FLIP_H_BG1,tile.flipH);
     item->setData(PixelDelegateData::FLIP_V_BG1,tile.flipV);
     item->setData(PixelDelegateData::TILE_ID_BG1,tile.tileId);
