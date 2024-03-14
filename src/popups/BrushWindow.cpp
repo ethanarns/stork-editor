@@ -14,7 +14,7 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     this->setWindowTitle(tr("Brush Window"));
     this->setObjectName(tr("brushWindow"));
     this->setMinimumHeight(301);
-    this->setFixedWidth(216);
+    this->resize(216,301);
     this->setMinimumWidth(216);
     auto mainLayout = new QVBoxLayout(this);
 

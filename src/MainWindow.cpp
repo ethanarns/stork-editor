@@ -575,9 +575,8 @@ void MainWindow::LoadRom() {
         this->rom->openRom(fileName.toStdString());
 
         // Chartiles popup //
-        this->chartilesPopup->resize(350, 400);
-        this->chartilesPopup->setMinimumWidth(350);
-        this->chartilesPopup->setMinimumHeight(300);
+        this->chartilesPopup->resize(334, 400);
+        this->chartilesPopup->setMinimumWidth(334);
         this->chartilesPopup->setWindowTitle("Select a layer to view its tileset");
         this->button_iconTiles->setDisabled(false);
 
