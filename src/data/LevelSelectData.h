@@ -81,8 +81,10 @@ namespace LevelSelectEnums {
     };
 
     enum StartingDsScreen {
-        START_TOP = 1,
-        START_BOTTOM = 2
+        START_TOP_0 = 0,
+        START_TOP_1 = 1,
+        START_BOTTOM = 2,
+        START_TOP_2 = 3
     };
 };
 
@@ -259,6 +261,25 @@ struct MapEntrance {
             }
             case LevelSelectEnums::MapEntranceAnimation::YOSHI_IS_INVISIBLE: {
                 return "Spawn Yoshi invisible";
+            }
+            default: {
+                return "Unknown";
+            }
+        }
+    };
+    static std::string printScreenData(LevelSelectEnums::StartingDsScreen val) {
+        switch (val) {
+            case LevelSelectEnums::StartingDsScreen::START_BOTTOM: {
+                return "Bottom Screen";
+            }
+            case LevelSelectEnums::StartingDsScreen::START_TOP_0: {
+                return "Top Screen 0";
+            }
+            case LevelSelectEnums::StartingDsScreen::START_TOP_1: {
+                return "Top Screen 1";
+            }
+            case LevelSelectEnums::StartingDsScreen::START_TOP_2: {
+                return "Top Screen 3";
             }
             default: {
                 return "Unknown";

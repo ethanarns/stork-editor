@@ -62,6 +62,10 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     entranceOptions->addWidget(entranceScreenLabel);
     this->entranceScreen = new QComboBox(this);
     entranceOptions->addWidget(this->entranceScreen);
+    for (int entranceScreenIndex = 0; entranceScreenIndex <= 3; entranceScreenIndex++) {
+        auto entranceScreenName = MapEntrance::printScreenData(static_cast<LevelSelectEnums::StartingDsScreen>(entranceScreenIndex));
+        this->entranceScreen->addItem(tr(entranceScreenName.c_str()));
+    }
 
     auto entranceCoordsLabel = new QLabel(tr("Entrance Coordinates"),this);
     entranceOptions->addWidget(entranceCoordsLabel);
@@ -370,6 +374,7 @@ void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem 
     // Animation update
     auto entranceAnimation = static_cast<int>(entranceData->enterMapAnimation);
     this->entranceAnim->setCurrentIndex(entranceAnimation);
+    this->entranceScreen->setCurrentIndex(static_cast<int>(entranceData->whichDsScreen));
     this->entranceX->setValue((int)entranceData->entranceX);
     this->entranceY->setValue((int)entranceData->entranceY);
     
