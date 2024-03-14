@@ -448,7 +448,7 @@ void DisplayTable::handleSpritesRightClickPress(QMouseEvent *event) {
 }
 
 void DisplayTable::updatePortals(bool drawEntrances, bool drawExits) {
-    YUtils::printDebug("Updating level entrances and exits",DebugType::VERBOSE);
+    //YUtils::printDebug("Updating level entrances and exits",DebugType::VERBOSE);
     if (this->yidsRom == nullptr) {
         YUtils::printDebug("Cannot update portals, rom is null",DebugType::ERROR);
         return;

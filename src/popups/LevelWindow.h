@@ -2,12 +2,14 @@
 
 #include "../yidsrom.h"
 
+#include <QtCore>
 #include <QWidget>
 #include <QListWidget>
 #include <QComboBox>
 #include <QSpinBox>
 
 class LevelWindow : public QWidget {
+    Q_OBJECT
 public:
     LevelWindow(QWidget *parent, YidsRom* rom);
     QListWidget* entranceListWidget;
@@ -49,4 +51,9 @@ private:
 
     void entrancePositionChangedX();
     void entrancePositionChangedY();
+
+    void exitPositionChangedX();
+    void exitPositionChangedY();
+signals:
+    void portalsUpdated();
 };

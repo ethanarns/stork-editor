@@ -555,6 +555,7 @@ MainWindow::MainWindow() {
     connect(this->grid, &DisplayTable::triggerMainWindowUpdate,this,&MainWindow::displayTableUpdate);
     connect(this->selectionInfoTable, &SelectionInfoTable::updateMainWindow,this,&MainWindow::selectionWindowUpdate);
     connect(this->grid,&DisplayTable::updateMainWindowStatus,this,&MainWindow::setWindowStatus);
+    connect(this->levelWindow,&LevelWindow::portalsUpdated,this,&MainWindow::portalsUpdated);
 
     /***************
      *** OVERLAY ***
@@ -1085,4 +1086,8 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     this->spritePickerWindow->close();
     this->levelWindow->close();
     event->accept();
+}
+
+void MainWindow::portalsUpdated() {
+    this->grid->updatePortals(this->grid->shouldDrawEntrances,this->grid->shouldDrawExits);
 }

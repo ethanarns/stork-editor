@@ -75,7 +75,6 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     this->entranceX->setDisplayIntegerBase(16);
     this->entranceX->setToolTip(tr("X Position"));
     this->entranceX->setMaximum(0xffff);
-    // connect(chartilePaletteSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->chartilesTable,&ChartilesTable::paletteValueChanged);
     connect(this->entranceX,QOverload<int>::of(&QSpinBox::valueChanged),this,&LevelWindow::entrancePositionChangedX);
     entranceCoords->addWidget(this->entranceX);
     this->entranceY = new QSpinBox(this);
@@ -123,11 +122,13 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     this->exitX->setDisplayIntegerBase(16);
     this->exitX->setToolTip(tr("Exit X Position"));
     this->exitX->setMaximum(0xffff);
+    connect(this->exitX,QOverload<int>::of(&QSpinBox::valueChanged),this,&LevelWindow::exitPositionChangedX);
     exitCoords->addWidget(this->exitX);
     this->exitY = new QSpinBox(this);
     this->exitY->setDisplayIntegerBase(16);
     this->exitY->setToolTip(tr("Exit Y Position"));
     this->exitY->setMaximum(0xffff);
+    connect(this->exitY,QOverload<int>::of(&QSpinBox::valueChanged),this,&LevelWindow::exitPositionChangedY);
     exitCoords->addWidget(this->exitY);
     exitOptions->addLayout(exitCoords);
 
@@ -240,6 +241,7 @@ void LevelWindow::entranceAnimChanged(const QString text) {
     if (curEntrance->enterMapAnimation != entranceAnimIndex) {
         YUtils::printDebug("Modifying CRSB: Entrance Animation",DebugType::VERBOSE);
         curEntrance->enterMapAnimation = static_cast<LevelSelectEnums::MapEntranceAnimation>(entranceAnimIndex);
+        emit this->portalsUpdated();
     }
 }
 
@@ -262,6 +264,7 @@ void LevelWindow::entranceScreenChanged(const QString text) {
     if (curEntrance->whichDsScreen != entranceScreenComboIndex) {
         YUtils::printDebug("Modifying CRSB: Entrance Screen",DebugType::VERBOSE);
         curEntrance->whichDsScreen = static_cast<LevelSelectEnums::StartingDsScreen>(entranceScreenComboIndex);
+        emit this->portalsUpdated();
     }
 }
 
@@ -284,6 +287,7 @@ void LevelWindow::exitTypeChanged(const QString text) {
     if(curExit->exitStartType != exitTypeComboIndex) {
         YUtils::printDebug("Modifying CRSB: Exit Type",DebugType::VERBOSE);
         curExit->exitStartType = static_cast<LevelSelectEnums::MapExitStartType>(exitTypeComboIndex);
+        emit this->portalsUpdated();
     }
 }
 
@@ -316,6 +320,7 @@ void LevelWindow::targetMapChanged(const QString text) {
     if (curExit->whichMapTo != currentSelectedExitMap) {
         YUtils::printDebug("Modifying CRSB: Exit Destination",DebugType::VERBOSE);
         curExit->whichMapTo = (uint8_t)currentSelectedExitMap;
+        emit this->portalsUpdated();
     }
 }
 
@@ -348,6 +353,7 @@ void LevelWindow::targetEntranceChanged(const QString text) {
     if (curExit->whichEntranceTo != currentSelectedExitMapEntrance) {
         YUtils::printDebug("Modifying CRSB: Exit Destination Entrance",DebugType::VERBOSE);
         curExit->whichEntranceTo = currentSelectedExitMapEntrance;
+        emit this->portalsUpdated();
     }
 }
 
@@ -495,8 +501,8 @@ void LevelWindow::entrancePositionChangedX() {
     }
     if (curEntrance->entranceX != (uint16_t)xValue) {
         YUtils::printDebug("Modifying CRSB: Entrance X",DebugType::VERBOSE);
-        std::cout << std::hex << (uint16_t)xValue << std::endl;
         curEntrance->entranceX = (uint16_t)xValue;
+        emit this->portalsUpdated();
     }
 }
 
@@ -523,7 +529,63 @@ void LevelWindow::entrancePositionChangedY() {
     }
     if (curEntrance->entranceY != (uint16_t)yValue) {
         YUtils::printDebug("Modifying CRSB: Entrance Y",DebugType::VERBOSE);
-        std::cout << std::hex << (uint16_t)yValue << std::endl;
         curEntrance->entranceY = (uint16_t)yValue;
+        emit this->portalsUpdated();
+    }
+}
+
+void LevelWindow::exitPositionChangedY() {
+    if (this->detectChanges == false) {
+        YUtils::printDebug("Change detection deactivated (Exit Y)");
+        return;
+    }
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    auto curExitSelected = this->exitListWidget->currentRow();
+    if (curExitSelected < 0) {
+        YUtils::printDebug("curExitSelected negative",DebugType::VERBOSE);
+        return;
+    }
+    auto curExit = curLevel->exits.at(curExitSelected);
+    auto yValue = this->exitY->value();
+    if (yValue < 0) {
+        YUtils::printDebug("Exit Y change value negative",DebugType::ERROR);
+        return;
+    }
+    if ((uint32_t)yValue > this->yidsRom->mapData->getGreatestCanvasHeight()) {
+        YUtils::printDebug("Exit Y change value too high",DebugType::ERROR);
+        return;
+    }
+    if (curExit->exitLocationY != (uint16_t)yValue) {
+        YUtils::printDebug("Modifying CRSB: Exit Y",DebugType::VERBOSE);
+        curExit->exitLocationY = (uint16_t)yValue;
+        emit this->portalsUpdated();
+    }
+}
+
+void LevelWindow::exitPositionChangedX() {
+    if (this->detectChanges == false) {
+        YUtils::printDebug("Change detection deactivated (Exit X)");
+        return;
+    }
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    auto curExitSelected = this->exitListWidget->currentRow();
+    if (curExitSelected < 0) {
+        YUtils::printDebug("curExitSelected negative",DebugType::VERBOSE);
+        return;
+    }
+    auto curExit = curLevel->exits.at(curExitSelected);
+    auto xValue = this->exitX->value();
+    if (xValue < 0) {
+        YUtils::printDebug("Exit X change value negative",DebugType::ERROR);
+        return;
+    }
+    if ((uint32_t)xValue > this->yidsRom->mapData->getGreatestCanvasWidth()) {
+        YUtils::printDebug("Exit X change value too high",DebugType::ERROR);
+        return;
+    }
+    if (curExit->exitLocationX != (uint16_t)xValue) {
+        YUtils::printDebug("Modifying CRSB: Exit X",DebugType::VERBOSE);
+        curExit->exitLocationX = (uint16_t)xValue;
+        emit this->portalsUpdated();
     }
 }

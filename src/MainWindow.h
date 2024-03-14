@@ -126,6 +126,7 @@ private:
     void displayTableClicked();
     void displayTableUpdate();
     void selectionWindowUpdate(LevelObject *sprite);
+    void portalsUpdated();
 
     void closeEvent(QCloseEvent *event);
 };
