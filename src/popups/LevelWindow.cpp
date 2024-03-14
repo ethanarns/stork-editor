@@ -283,7 +283,7 @@ void LevelWindow::targetMapChanged(const QString text) {
     auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
     auto curExitSelected = this->exitListWidget->currentRow();
     if (curExitSelected < 0) {
-        YUtils::printDebug("curExitSelected negative",DebugType::WARNING);
+        // Will temporarily be -1
         return;
     }
     auto curExit = curLevel->exits.at(curExitSelected);
@@ -302,13 +302,23 @@ void LevelWindow::targetEntranceChanged(const QString text) {
         YUtils::popupAlert("exitEntranceTarget was null in targetEntranceChanged");
         return;
     }
-    auto currentSelectedExitMap = this->exitEntranceTarget->currentIndex();
-    if (currentSelectedExitMap < 0) {
+    auto currentSelectedExitMapEntrance = this->exitEntranceTarget->currentIndex();
+    if (currentSelectedExitMapEntrance < 0) {
         // Will temporarily be -1
         return;
     }
 
-    // Do updates for everything else //
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    auto curExitSelected = this->exitListWidget->currentRow();
+    if (curExitSelected < 0) {
+        // Will temporarily be -1
+        return;
+    }
+    auto curExit = curLevel->exits.at(curExitSelected);
+    if (curExit->whichEntranceTo != currentSelectedExitMapEntrance) {
+        YUtils::printDebug("Modifying CRSB: Exit Destination Entrance",DebugType::VERBOSE);
+        curExit->whichEntranceTo = currentSelectedExitMapEntrance;
+    }
 }
 
 void LevelWindow::refreshTargetEntrances(int currentSelectedExitMap) {
