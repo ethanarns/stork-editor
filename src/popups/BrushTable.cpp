@@ -111,7 +111,9 @@ void BrushTable::setTile(int row, int column, MapTileRecordData tile) {
         YUtils::printDebug("Failed to get item for setTile",DebugType::ERROR);
         return;
     }
-    std::map<uint32_t,Chartile> tilesMap = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground)->getVramChartiles();
+    
+    auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
+    std::map<uint32_t,Chartile> tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     //std::cout << "Updating tile on BrushTable" << std::endl;
     item->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tilesMap.at(tile.tileId).tiles);
     item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[tile.paletteId]);
@@ -137,7 +139,8 @@ void BrushTable::mousePressEvent(QMouseEvent *event) {
         YUtils::printDebug("Failed to get itemAt",DebugType::ERROR);
         return;
     }
-    std::map<uint32_t,Chartile> tilesMap = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground)->getVramChartiles();
+    auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
+    std::map<uint32_t,Chartile> tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     //std::cout << "Updating tile on BrushTable" << std::endl;
     item->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tilesMap.at(globalSettings.currentTileIndex).tiles);
     item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[globalSettings.currentPaletteIndex]);
