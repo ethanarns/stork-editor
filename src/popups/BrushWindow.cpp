@@ -176,7 +176,8 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filename) {
         }
     }
     this->brushTable->updateBrushDims();
-    std::map<uint32_t,Chartile> tilesMap = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground)->getVramChartiles();
+    auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
+    std::map<uint32_t,Chartile> tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     for (int y = 0; y < this->brushTable->rowCount(); y++) {
         for (int x = 0; x < this->brushTable->columnCount(); x++) {
             auto item = this->brushTable->item(y,x);

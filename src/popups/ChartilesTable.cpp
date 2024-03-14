@@ -42,11 +42,14 @@ void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
     this->wipeTiles();
     std::map<uint32_t,Chartile> tilesMap;
     if (whichBg == 1) {
-        tilesMap = this->yidsRom->mapData->getScenByBg(1)->getVramChartiles();
+        auto scen = this->yidsRom->mapData->getScenByBg(1);
+        tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     } else if (whichBg == 2) {
-        tilesMap = this->yidsRom->mapData->getScenByBg(2)->getVramChartiles();
+        auto scen = this->yidsRom->mapData->getScenByBg(2);
+        tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     } else {
-        tilesMap = this->yidsRom->mapData->getScenByBg(3)->getVramChartiles();
+        auto scen = this->yidsRom->mapData->getScenByBg(3);
+        tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     }
     uint32_t mapSize = tilesMap.size();
     this->setRowCount((mapSize / 16)+1);

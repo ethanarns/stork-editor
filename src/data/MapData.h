@@ -387,10 +387,6 @@ public:
     };
     uint32_t getMagic() { return Constants::SCEN_MAGIC_NUM; }
 
-    // A mirror of the VRAM set aside for this BG
-    std::map<uint32_t,Chartile> getVramChartiles();
-    void clearVramChartilesCache();
-
     ScenInfoData* getInfo();
     LayerPaletteData* getPalette();
     LevelData* getFirstDataByMagic(uint32_t magicNumber, bool silentFail = false);
