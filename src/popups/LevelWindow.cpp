@@ -240,8 +240,13 @@ void LevelWindow::entranceScreenChanged(const QString text) {
         // Will temporarily be -1 during changes
         return;
     }
-
-    // Do updates for everything else //
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    auto curEntranceSelected = this->entranceListWidget->currentRow();
+    auto curEntrance = curLevel->entrances.at(curEntranceSelected);
+    if (curEntrance->whichDsScreen != entranceScreenComboIndex) {
+        YUtils::printDebug("Modifying CRSB: Entrance Screen",DebugType::VERBOSE);
+        curEntrance->whichDsScreen = static_cast<LevelSelectEnums::StartingDsScreen>(entranceScreenComboIndex);
+    }
 }
 
 void LevelWindow::exitTypeChanged(const QString text) {
