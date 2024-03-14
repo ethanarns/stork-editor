@@ -974,7 +974,7 @@ void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
     this->selectItemByUuid(uuid);
 }
 
-bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapRecord) {
+bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapRecord, bool skipPalOffset) {
     //YUtils::printDebug("placeNewTileOnMap()");
     if (row < 0 || row > this->rowCount()-1) {
         YUtils::printDebug("placeNewTileOnMap row out of bounds",DebugType::VERBOSE);
@@ -1034,8 +1034,9 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
     if (pal > 16) {
         std::cout << "wat? so high 0x" << std::hex << (uint16_t)pal << std::endl;
     }
-    //pal += scen->paletteStartOffset - 1; // Bad, keep for info though
-    pal += (uint8_t)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
+    if (!skipPalOffset) {
+        pal += (uint8_t)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
+    }
     auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
     if (globalSettings.currentEditingBackground == 1) {
         // BG 1 //

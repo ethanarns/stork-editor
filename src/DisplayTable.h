@@ -71,7 +71,7 @@ public:
     /// @param column X location on grid and MapData
     /// @param pren BG Map tile data struct
     /// @return true if place successful, false if failed
-    bool placeNewTileOnMap(int row, int column, MapTileRecordData pren);
+    bool placeNewTileOnMap(int row, int column, MapTileRecordData pren, bool skipPalOffset = true);
     void clearVisualSpriteSelection();
     void updatePortals(bool drawEntrances, bool drawExits);
 private:
