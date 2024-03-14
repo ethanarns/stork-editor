@@ -280,7 +280,17 @@ void LevelWindow::targetMapChanged(const QString text) {
     }
     this->refreshTargetEntrances(currentSelectedExitMap);
 
-    // Do updates for everything else //
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    auto curExitSelected = this->exitListWidget->currentRow();
+    if (curExitSelected < 0) {
+        YUtils::printDebug("curExitSelected negative",DebugType::WARNING);
+        return;
+    }
+    auto curExit = curLevel->exits.at(curExitSelected);
+    if (curExit->whichMapTo != currentSelectedExitMap) {
+        YUtils::printDebug("Modifying CRSB: Exit Destination",DebugType::VERBOSE);
+        curExit->whichMapTo = (uint8_t)currentSelectedExitMap;
+    }
 }
 
 void LevelWindow::targetEntranceChanged(const QString text) {
