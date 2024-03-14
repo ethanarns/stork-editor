@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QListWidget>
 #include <QComboBox>
+#include <QSpinBox>
 
 class LevelWindow : public QWidget {
 public:
@@ -23,6 +24,11 @@ private:
     QComboBox* exitTypeCombo;
     QComboBox* exitMapTarget;
     QComboBox* exitEntranceTarget;
+
+    QSpinBox* exitX;
+    QSpinBox* exitY;
+    QSpinBox* entranceX;
+    QSpinBox* entranceY;
 
     void musicIdChanged(const QString text);
 

@@ -62,6 +62,22 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     entranceOptions->addWidget(entranceScreenLabel);
     this->entranceScreen = new QComboBox(this);
     entranceOptions->addWidget(this->entranceScreen);
+
+    auto entranceCoordsLabel = new QLabel(tr("Entrance Coordinates"),this);
+    entranceOptions->addWidget(entranceCoordsLabel);
+    auto entranceCoords = new QHBoxLayout(this);
+    this->entranceX = new QSpinBox(this);
+    this->entranceX->setDisplayIntegerBase(16);
+    this->entranceX->setToolTip(tr("X Position"));
+    this->entranceX->setMaximum(0xffff);
+    entranceCoords->addWidget(this->entranceX);
+    this->entranceY = new QSpinBox(this);
+    this->entranceY->setDisplayIntegerBase(16);
+    this->entranceY->setToolTip(tr("Y Position"));
+    this->entranceY->setMaximum(0xffff);
+    entranceCoords->addWidget(this->entranceY);
+    entranceOptions->addLayout(entranceCoords);
+
     row2->addLayout(entranceOptions);
     mainLayout->addLayout(row2);
     // Bar 3: Level Exits //
@@ -91,6 +107,22 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     exitOptions->addWidget(exitEntranceTargetLabel);
     this->exitEntranceTarget = new QComboBox(this);
     exitOptions->addWidget(this->exitEntranceTarget);
+
+    auto exitCoordsLabel = new QLabel(tr("Exit Coords"),this);
+    exitOptions->addWidget(exitCoordsLabel);
+    auto exitCoords = new QHBoxLayout(this);
+    this->exitX = new QSpinBox(this);
+    this->exitX->setDisplayIntegerBase(16);
+    this->exitX->setToolTip(tr("Exit X Position"));
+    this->exitX->setMaximum(0xffff);
+    exitCoords->addWidget(this->exitX);
+    this->exitY = new QSpinBox(this);
+    this->exitY->setDisplayIntegerBase(16);
+    this->exitY->setToolTip(tr("Exit Y Position"));
+    this->exitY->setMaximum(0xffff);
+    exitCoords->addWidget(this->exitY);
+    exitOptions->addLayout(exitCoords);
+
     // Add to main layout
     row3->addLayout(exitOptions);
     mainLayout->addLayout(row3);
@@ -338,6 +370,8 @@ void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem 
     // Animation update
     auto entranceAnimation = static_cast<int>(entranceData->enterMapAnimation);
     this->entranceAnim->setCurrentIndex(entranceAnimation);
+    this->entranceX->setValue((int)entranceData->entranceX);
+    this->entranceY->setValue((int)entranceData->entranceY);
     
     // TODO: update screen?
 }
@@ -363,7 +397,10 @@ void LevelWindow::exitItemChanged(QListWidgetItem *current, QListWidgetItem *pre
     auto exitIndex = current->data(LevelWindowDataKey::EXIT_INDEX_WINDOW).toUInt();
     
     auto exitData = curLevelData->exits.at(exitIndex);
+    //YUtils::printDebug(exitData->toString());
     this->exitTypeCombo->setCurrentIndex(exitData->exitStartType);
     this->exitMapTarget->setCurrentIndex(exitData->whichMapTo);
+    this->exitX->setValue((int)exitData->exitLocationX);
+    this->exitY->setValue((int)exitData->exitLocationY);
     this->refreshTargetEntrances(exitData->whichMapTo);
 }
