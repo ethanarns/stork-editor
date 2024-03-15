@@ -616,6 +616,7 @@ void LevelWindow::entrancePlusClicked() {
     entrance->entranceY = 0;
     entrance->enterMapAnimation = LevelSelectEnums::MapEntranceAnimation::SPAWN_STATIC_RIGHT;
     entrance->whichDsScreen = LevelSelectEnums::StartingDsScreen::START_BOTTOM;
+    entrance->_uuid = this->yidsRom->currentLevelSelectData->_portalUuid++;
     curLevel->entrances.push_back(entrance);
 
     this->refreshLists();
@@ -670,6 +671,7 @@ void LevelWindow::exitPlusClicked() {
     newExit->exitStartType = LevelSelectEnums::MapExitStartType::BLUE_DOOR;
     newExit->whichMapTo = 0;
     newExit->whichEntranceTo = 0;
+    newExit->_uuid = this->yidsRom->currentLevelSelectData->_portalUuid++;
     curLevel->exits.push_back(newExit);
 
     this->refreshLists();

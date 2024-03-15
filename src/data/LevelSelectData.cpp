@@ -6,8 +6,6 @@
 #include <cstdint>
 #include <sstream>
 
-uint32_t portalUuid = 1;
-
 // CRSB, go over this again at some point
 LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
     //std::cout << "LevelSelectData" << std::endl;
@@ -72,7 +70,7 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
             uint16_t whichScreenUint = (returnAnimAndScreen >> 14);
             curEnter->whichDsScreen = static_cast<LevelSelectEnums::StartingDsScreen>(whichScreenUint);
             curEnter->enterMapAnimation = (LevelSelectEnums::MapEntranceAnimation)(returnAnimAndScreen % 0x1000);
-            curEnter->_uuid = portalUuid++;
+            curEnter->_uuid = this->_portalUuid++;
             levelMeta->entrances.push_back(curEnter);
             enterIntoMapIndex++;
         }
@@ -94,7 +92,7 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
             crsbIndex++;
             curExit->whichEntranceTo = crsbBytes.at(crsbIndex);
             crsbIndex++;
-            curExit->_uuid = portalUuid++;
+            curExit->_uuid = this->_portalUuid++;
             levelMeta->exits.push_back(curExit);
             exitIndex++; // Loop increment
         }

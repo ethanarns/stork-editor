@@ -365,4 +365,6 @@ public:
 
     int getIndexOfEntranceInMpdz(uint32_t entranceUuid, std::string mpdzNameNoExt);
     int getIndexOfExitInMpdz(uint32_t exitUuid, std::string mpdzNameNoExt);
+
+    uint32_t _portalUuid = 1;
 };
