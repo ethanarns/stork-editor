@@ -65,9 +65,6 @@ private:
     void entranceMinusClick();
     void exitPlusClicked();
     void exitMinusClicked();
-
-    int getIndexOfEntrance(uint32_t entranceUuid);
-    int getIndexOfExit(uint32_t exitUuid);
 signals:
     void portalsUpdated();
 };

@@ -113,3 +113,33 @@ LevelMetadata *LevelSelectData::getLevelByMpdz(std::string mpdzFilename) {
     YUtils::printDebug("No level with that MPDZ found",DebugType::ERROR);
     return nullptr;
 }
+
+int LevelSelectData::getIndexOfEntranceInMpdz(uint32_t entranceUuid, std::string mpdzNameNoExt) {
+    auto curLevel = this->getLevelByMpdz(mpdzNameNoExt); //this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    if (curLevel == nullptr) {
+        YUtils::printDebug("Current level data is null",DebugType::ERROR);
+        return -1;
+    }
+    for (int i = 0; i < (int)curLevel->entrances.size(); i++) {
+        if (curLevel->entrances.at(i)->_uuid == entranceUuid) {
+            return i;
+        }
+    }
+    YUtils::printDebug("Entrance index not found",DebugType::ERROR);
+    return -1;
+}
+
+int LevelSelectData::getIndexOfExitInMpdz(uint32_t exitUuid, std::string mpdzNameNoExt) {
+    auto curLevel = this->getLevelByMpdz(mpdzNameNoExt);
+    if (curLevel == nullptr) {
+        YUtils::printDebug("Current level data is null",DebugType::ERROR);
+        return -1;
+    }
+    for (int i = 0; i < (int)curLevel->exits.size(); i++) {
+        if (curLevel->exits.at(i)->_uuid == exitUuid) {
+            return i;
+        }
+    }
+    YUtils::printDebug("Exit index not found",DebugType::ERROR);
+    return -1;
+}

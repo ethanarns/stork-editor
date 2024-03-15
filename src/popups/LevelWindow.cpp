@@ -475,7 +475,7 @@ void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem 
         YUtils::printDebug("No data in entrance item",DebugType::ERROR);
         return;
     }
-    auto entranceIndex = this->getIndexOfEntrance(entranceIndexQVariant.toUInt());
+    auto entranceIndex = this->yidsRom->currentLevelSelectData->getIndexOfEntranceInMpdz(entranceIndexQVariant.toUInt(),mapFilename);
     //YUtils::printDebug("entranceItemChanged");
     auto entranceData = curLevelData->entrances.at(entranceIndex);
     // Animation update
@@ -512,7 +512,7 @@ void LevelWindow::exitItemChanged(QListWidgetItem *current, QListWidgetItem *pre
         return;
     }
     
-    auto exitIndex = this->getIndexOfExit(current->data(LevelSelectEnums::LevelWindowDataKey::EXIT_UUID).toUInt());
+    auto exitIndex = this->yidsRom->currentLevelSelectData->getIndexOfExitInMpdz(current->data(LevelSelectEnums::LevelWindowDataKey::EXIT_UUID).toUInt(),mapFilename);
     
     auto exitData = curLevelData->exits.at(exitIndex);
     //YUtils::printDebug(exitData->toString());
@@ -706,36 +706,6 @@ void LevelWindow::exitMinusClicked() {
     emit this->portalsUpdated();
 
     YUtils::popupAlert("Exit deleted. Please update any entrances that linked to it");
-}
-
-int LevelWindow::getIndexOfEntrance(uint32_t entranceUuid) {
-    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
-    if (curLevel == nullptr) {
-        YUtils::printDebug("Current level data is null",DebugType::ERROR);
-        return -1;
-    }
-    for (int i = 0; i < (int)curLevel->entrances.size(); i++) {
-        if (curLevel->entrances.at(i)->_uuid == entranceUuid) {
-            return i;
-        }
-    }
-    YUtils::printDebug("Entrance index not found",DebugType::ERROR);
-    return -1;
-}
-
-int LevelWindow::getIndexOfExit(uint32_t exitUuid) {
-    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
-    if (curLevel == nullptr) {
-        YUtils::printDebug("Current level data is null",DebugType::ERROR);
-        return -1;
-    }
-    for (int i = 0; i < (int)curLevel->exits.size(); i++) {
-        if (curLevel->exits.at(i)->_uuid == exitUuid) {
-            return i;
-        }
-    }
-    YUtils::printDebug("Exit index not found",DebugType::ERROR);
-    return -1;
 }
 
 void LevelWindow::exitPositionChangedX() {

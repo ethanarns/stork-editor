@@ -359,4 +359,7 @@ public:
         }
         return FsPacker::packInstruction(Constants::CRSB_MAGIC_NUM,result,false);
     };
+
+    int getIndexOfEntranceInMpdz(uint32_t entranceUuid, std::string mpdzNameNoExt);
+    int getIndexOfExitInMpdz(uint32_t exitUuid, std::string mpdzNameNoExt);
 };
