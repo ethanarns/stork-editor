@@ -12,13 +12,6 @@
 #include <QListWidget>
 #include <QLabel>
 
-enum LevelWindowDataKey {
-    // uint32_t
-    ENTRANCE_UUID = 0x20,
-    // uint32_t
-    EXIT_UUID = 0x21
-};
-
 LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     Q_UNUSED(parent);
     this->yidsRom = rom;
@@ -216,7 +209,7 @@ void LevelWindow::refreshLists() {
         ssExit << exitType << " to " << levelTo->mpdzFileNoExtension;
         ssExit << " 0x" << std::hex << (uint16_t)((*xit)->whichEntranceTo);
         QListWidgetItem* exitItem = new QListWidgetItem(tr(ssExit.str().c_str()));
-        exitItem->setData(LevelWindowDataKey::EXIT_UUID,(*xit)->_uuid);
+        exitItem->setData(LevelSelectEnums::LevelWindowDataKey::EXIT_UUID,(*xit)->_uuid);
         this->exitListWidget->addItem(exitItem);
         exitIndex++;
     }
@@ -447,7 +440,7 @@ void LevelWindow::refreshEntranceList() {
             ssEnter << "0x" << std::hex << entranceIndex << ": " << entranceTypeStr;
         }
         QListWidgetItem* entranceItem = new QListWidgetItem(tr(ssEnter.str().c_str()));
-        entranceItem->setData(LevelWindowDataKey::ENTRANCE_UUID,(*enit)->_uuid);
+        entranceItem->setData(LevelSelectEnums::LevelWindowDataKey::ENTRANCE_UUID,(*enit)->_uuid);
         this->entranceListWidget->addItem(entranceItem);
         entranceIndex++;
     }
@@ -477,7 +470,7 @@ void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem 
         return;
     }
 
-    auto entranceIndexQVariant = current->data(LevelWindowDataKey::ENTRANCE_UUID);
+    auto entranceIndexQVariant = current->data(LevelSelectEnums::LevelWindowDataKey::ENTRANCE_UUID);
     if (entranceIndexQVariant.isNull()) {
         YUtils::printDebug("No data in entrance item",DebugType::ERROR);
         return;
@@ -519,7 +512,7 @@ void LevelWindow::exitItemChanged(QListWidgetItem *current, QListWidgetItem *pre
         return;
     }
     
-    auto exitIndex = this->getIndexOfExit(current->data(LevelWindowDataKey::EXIT_UUID).toUInt());
+    auto exitIndex = this->getIndexOfExit(current->data(LevelSelectEnums::LevelWindowDataKey::EXIT_UUID).toUInt());
     
     auto exitData = curLevelData->exits.at(exitIndex);
     //YUtils::printDebug(exitData->toString());

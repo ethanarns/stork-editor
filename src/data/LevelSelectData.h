@@ -86,6 +86,13 @@ namespace LevelSelectEnums {
         START_BOTTOM = 2,
         START_TOP_2 = 3
     };
+
+    enum LevelWindowDataKey {
+        // uint32_t
+        ENTRANCE_UUID = 0x20,
+        // uint32_t
+        EXIT_UUID = 0x21
+    };
 };
 
 /**
