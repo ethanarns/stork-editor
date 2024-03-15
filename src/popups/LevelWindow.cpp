@@ -614,7 +614,21 @@ void LevelWindow::exitPositionChangedY() {
 }
 
 void LevelWindow::entrancePlusClicked() {
-    YUtils::printDebug("entrancePlusClicked");
+    //YUtils::printDebug("entrancePlusClicked");
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    if (curLevel == nullptr) {
+        YUtils::printDebug("Current level data is null",DebugType::ERROR);
+        return;
+    }
+    MapEntrance* entrance = new MapEntrance();
+    entrance->entranceX = 0;
+    entrance->entranceY = 0;
+    entrance->enterMapAnimation = LevelSelectEnums::MapEntranceAnimation::SPAWN_STATIC_RIGHT;
+    entrance->whichDsScreen = LevelSelectEnums::StartingDsScreen::START_BOTTOM;
+    curLevel->entrances.push_back(entrance);
+
+    this->refreshLists();
+    emit this->portalsUpdated();
 }
 
 void LevelWindow::entranceMinusClick() {
@@ -652,7 +666,23 @@ void LevelWindow::entranceMinusClick() {
 }
 
 void LevelWindow::exitPlusClicked() {
-    YUtils::printDebug("exitPlusClicked");
+    //YUtils::printDebug("exitPlusClicked");
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    if (curLevel == nullptr) {
+        YUtils::printDebug("Current level data is null",DebugType::ERROR);
+        return;
+    }
+
+    auto newExit = new MapExitData();
+    newExit->exitLocationX = 0;
+    newExit->exitLocationY = 0;
+    newExit->exitStartType = LevelSelectEnums::MapExitStartType::BLUE_DOOR;
+    newExit->whichMapTo = 0;
+    newExit->whichEntranceTo = 0;
+    curLevel->exits.push_back(newExit);
+
+    this->refreshLists();
+    emit this->portalsUpdated();
 }
 
 void LevelWindow::exitMinusClicked() {
@@ -678,6 +708,8 @@ void LevelWindow::exitMinusClicked() {
     this->refreshLists();
 
     emit this->portalsUpdated();
+
+    YUtils::popupAlert("Exit deleted. Please update any entrances that linked to it");
 }
 
 void LevelWindow::exitPositionChangedX() {
