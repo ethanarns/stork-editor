@@ -673,7 +673,9 @@ void LevelWindow::exitPlusClicked() {
     newExit->exitLocationY = 0;
     newExit->exitStartType = LevelSelectEnums::MapExitStartType::BLUE_DOOR;
     newExit->whichMapTo = 0;
+    newExit->_whichMapToName = this->yidsRom->currentLevelSelectData->levels.at(0)->mpdzFileNoExtension;
     newExit->whichEntranceTo = 0;
+    newExit->_whichEntranceToUuid = this->yidsRom->currentLevelSelectData->levels.at(0)->entrances.at(0)->_uuid;
     newExit->_uuid = this->yidsRom->currentLevelSelectData->_portalUuid++;
     curLevel->exits.push_back(newExit);
 
