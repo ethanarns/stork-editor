@@ -618,7 +618,37 @@ void LevelWindow::entrancePlusClicked() {
 }
 
 void LevelWindow::entranceMinusClick() {
-    YUtils::printDebug("entranceMinusClick");
+    if (this->entranceListWidget->selectedItems().size() == 0) {
+        YUtils::printDebug("Selection is empty",DebugType::WARNING);
+        YUtils::popupAlert("No entrance selected to delete");
+        return;
+    }
+    auto entranceSelectionIndex = this->entranceListWidget->currentRow();
+    if (entranceSelectionIndex < -1) {
+        YUtils::printDebug("Invalid entrance selected",DebugType::WARNING);
+        return;
+    }
+    if (entranceSelectionIndex == 0) {
+        YUtils::printDebug("Deleting first entrance not yet supported");
+        YUtils::popupAlert("Deleting first entrance not yet supported");
+        return;
+    }
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    if (curLevel == nullptr) {
+        YUtils::printDebug("Current level data is null",DebugType::ERROR);
+        return;
+    }
+
+    auto it = curLevel->entrances.begin()+entranceSelectionIndex;
+    delete (*it);
+    curLevel->entrances.erase(it);
+    // We will need more logic here due to connections... //
+    // todo: UUID for entrances and exits?
+    this->refreshLists();
+
+    emit this->portalsUpdated();
+    // ...for now, make the user do it lmao
+    YUtils::popupAlert("Entrance deleted. Please update any exits that linked to it");
 }
 
 void LevelWindow::exitPlusClicked() {
