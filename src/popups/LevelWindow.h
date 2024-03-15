@@ -7,6 +7,7 @@
 #include <QListWidget>
 #include <QComboBox>
 #include <QSpinBox>
+#include <QPushButton>
 
 class LevelWindow : public QWidget {
     Q_OBJECT
@@ -31,6 +32,11 @@ private:
     QSpinBox* exitY;
     QSpinBox* entranceX;
     QSpinBox* entranceY;
+
+    QPushButton* entrancePlus;
+    QPushButton* entranceMinus;
+    QPushButton* exitPlus;
+    QPushButton* exitMinus;
 
     bool detectChanges = false;
 

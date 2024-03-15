@@ -90,8 +90,21 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     // Bar 3: Level Exits //
     auto row3 = new QHBoxLayout(this);
     // Column 1: Exit list
+
+    auto exitListColumnLayout = new QVBoxLayout(this);
     this->exitListWidget = new QListWidget(this);
-    row3->addWidget(this->exitListWidget);
+    exitListColumnLayout->addWidget(this->exitListWidget);
+
+    // Plus/Minus
+    auto exitListPlusMinusLayout = new QHBoxLayout(this);
+    this->exitPlus = new QPushButton("+",this);
+    exitListPlusMinusLayout->addWidget(this->exitPlus);
+    this->exitMinus = new QPushButton("-",this);
+    exitListPlusMinusLayout->addWidget(this->exitMinus);
+    exitListColumnLayout->addLayout(exitListPlusMinusLayout);
+
+    row3->addLayout(exitListColumnLayout);
+
     // Column 2: Exit options
     auto exitOptions = new QVBoxLayout(this);
     // Exit Type
