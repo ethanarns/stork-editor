@@ -173,6 +173,11 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     connect(this->entranceListWidget,&QListWidget::currentItemChanged,this,&LevelWindow::entranceItemChanged);
     connect(this->exitListWidget,&QListWidget::currentItemChanged,this,&LevelWindow::exitItemChanged);
 
+    connect(this->entrancePlus,&QPushButton::released,this,&LevelWindow::entrancePlusClicked);
+    connect(this->entranceMinus,&QPushButton::released,this,&LevelWindow::entranceMinusClick);
+    connect(this->exitPlus,&QPushButton::released,this,&LevelWindow::exitPlusClicked);
+    connect(this->exitMinus,&QPushButton::released,this,&LevelWindow::exitMinusClicked);
+
     this->detectChanges = true;
 }
 
@@ -606,6 +611,43 @@ void LevelWindow::exitPositionChangedY() {
         curExit->exitLocationY = (uint16_t)yValue;
         emit this->portalsUpdated();
     }
+}
+
+void LevelWindow::entrancePlusClicked() {
+    YUtils::printDebug("entrancePlusClicked");
+}
+
+void LevelWindow::entranceMinusClick() {
+    YUtils::printDebug("entranceMinusClick");
+}
+
+void LevelWindow::exitPlusClicked() {
+    YUtils::printDebug("exitPlusClicked");
+}
+
+void LevelWindow::exitMinusClicked() {
+    if (this->exitListWidget->selectedItems().size() == 0) {
+        YUtils::printDebug("Selection is empty",DebugType::WARNING);
+        YUtils::popupAlert("No exit selected to delete");
+        return;
+    }
+    auto exitSelectionIndex = this->exitListWidget->currentRow();
+    if (exitSelectionIndex < -1) {
+        YUtils::printDebug("Invalid exit selected",DebugType::WARNING);
+        return;
+    }
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    if (curLevel == nullptr) {
+        YUtils::printDebug("Current level data is null",DebugType::ERROR);
+        return;
+    }
+
+    auto it = curLevel->exits.begin()+exitSelectionIndex;
+    delete (*it);
+    curLevel->exits.erase(it);
+    this->refreshLists();
+
+    emit this->portalsUpdated();
 }
 
 void LevelWindow::exitPositionChangedX() {

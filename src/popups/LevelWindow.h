@@ -60,6 +60,11 @@ private:
 
     void exitPositionChangedX();
     void exitPositionChangedY();
+
+    void entrancePlusClicked();
+    void entranceMinusClick();
+    void exitPlusClicked();
+    void exitMinusClicked();
 signals:
     void portalsUpdated();
 };
