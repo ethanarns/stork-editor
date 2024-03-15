@@ -478,6 +478,7 @@ void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem 
     auto entranceIndex = this->yidsRom->currentLevelSelectData->getIndexOfEntranceInMpdz(entranceIndexQVariant.toUInt(),mapFilename);
     //YUtils::printDebug("entranceItemChanged");
     auto entranceData = curLevelData->entrances.at(entranceIndex);
+    std::cout << entranceData->toString() << std::endl;
     // Animation update
     auto entranceAnimation = static_cast<int>(entranceData->enterMapAnimation);
     this->entranceAnim->setCurrentIndex(entranceAnimation);
@@ -515,6 +516,7 @@ void LevelWindow::exitItemChanged(QListWidgetItem *current, QListWidgetItem *pre
     auto exitIndex = this->yidsRom->currentLevelSelectData->getIndexOfExitInMpdz(current->data(LevelSelectEnums::LevelWindowDataKey::EXIT_UUID).toUInt(),mapFilename);
     
     auto exitData = curLevelData->exits.at(exitIndex);
+    std::cout << exitData->toString() << std::endl;
     //YUtils::printDebug(exitData->toString());
     this->detectChanges = false;
     this->exitTypeCombo->setCurrentIndex(exitData->exitStartType);

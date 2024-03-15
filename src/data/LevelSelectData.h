@@ -103,13 +103,16 @@ struct MapExitData {
     uint16_t exitLocationY;
     LevelSelectEnums::MapExitStartType exitStartType;
     uint8_t whichMapTo;
+    std::string _whichMapToName;
     uint8_t whichEntranceTo;
+    uint32_t _whichEntranceToUuid;
     std::string toString() {
         std::stringstream ssExit;
         ssExit << "MapExitData { Exit loc x/y: 0x" << std::hex << this->exitLocationX;
         ssExit << "/0x" << std::hex << this->exitLocationY << ", ";
-        ssExit << "whichMapTo: 0x" << std::hex << (int)this->whichMapTo << ", exitStartType: " << MapExitData::printExitStartType(this->exitStartType);
-        ssExit << ", whichMapEntranceTo: 0x" << std::hex << (int)this->whichEntranceTo << " }";
+        ssExit << "whichMapTo: 0x" << std::hex << (int)this->whichMapTo << "/ " << this->_whichMapToName;
+        ssExit << ", exitStartType: " << MapExitData::printExitStartType(this->exitStartType);
+        ssExit << ", whichMapEntranceToIndex: 0x" << std::hex << (int)this->whichEntranceTo << ", _whichEntranceToUuid: 0x" << this->_whichEntranceToUuid << " }";
         return ssExit.str();
     }
     std::vector<uint8_t> compile() {
