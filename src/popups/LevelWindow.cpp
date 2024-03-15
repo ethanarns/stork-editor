@@ -165,8 +165,8 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     connect(this->exitEntranceTarget,&QComboBox::currentTextChanged,this,&LevelWindow::targetEntranceChanged);
 
     //currentItemChanged
-    connect(this->entranceListWidget,&QListWidget::currentItemChanged,this,&LevelWindow::entranceItemChanged);
-    connect(this->exitListWidget,&QListWidget::currentItemChanged,this,&LevelWindow::exitItemChanged);
+    connect(this->entranceListWidget,&QListWidget::currentItemChanged,this,&LevelWindow::selectedEntranceItemChanged);
+    connect(this->exitListWidget,&QListWidget::currentItemChanged,this,&LevelWindow::selectedExitItemChanged);
 
     connect(this->entrancePlus,&QPushButton::released,this,&LevelWindow::entrancePlusClicked);
     connect(this->entranceMinus,&QPushButton::released,this,&LevelWindow::entranceMinusClick);
@@ -203,11 +203,7 @@ void LevelWindow::refreshLists() {
     uint exitIndex = 0;
     for (auto xit = curLevelData->exits.begin(); xit != curLevelData->exits.end(); xit++) {
         std::stringstream ssExit;
-        uint32_t mapIndex = (*xit)->whichMapTo;
-        auto levelTo = this->yidsRom->currentLevelSelectData->levels.at(mapIndex);
-        auto exitType = MapExitData::printExitStartType((*xit)->exitStartType);
-        ssExit << exitType << " to " << levelTo->mpdzFileNoExtension;
-        ssExit << " 0x" << std::hex << (uint16_t)((*xit)->whichEntranceTo);
+        ssExit << std::hex << "UUID 0x" << (*xit)->_uuid;
         QListWidgetItem* exitItem = new QListWidgetItem(tr(ssExit.str().c_str()));
         exitItem->setData(LevelSelectEnums::LevelWindowDataKey::EXIT_UUID,(*xit)->_uuid);
         this->exitListWidget->addItem(exitItem);
@@ -433,11 +429,9 @@ void LevelWindow::refreshEntranceList() {
     uint entranceIndex = 0;
     for (auto enit = curLevelData->entrances.begin(); enit != curLevelData->entrances.end(); enit++) {
         std::stringstream ssEnter;
+        ssEnter << "UUID 0x" << std::hex << (*enit)->_uuid;
         if (entranceIndex == 0 && isFirstMap == true) {
-            ssEnter << "0x0: Level Start"; // Different settings than normal
-        } else {
-            auto entranceTypeStr = MapEntrance::printEntranceAnimation((*enit)->enterMapAnimation);
-            ssEnter << "0x" << std::hex << entranceIndex << ": " << entranceTypeStr;
+            ssEnter << " (Level Start)"; // Different settings than normal
         }
         QListWidgetItem* entranceItem = new QListWidgetItem(tr(ssEnter.str().c_str()));
         entranceItem->setData(LevelSelectEnums::LevelWindowDataKey::ENTRANCE_UUID,(*enit)->_uuid);
@@ -446,11 +440,11 @@ void LevelWindow::refreshEntranceList() {
     }
 }
 
-void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem *previous) {
+void LevelWindow::selectedEntranceItemChanged(QListWidgetItem *current, QListWidgetItem *previous) {
     Q_UNUSED(previous);
 
     if (this->detectChanges == false) {
-        YUtils::printDebug("Change detection deactivated (entranceItemChanged)");
+        YUtils::printDebug("Change detection deactivated (selectedEntranceItemChanged)");
         return;
     }
 
@@ -476,7 +470,6 @@ void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem 
         return;
     }
     auto entranceIndex = this->yidsRom->currentLevelSelectData->getIndexOfEntranceInMpdz(entranceIndexQVariant.toUInt(),mapFilename);
-    //YUtils::printDebug("entranceItemChanged");
     auto entranceData = curLevelData->entrances.at(entranceIndex);
     std::cout << entranceData->toString() << std::endl;
     // Animation update
@@ -489,11 +482,11 @@ void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem 
     // TODO: update screen?
 }
 
-void LevelWindow::exitItemChanged(QListWidgetItem *current, QListWidgetItem *previous) {
+void LevelWindow::selectedExitItemChanged(QListWidgetItem *current, QListWidgetItem *previous) {
     Q_UNUSED(previous);
 
     if (this->detectChanges == false) {
-        YUtils::printDebug("Change detection deactivated (exitItemChanged)");
+        YUtils::printDebug("Change detection deactivated (selectedExitItemChanged)");
         return;
     }
 

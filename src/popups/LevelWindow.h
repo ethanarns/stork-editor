@@ -52,8 +52,8 @@ private:
     void refreshTargetEntrances(int currentSelectedExitMap);
     void refreshEntranceList();
 
-    void entranceItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-    void exitItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void selectedEntranceItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void selectedExitItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
     void entrancePositionChangedX();
     void entrancePositionChangedY();
