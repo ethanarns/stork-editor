@@ -518,6 +518,7 @@ void LevelWindow::selectedExitItemChanged(QListWidgetItem *current, QListWidgetI
     this->exitX->setValue((int)exitData->exitLocationX);
     this->exitY->setValue((int)exitData->exitLocationY);
     this->refreshTargetEntrances(exitData->whichMapTo);
+    this->exitEntranceTarget->setCurrentIndex(exitData->whichEntranceTo);
     this->detectChanges = true;
 }
 
