@@ -49,7 +49,7 @@ private:
     void targetMapChanged(const QString text);
     void targetEntranceChanged(const QString text);
 
-    void refreshTargetEntrances(int currentSelectedExitMap);
+    void refreshTargetEntrances(int whichMapToGetEntrancesFrom);
     void refreshEntranceList();
 
     void selectedEntranceItemChanged(QListWidgetItem *current, QListWidgetItem *previous);

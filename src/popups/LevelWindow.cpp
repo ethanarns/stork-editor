@@ -389,8 +389,8 @@ void LevelWindow::targetEntranceChanged(const QString text) {
     }
 }
 
-void LevelWindow::refreshTargetEntrances(int currentSelectedExitMap) {
-    auto entranceTargetList = this->yidsRom->currentLevelSelectData->levels.at(currentSelectedExitMap)->entrances;
+void LevelWindow::refreshTargetEntrances(int whichMapToGetEntrancesFrom) {
+    auto entranceTargetList = this->yidsRom->currentLevelSelectData->levels.at(whichMapToGetEntrancesFrom)->entrances;
     if (entranceTargetList.size() < 1) {
         YUtils::printDebug("entranceTargetList in targetMapChanged is empty",DebugType::WARNING);
         return;
@@ -513,6 +513,7 @@ void LevelWindow::selectedExitItemChanged(QListWidgetItem *current, QListWidgetI
     //YUtils::printDebug(exitData->toString());
     this->detectChanges = false;
     this->exitTypeCombo->setCurrentIndex(exitData->exitStartType);
+    std::cout << "whichMapTo: 0x" << std::hex << (uint16_t)exitData->whichMapTo << std::endl;
     this->exitMapTarget->setCurrentIndex(exitData->whichMapTo);
     this->exitX->setValue((int)exitData->exitLocationX);
     this->exitY->setValue((int)exitData->exitLocationY);
