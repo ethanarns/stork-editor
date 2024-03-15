@@ -13,8 +13,10 @@
 #include <QLabel>
 
 enum LevelWindowDataKey {
-    ENTRANCE_INDEX_WINDOW = 0x20,
-    EXIT_INDEX_WINDOW = 0x21
+    // uint32_t
+    ENTRANCE_UUID = 0x20,
+    // uint32_t
+    EXIT_UUID = 0x21
 };
 
 LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
@@ -214,7 +216,7 @@ void LevelWindow::refreshLists() {
         ssExit << exitType << " to " << levelTo->mpdzFileNoExtension;
         ssExit << " 0x" << std::hex << (uint16_t)((*xit)->whichEntranceTo);
         QListWidgetItem* exitItem = new QListWidgetItem(tr(ssExit.str().c_str()));
-        exitItem->setData(LevelWindowDataKey::EXIT_INDEX_WINDOW,exitIndex);
+        exitItem->setData(LevelWindowDataKey::EXIT_UUID,(*xit)->_uuid);
         this->exitListWidget->addItem(exitItem);
         exitIndex++;
     }
@@ -445,7 +447,7 @@ void LevelWindow::refreshEntranceList() {
             ssEnter << "0x" << std::hex << entranceIndex << ": " << entranceTypeStr;
         }
         QListWidgetItem* entranceItem = new QListWidgetItem(tr(ssEnter.str().c_str()));
-        entranceItem->setData(LevelWindowDataKey::ENTRANCE_INDEX_WINDOW,entranceIndex);
+        entranceItem->setData(LevelWindowDataKey::ENTRANCE_UUID,(*enit)->_uuid);
         this->entranceListWidget->addItem(entranceItem);
         entranceIndex++;
     }
@@ -475,12 +477,12 @@ void LevelWindow::entranceItemChanged(QListWidgetItem *current, QListWidgetItem 
         return;
     }
 
-    auto entranceIndexQVariant = current->data(LevelWindowDataKey::ENTRANCE_INDEX_WINDOW);
+    auto entranceIndexQVariant = current->data(LevelWindowDataKey::ENTRANCE_UUID);
     if (entranceIndexQVariant.isNull()) {
         YUtils::printDebug("No data in entrance item",DebugType::ERROR);
         return;
     }
-    auto entranceIndex = entranceIndexQVariant.toUInt();
+    auto entranceIndex = this->getIndexOfEntrance(entranceIndexQVariant.toUInt());
     //YUtils::printDebug("entranceItemChanged");
     auto entranceData = curLevelData->entrances.at(entranceIndex);
     // Animation update
@@ -516,7 +518,8 @@ void LevelWindow::exitItemChanged(QListWidgetItem *current, QListWidgetItem *pre
         YUtils::printDebug("CRSB data with that MPDZ was null",DebugType::ERROR);
         return;
     }
-    auto exitIndex = current->data(LevelWindowDataKey::EXIT_INDEX_WINDOW).toUInt();
+    
+    auto exitIndex = this->getIndexOfExit(current->data(LevelWindowDataKey::EXIT_UUID).toUInt());
     
     auto exitData = curLevelData->exits.at(exitIndex);
     //YUtils::printDebug(exitData->toString());
@@ -710,6 +713,36 @@ void LevelWindow::exitMinusClicked() {
     emit this->portalsUpdated();
 
     YUtils::popupAlert("Exit deleted. Please update any entrances that linked to it");
+}
+
+int LevelWindow::getIndexOfEntrance(uint32_t entranceUuid) {
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    if (curLevel == nullptr) {
+        YUtils::printDebug("Current level data is null",DebugType::ERROR);
+        return -1;
+    }
+    for (int i = 0; i < (int)curLevel->entrances.size(); i++) {
+        if (curLevel->entrances.at(i)->_uuid == entranceUuid) {
+            return i;
+        }
+    }
+    YUtils::printDebug("Entrance index not found",DebugType::ERROR);
+    return -1;
+}
+
+int LevelWindow::getIndexOfExit(uint32_t exitUuid) {
+    auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
+    if (curLevel == nullptr) {
+        YUtils::printDebug("Current level data is null",DebugType::ERROR);
+        return -1;
+    }
+    for (int i = 0; i < (int)curLevel->exits.size(); i++) {
+        if (curLevel->exits.at(i)->_uuid == exitUuid) {
+            return i;
+        }
+    }
+    YUtils::printDebug("Exit index not found",DebugType::ERROR);
+    return -1;
 }
 
 void LevelWindow::exitPositionChangedX() {

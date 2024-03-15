@@ -169,6 +169,7 @@ struct MapExitData {
             }
         }
     };
+    uint32_t _uuid;
 };
 
 /**
@@ -286,6 +287,7 @@ struct MapEntrance {
             }
         }
     };
+    uint32_t _uuid;
 };
 
 // CSCN
