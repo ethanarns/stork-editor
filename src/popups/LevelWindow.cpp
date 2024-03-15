@@ -44,8 +44,19 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     // Bar 2: Level Entrances //
     auto row2 = new QHBoxLayout(this);
     // Column 1: list
+    auto entranceListColumnOne = new QVBoxLayout(this);
     this->entranceListWidget = new QListWidget(this);
-    row2->addWidget(this->entranceListWidget);
+    entranceListColumnOne->addWidget(this->entranceListWidget);
+
+    // Plus/Minus
+    auto entrancePlusMinusLayout = new QHBoxLayout(this);
+    this->entrancePlus = new QPushButton("+",this);
+    entrancePlusMinusLayout->addWidget(this->entrancePlus);
+    this->entranceMinus = new QPushButton("-",this);
+    entrancePlusMinusLayout->addWidget(this->entranceMinus);
+    entranceListColumnOne->addLayout(entrancePlusMinusLayout);
+    row2->addLayout(entranceListColumnOne);
+
     // Column 2: Options
     auto entranceOptions = new QVBoxLayout(this);
     // Entrance Animation
