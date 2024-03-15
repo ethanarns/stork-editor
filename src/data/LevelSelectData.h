@@ -110,7 +110,7 @@ struct MapExitData {
         std::stringstream ssExit;
         ssExit << "MapExitData { Exit loc x/y: 0x" << std::hex << this->exitLocationX;
         ssExit << "/0x" << std::hex << this->exitLocationY << ", ";
-        ssExit << "whichMapTo: 0x" << std::hex << (int)this->whichMapTo << "/ " << this->_whichMapToName;
+        ssExit << "whichMapTo: 0x" << std::hex << (int)this->whichMapTo << "/" << this->_whichMapToName;
         ssExit << ", exitStartType: " << MapExitData::printExitStartType(this->exitStartType);
         ssExit << ", whichMapEntranceToIndex: 0x" << std::hex << (int)this->whichEntranceTo << ", _whichEntranceToUuid: 0x" << this->_whichEntranceToUuid << " }";
         return ssExit.str();

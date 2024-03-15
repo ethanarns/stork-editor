@@ -352,6 +352,7 @@ void LevelWindow::targetMapChanged(const QString text) {
     if (curExit->whichMapTo != currentSelectedExitMap) {
         YUtils::printDebug("Modifying CRSB: Exit Destination",DebugType::VERBOSE);
         curExit->whichMapTo = (uint8_t)currentSelectedExitMap;
+        curExit->_whichMapToName = this->yidsRom->currentLevelSelectData->levels.at(curExit->whichMapTo)->mpdzFileNoExtension;
         emit this->portalsUpdated();
     }
 }
@@ -385,6 +386,7 @@ void LevelWindow::targetEntranceChanged(const QString text) {
     if (curExit->whichEntranceTo != currentSelectedExitMapEntrance) {
         YUtils::printDebug("Modifying CRSB: Exit Destination Entrance",DebugType::VERBOSE);
         curExit->whichEntranceTo = currentSelectedExitMapEntrance;
+        curExit->_whichEntranceToUuid = this->yidsRom->currentLevelSelectData->levels.at(curExit->whichMapTo)->entrances.at(curExit->whichEntranceTo)->_uuid;
         emit this->portalsUpdated();
     }
 }
@@ -513,7 +515,6 @@ void LevelWindow::selectedExitItemChanged(QListWidgetItem *current, QListWidgetI
     //YUtils::printDebug(exitData->toString());
     this->detectChanges = false;
     this->exitTypeCombo->setCurrentIndex(exitData->exitStartType);
-    std::cout << "whichMapTo: 0x" << std::hex << (uint16_t)exitData->whichMapTo << std::endl;
     this->exitMapTarget->setCurrentIndex(exitData->whichMapTo);
     this->exitX->setValue((int)exitData->exitLocationX);
     this->exitY->setValue((int)exitData->exitLocationY);

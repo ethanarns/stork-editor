@@ -98,17 +98,14 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
         }
         this->levels.push_back(levelMeta);
     }
-    // Now that it's all set up, add metadata names
     for (auto lit = this->levels.begin(); lit != this->levels.end(); lit++) {
-        // Update exits
-        for (auto itx = (*lit)->exits.begin(); itx != (*lit)->exits.end(); itx++) {
-            auto ex = (*itx);
-            auto mapIndex = ex->whichMapTo;
-            auto mapName = this->levels.at(mapIndex)->mpdzFileNoExtension;
-            ex->_whichMapToName = mapName;
-            auto entranceIndex = ex->whichEntranceTo;
-            auto entranceUuid = this->levels.at(mapIndex)->entrances.at(entranceIndex)->_uuid;
-            ex->_whichEntranceToUuid = entranceUuid;
+        auto curLevel = (*lit);
+        for (auto crexit = curLevel->exits.begin(); crexit != curLevel->exits.end(); crexit++) {
+            auto crit = (*crexit);
+            auto mapName = this->levels.at(crit->whichMapTo)->mpdzFileNoExtension;
+            crit->_whichMapToName = mapName;
+            auto entranceOfThatMap = this->levels.at(crit->whichMapTo)->entrances.at(crit->whichEntranceTo);
+            crit->_whichEntranceToUuid = entranceOfThatMap->_uuid;
         }
     }
 }
