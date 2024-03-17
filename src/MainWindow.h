@@ -87,6 +87,8 @@ private:
     QAction* menu_save;
     QAction* menu_export;
     QAction* menu_levelSettings;
+    
+    QAction* action_undo;
 
     QAction* action_viewBg1;
     QAction* action_viewBg2;
@@ -129,6 +131,7 @@ private:
     void portalsUpdated();
 
     void closeEvent(QCloseEvent *event);
+    void undo();
 };
 
 #endif

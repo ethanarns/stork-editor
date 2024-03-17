@@ -127,12 +127,12 @@ MainWindow::MainWindow() {
     // Edit menu //
     QMenu* menu_edit = menuBar()->addMenu("&Edit");
 
-    QAction* action_undo = new QAction("&Undo",this);
-    action_undo->setShortcut(tr("CTRL+Z"));
-    action_undo->setIcon(QIcon::fromTheme("edit-undo"));
-    menu_edit->addAction(action_undo);
-    action_undo->setDisabled(true);
-    // Add connect() once implemented
+    this->action_undo = new QAction("&Undo",this);
+    this->action_undo->setShortcut(tr("CTRL+Z"));
+    this->action_undo->setIcon(QIcon::fromTheme("edit-undo"));
+    menu_edit->addAction(this->action_undo);
+    this->action_undo->setDisabled(true);
+    connect(this->action_undo,&QAction::triggered,this,&MainWindow::undo);
 
     QAction* action_redo = new QAction("&Redo",this);
     action_redo->setShortcut(tr("CTRL+Y"));
@@ -644,6 +644,7 @@ void MainWindow::LoadRom() {
         this->menu_save->setDisabled(false);
         this->menu_export->setDisabled(false);
         this->menu_levelSettings->setDisabled(false);
+        this->action_undo->setDisabled(false);
 
         this->guiObjectList->updateList();
         this->statusLabel->setText(tr("ROM Loaded"));
@@ -1096,4 +1097,8 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 void MainWindow::portalsUpdated() {
     this->grid->updatePortals(this->grid->shouldDrawEntrances,this->grid->shouldDrawExits);
     this->markSavableUpdate();
+}
+
+void MainWindow::undo() {
+    YUtils::printDebug("undo clicked");
 }
