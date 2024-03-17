@@ -942,7 +942,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
             }
             for (auto it = selectedUuids.begin(); it != selectedUuids.end(); it++) {
                 LevelObject spriteData = *this->rom->mapData->getLevelObjectByUuid(*it);
-                DeleteSpriteCommand *del = new DeleteSpriteCommand(spriteData,this->grid,this->rom->mapData);
+                DeleteSpriteCommand *del = new DeleteSpriteCommand(spriteData,this->grid,this->rom);
                 this->undoStack->push(del);
             }
             this->grid->selectedObjects.clear();
