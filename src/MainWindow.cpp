@@ -17,6 +17,7 @@
 #include "GuiObjectList.h"
 #include "data/LevelSelectData.h"
 #include "GridOverlay.h"
+#include "StateCommands.h"
 
 #include <QtCore>
 #include <QObject>
@@ -940,8 +941,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
                 return;
             }
             for (auto it = selectedUuids.begin(); it != selectedUuids.end(); it++) {
-                this->rom->mapData->deleteSpriteByUUID(*it);
-                this->grid->wipeObject(*it);
+                LevelObject spriteData = *this->rom->mapData->getLevelObjectByUuid(*it);
+                DeleteSpriteCommand *del = new DeleteSpriteCommand(spriteData,this->grid,this->rom->mapData);
+                this->undoStack->push(del);
             }
             this->grid->selectedObjects.clear();
             this->grid->updateSprites();
@@ -1101,4 +1103,5 @@ void MainWindow::portalsUpdated() {
 
 void MainWindow::undo() {
     YUtils::printDebug("undo clicked");
+    this->undoStack->undo();
 }

@@ -388,7 +388,7 @@ bool MapData::deleteSpriteByUUID(uint32_t uuid) {
     return false;
 }
 
-LevelObject* MapData::addSpriteData(LevelObject lo) {
+LevelObject* MapData::addSpriteData(LevelObject lo, bool newUuid) {
     YUtils::printDebug("Adding new sprite data to MapData",DebugType::VERBOSE);
     auto newLevelObject = new LevelObject(lo);
     auto setdMaybe = this->getFirstDataByMagic(Constants::SETD_MAGIC_NUM);
@@ -399,7 +399,9 @@ LevelObject* MapData::addSpriteData(LevelObject lo) {
     }
     auto setd = static_cast<LevelObjectData*>(setdMaybe);
     // Ensure unique UUID
-    newLevelObject->uuid = setd->uuidIndex++;
+    if (newUuid) {
+        newLevelObject->uuid = setd->uuidIndex++;
+    }
     setd->levelObjects.push_back(newLevelObject);
     return newLevelObject;
 }

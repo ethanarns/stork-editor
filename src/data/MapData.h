@@ -621,7 +621,7 @@ public:
     LevelData* getFirstDataByMagic(uint32_t magicNumber, bool silentFail = false);
     std::string filename;
     bool deleteSpriteByUUID(uint32_t uuid);
-    LevelObject* addSpriteData(LevelObject lo);
+    LevelObject* addSpriteData(LevelObject lo, bool newUuid = true);
 private:    
     std::vector<LevelData*> subData;
     QByteArray layerOrderCache;

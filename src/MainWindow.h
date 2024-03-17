@@ -15,6 +15,7 @@
 #include <QSpinBox>
 #include <QCloseEvent>
 #include <QKeyEvent>
+#include <QUndoStack>
 
 #include "yidsrom.h"
 #include "DisplayTable.h"
@@ -35,6 +36,7 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
     YidsRom* rom = new YidsRom();
+    QUndoStack* undoStack = new QUndoStack();
 
     MainWindow();
     void LoadRom();
