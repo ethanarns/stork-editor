@@ -55,6 +55,7 @@ public:
     std::string currentFileName = "";
 
     void setWindowStatus(std::string status);
+    void updateUndoMenu();
 protected:
     void keyPressEvent(QKeyEvent *event) override;
 private:
@@ -91,6 +92,7 @@ private:
     QAction* menu_levelSettings;
     
     QAction* action_undo;
+    QAction* action_redo;
 
     QAction* action_viewBg1;
     QAction* action_viewBg2;

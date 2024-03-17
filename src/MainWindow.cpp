@@ -135,11 +135,11 @@ MainWindow::MainWindow() {
     this->action_undo->setDisabled(true);
     connect(this->action_undo,&QAction::triggered,this,&MainWindow::undo);
 
-    QAction* action_redo = new QAction("&Redo",this);
-    action_redo->setShortcut(tr("CTRL+Y"));
-    action_redo->setIcon(QIcon::fromTheme("edit-redo"));
-    menu_edit->addAction(action_redo);
-    action_redo->setDisabled(true);
+    this->action_redo = new QAction("&Redo",this);
+    this->action_redo->setShortcut(tr("CTRL+Y"));
+    this->action_redo->setIcon(QIcon::fromTheme("edit-redo"));
+    menu_edit->addAction(this->action_redo);
+    this->action_redo->setDisabled(true);
     // Add connect() once implemented
 
     menu_edit->addSeparator();
@@ -645,7 +645,6 @@ void MainWindow::LoadRom() {
         this->menu_save->setDisabled(false);
         this->menu_export->setDisabled(false);
         this->menu_levelSettings->setDisabled(false);
-        this->action_undo->setDisabled(false);
 
         this->guiObjectList->updateList();
         this->statusLabel->setText(tr("ROM Loaded"));
@@ -944,6 +943,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
                 LevelObject spriteData = *this->rom->mapData->getLevelObjectByUuid(*it);
                 DeleteSpriteCommand *del = new DeleteSpriteCommand(spriteData,this->grid,this->rom);
                 this->undoStack->push(del);
+                this->updateUndoMenu();
             }
             this->grid->selectedObjects.clear();
             this->grid->updateSprites();
@@ -976,6 +976,27 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         YUtils::printDebug("keyPressEvent: Entrance/Exit layer",DebugType::VERBOSE);
     } else {
         MainWindow::keyPressEvent(event);
+    }
+}
+
+void MainWindow::updateUndoMenu() {
+    std::stringstream ssUndo;
+    ssUndo << "Undo " << this->undoStack->undoText().toStdString();
+    this->action_undo->setText(QString::fromStdString(ssUndo.str()));
+    std::stringstream ssRedo;
+    ssRedo << "Redo " << this->undoStack->redoText().toStdString();
+    this->action_redo->setText(QString::fromStdString(ssRedo.str()));
+
+    if (this->undoStack->canUndo()) {
+        this->action_undo->setDisabled(false);
+    } else {
+        this->action_undo->setDisabled(true);
+    }
+    
+    if (this->undoStack->canRedo()) {
+        this->action_redo->setDisabled(false);
+    } else {
+        this->action_redo->setDisabled(true);
     }
 }
 
@@ -1104,4 +1125,5 @@ void MainWindow::portalsUpdated() {
 void MainWindow::undo() {
     YUtils::printDebug("undo clicked");
     this->undoStack->undo();
+    this->updateUndoMenu();
 }
