@@ -1290,7 +1290,7 @@ void DisplayTable::updateSprites() {
             );
         }
     }
-    emit this->triggerMainWindowUpdate();
+    emit this->triggerMainWindowUpdate(); // displayTableUpdate
 }
 
 int DisplayTable::wipeTable() {

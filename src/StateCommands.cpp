@@ -14,6 +14,9 @@ void DeleteSpriteCommand::undo() {
         YUtils::printDebug("DisplayTable null, can't undo",DebugType::ERROR);
         return;
     }
+    this->gridPtr->clearSelection();
+    this->gridPtr->selectedObjects.clear();
+    this->gridPtr->clearVisualSpriteSelection();
     this->rom->mapData->addSpriteData(loData,false);
     this->gridPtr->updateSprites();
 }
@@ -32,6 +35,9 @@ void DeleteSpriteCommand::redo() {
         YUtils::printDebug("DisplayTable null, can't redo",DebugType::ERROR);
         return;
     }
+    this->gridPtr->clearSelection();
+    this->gridPtr->selectedObjects.clear();
+    this->gridPtr->clearVisualSpriteSelection();
     this->rom->mapData->deleteSpriteByUUID(loData.uuid);
     this->gridPtr->wipeObject(loData.uuid);
     this->gridPtr->updateSprites();
