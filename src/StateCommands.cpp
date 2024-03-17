@@ -1,7 +1,7 @@
 #include "StateCommands.h"
 
 void DeleteSpriteCommand::undo() {
-    YUtils::printDebug("Undo delete sprite");
+    //YUtils::printDebug("Undo delete sprite");
     if (this->rom == nullptr) {
         YUtils::printDebug("ROM null, can't undo",DebugType::ERROR);
         return;
@@ -22,7 +22,7 @@ void DeleteSpriteCommand::undo() {
 }
 
 void DeleteSpriteCommand::redo() {
-    YUtils::printDebug("(re)doing delete sprite");
+    //YUtils::printDebug("(re)doing delete sprite");
     if (this->rom == nullptr) {
         YUtils::printDebug("ROM null, can't redo",DebugType::ERROR);
         return;

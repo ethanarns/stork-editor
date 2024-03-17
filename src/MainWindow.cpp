@@ -140,7 +140,7 @@ MainWindow::MainWindow() {
     this->action_redo->setIcon(QIcon::fromTheme("edit-redo"));
     menu_edit->addAction(this->action_redo);
     this->action_redo->setDisabled(true);
-    // Add connect() once implemented
+    connect(this->action_redo,&QAction::triggered,this,&MainWindow::redo);
 
     menu_edit->addSeparator();
 
@@ -1080,7 +1080,7 @@ void MainWindow::displayTableUpdate(){
     this->markSavableUpdate();
     auto selectedObjects = this->grid->selectedObjects;
     if (selectedObjects.size() < 1) {
-        YUtils::printDebug("No objects selected",DebugType::VERBOSE);
+        //YUtils::printDebug("No objects selected",DebugType::VERBOSE);
         return;
     } else if (selectedObjects.size() > 1) {
         std::stringstream ss;
@@ -1123,7 +1123,13 @@ void MainWindow::portalsUpdated() {
 }
 
 void MainWindow::undo() {
-    YUtils::printDebug("undo clicked");
     this->undoStack->undo();
     this->updateUndoMenu();
+    this->markSavableUpdate();
+}
+
+void MainWindow::redo() {
+    this->undoStack->redo();
+    this->updateUndoMenu();
+    this->markSavableUpdate();
 }

@@ -136,6 +136,7 @@ private:
 
     void closeEvent(QCloseEvent *event);
     void undo();
+    void redo();
 };
 
 #endif

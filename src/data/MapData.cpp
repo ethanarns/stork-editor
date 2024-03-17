@@ -367,7 +367,7 @@ LevelData *MapData::getFirstDataByMagic(uint32_t magicNumber, bool silentFail) {
 }
 
 bool MapData::deleteSpriteByUUID(uint32_t uuid) {
-    YUtils::printDebug("deleteSpriteByUUID");
+    //YUtils::printDebug("deleteSpriteByUUID");
     auto setdMaybe = this->getFirstDataByMagic(Constants::SETD_MAGIC_NUM);
     if (setdMaybe == nullptr) {
         YUtils::printDebug("SETD not found in deleteSpriteByUUID",DebugType::ERROR);
