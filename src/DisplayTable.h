@@ -106,7 +106,7 @@ protected:
 signals:
     int triggerMainWindowUpdate();
     void updateMainWindowStatus(std::string newStatus);
-    void pushUndoCommandToStack(QUndoCommand* cmdPtr);
+    void pushStateCommandToStack(QUndoCommand* cmdPtr);
 };
 
 #endif

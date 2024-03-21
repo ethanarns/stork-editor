@@ -758,7 +758,7 @@ void DisplayTable::dropEvent(QDropEvent *event) {
             int tableY = tableItem->row();
             auto lo = *this->yidsRom->mapData->getLevelObjectByUuid(uuid);
             MoveSpriteCommand *mov = new MoveSpriteCommand(lo,tableX,tableY,this,this->yidsRom);
-            emit this->pushUndoCommandToStack(mov);
+            emit this->pushStateCommandToStack(mov);
         } else {
             YUtils::printDebug("dropEvent did not detect 'application/x-stork-sprite-uuid'");
             event->ignore();
