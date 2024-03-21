@@ -4,6 +4,7 @@
 #include "yidsrom.h"
 #include "utils.h"
 #include "popups/BrushTable.h"
+#include "StateCommands.h"
 
 #include <QtCore>
 #include <QTableWidget>
@@ -17,7 +18,7 @@
 #include <sstream>
 
 DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
-    Q_UNUSED(parent);
+    this->setParent(parent);
     this->shouldShowCollision = true;
     this->shouldDrawEntrances = true;
     this->shouldDrawExits = true;
@@ -755,8 +756,9 @@ void DisplayTable::dropEvent(QDropEvent *event) {
             auto tableItem = this->itemAt(event->pos());
             int tableX = tableItem->column();
             int tableY = tableItem->row();
-            this->moveSpriteTo(uuid,tableX,tableY);
-            this->updateSprites();
+            auto lo = *this->yidsRom->mapData->getLevelObjectByUuid(uuid);
+            MoveSpriteCommand *mov = new MoveSpriteCommand(lo,tableX,tableY,this,this->yidsRom);
+            emit this->pushUndoCommandToStack(mov);
         } else {
             YUtils::printDebug("dropEvent did not detect 'application/x-stork-sprite-uuid'");
             event->ignore();

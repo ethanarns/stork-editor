@@ -557,6 +557,7 @@ MainWindow::MainWindow() {
     connect(this->selectionInfoTable, &SelectionInfoTable::updateMainWindow,this,&MainWindow::selectionWindowUpdate);
     connect(this->grid,&DisplayTable::updateMainWindowStatus,this,&MainWindow::setWindowStatus);
     connect(this->levelWindow,&LevelWindow::portalsUpdated,this,&MainWindow::portalsUpdated);
+    connect(this->grid,&DisplayTable::pushUndoCommandToStack,this,&MainWindow::pushUndoableCommandToStack);
 
     /***************
      *** OVERLAY ***
@@ -1132,4 +1133,10 @@ void MainWindow::redo() {
     this->undoStack->redo();
     this->updateUndoMenu();
     this->markSavableUpdate();
+}
+
+void MainWindow::pushUndoableCommandToStack(QUndoCommand *cmdPtr) {
+    //YUtils::printDebug("pushUndoableCommandToStack");
+    this->undoStack->push(cmdPtr);
+    this->updateUndoMenu();
 }

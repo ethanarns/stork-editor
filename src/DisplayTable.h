@@ -19,6 +19,7 @@
 #include <QPoint>
 #include <QRubberBand>
 #include <QRect>
+#include <QUndoCommand>
 
 class DisplayTable : public QTableWidget {
     Q_OBJECT
@@ -105,6 +106,7 @@ protected:
 signals:
     int triggerMainWindowUpdate();
     void updateMainWindowStatus(std::string newStatus);
+    void pushUndoCommandToStack(QUndoCommand* cmdPtr);
 };
 
 #endif

@@ -42,3 +42,25 @@ void DeleteSpriteCommand::redo() {
     this->gridPtr->wipeObject(loData.uuid);
     this->gridPtr->updateSprites();
 }
+
+void MoveSpriteCommand::undo() {
+    //YUtils::printDebug("Undo move sprite");
+    this->gridPtr->wipeObject(sprite.uuid);
+    this->rom->moveObjectTo(sprite.uuid,this->beforePoint.x(),this->beforePoint.y());
+    this->gridPtr->updateSprites();
+    this->gridPtr->clearVisualSpriteSelection();
+    this->gridPtr->selectedObjects.clear();
+    this->gridPtr->clearSelection();
+    this->gridPtr->selectItemByUuid(sprite.uuid);
+}
+
+void MoveSpriteCommand::redo() {
+    //YUtils::printDebug("(Re)do move sprite");
+    this->gridPtr->wipeObject(sprite.uuid);
+    this->rom->moveObjectTo(sprite.uuid,this->afterPoint.x(),this->afterPoint.y());
+    this->gridPtr->updateSprites();
+    this->gridPtr->clearVisualSpriteSelection();
+    this->gridPtr->selectedObjects.clear();
+    this->gridPtr->clearSelection();
+    this->gridPtr->selectItemByUuid(sprite.uuid);
+}

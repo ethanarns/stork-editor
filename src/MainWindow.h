@@ -16,6 +16,7 @@
 #include <QCloseEvent>
 #include <QKeyEvent>
 #include <QUndoStack>
+#include <QUndoCommand>
 
 #include "yidsrom.h"
 #include "DisplayTable.h"
@@ -137,6 +138,7 @@ private:
     void closeEvent(QCloseEvent *event);
     void undo();
     void redo();
+    void pushUndoableCommandToStack(QUndoCommand *cmdPtr);
 };
 
 #endif
