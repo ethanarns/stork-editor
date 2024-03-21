@@ -441,10 +441,8 @@ void DisplayTable::handleSpritesRightClickPress(QMouseEvent *event) {
     newSprite.settings = std::vector<uint8_t>();
     newSprite.settings.resize(newSprite.settingsLength); // Should fill with zeroes
     newSprite.objectId = spriteId;
-    auto newObjectPointer = this->yidsRom->mapData->addSpriteData(newSprite);
-    this->clearVisualSpriteSelection();
-    this->updateSprites();
-    this->selectItemByUuid(newObjectPointer->uuid,false);
+    AddSpriteCommand *addCmd = new AddSpriteCommand(newSprite,this,this->yidsRom);
+    emit this->pushStateCommandToStack(addCmd);
     emit this->triggerMainWindowUpdate();
 }
 

@@ -49,3 +49,21 @@ private:
     QPoint beforePoint;
     QPoint afterPoint;
 };
+
+class AddSpriteCommand : public QUndoCommand {
+public:
+    AddSpriteCommand(LevelObject lo, DisplayTable* grid, YidsRom* yidsrom, QUndoCommand* parent = nullptr) :
+        QUndoCommand(parent), loData(lo), rom(yidsrom), gridPtr(grid)
+    {
+        std::stringstream ss;
+        auto spriteMeta = this->rom->getSpriteMetadata(lo.objectId);
+        ss << "create " << std::hex << spriteMeta.name;
+        this->setText(QString(ss.str().c_str()));
+    }
+    void undo() override;
+    void redo() override;
+private:
+    LevelObject loData;
+    YidsRom* rom;
+    DisplayTable* gridPtr;
+};

@@ -64,3 +64,51 @@ void MoveSpriteCommand::redo() {
     this->gridPtr->clearSelection();
     this->gridPtr->selectItemByUuid(sprite.uuid);
 }
+
+void AddSpriteCommand::undo() {
+    //YUtils::printDebug("Undo create sprite");
+    if (this->rom == nullptr) {
+        YUtils::printDebug("ROM null, can't undo",DebugType::ERROR);
+        return;
+    }
+    if (this->rom->mapData == nullptr) {
+        YUtils::printDebug("MapData null, can't undo",DebugType::ERROR);
+        return;
+    }
+    if (this->gridPtr == nullptr) {
+        YUtils::printDebug("DisplayTable null, can't undo",DebugType::ERROR);
+        return;
+    }
+    // Clear selections
+    this->gridPtr->clearSelection();
+    this->gridPtr->selectedObjects.clear();
+    this->gridPtr->clearVisualSpriteSelection();
+    // Delete the sprite
+    this->rom->mapData->deleteSpriteByUUID(loData.uuid);
+    this->gridPtr->wipeObject(loData.uuid);
+    this->gridPtr->updateSprites();
+}
+
+void AddSpriteCommand::redo() {
+    //YUtils::printDebug("(Re)do create sprite");
+    if (this->rom == nullptr) {
+        YUtils::printDebug("ROM null, can't re(do)",DebugType::ERROR);
+        return;
+    }
+    if (this->rom->mapData == nullptr) {
+        YUtils::printDebug("MapData null, can't re(do)",DebugType::ERROR);
+        return;
+    }
+    if (this->gridPtr == nullptr) {
+        YUtils::printDebug("DisplayTable null, can't re(do)",DebugType::ERROR);
+        return;
+    }
+    this->gridPtr->clearSelection();
+    this->gridPtr->selectedObjects.clear();
+    this->gridPtr->clearVisualSpriteSelection();
+    // Make sure to create a new UUID
+    auto newSpritePtr = this->rom->mapData->addSpriteData(this->loData,true);
+    this->gridPtr->updateSprites();
+    this->gridPtr->selectItemByUuid(newSpritePtr->uuid);
+    this->loData = *newSpritePtr;
+}

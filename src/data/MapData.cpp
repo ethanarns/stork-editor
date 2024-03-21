@@ -378,7 +378,7 @@ bool MapData::deleteSpriteByUUID(uint32_t uuid) {
     for (auto it = setd->levelObjects.begin(); it != setd->levelObjects.end(); it++) {
         auto sprite = (*it);
         if (sprite->uuid == uuid) {
-            YUtils::printDebug("UUID found, freeing memory and removing");
+            //YUtils::printDebug("UUID found, freeing memory and removing");
             delete (*it);
             setd->levelObjects.erase(it);
             return true;

@@ -962,7 +962,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
             this->markSavableUpdate();
             return;
         } else {
-            YUtils::printDebug("Unhandled key in keyPressEvent for Sprites layer",DebugType::VERBOSE);
+            //YUtils::printDebug("Unhandled key in keyPressEvent for Sprites layer",DebugType::VERBOSE);
             return;
         }
     } else if (
