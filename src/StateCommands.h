@@ -23,8 +23,8 @@ public:
     void redo() override;
 private:
     LevelObject loData;
-    DisplayTable* gridPtr;
     YidsRom* rom;
+    DisplayTable* gridPtr;
 };
 
 class MoveSpriteCommand : public QUndoCommand {
@@ -44,8 +44,8 @@ public:
     void redo() override;
 private:
     LevelObject sprite;
+    YidsRom* rom;
+    DisplayTable* gridPtr;
     QPoint beforePoint;
     QPoint afterPoint;
-    DisplayTable* gridPtr;
-    YidsRom* rom;
 };
