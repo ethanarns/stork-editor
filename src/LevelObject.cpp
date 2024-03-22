@@ -212,6 +212,27 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                     meta.tileWidth = 4;
                     break;
                 }
+                case 0x2: {
+                    meta.frame = 2;
+                    meta.tileWidth = 2;
+                    meta.tilesCount = 6;
+                    meta.yPixelOffset = 8;
+                    break;
+                }
+                case 0x3: {
+                    meta.frame = 3;
+                    meta.tileWidth = 2;
+                    meta.tilesCount = 6;
+                    meta.xPixelOffset = 8;
+                    break;
+                }
+                case 0x4: {
+                    meta.frame = 4;
+                    meta.tileWidth = 2;
+                    meta.tilesCount = 4;
+                    meta.xPixelOffset = 4;
+                    break;
+                }
                 case 0x5: { // Down right
                     // TODO: ROTATED, NEEDS SPECIAL RENDER
                     meta.tilesCount = 4;
