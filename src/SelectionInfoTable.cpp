@@ -2,6 +2,7 @@
 
 #include "yidsrom.h"
 #include "LevelObject.h"
+#include "StateCommands.h"
 
 #include <sstream>
 #include <string>
@@ -142,7 +143,9 @@ void SelectionInfoTable::cellChanged(int row, int column) {
                 YUtils::popupAlert("Invalid settings length");
                 return;
             }
-            this->spritePointer->settings = hexVector;
+            SpriteSettingsChangeCommand *modCmd = new SpriteSettingsChangeCommand(this->spritePointer->uuid,hexVector,this->yidsRom);
+            emit this->pushCommandToUndoStack(modCmd);
+            //this->spritePointer->settings = hexVector;
         }
         std::cout << "Emitting updateMainWindow" << std::endl;
         emit this->updateMainWindow(this->spritePointer);

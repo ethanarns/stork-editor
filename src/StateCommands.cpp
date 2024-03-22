@@ -112,3 +112,23 @@ void AddSpriteCommand::redo() {
     this->gridPtr->selectItemByUuid(newSpritePtr->uuid);
     this->loData = *newSpritePtr;
 }
+
+void SpriteSettingsChangeCommand::undo() {
+    auto loPtr = this->rom->mapData->getLevelObjectByUuid(this->uuid);
+    if (loPtr == nullptr) {
+        YUtils::printDebug("Couldn't undo sprite settings modification, uuid not found",DebugType::ERROR);
+        return;
+    }
+    loPtr->settings = this->oldSets;
+    // Update grid later
+}
+
+void SpriteSettingsChangeCommand::redo() {
+    auto loPtr = this->rom->mapData->getLevelObjectByUuid(this->uuid);
+    if (loPtr == nullptr) {
+        YUtils::printDebug("Couldn't (re)do sprite settings modification, uuid not found",DebugType::ERROR);
+        return;
+    }
+    loPtr->settings = this->newSets;
+    // Update grid later
+}

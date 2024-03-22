@@ -8,6 +8,7 @@
 #include <QString>
 #include <QUndoCommand>
 #include <sstream>
+#include <vector>
 
 class DeleteSpriteCommand : public QUndoCommand {
 public:
@@ -66,4 +67,31 @@ private:
     LevelObject loData;
     YidsRom* rom;
     DisplayTable* gridPtr;
+};
+
+class SpriteSettingsChangeCommand : public QUndoCommand {
+public:
+    SpriteSettingsChangeCommand(uint32_t loUuid, std::vector<uint8_t> newSettings, YidsRom* yidsrom, QUndoCommand* parent = nullptr) :
+        QUndoCommand(parent), uuid(loUuid), newSets(newSettings), rom(yidsrom)
+    {
+        std::stringstream ss;
+        auto loPtr = this->rom->mapData->getLevelObjectByUuid(uuid);
+        if (loPtr == nullptr) {
+            ss << "Sprite with UUID 0x" << std::hex << uuid;
+            ss << " not found when changing settings";
+            YUtils::printDebug(ss.str(),DebugType::ERROR);
+            return;
+        }
+        auto spriteMeta = this->rom->getSpriteMetadata(loPtr->objectId);
+        ss << "modify " << std::hex << spriteMeta.name;
+        this->setText(QString(ss.str().c_str()));
+        this->oldSets = loPtr->settings;
+    }
+    void undo() override;
+    void redo() override;
+private:
+    uint32_t uuid;
+    std::vector<uint8_t> newSets;
+    std::vector<uint8_t> oldSets;
+    YidsRom* rom;
 };

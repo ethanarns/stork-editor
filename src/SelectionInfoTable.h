@@ -3,6 +3,7 @@
 
 #include "yidsrom.h"
 #include "LevelObject.h"
+#include "StateCommands.h"
 
 #include <vector>
 
@@ -29,6 +30,7 @@ private:
     std::vector<uint8_t> hexStringToByteVector(std::string hexString);
 signals:
     void updateMainWindow(LevelObject *sprite);
+    void pushCommandToUndoStack(QUndoCommand *cmd);
 };
 
 #endif

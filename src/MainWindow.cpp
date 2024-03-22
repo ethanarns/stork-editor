@@ -555,6 +555,7 @@ MainWindow::MainWindow() {
     connect(this->guiObjectList,&GuiObjectList::itemSelectionChanged,this,&MainWindow::objectListClick);
     connect(this->grid, &DisplayTable::triggerMainWindowUpdate,this,&MainWindow::displayTableUpdate);
     connect(this->selectionInfoTable, &SelectionInfoTable::updateMainWindow,this,&MainWindow::selectionWindowUpdate);
+    connect(this->selectionInfoTable, &SelectionInfoTable::pushCommandToUndoStack,this,&MainWindow::pushUndoableCommandToStack);
     connect(this->grid,&DisplayTable::updateMainWindowStatus,this,&MainWindow::setWindowStatus);
     connect(this->levelWindow,&LevelWindow::portalsUpdated,this,&MainWindow::portalsUpdated);
     connect(this->grid,&DisplayTable::pushStateCommandToStack,this,&MainWindow::pushUndoableCommandToStack);
