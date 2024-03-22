@@ -326,7 +326,7 @@ void LevelWindow::exitTypeChanged(const QString text) {
 void LevelWindow::targetMapChanged(const QString text) {
     Q_UNUSED(text);
     if (this->detectChanges == false) {
-        YUtils::printDebug("Change detection deactivated (Target map)");
+        //YUtils::printDebug("Change detection deactivated (Target map)");
         return;
     }
     //std::cout << "targetMapChanged" << std::endl;
@@ -360,7 +360,7 @@ void LevelWindow::targetMapChanged(const QString text) {
 void LevelWindow::targetEntranceChanged(const QString text) {
     Q_UNUSED(text);
     if (this->detectChanges == false) {
-        YUtils::printDebug("Change detection deactivated (Target entrance)");
+        //YUtils::printDebug("Change detection deactivated (Target entrance)");
         return;
     }
     // std::cout << "targetEntranceChanged" << std::endl;

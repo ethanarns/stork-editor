@@ -535,6 +535,16 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
             result.preview = CollisionDraw::UPSIDE_DOWN_SLOPE_30_2_DRAW;
             break;
         }
+        case CollisionType::CLIMBABLE_VINE_CEILING: {
+            result.prettyName = "Climbable Vine (Ceiling)";
+            result.preview = CollisionDraw::VINE_LEFT;
+            break;
+        }
+        case CollisionType::CLIMBABLE_VINE_TALL: {
+            result.prettyName = "Climbable Vine";
+            result.preview = CollisionDraw::VINE_RIGHT;
+            break;
+        }
     }
     return result;
 }
