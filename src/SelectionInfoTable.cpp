@@ -157,8 +157,6 @@ void SelectionInfoTable::cellChanged(int row, int column) {
             emit this->pushCommandToUndoStack(modCmd);
             //this->spritePointer->settings = hexVector;
         }
-        //std::cout << "Emitting updateMainWindow" << std::endl;
-        //emit this->updateMainWindow(this->spritePointer);
     }
 }
 

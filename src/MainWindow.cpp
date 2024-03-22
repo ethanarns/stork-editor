@@ -554,7 +554,6 @@ MainWindow::MainWindow() {
      *******************/
     connect(this->guiObjectList,&GuiObjectList::itemSelectionChanged,this,&MainWindow::objectListClick);
     connect(this->grid, &DisplayTable::triggerMainWindowUpdate,this,&MainWindow::displayTableUpdate);
-    connect(this->selectionInfoTable, &SelectionInfoTable::updateMainWindow,this,&MainWindow::selectionWindowUpdate);
     connect(this->selectionInfoTable, &SelectionInfoTable::pushCommandToUndoStack,this,&MainWindow::pushUndoableCommandToStack);
     connect(this->grid,&DisplayTable::updateMainWindowStatus,this,&MainWindow::setWindowStatus);
     connect(this->levelWindow,&LevelWindow::portalsUpdated,this,&MainWindow::portalsUpdated);
@@ -1097,14 +1096,6 @@ void MainWindow::displayTableUpdate(){
     }
     this->selectionInfoTable->updateWithLevelObject(lo);
     this->guiObjectList->updateList();
-}
-
-void MainWindow::selectionWindowUpdate(LevelObject *sprite) {
-    //this->grid->wipeObject(sprite->uuid);
-    this->grid->updateSprites();
-    this->grid->clearVisualSpriteSelection();
-    this->grid->selectedObjects.clear();
-    this->grid->selectItemByUuid(sprite->uuid);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {

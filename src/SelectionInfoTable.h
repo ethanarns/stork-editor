@@ -31,7 +31,6 @@ private:
     const int SETTINGSDATAROW = 7;
     std::vector<uint8_t> hexStringToByteVector(std::string hexString);
 signals:
-    void updateMainWindow(LevelObject *sprite);
     void pushCommandToUndoStack(QUndoCommand *cmd);
 };
 

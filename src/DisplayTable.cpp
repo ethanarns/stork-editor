@@ -1213,7 +1213,7 @@ void DisplayTable::updateBg() {
 }
 
 void DisplayTable::updateSprites() {
-    YUtils::printDebug("updateSprites");
+    //YUtils::printDebug("updateSprites");
     // Full wipe
     uint32_t xWidth = this->columnCount();
     uint32_t yHeight = this->rowCount();
