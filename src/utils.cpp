@@ -510,6 +510,21 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
             result.preview = CollisionDraw::DIAG_DOWN_RIGHT;
             break;
         }
+        case CollisionType::KILL_SPIKES: {
+            result.prettyName = "Instant Kill";
+            result.preview = CollisionDraw::ZIG_ZAG_UPSIDE_DOWN_RED;
+            break;
+        }
+        case CollisionType::ICY_SQUARE: {
+            result.prettyName = "Slippery Ice";
+            result.preview = CollisionDraw::SLIPPERY_ICE_SQUARE;
+            break;
+        }
+        case CollisionType::SOFT_ROCK: {
+            result.prettyName = "Soft Rock";
+            result.preview = CollisionDraw::SOFT_ROCK_SQUARE;
+            break;
+        }
     }
     return result;
 }

@@ -26,6 +26,9 @@ QImage EXIT_IMAGE(":/assets/exit.png");
 const QColor collisionColor(     0,255,0  ,100);
 const QColor collisionColorAlt(200,255,200,180);
 const QColor collisionColorRed(255,0,0,180);
+const QColor collisionColorLightBlue(205,239,255,200);
+const QColor collisionColorLighestBlue(240,240,255,200);
+const QColor collisionSoftRock(254,225,158,200);
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
     using namespace std;
@@ -411,9 +414,28 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 painter->fillPath(path,collisionColorRed);
                 break;
             }
-            case CollisionDraw::CLEAR:
-            default:
+            case CollisionDraw::SLIPPERY_ICE_SQUARE: {
+                QPainterPath path;
+                path.addRect(X_BASE,Y_BASE,X_WIDTH,Y_HEIGHT);
+                painter->fillPath(path,collisionColorLightBlue);
                 break;
+            }
+            case CollisionDraw::SLIPPERY_ICE_SQUARE_LIGHTER: {
+                QPainterPath path;
+                path.addRect(X_BASE,Y_BASE,X_WIDTH,Y_HEIGHT);
+                painter->fillPath(path,collisionColorLighestBlue);
+                break;
+            }
+            case CollisionDraw::SOFT_ROCK_SQUARE: {
+                QPainterPath path;
+                path.addRect(X_BASE,Y_BASE,X_WIDTH,Y_HEIGHT);
+                painter->fillPath(path,collisionSoftRock);
+                break;
+            }
+            case CollisionDraw::CLEAR: {
+                // Do nothing
+                break;
+            }
         }
     }
 

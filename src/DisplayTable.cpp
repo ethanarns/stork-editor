@@ -887,7 +887,6 @@ void DisplayTable::initCellCollision() {
             this->setCellCollision(y  ,x  ,CollisionDraw::UPSIDE_DOWN_DOWNWARDS_45_DRAW, curCol);
             this->setCellCollision(y+1,x+1,CollisionDraw::UPSIDE_DOWN_DOWNWARDS_45_DRAW, curCol);
         } else if (curCol == CollisionType::DOWN_RIGHT_STEEP_HALFSTART) {
-            // do this
             this->setCellCollision(y  ,x  ,CollisionDraw::SQUARE_DRAW, curCol);
             this->setCellCollision(y+1,x  ,CollisionDraw::SQUARE_DRAW, curCol);
             this->setCellCollision(y  ,x+1,CollisionDraw::DOWN_RIGHT_STEEP_THIN, curCol);
@@ -900,6 +899,16 @@ void DisplayTable::initCellCollision() {
             this->setCellCollision(y+1,x,  CollisionDraw::SQERR, curCol);
             this->setCellCollision(y,  x+1,CollisionDraw::ZIG_ZAG_UPSIDE_DOWN_RED, curCol);
             this->setCellCollision(y+1,x+1,CollisionDraw::SQERR, curCol);
+        } else if (curCol == CollisionType::ICY_SQUARE) {
+            this->setCellCollision(y,  x,  CollisionDraw::SLIPPERY_ICE_SQUARE_LIGHTER, curCol);
+            this->setCellCollision(y+1,x,  CollisionDraw::SLIPPERY_ICE_SQUARE, curCol);
+            this->setCellCollision(y,  x+1,CollisionDraw::SLIPPERY_ICE_SQUARE, curCol);
+            this->setCellCollision(y+1,x+1,CollisionDraw::SLIPPERY_ICE_SQUARE_LIGHTER, curCol);
+        } else if (curCol == CollisionType::SOFT_ROCK) {
+            this->setCellCollision(y,  x,  CollisionDraw::SOFT_ROCK_SQUARE, curCol);
+            this->setCellCollision(y+1,x,  CollisionDraw::SOFT_ROCK_SQUARE, curCol);
+            this->setCellCollision(y,  x+1,CollisionDraw::SOFT_ROCK_SQUARE, curCol);
+            this->setCellCollision(y+1,x+1,CollisionDraw::SOFT_ROCK_SQUARE, curCol);
         } else if (curCol == CollisionType::NONE) {
             this->setCellCollision(y,  x,  CollisionDraw::CLEAR, curCol);
             this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
