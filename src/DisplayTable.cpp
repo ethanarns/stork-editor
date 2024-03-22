@@ -929,6 +929,16 @@ void DisplayTable::initCellCollision() {
             this->setCellCollision(y,  x+1,CollisionDraw::SQUARE_DRAW, curCol);
             this->setCellCollision(y+1,x,  CollisionDraw::UPSIDE_DOWN_SLOPE_30_1_DRAW, curCol);
             this->setCellCollision(y+1,x+1,CollisionDraw::UPSIDE_DOWN_SLOPE_30_2_DRAW, curCol);
+        } else if (curCol == CollisionType::CLIMBABLE_VINE_CEILING) {
+            this->setCellCollision(y,  x,  CollisionDraw::VINE_LEFT, curCol);
+            this->setCellCollision(y,  x+1,CollisionDraw::VINE_RIGHT, curCol);
+            this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
+            this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
+        } else if (curCol == CollisionType::CLIMBABLE_VINE_TALL) {
+            this->setCellCollision(y,  x,  CollisionDraw::VINE_LEFT, curCol);
+            this->setCellCollision(y,  x+1,CollisionDraw::VINE_RIGHT, curCol);
+            this->setCellCollision(y+1,x,  CollisionDraw::VINE_LEFT, curCol);
+            this->setCellCollision(y+1,x+1,CollisionDraw::VINE_RIGHT, curCol);
         } else if (curCol == CollisionType::NONE) {
             this->setCellCollision(y,  x,  CollisionDraw::CLEAR, curCol);
             this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);

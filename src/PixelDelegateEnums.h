@@ -152,7 +152,9 @@ enum CollisionDraw {
     SLIPPERY_ICE_SQUARE_LIGHTER,
 
     UPSIDE_DOWN_SLOPE_30_1_DRAW,
-    UPSIDE_DOWN_SLOPE_30_2_DRAW
+    UPSIDE_DOWN_SLOPE_30_2_DRAW,
+    VINE_LEFT,
+    VINE_RIGHT
 };
 
 struct CollisionMetadata {

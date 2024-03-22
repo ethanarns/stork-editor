@@ -29,6 +29,7 @@ const QColor collisionColorRed(255,0,0,180);
 const QColor collisionColorLightBlue(205,239,255,200);
 const QColor collisionColorLighestBlue(240,240,255,200);
 const QColor collisionSoftRock(254,225,158,200);
+const QColor collisionGreen(0,255,0,200);
 
 void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,const QModelIndex &index) const {
     using namespace std;
@@ -449,6 +450,18 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 path.addPolygon(poly);
                 painter->fillPath(path,collisionColor);
                 break; 
+            }
+            case CollisionDraw::VINE_LEFT: {
+                QPainterPath path;
+                path.addRect(X_BASE+(X_WIDTH/2),Y_BASE,X_WIDTH/2,Y_HEIGHT);
+                painter->fillPath(path,collisionGreen);
+                break;
+            };
+            case CollisionDraw::VINE_RIGHT: {
+                QPainterPath path;
+                path.addRect(X_BASE,Y_BASE,X_WIDTH/2,Y_HEIGHT);
+                painter->fillPath(path,collisionGreen);
+                break;
             }
             case CollisionDraw::CLEAR: {
                 // Do nothing
