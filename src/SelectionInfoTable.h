@@ -4,6 +4,7 @@
 #include "yidsrom.h"
 #include "LevelObject.h"
 #include "StateCommands.h"
+#include "DisplayTable.h"
 
 #include <vector>
 
@@ -14,13 +15,14 @@
 class SelectionInfoTable : public QTableWidget {
     Q_OBJECT
 public:
-    SelectionInfoTable(QWidget* parent, YidsRom* rom);
+    SelectionInfoTable(QWidget* parent, YidsRom* rom, DisplayTable* gridPtr);
     void setText(int x, int y, std::string text, bool editable = false);
     void updateWithLevelObject(LevelObject *lo);
 
     LevelObject *spritePointer;
 private:
     YidsRom* yidsRom;
+    DisplayTable* grid;
     void cellDoubleClicked(int row, int column);
     void cellChanged(int row, int column);
     QTableWidgetItem* cellBeingEdited;

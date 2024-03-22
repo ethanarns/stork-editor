@@ -71,8 +71,8 @@ private:
 
 class SpriteSettingsChangeCommand : public QUndoCommand {
 public:
-    SpriteSettingsChangeCommand(uint32_t loUuid, std::vector<uint8_t> newSettings, YidsRom* yidsrom, QUndoCommand* parent = nullptr) :
-        QUndoCommand(parent), uuid(loUuid), newSets(newSettings), rom(yidsrom)
+    SpriteSettingsChangeCommand(uint32_t loUuid, std::vector<uint8_t> newSettings, YidsRom* yidsrom, DisplayTable *gridPtr, QUndoCommand* parent = nullptr) :
+        QUndoCommand(parent), uuid(loUuid), newSets(newSettings), rom(yidsrom), grid(gridPtr)
     {
         std::stringstream ss;
         auto loPtr = this->rom->mapData->getLevelObjectByUuid(uuid);
@@ -94,4 +94,5 @@ private:
     std::vector<uint8_t> newSets;
     std::vector<uint8_t> oldSets;
     YidsRom* rom;
+    DisplayTable* grid;
 };

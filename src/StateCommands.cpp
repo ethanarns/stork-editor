@@ -123,7 +123,11 @@ void SpriteSettingsChangeCommand::undo() {
         YUtils::printDebug("Mismatch in changed settings size",DebugType::WARNING);
     }
     loPtr->settings = this->oldSets;
-    // Update grid later
+    this->grid->updateSprites();
+    this->grid->clearSelection();
+    this->grid->clearVisualSpriteSelection();
+    this->grid->selectedObjects.clear();
+    this->grid->selectItemByUuid(loPtr->uuid);
 }
 
 void SpriteSettingsChangeCommand::redo() {
@@ -136,5 +140,9 @@ void SpriteSettingsChangeCommand::redo() {
         YUtils::printDebug("Mismatch in changed settings size",DebugType::WARNING);
     }
     loPtr->settings = this->newSets;
-    // Update grid later
+    this->grid->updateSprites();
+    this->grid->clearSelection();
+    this->grid->clearVisualSpriteSelection();
+    this->grid->selectedObjects.clear();
+    this->grid->selectItemByUuid(loPtr->uuid);
 }

@@ -371,7 +371,7 @@ MainWindow::MainWindow() {
     leftPanelLayout->addWidget(leftPanelTopGroupBox);
     QVBoxLayout* leftPanelTopGroupBoxLayout = new QVBoxLayout;
 
-    this->selectionInfoTable = new SelectionInfoTable(this,this->rom);
+    this->selectionInfoTable = new SelectionInfoTable(this,this->rom,this->grid);
     leftPanelTopGroupBoxLayout->addWidget(this->selectionInfoTable);
     leftPanelTopGroupBox->setLayout(leftPanelTopGroupBoxLayout);
     leftPanelTopGroupBox->setMinimumHeight(300);

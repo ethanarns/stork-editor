@@ -3,6 +3,7 @@
 #include "yidsrom.h"
 #include "LevelObject.h"
 #include "StateCommands.h"
+#include "DisplayTable.h"
 
 #include <sstream>
 #include <string>
@@ -13,9 +14,10 @@
 #include <QTableWidget>
 #include <QTableWidgetItem>
 
-SelectionInfoTable::SelectionInfoTable(QWidget* parent, YidsRom* rom) {
+SelectionInfoTable::SelectionInfoTable(QWidget* parent, YidsRom* rom, DisplayTable* gridPtr) {
     this->setParent(parent);
     this->yidsRom = rom;
+    this->grid = gridPtr;
 
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
     this->setColumnCount(2);
@@ -122,7 +124,11 @@ void SelectionInfoTable::cellChanged(int row, int column) {
                 return;
             }
             std::cout << "Changing Y POS to " << std::hex << value << std::endl;
-            this->spritePointer->yPosition = value;
+            uint16_t newXPos = this->spritePointer->xPosition;
+            uint16_t newYpos = value;
+            auto movy = new MoveSpriteCommand(*this->spritePointer,newXPos,newYpos,this->grid,this->yidsRom);
+            emit this->pushCommandToUndoStack(movy);
+            //this->spritePointer->yPosition = value;
         } else if (row == SelectionInfoTable::XPOSROW) {
             bool ok;
             uint32_t value = item->text().toUInt(&ok,16);
@@ -131,7 +137,11 @@ void SelectionInfoTable::cellChanged(int row, int column) {
                 return;
             }
             std::cout << "Changing X POS to " << std::hex << value << std::endl;
-            this->spritePointer->xPosition = value;
+            uint16_t newXpos = value;
+            uint16_t newYpos = this->spritePointer->yPosition;
+            auto movX = new MoveSpriteCommand(*this->spritePointer,newXpos,newYpos,this->grid,this->yidsRom);
+            emit this->pushCommandToUndoStack(movX);
+            //this->spritePointer->xPosition = value;
         } else if (row == SelectionInfoTable::SETTINGSDATAROW) {
             auto str = item->text().toStdString();
             auto hexVector = this->hexStringToByteVector(str);
@@ -143,12 +153,12 @@ void SelectionInfoTable::cellChanged(int row, int column) {
                 YUtils::popupAlert("Invalid settings length");
                 return;
             }
-            SpriteSettingsChangeCommand *modCmd = new SpriteSettingsChangeCommand(this->spritePointer->uuid,hexVector,this->yidsRom);
+            SpriteSettingsChangeCommand *modCmd = new SpriteSettingsChangeCommand(this->spritePointer->uuid,hexVector,this->yidsRom,this->grid);
             emit this->pushCommandToUndoStack(modCmd);
             //this->spritePointer->settings = hexVector;
         }
-        std::cout << "Emitting updateMainWindow" << std::endl;
-        emit this->updateMainWindow(this->spritePointer);
+        //std::cout << "Emitting updateMainWindow" << std::endl;
+        //emit this->updateMainWindow(this->spritePointer);
     }
 }
 
