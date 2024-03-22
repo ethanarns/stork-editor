@@ -525,6 +525,16 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
             result.preview = CollisionDraw::SOFT_ROCK_SQUARE;
             break;
         }
+        case CollisionType::UPSIDE_DOWN_SLOPE_30_1: {
+            result.prettyName = "Upside Down 30 1";
+            result.preview = CollisionDraw::UPSIDE_DOWN_SLOPE_30_1_DRAW;
+            break;
+        }
+        case CollisionType::UPSIDE_DOWN_SLOPE_30_2: {
+            result.prettyName = "Upside Down 30 2";
+            result.preview = CollisionDraw::UPSIDE_DOWN_SLOPE_30_2_DRAW;
+            break;
+        }
     }
     return result;
 }

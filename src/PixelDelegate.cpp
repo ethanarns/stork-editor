@@ -432,6 +432,24 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 painter->fillPath(path,collisionSoftRock);
                 break;
             }
+            case CollisionDraw::UPSIDE_DOWN_SLOPE_30_2_DRAW: {
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE,(double)Y_BASE) << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE));
+                poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT)) << QPointF((double)(X_BASE),(double)(Y_BASE+Y_HEIGHT/2));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColor);
+                break; 
+            }
+            case CollisionDraw::UPSIDE_DOWN_SLOPE_30_1_DRAW: {
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE,(double)Y_BASE) << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE));
+                poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT/2));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColor);
+                break; 
+            }
             case CollisionDraw::CLEAR: {
                 // Do nothing
                 break;
