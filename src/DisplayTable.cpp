@@ -579,7 +579,7 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                     this->clearVisualSpriteSelection();
                     this->selectedObjects.clear();
 
-                    YUtils::printDebug("Doing item selection in mousePressEvent");
+                    //YUtils::printDebug("Doing item selection in mousePressEvent");
                     this->selectItemByUuid(cursorItemUuid);
                     return;
                 } else {

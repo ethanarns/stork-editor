@@ -119,6 +119,9 @@ void SpriteSettingsChangeCommand::undo() {
         YUtils::printDebug("Couldn't undo sprite settings modification, uuid not found",DebugType::ERROR);
         return;
     }
+    if (loPtr->settings.size() != this->oldSets.size()) {
+        YUtils::printDebug("Mismatch in changed settings size",DebugType::WARNING);
+    }
     loPtr->settings = this->oldSets;
     // Update grid later
 }
@@ -128,6 +131,9 @@ void SpriteSettingsChangeCommand::redo() {
     if (loPtr == nullptr) {
         YUtils::printDebug("Couldn't (re)do sprite settings modification, uuid not found",DebugType::ERROR);
         return;
+    }
+    if (loPtr->settings.size() != this->newSets.size()) {
+        YUtils::printDebug("Mismatch in changed settings size",DebugType::WARNING);
     }
     loPtr->settings = this->newSets;
     // Update grid later
