@@ -1100,7 +1100,7 @@ void MainWindow::displayTableUpdate(){
 }
 
 void MainWindow::selectionWindowUpdate(LevelObject *sprite) {
-    this->grid->wipeObject(sprite->uuid);
+    //this->grid->wipeObject(sprite->uuid);
     this->grid->updateSprites();
     this->grid->clearVisualSpriteSelection();
     this->grid->selectedObjects.clear();

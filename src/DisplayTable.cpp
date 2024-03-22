@@ -966,7 +966,7 @@ void DisplayTable::updateTriggerBoxes() {
 }
 
 void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
-    this->wipeObject(uuid);
+    //this->wipeObject(uuid);
     this->yidsRom->moveObjectTo(uuid,newX,newY);
     this->updateSprites();
     this->clearVisualSpriteSelection();
@@ -1213,6 +1213,22 @@ void DisplayTable::updateBg() {
 }
 
 void DisplayTable::updateSprites() {
+    YUtils::printDebug("updateSprites");
+    // Full wipe
+    uint32_t xWidth = this->columnCount();
+    uint32_t yHeight = this->rowCount();
+    for (uint32_t col = 0; col < xWidth; col++) {
+        for (uint32_t row = 0; row < yHeight; row++) {
+            auto currentItem = this->item(row,col);
+            if (currentItem != nullptr) {
+                currentItem->setData(PixelDelegateData::OBJECT_UUID,QVariant::fromValue(nullptr));
+                currentItem->setData(PixelDelegateData::OBJECT_ID,QVariant::fromValue(nullptr));
+                currentItem->setData(PixelDelegateData::OBJECT_PALETTE,QVariant::fromValue(nullptr));
+                currentItem->setData(PixelDelegateData::OBJECT_TILES,QVariant::fromValue(nullptr));
+            }
+        }
+    }
+    //auto t1 = std::chrono::high_resolution_clock::now();
     if (this->yidsRom->mapData->getAllLevelObjects().size() == 0) {
         YUtils::printDebug("No objects loaded, cannot update",DebugType::ERROR);
         return;
@@ -1290,6 +1306,12 @@ void DisplayTable::updateSprites() {
             );
         }
     }
+    // // Timing
+    // auto t2 = std::chrono::high_resolution_clock::now();
+    // auto lol1 = std::chrono::duration_cast<std::chrono::milliseconds>(t1.time_since_epoch()).count();
+    // auto lol2 = std::chrono::duration_cast<std::chrono::milliseconds>(t2.time_since_epoch()).count();
+    // std::cout << "milliseconds: " << lol2-lol1 << std::endl;
+
     emit this->triggerMainWindowUpdate(); // displayTableUpdate
 }
 
@@ -1429,22 +1451,22 @@ void DisplayTable::placeObjectTile(
     }
 }
 
-void DisplayTable::wipeObject(uint32_t uuid) {
-    auto allItems = this->findItems("sprite",Qt::MatchExactly);
-    if (allItems.size() == 0) {
-        YUtils::printDebug("Zero sprites given text data!",DebugType::WARNING);
-        return;
-    }
-    for (int i = 0; i < allItems.size(); i++) {
-        auto potentialItem = allItems.at(i);
-        if (potentialItem != nullptr) {
-            uint32_t foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt();
-            if (foundUuid == uuid) {
-                potentialItem->setData(PixelDelegateData::OBJECT_UUID,QVariant::fromValue(nullptr));
-                potentialItem->setData(PixelDelegateData::OBJECT_ID,QVariant::fromValue(nullptr));
-                potentialItem->setData(PixelDelegateData::OBJECT_PALETTE,QVariant::fromValue(nullptr));
-                potentialItem->setData(PixelDelegateData::OBJECT_TILES,QVariant::fromValue(nullptr));
-            }
-        }
-    }
-}
+// void DisplayTable::wipeObject(uint32_t uuid) {
+//     auto allItems = this->findItems("sprite",Qt::MatchExactly);
+//     if (allItems.size() == 0) {
+//         YUtils::printDebug("Zero sprites given text data!",DebugType::WARNING);
+//         return;
+//     }
+//     for (int i = 0; i < allItems.size(); i++) {
+//         auto potentialItem = allItems.at(i);
+//         if (potentialItem != nullptr) {
+//             uint32_t foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt();
+//             if (foundUuid == uuid) {
+//                 potentialItem->setData(PixelDelegateData::OBJECT_UUID,QVariant::fromValue(nullptr));
+//                 potentialItem->setData(PixelDelegateData::OBJECT_ID,QVariant::fromValue(nullptr));
+//                 potentialItem->setData(PixelDelegateData::OBJECT_PALETTE,QVariant::fromValue(nullptr));
+//                 potentialItem->setData(PixelDelegateData::OBJECT_TILES,QVariant::fromValue(nullptr));
+//             }
+//         }
+//     }
+// }

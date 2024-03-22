@@ -14,7 +14,7 @@
 #include <QTableWidgetItem>
 
 SelectionInfoTable::SelectionInfoTable(QWidget* parent, YidsRom* rom) {
-    Q_UNUSED(parent);
+    this->setParent(parent);
     this->yidsRom = rom;
 
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
