@@ -65,6 +65,7 @@ public:
     static CollisionMetadata getCollisionMetadata(CollisionType colType);
     static QColor invertColor(QColor in);
     static std::string magicToAscii(uint32_t hexText);
+    static std::string generateUuid();
 };
 
 #endif

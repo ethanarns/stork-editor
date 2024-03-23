@@ -8,7 +8,8 @@ class ProjectManager {
 public:
     ProjectManager(YidsRom* rom);
     std::string latestProjectName = "";
-    QJsonObject generateNewJson();
+    QJsonObject generateNewJson(std::string projectName);
+    bool saveJson(QJsonObject jsonData, std::string fullFileName);
 private:
     YidsRom* yidsRom;
 };
