@@ -425,6 +425,7 @@ MainWindow::MainWindow() {
     this->spriteFileSelect->addItem("objyamori.arcz");
     this->spriteFileSelect->addItem("objtori_yuuhi.arcz");
     this->spriteFileSelect->addItem("objplayer.arcz");
+    this->spriteFileSelect->addItem("objgoal.arcz");
     //this->spriteFileSelect->setCurrentText("---");
     this->spriteFileSelect->setEnabled(false);
     connect(this->spriteFileSelect,&QComboBox::currentTextChanged,this->objtilesTable,&ObjTilesTable::doFileLoad);

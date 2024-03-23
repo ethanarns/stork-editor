@@ -28,6 +28,13 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tilesCount = 0; // Needs special rendering...
             break;
         }
+        case 0x14: { // Stork Stop
+            meta.indexOfTiles = 0xa;
+            meta.indexOfPalette = 0xaa;
+            meta.tileWidth = 4;
+            meta.tilesCount = 4 * 8;
+            break;
+        }
         case 0x20: { // Falling donuts
             meta.indexOfTiles = 0x11;
             meta.indexOfPalette = 0x87;
