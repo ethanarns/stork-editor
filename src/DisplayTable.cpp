@@ -1474,8 +1474,6 @@ void DisplayTable::placeObjectTile(
                     }
                     tileItem->setData(PixelDelegateData::OBJECT_TILES,YUtils::tileVectorToQByteArray(curTiles));
                     tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette);
-                    tileItem->setData(PixelDelegateData::FLIP_H_BG2,0);
-                    tileItem->setData(PixelDelegateData::FLIP_V_BG2,0);
                     tileItem->setData(PixelDelegateData::OBJECT_UUID,uuid);
                     tileItem->setText("sprite");
 
