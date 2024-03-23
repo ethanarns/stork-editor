@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Chartile.h"
+
 #include <vector>
 #include <cstdint>
 #include <string>
@@ -62,7 +64,7 @@ public:
     ObjectTileData(std::vector<uint8_t> decompVector);
     //ObjbFrame* getFrameData(uint32_t frameIndex);
     ObjbFrame getFrameAt(uint32_t frameIndex);
-    std::vector<QByteArray> getChartiles(uint32_t index, uint32_t count);
+    std::vector<QByteArray> getChartiles(uint32_t index, uint32_t count, BgColorMode colMode = BgColorMode::MODE_16);
 
     //std::vector<ObjbFrame*> frames;
 

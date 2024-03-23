@@ -123,11 +123,16 @@ ObjbFrame ObjectTileData::getFrameAt(uint32_t frameIndex) {
     return frame;
 }
 
-std::vector<QByteArray> ObjectTileData::getChartiles(uint32_t index, uint32_t count) {
+std::vector<QByteArray> ObjectTileData::getChartiles(uint32_t index, uint32_t count, BgColorMode colMode) {
     std::vector<QByteArray> chartiles;
+    int dataSize = Constants::CHARTILE_DATA_SIZE;
+    if (colMode == BgColorMode::MODE_256) {
+        dataSize = 64;
+    }
+    // TODO: 256 support
     for (uint i = 0; i < count; i++) {
-        uint32_t curIndex = index + (i * Constants::CHARTILE_DATA_SIZE);
-        auto curSection = YUtils::subVector(this->byteData,curIndex,curIndex+Constants::CHARTILE_DATA_SIZE);
+        uint32_t curIndex = index + (i * dataSize);
+        auto curSection = YUtils::subVector(this->byteData,curIndex,curIndex+dataSize);
         chartiles.push_back(YUtils::tileVectorToQByteArray(curSection));
     }
     return chartiles;
