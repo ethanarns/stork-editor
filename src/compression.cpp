@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "cue_lzss.h"
 #include "cue_blz.h"
+#include "GlobalSettings.h"
 
 // std::cerr, std::endl, std::ios
 #include <iostream>
@@ -14,7 +15,6 @@
 // Q_UNUSED
 #include <QtGlobal>
 
-const char* ROM_EXTRACT_DIR = "_nds_unpack";
 const char* NDSTOOL_PATH = "lib/ndstool";
 const char* NDSTOOL_PATH_WIN = "lib\\ndstool.exe";
 
@@ -77,7 +77,7 @@ std::vector<uint8_t> YCompression::lzssVectorRecomp(std::vector<uint8_t>& uncomp
 
 std::filesystem::path YCompression::getAbsoluteRomPart(std::string dataName) {
     std::string dataPath = "./"; // "." means current directory, even within a greater path
-    dataPath = dataPath.append(ROM_EXTRACT_DIR).append("/").append(dataName);
+    dataPath = dataPath.append(globalSettings.extractFolderName).append("/").append(dataName);
     return YUtils::relativeToEscapedAbs(dataPath);
 }
 
@@ -94,12 +94,12 @@ void YCompression::unpackRom(std::string romFileName) {
         exit(EXIT_FAILURE);
     }
 
-    if (std::filesystem::exists(ROM_EXTRACT_DIR)) {
+    if (std::filesystem::exists(globalSettings.extractFolderName)) {
         YUtils::printDebug("ROM unpack directory already exists, skipping extraction",DebugType::VERBOSE);
         return;
     } else {
         YUtils::printDebug("Unpacking ROM with NDSTool",DebugType::VERBOSE);
-        std::filesystem::create_directory(ROM_EXTRACT_DIR);
+        std::filesystem::create_directory(globalSettings.extractFolderName);
     }
 
     execPath = execPath.append(" -x ").append(YUtils::relativeToEscapedAbs(romFileName));
@@ -157,7 +157,7 @@ void YCompression::repackRom(std::string outputFileName) {
         exit(EXIT_FAILURE);
     }
 
-    if (!std::filesystem::exists(ROM_EXTRACT_DIR)) {
+    if (!std::filesystem::exists(globalSettings.extractFolderName)) {
         YUtils::popupAlert("ROM unpack directory not found, canceling repack");
         return;
     }

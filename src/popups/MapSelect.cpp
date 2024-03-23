@@ -1,5 +1,6 @@
 #include "MapSelect.h"
 #include "../data/LevelSelectData.h"
+#include "../GlobalSettings.h"
 
 #include <filesystem>
 #include <string>
@@ -49,7 +50,9 @@ MapSelect::MapSelect(QWidget *parent, YidsRom *rom) {
 }
 
 void MapSelect::updateLeftList() {
-    std::filesystem::path filesPath = "_nds_unpack/data/file";
+    std::stringstream ssUnpackedFileLoc;
+    ssUnpackedFileLoc << globalSettings.extractFolderName << "/data/file";
+    std::filesystem::path filesPath = ssUnpackedFileLoc.str();
     if (!std::filesystem::exists(filesPath)) {
         YUtils::printDebug("Could not retrieve CRSBs, directory invalid",DebugType::ERROR);
         YUtils::popupAlert("Could not retrieve CRSBs, directory invalid");

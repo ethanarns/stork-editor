@@ -4,6 +4,7 @@
 #include "Chartile.h"
 #include "constants.h"
 #include "data/LevelSelectData.h"
+#include "GlobalSettings.h"
 
 // std::cerr, std::endl, std::ios
 #include <iostream>
@@ -158,8 +159,9 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
     // Writes to "bin9.bin"
     // arm9.bin from NDSTool just has 12 extra bytes
     //this->extractCompressedARM9(romStart9,romSize9);
-
-    auto arm9toolPath = std::filesystem::absolute("./_nds_unpack/arm9.bin");
+    std::stringstream ssArm9Path;
+    ssArm9Path << "./" << globalSettings.extractFolderName << "/arm9.bin";
+    auto arm9toolPath = std::filesystem::absolute(ssArm9Path.str());
     auto newBinFilePath = std::filesystem::absolute(Constants::NEW_BIN_FILE);
     if (!std::filesystem::exists(newBinFilePath)) {
         std::filesystem::copy(
@@ -335,7 +337,9 @@ Address YidsRom::getAddrFromAddrPtr(Address pointerAddress_file) {
 
 std::vector<uint8_t> YidsRom::getByteVectorFromFile(std::string fileName) {
     std::vector<uint8_t> vec;
-    std::string UNPACKED_FILE_LOCATION = "_nds_unpack/data/file/";
+    std::stringstream ssUnpackedFileLoc;
+    ssUnpackedFileLoc << globalSettings.extractFolderName << "/data/file/";
+    std::string UNPACKED_FILE_LOCATION = ssUnpackedFileLoc.str();
     fileName = UNPACKED_FILE_LOCATION.append(fileName);
     std::ifstream inputFile{fileName, std::ios::binary};
     if (!inputFile) {

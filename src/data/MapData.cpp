@@ -62,7 +62,9 @@ std::vector<Chartile> LayerData::parseImbzFromFile(std::string filename_noExt, B
     // Get the file vector
     std::vector<uint8_t> vec;
     std::string tempFullFileName = filename_noExt.append(".imbz");
-    std::string UNPACKED_FILE_LOCATION = "_nds_unpack/data/file/";
+    std::stringstream ssUnpackedFileLoc;
+    ssUnpackedFileLoc << globalSettings.extractFolderName << "/data/file/";
+    std::string UNPACKED_FILE_LOCATION = ssUnpackedFileLoc.str();
     tempFullFileName = UNPACKED_FILE_LOCATION.append(tempFullFileName);
     std::ifstream inputFile{tempFullFileName, std::ios::binary};
     std::copy(

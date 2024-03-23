@@ -902,7 +902,7 @@ void MainWindow::saveRom() {
     auto outVec = this->rom->mapData->compile(info);
     auto finalOut = YCompression::lzssVectorRecomp(outVec);
     std::stringstream outFile;
-    outFile << "_nds_unpack" << "/data/file/" << this->rom->mapData->filename;
+    outFile << globalSettings.extractFolderName << "/data/file/" << this->rom->mapData->filename;
     std::stringstream ssSave;
     ssSave << "Saving map file '" << this->rom->mapData->filename << "' with size 0x" << std::hex << finalOut.size();
     ssSave << " / " << std::dec << finalOut.size();
@@ -921,7 +921,7 @@ void MainWindow::saveRom() {
     auto compiledCrsb = this->rom->currentLevelSelectData->compile();
     auto crsbFilename = this->rom->currentLevelSelectData->filename;
     std::stringstream crsbOutFile;
-    crsbOutFile << "_nds_unpack" << "/data/file/" << crsbFilename;
+    crsbOutFile << globalSettings.extractFolderName << "/data/file/" << crsbFilename;
     YUtils::writeByteVectorToFile(compiledCrsb,crsbOutFile.str());
     std::stringstream crsbResult;
     crsbResult << "Wrote CRSB to '" << crsbOutFile.str() << "'";
