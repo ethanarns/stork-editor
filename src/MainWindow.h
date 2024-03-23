@@ -32,6 +32,7 @@
 #include "popups/SpritePickerWindow.h"
 #include "popups/LevelWindow.h"
 #include "GridOverlay.h"
+#include "data/ProjectManager.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -52,6 +53,7 @@ public:
     ColWindow* colWindow;
     SpritePickerWindow* spritePickerWindow;
     LevelWindow* levelWindow;
+    ProjectManager* projectManager;
 
     std::string currentFileName = "";
 

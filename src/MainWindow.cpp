@@ -18,6 +18,7 @@
 #include "data/LevelSelectData.h"
 #include "GridOverlay.h"
 #include "StateCommands.h"
+#include "data/ProjectManager.h"
 
 #include <QtCore>
 #include <QObject>
@@ -549,6 +550,9 @@ MainWindow::MainWindow() {
     
     // Level data window //
     this->levelWindow = new LevelWindow(this,this->rom);
+
+    // Project Manager //
+    this->projectManager = new ProjectManager(this->rom);
 
     /*******************
      *** Connections ***
