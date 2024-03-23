@@ -48,7 +48,7 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
             // Push it
             this->objectTileDataVector.push_back(objb);
             obarIndex = endPos;
-        } else if (headerCheck == Constants::PLTB_MAGIC_NUM) {
+        } else if (headerCheck == Constants::PLTB_MAGIC_NUM || headerCheck == Constants::PALB_MAGIC_NUM) {
             auto pltbSector = YUtils::subVector(obarVector,obarIndex,obarIndex+innerLength);
             if (pltbSector.size() % Constants::PALETTE_SIZE != 0) {
                 YUtils::printDebug("Uneven PLTB size",DebugType::ERROR);

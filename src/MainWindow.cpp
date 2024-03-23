@@ -427,6 +427,18 @@ MainWindow::MainWindow() {
     this->spriteFileSelect->addItem("objtori_yuuhi.arcz");
     this->spriteFileSelect->addItem("objplayer.arcz");
     this->spriteFileSelect->addItem("objgoal.arcz");
+
+    this->spriteFileSelect->addItem("objadv_01a.arcz");
+    this->spriteFileSelect->addItem("objadv_01b.arcz");
+    this->spriteFileSelect->addItem("objmekakushikumo.arcz");
+    this->spriteFileSelect->addItem("objop_01.arcz");
+    this->spriteFileSelect->addItem("objtori_yuuhi.arcz");
+    this->spriteFileSelect->addItem("objunbaba.arcz");
+    this->spriteFileSelect->addItem("objgoallogo.arc");
+    this->spriteFileSelect->addItem("objcrstitle.arc");
+
+    //this->spriteFileSelect->addItem("title3_bg.arcz"); No OBAR found, crashes
+
     //this->spriteFileSelect->setCurrentText("---");
     this->spriteFileSelect->setEnabled(false);
     connect(this->spriteFileSelect,&QComboBox::currentTextChanged,this->objtilesTable,&ObjTilesTable::doFileLoad);

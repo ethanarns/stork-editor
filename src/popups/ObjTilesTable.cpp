@@ -132,10 +132,11 @@ void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
     auto curObjb = objbs.at(this->objbIndex);
     auto curFrame = curObjb->getFrameAt(this->frameIndex);
     auto tileCount = 18;
-    if (guessTileCount) {
-        this->setColumnCount(this->getSpriteTilesWidth(curFrame.buildFrame->flags));
-        //tileCount = this->getSpriteTilesWidth(curFrame.buildFrame->flags);
-    }
+    Q_UNUSED(guessTileCount);
+    // if (guessTileCount) {
+    //     this->setColumnCount(this->getSpriteTilesWidth(curFrame.buildFrame->flags));
+    //     //tileCount = this->getSpriteTilesWidth(curFrame.buildFrame->flags);
+    // }
     tileCount = this->rowCount() * this->columnCount();
     auto tiles = curObjb->getChartiles(curFrame.buildFrame->tileOffset << 4,tileCount);
     this->wipeTiles();

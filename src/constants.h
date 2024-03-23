@@ -24,6 +24,7 @@ namespace Constants {
     inline constexpr uint32_t SCEN_MAGIC_NUM{0x4e454353}; // "SCEN"
     inline constexpr uint32_t INFO_MAGIC_NUM{0x4f464e49}; // "INFO"
     inline constexpr uint32_t PLTB_MAGIC_NUM{0x42544c50}; // "PLTB"
+    inline constexpr uint32_t PALB_MAGIC_NUM{0x424C4150}; // "PALB"
     inline constexpr uint32_t MPBZ_MAGIC_NUM{0x5a42504d}; // "MPBZ" / 4D 50 42 5A
     inline constexpr uint32_t COLZ_MAGIC_NUM{0x5a4c4f43}; // "COLZ" / 43 4F 4C 5A
     inline constexpr uint32_t IMGB_MAGIC_NUM{0x42474d49}; // "IMGB" / 49 4d 47 42
