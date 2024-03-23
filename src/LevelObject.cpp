@@ -35,6 +35,22 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tileWidth = 2;
             break;
         }
+        case 0x21: { // Pirhana Plant 1
+            meta.indexOfTiles = 0x24;
+            meta.indexOfPalette = 0x97;
+            meta.tilesCount = 8;
+            meta.tileWidth = 2;
+            meta.frame = 1;
+            break;
+        }
+        // case 0x22: { // Pirhana Plant 1 Upside down
+        //     meta.indexOfTiles = 0x24;
+        //     meta.indexOfPalette = 0x97;
+        //     meta.tilesCount = 8;
+        //     meta.tileWidth = 2;
+        //     meta.frame = 1;
+        //     break;
+        // }
         case 0x23: { // Green pipe
             constexpr uint32_t VERTICAL_PIPE_TILES = 0x13;
             constexpr uint32_t HORIZONTAL_PIPE_TILES = 0x12;
