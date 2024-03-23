@@ -64,7 +64,7 @@ void ObjTilesTable::wipeTiles() {
 }
 
 void ObjTilesTable::doFileLoad(const QString text) {
-    YUtils::printDebug("doFileLoad()");
+    //YUtils::printDebug("doFileLoad()");
     auto archiveFileName = text.toStdString();
     if (archiveFileName.empty() || archiveFileName.compare("---") == 0) {
         YUtils::printDebug("Invalid sprite file name load attempt");
@@ -133,17 +133,14 @@ void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
     auto curFrame = curObjb->getFrameAt(this->frameIndex);
     auto tileCount = 18;
     if (guessTileCount) {
-        tileCount = this->getTileCount(curFrame.buildFrame->flags);
-    } else {
-        tileCount = this->rowCount() * this->columnCount();
+        this->setColumnCount(this->getSpriteTilesWidth(curFrame.buildFrame->flags));
+        //tileCount = this->getSpriteTilesWidth(curFrame.buildFrame->flags);
     }
+    tileCount = this->rowCount() * this->columnCount();
     auto tiles = curObjb->getChartiles(curFrame.buildFrame->tileOffset << 4,tileCount);
-    if (guessTileCount) {
-        this->setRowCount(tiles.size() / this->columnCount());
-    }
     this->wipeTiles();
     if (this->currentPalette == nullptr) {
-        std::cout << "Setting to default" << std::endl;
+        //std::cout << "Setting to default" << std::endl;
         this->currentPalette = this->yidsRom->backgroundPalettes[0];
     }
     for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
@@ -211,7 +208,7 @@ void ObjTilesTable::paletteChanged(int i) {
 }
 
 // Does not work properly
-uint32_t ObjTilesTable::getTileCount(uint32_t buildFlags) {
+uint32_t ObjTilesTable::getSpriteTilesWidth(uint32_t buildFlags) {
     // MOSTLY works
     uint32_t frameMetaOffset = buildFlags & 0b11111;
     frameMetaOffset *= 3;
@@ -219,8 +216,9 @@ uint32_t ObjTilesTable::getTileCount(uint32_t buildFlags) {
     uint32_t frameMetaAddress = frameMetaBaseAddress + frameMetaOffset;
     //std::cout << "0x" << std::hex << frameMetaAddress << std::endl;
     uint32_t trueMetaAddress = YUtils::conv2xAddrToFileAddr(frameMetaAddress);
-    //std::cout << "0x" << std::hex << (uint16_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+0) << std::endl;
-    //std::cout << "0x" << std::hex << (uint16_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+1) << std::endl;
-    //std::cout << "0x" << std::hex << (uint16_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+2) << std::endl;
-    return (uint32_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+0);
+    YUtils::printDebug("3 build meta values:");
+    std::cout << "0x" << std::hex << (uint16_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+0) << std::endl;
+    std::cout << "0x" << std::hex << (uint16_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+1) << std::endl;
+    std::cout << "0x" << std::hex << (uint16_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+2) << std::endl;
+    return (uint32_t)this->yidsRom->uncompedRomVector.at(trueMetaAddress+0) / 2;
 }

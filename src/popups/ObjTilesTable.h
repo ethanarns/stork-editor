@@ -32,5 +32,5 @@ private:
     uint32_t frameIndex = 0;
     std::string currentFileName = "";
     QByteArray currentPalette;
-    uint32_t getTileCount(uint32_t buildFlags);
+    uint32_t getSpriteTilesWidth(uint32_t buildFlags);
 };
