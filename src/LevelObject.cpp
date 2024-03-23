@@ -151,6 +151,13 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.frame = 1;
             break;
         }
+        case 0x4b: { // Windbag
+            meta.indexOfTiles = 0x33;
+            meta.indexOfPalette = 0xa1;
+            meta.tileWidth = 4;
+            meta.tilesCount = 4 * 7;
+            break;
+        }
         case 0x4e: { // Dandylion
             meta.indexOfTiles = 0x2f;
             meta.indexOfPalette = 0x8f;
