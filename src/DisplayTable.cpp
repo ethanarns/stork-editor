@@ -48,6 +48,7 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
 
     this->selectorBand = new QRubberBand(QRubberBand::Rectangle,this);
     this->selectorBand->hide();
+    this->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);
 
     QTableWidget::connect(this, &QTableWidget::cellEntered, this, &DisplayTable::cellEnteredTriggered);
     //QTableWidget::connect(this, &QTableWidget::cellClicked, this, &DisplayTable::displayTableClicked);
@@ -620,14 +621,12 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
         } else {
             YUtils::printDebug("If this is hit, you seriously messed something up",DebugType::ERROR);
         }
-        if (event->button() == Qt::LeftButton) {
-            // TODO start rectangle band
+        if (event->button() == Qt::LeftButton || event->button() == Qt::RightButton) {
+            // Right button will erase
+            this->clearSelection();
             this->selectorBandOrigin = event->pos();
             this->selectorBand->setGeometry(QRect(this->selectorBandOrigin, QSize()));
             this->selectorBand->show();
-            return;
-        } else if (event->button() == Qt::RightButton) {
-            YUtils::printDebug("TODO: Right click handling");
             return;
         } else {
             YUtils::printDebug("Unhandled mouse click",DebugType::WARNING);
@@ -680,7 +679,7 @@ void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
         globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
         globalSettings.layerSelectMode == LayerMode::BG3_LAYER
     ) {
-        if (event->button() == Qt::LeftButton) {
+        if (event->button() == Qt::LeftButton || event->button() == Qt::RightButton) {
             bool bandBigEnoughForMultiSelect = false;
             auto bandWidth = this->selectorBand->width();
             auto bandHeight = this->selectorBand->height();
@@ -694,8 +693,19 @@ void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
                 auto bandX = this->selectorBand->x();
                 auto bandY = this->selectorBand->y();
                 QRect rect(bandX,bandY,this->selectorBand->width(),this->selectorBand->height());
-                globalSettings.selectedItemPointers = this->getIntersectedTiles(rect);
-                this->updateSelectedTilesVisuals(globalSettings.currentEditingBackground);
+                if (event->button() == Qt::LeftButton) {
+                    globalSettings.selectedItemPointers = this->getIntersectedTiles(rect);
+                    this->updateSelectedTilesVisuals(globalSettings.currentEditingBackground);
+                } else {
+                    QUndoCommand* totalRmCmd = new QUndoCommand();
+                    auto tilesToWipe = this->getIntersectedTiles(rect);
+                    auto blankTileAttr = YUtils::getMapTileRecordDataFromShort(0x0000);
+                    for (auto it = tilesToWipe.begin(); it != tilesToWipe.end(); it++) {
+                        auto tw = *it;
+                        AddTileToGridCommand* rmCmd = new AddTileToGridCommand(tw->row(),tw->column(),blankTileAttr,this->yidsRom,this,totalRmCmd);
+                    }
+                    emit this->pushStateCommandToStack(totalRmCmd);
+                }
             } else {
                 // Do single
                 auto curItemUnderCursor = this->itemAt(event->pos());
@@ -703,10 +713,12 @@ void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
                     YUtils::printDebug("Item under cursor in mouseReleaseEvent for BGX is null", DebugType::ERROR);
                     return;
                 }
-                this->doBgBrushClick(curItemUnderCursor);
+                if (event->button() == Qt::LeftButton) {
+                    this->doBgBrushClick(curItemUnderCursor);
+                } else {
+                    YUtils::printDebug("TODO: right button single click");
+                }
             }
-        } else if (event->button() == Qt::RightButton) {
-            std::cout << "Right mouse button release" << std::endl;
         } else {
             std::cout << "Unknown mouse button release" << std::endl;
         }
