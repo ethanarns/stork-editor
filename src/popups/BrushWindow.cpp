@@ -260,6 +260,27 @@ void BrushWindow::stampListSelectedRowChanged(int currentRow) {
     if (currentRow == -1) {
        return;
     }
+    if (globalSettings.brushes.size() == 0) {
+        YUtils::printDebug("Brush list is empty, mismatch",DebugType::ERROR);
+        YUtils::popupAlert("Brush list is empty, list mismatch");
+        return;
+    }
+    if ((uint)currentRow >= globalSettings.brushes.size()) {
+        YUtils::printDebug("Brush list widget has too many brushes",DebugType::ERROR);
+        YUtils::popupAlert("Brush list widget has too many brushes");
+        return;
+    }
     YUtils::printDebug("stampListSelectedRowChanged");
-    std::cout << currentRow << std::endl;
+    auto selectedStampData = globalSettings.brushes.at(currentRow);
+    *globalSettings.currentBrush = selectedStampData; // Change current data in brush
+    auto tiles = selectedStampData.tileAttrs;
+    this->brushTable->resetTable();
+    uint width = 12; // temp, brushes should be size agnostic (TODO)
+    for (uint tileIndex = 0; tileIndex < tiles.size(); tileIndex++) {
+        auto mapTile = tiles.at(tileIndex);
+        int row = tileIndex / width;
+        int col = tileIndex % width;
+        this->brushTable->setTile(row,col,mapTile);
+    }
+    this->brushTable->loadTilesToCurBrush();
 }

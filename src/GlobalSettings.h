@@ -26,7 +26,6 @@ struct TileBrush {
     std::vector<MapTileRecordData> tileAttrs;
     std::string brushTileset;
     std::string name;
-    const static int BRUSH_DIMS = 16;
     QJsonObject toJson() {
         QJsonArray tileArray;
         for (auto it = this->tileAttrs.begin(); it != this->tileAttrs.end(); it++) {
