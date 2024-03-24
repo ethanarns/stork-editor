@@ -26,6 +26,7 @@ public:
     QListWidget* stampList;
     void updateStampList();
     void saveBrushClicked();
+    void stampListSelectedRowChanged(int currentRow);
 private:
     YidsRom* yidsRom;
 };

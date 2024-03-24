@@ -21,6 +21,7 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     auto leftLayout = new QVBoxLayout(this);
 
     this->brushTable = new BrushTable(this,rom);
+    this->brushTable->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
     leftLayout->addWidget(this->brushTable);
     
     // Row 1
@@ -67,6 +68,7 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
 
     // Right side //
     this->stampList = new QListWidget(this);
+    connect(this->stampList,&QListWidget::currentRowChanged,this,&BrushWindow::stampListSelectedRowChanged);
     rightLayout->addWidget(this->stampList);
     mainLayout->addLayout(rightLayout);
 
@@ -252,4 +254,12 @@ void BrushWindow::saveBrushClicked() {
 
     this->updateStampList();
     this->textboxBrushName->clear();
+}
+
+void BrushWindow::stampListSelectedRowChanged(int currentRow) {
+    if (currentRow == -1) {
+       return;
+    }
+    YUtils::printDebug("stampListSelectedRowChanged");
+    std::cout << currentRow << std::endl;
 }
