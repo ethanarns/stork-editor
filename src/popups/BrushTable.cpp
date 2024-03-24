@@ -89,7 +89,7 @@ void BrushTable::updateBrushDims() {
             auto item = this->item(y,x);
             if (item != nullptr) {
                 auto tileId = item->data(PixelDelegateData::TILE_ID_BG1);
-                if (!tileId.isNull() && tileId.toInt() != 0xffff) {
+                if (!tileId.isNull() && tileId.toInt() != 0xffff && tileId.toInt() != 0x0000) {
                     // Okay there's a good tile
                     if ((x+1) > globalSettings.brushW) {
                         globalSettings.brushW = (x+1);
