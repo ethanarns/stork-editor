@@ -350,7 +350,10 @@ void DisplayTable::doBgBrushClick(QTableWidgetItem *curItem) {
             if (tileAttr.compile() == 0) {
                 continue;
             }
-            this->placeNewTileOnMap(yBase+y,xBase+x,tileAttr);
+            int rowY = yBase+y;
+            int colX = xBase+x;
+            AddTileToGridCommand *addCmd = new AddTileToGridCommand(rowY,colX,tileAttr,this->yidsRom,this);
+            emit this->pushStateCommandToStack(addCmd);
         }
     }
     emit this->triggerMainWindowUpdate(); // To mark savable

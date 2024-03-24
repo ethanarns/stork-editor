@@ -96,3 +96,47 @@ private:
     YidsRom* rom;
     DisplayTable* grid;
 };
+
+class AddTileToGridCommand : public QUndoCommand {
+public:
+    AddTileToGridCommand(int row, int column, MapTileRecordData mapRecord, YidsRom* yidsrom, DisplayTable *gridPtr, QUndoCommand* parent = nullptr) :
+        QUndoCommand(parent), rowY(row), colX(column), mapRecordNew(mapRecord), rom(yidsrom), grid(gridPtr), mapRecordOld(mapRecord)
+    {
+        this->setText(QString("place bg tiles"));
+        this->whichBg = globalSettings.currentEditingBackground;
+        auto curItemAt = this->grid->item(this->rowY,this->colX);
+        if (curItemAt == nullptr) {
+            this->mapRecordOld = MapTileRecordData();
+            this->mapRecordOld.tileId = 0;
+            this->mapRecordOld.paletteId = 0;
+            this->mapRecordOld.tileAttr = 0x0000;
+            this->mapRecordOld.flipH = false;
+            this->mapRecordOld.flipV = false;
+            return;
+        } else {
+            uint16_t oldTileAttr = 0x0000;
+            if (whichBg == 1) {
+                oldTileAttr = curItemAt->data(PixelDelegateData::TILEATTR_BG1).toUInt();
+            } else if (whichBg == 2) {
+                oldTileAttr = curItemAt->data(PixelDelegateData::TILEATTR_BG2).toUInt();
+            } else if (whichBg == 3) {
+                oldTileAttr = curItemAt->data(PixelDelegateData::TILEATTR_BG3).toUInt();
+            } else {
+                YUtils::printDebug("Unusual whichBg value in AddTileToGridCommand constructor",DebugType::ERROR);
+                return;
+            }
+            auto mapTile = YUtils::getMapTileRecordDataFromShort(oldTileAttr);
+            this->mapRecordOld = mapTile;
+        }
+    };
+    void undo() override;
+    void redo() override;
+private:
+    int rowY;
+    int colX;
+    uint32_t whichBg;
+    MapTileRecordData mapRecordNew;
+    YidsRom* rom;
+    DisplayTable* grid;
+    MapTileRecordData mapRecordOld;
+};

@@ -146,3 +146,11 @@ void SpriteSettingsChangeCommand::redo() {
     this->grid->selectedObjects.clear();
     this->grid->selectItemByUuid(loPtr->uuid);
 }
+
+void AddTileToGridCommand::redo() {
+    this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordNew);
+}
+
+void AddTileToGridCommand::undo() {
+    this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordOld);
+}
