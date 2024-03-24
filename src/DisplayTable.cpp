@@ -370,7 +370,7 @@ std::vector<QTableWidgetItem*> DisplayTable::getIntersectedTiles(QRect selection
             auto potentialItem = this->item(row,col);
             if (potentialItem != nullptr) {
                 auto itemRect = this->visualItemRect(potentialItem);
-                if (selectionRect.contains(itemRect)) {
+                if (selectionRect.intersects(itemRect)) {
                     result.push_back(potentialItem);
                 }
             }
