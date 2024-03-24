@@ -1016,7 +1016,7 @@ void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
     this->selectItemByUuid(uuid);
 }
 
-bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapRecord, bool skipPalOffset) {
+bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapRecord, uint32_t whichBg, bool skipPalOffset) {
     //YUtils::printDebug("placeNewTileOnMap()");
     if (row < 0 || row > this->rowCount()-1) {
         YUtils::printDebug("placeNewTileOnMap row out of bounds",DebugType::VERBOSE);
@@ -1026,14 +1026,14 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         YUtils::printDebug("placeNewTileOnMap column out of bounds",DebugType::VERBOSE);
         return false;
     }
-    if (globalSettings.currentEditingBackground < 1) {
-        YUtils::printDebug("currentEditingBackground value in placeNewTileOnMap too low",DebugType::ERROR);
-        YUtils::popupAlert("currentEditingBackground value in placeNewTileOnMap too low");
+    if (whichBg < 1) {
+        YUtils::printDebug("whichBg value in placeNewTileOnMap too low",DebugType::ERROR);
+        YUtils::popupAlert("whichBg value in placeNewTileOnMap too low");
         return false;
     }
-    if (globalSettings.currentEditingBackground > 3) {
-        YUtils::printDebug("currentEditingBackground value in placeNewTileOnMap too high",DebugType::ERROR);
-        YUtils::popupAlert("currentEditingBackground value in placeNewTileOnMap too high");
+    if (whichBg > 3) {
+        YUtils::printDebug("whichBg value in placeNewTileOnMap too high",DebugType::ERROR);
+        YUtils::popupAlert("whichBg value in placeNewTileOnMap too high");
         return false;
     }
     if (mapRecord.tileId == 0xffff) {
@@ -1045,7 +1045,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         YUtils::printDebug("Tile was not present before, creating new");
         curItem = new QTableWidgetItem();
     }
-    auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground,false);
+    auto scen = this->yidsRom->mapData->getScenByBg(whichBg,false);
     if (scen == nullptr) {
         YUtils::printDebug("SCEN for this BG is nullptr, skipping",DebugType::WARNING);
         return false;
@@ -1065,7 +1065,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         // Use this as a fallback until you find out
         if (mapRecord.tileId != 0) {
             std::stringstream ssTile;
-            ssTile << "Could not get certain tileId for BG" << globalSettings.currentEditingBackground << ": " << std::hex << mapRecord.tileId;
+            ssTile << "Could not get certain tileId for BG" << whichBg << ": " << std::hex << mapRecord.tileId;
             YUtils::printDebug(ssTile.str(),DebugType::ERROR);
         } else {
             YUtils::printDebug("tileId in placeNewTileOnMap was 0",DebugType::WARNING);
@@ -1080,7 +1080,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         pal += (uint8_t)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
     }
     auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
-    if (globalSettings.currentEditingBackground == 1) {
+    if (whichBg == 1) {
         // BG 1 //
         curItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
         if (!isColorMode256) {
@@ -1093,7 +1093,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         curItem->setData(PixelDelegateData::FLIP_V_BG1,mapRecord.flipV);
         curItem->setData(PixelDelegateData::TILEATTR_BG1,(uint)mapRecord.tileAttr);
         curItem->setData(PixelDelegateData::TILE_ID_BG1,(uint)mapRecord.tileId);
-    } else if (globalSettings.currentEditingBackground == 2) {
+    } else if (whichBg == 2) {
         // BG 2 //
         curItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
         if (!isColorMode256) {
@@ -1106,7 +1106,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         curItem->setData(PixelDelegateData::FLIP_V_BG2,mapRecord.flipV);
         curItem->setData(PixelDelegateData::TILEATTR_BG2,(uint)mapRecord.tileAttr);
         curItem->setData(PixelDelegateData::TILE_ID_BG2,(uint)mapRecord.tileId);
-    } else if (globalSettings.currentEditingBackground == 3) {
+    } else if (whichBg == 3) {
         // BG 3 //
         curItem->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
         if (!isColorMode256) {
@@ -1120,8 +1120,8 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         curItem->setData(PixelDelegateData::TILEATTR_BG3,(uint)mapRecord.tileAttr);
         curItem->setData(PixelDelegateData::TILE_ID_BG3,(uint)mapRecord.tileId);
     } else {
-        YUtils::printDebug("Unusual currentEditingBackground in placeNewTileOnMap",DebugType::ERROR);
-        YUtils::popupAlert("Unusual currentEditingBackground in placeNewTileOnMap");
+        YUtils::printDebug("Unusual whichBg in placeNewTileOnMap",DebugType::ERROR);
+        YUtils::popupAlert("Unusual whichBg in placeNewTileOnMap");
         return false;
     }
     curItem->setData(PixelDelegateData::DRAW_TRANS_TILES,false);

@@ -148,9 +148,9 @@ void SpriteSettingsChangeCommand::redo() {
 }
 
 void AddTileToGridCommand::redo() {
-    this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordNew);
+    this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordNew,this->whichBg);
 }
 
 void AddTileToGridCommand::undo() {
-    this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordOld);
+    this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordOld,this->whichBg);
 }

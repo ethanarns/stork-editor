@@ -102,6 +102,7 @@ public:
     AddTileToGridCommand(int row, int column, MapTileRecordData mapRecord, YidsRom* yidsrom, DisplayTable *gridPtr, QUndoCommand* parent = nullptr) :
         QUndoCommand(parent), rowY(row), colX(column), mapRecordNew(mapRecord), rom(yidsrom), grid(gridPtr), mapRecordOld(mapRecord)
     {
+        // This sets up the data when it is created, but does not actually change anything
         this->setText(QString("place bg tiles"));
         this->whichBg = globalSettings.currentEditingBackground;
         auto curItemAt = this->grid->item(this->rowY,this->colX);
