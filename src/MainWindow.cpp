@@ -987,11 +987,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
         globalSettings.layerSelectMode == LayerMode::BG3_LAYER
     ) {
-        YUtils::printDebug("keyPressEvent: BG Layer",DebugType::VERBOSE);
+        //YUtils::printDebug("keyPressEvent: BG Layer",DebugType::VERBOSE);
     } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
-        YUtils::printDebug("keyPressEvent: Collision layer",DebugType::VERBOSE);
+        //YUtils::printDebug("keyPressEvent: Collision layer",DebugType::VERBOSE);
     } else if (globalSettings.layerSelectMode == LayerMode::PORTALS_LAYER) {
-        YUtils::printDebug("keyPressEvent: Entrance/Exit layer",DebugType::VERBOSE);
+        //YUtils::printDebug("keyPressEvent: Entrance/Exit layer",DebugType::VERBOSE);
     } else {
         MainWindow::keyPressEvent(event);
     }

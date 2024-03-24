@@ -343,6 +343,7 @@ void DisplayTable::doBgBrushClick(QTableWidgetItem *curItem) {
     }
     
     // Do tile placement loop
+    QUndoCommand* multiAddCmd = new QUndoCommand();
     for (int y = 0; y < BrushTable::CELL_COUNT_DIMS; y++) {
         for (int x = 0; x < BrushTable::CELL_COUNT_DIMS; x++) {
             uint attrPos = x + y*BrushTable::CELL_COUNT_DIMS;
@@ -352,10 +353,10 @@ void DisplayTable::doBgBrushClick(QTableWidgetItem *curItem) {
             }
             int rowY = yBase+y;
             int colX = xBase+x;
-            AddTileToGridCommand *addCmd = new AddTileToGridCommand(rowY,colX,tileAttr,this->yidsRom,this);
-            emit this->pushStateCommandToStack(addCmd);
+            AddTileToGridCommand *addCmd = new AddTileToGridCommand(rowY,colX,tileAttr,this->yidsRom,this,multiAddCmd);
         }
     }
+    emit this->pushStateCommandToStack(multiAddCmd);
     emit this->triggerMainWindowUpdate(); // To mark savable
 }
 
