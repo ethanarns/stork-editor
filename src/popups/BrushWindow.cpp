@@ -14,12 +14,14 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     this->setWindowTitle(tr("Brush Window"));
     this->setObjectName(tr("brushWindow"));
     this->setMinimumHeight(301);
-    this->resize(216,301);
-    this->setMinimumWidth(216);
-    auto mainLayout = new QVBoxLayout(this);
+    this->resize(417,301);
+    this->setMinimumWidth(417);
+    auto mainLayout = new QHBoxLayout(this);
+    auto rightLayout = new QVBoxLayout(this);
+    auto leftLayout = new QVBoxLayout(this);
 
     this->brushTable = new BrushTable(this,rom);
-    mainLayout->addWidget(this->brushTable);
+    leftLayout->addWidget(this->brushTable);
     
     // Row 1
     auto bar1 = new QHBoxLayout(this);
@@ -59,9 +61,15 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     // ConnectMe
     bar3->addWidget(saveBrush);
 
-    mainLayout->addLayout(bar1);
-    mainLayout->addLayout(bar2);
-    mainLayout->addLayout(bar3);
+    leftLayout->addLayout(bar1);
+    leftLayout->addLayout(bar2);
+    leftLayout->addLayout(bar3);
+    mainLayout->addLayout(leftLayout);
+
+    // Right side //
+    this->stampList = new QListWidget(this);
+    rightLayout->addWidget(this->stampList);
+    mainLayout->addLayout(rightLayout);
 
     this->setLayout(mainLayout);
 }

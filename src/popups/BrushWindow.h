@@ -7,6 +7,7 @@
 
 #include <QWidget>
 #include <QCheckBox>
+#include <QListWidget>
 
 class BrushWindow : public QWidget {
     Q_OBJECT
@@ -19,6 +20,7 @@ public:
     void clearBrushClicked();
     bool saveCurrentBrushToFile();
     bool loadFileToCurrentBrush(std::string filename);
+    QListWidget* stampList;
 private:
     YidsRom* yidsRom;
 };
