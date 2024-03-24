@@ -21,6 +21,7 @@ BrushTable::BrushTable(QWidget *parent, YidsRom *rom) {
     this->setShowGrid(true);
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
     this->setEditTriggers(QAbstractItemView::NoEditTriggers); // Disable text editing
+    this->setSelectionMode(QAbstractItemView::SelectionMode::NoSelection);
 
     setItemDelegate(new PixelDelegate);
 

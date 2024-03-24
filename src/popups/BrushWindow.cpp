@@ -283,4 +283,5 @@ void BrushWindow::stampListSelectedRowChanged(int currentRow) {
         this->brushTable->setTile(row,col,mapTile);
     }
     this->brushTable->loadTilesToCurBrush();
+    this->textboxBrushName->setText(QString::fromStdString(selectedStampData.name));
 }
