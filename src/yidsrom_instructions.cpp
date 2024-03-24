@@ -176,3 +176,25 @@ bool YidsRom::loadObjectRenderFile(std::string obarFileFull) {
     this->objectRenderFiles[obarFileFull] = this->getObjPltFile(obarFileFull);
     return true;
 }
+
+void YidsRom::getHintMessageData(uint16_t hintMessageId) {
+    YUtils::printDebug("getHintMessageData");
+    std::vector<uint8_t> mespack = this->getByteVectorFromFile("mespack.mes");
+    // 020ccdc8
+    uint index = 0;
+    uint dest = 0;
+    uint messageTarget = 0;
+
+    uint32_t maxCount = YUtils::getUint32FromVec(mespack,dest);
+    dest += 4;
+    do {
+        uint checkLoc = index * 4; // This is working correctly
+        auto checkValue = YUtils::getUint16FromVec(mespack,dest + index*4);
+        if (checkValue == hintMessageId || checkValue == 0xffff) {
+            break;
+        } 
+        index++;
+        messageTarget = messageTarget + YUtils::getUint16FromVec(mespack,dest + checkLoc + 2);
+    } while (index < maxCount);
+    std::cout << std::hex << messageTarget << std::endl;
+}

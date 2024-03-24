@@ -89,6 +89,8 @@ public:
     ObjectFile getObjPltFile(std::string objset_filename);
     bool loadObjectRenderFile(std::string obarFileFull);
 
+    void getHintMessageData(uint16_t hintMessageId);
+
     // template<typename T>
     // T getNumberAt(Address addr){
     //     T container;
