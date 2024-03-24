@@ -139,6 +139,7 @@ void BrushWindow::clearBrushClicked() {
     this->brushTable->resetTable();
     // No pointers, so no need to delete[]
     globalSettings.currentBrush->tileAttrs.clear();
+    this->updateStampList();
 }
 
 bool BrushWindow::saveCurrentBrushToFile() {
@@ -208,4 +209,18 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filename) {
         }
     }
     return true;
+}
+
+void BrushWindow::updateStampList() {
+    // Wipe it
+    // while (this->stampList->count()) {
+    //     delete this->stampList->takeItem(0);
+    // }
+    // Fill it
+    for (auto bit = globalSettings.brushes.begin(); bit != globalSettings.brushes.end(); bit++) {
+        auto curBrush = *bit;
+        auto newItem = new QListWidgetItem(this->stampList);
+        newItem->setText(QString::fromStdString(curBrush->name));
+        this->stampList->addItem(newItem);
+    }
 }

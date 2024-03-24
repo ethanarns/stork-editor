@@ -20,7 +20,9 @@ public:
     void clearBrushClicked();
     bool saveCurrentBrushToFile();
     bool loadFileToCurrentBrush(std::string filename);
+
     QListWidget* stampList;
+    void updateStampList();
 private:
     YidsRom* yidsRom;
 };

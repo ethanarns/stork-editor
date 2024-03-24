@@ -354,7 +354,7 @@ void DisplayTable::doBgBrushClick(QTableWidgetItem *curItem) {
             }
             int rowY = yBase+y;
             int colX = xBase+x;
-            AddTileToGridCommand *addCmd = new AddTileToGridCommand(rowY,colX,tileAttr,this->yidsRom,this,multiAddCmd);
+            new AddTileToGridCommand(rowY,colX,tileAttr,this->yidsRom,this,multiAddCmd);
         }
     }
     emit this->pushStateCommandToStack(multiAddCmd);
@@ -702,7 +702,7 @@ void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
                     auto blankTileAttr = YUtils::getMapTileRecordDataFromShort(0x0000);
                     for (auto it = tilesToWipe.begin(); it != tilesToWipe.end(); it++) {
                         auto tw = *it;
-                        AddTileToGridCommand* rmCmd = new AddTileToGridCommand(tw->row(),tw->column(),blankTileAttr,this->yidsRom,this,totalRmCmd);
+                        new AddTileToGridCommand(tw->row(),tw->column(),blankTileAttr,this->yidsRom,this,totalRmCmd);
                     }
                     emit this->pushStateCommandToStack(totalRmCmd);
                 }
