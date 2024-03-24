@@ -49,16 +49,15 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     // Row 3 //
     auto bar3 = new QHBoxLayout(this);
     // Brush name
-    auto brushName = new QLineEdit(this);
-    brushName->setObjectName("textboxBrushName");
-    brushName->setText("TODO");
+    this->textboxBrushName = new QLineEdit(this);
+    this->textboxBrushName->setObjectName("textboxBrushName");
+    this->textboxBrushName->setText("brush1");
     // ConnectMe
-    bar3->addWidget(brushName);
+    bar3->addWidget(this->textboxBrushName);
     // Save brush
-    auto saveBrush = new QPushButton("&Save YDB",this);
+    auto saveBrush = new QPushButton("&Save Brush",this);
     saveBrush->setObjectName("buttonSaveBrushYdb");
-    saveBrush->setDisabled(true);
-    // ConnectMe
+    connect(saveBrush,&QPushButton::released,this,&BrushWindow::saveBrushClicked);
     bar3->addWidget(saveBrush);
 
     leftLayout->addLayout(bar1);
@@ -213,14 +212,44 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filename) {
 
 void BrushWindow::updateStampList() {
     // Wipe it
-    // while (this->stampList->count()) {
-    //     delete this->stampList->takeItem(0);
-    // }
+    while (this->stampList->count()) {
+        delete this->stampList->takeItem(0);
+    }
     // Fill it
     for (auto bit = globalSettings.brushes.begin(); bit != globalSettings.brushes.end(); bit++) {
         auto curBrush = *bit;
         auto newItem = new QListWidgetItem(this->stampList);
-        newItem->setText(QString::fromStdString(curBrush->name));
+        newItem->setText(QString::fromStdString(curBrush.name));
         this->stampList->addItem(newItem);
     }
+}
+
+void BrushWindow::saveBrushClicked() {
+    if (globalSettings.currentEditingBackground == 0) {
+        YUtils::popupAlert("Cannot save brushes on this layer");
+        YUtils::printDebug("saveBrushClicked detected bg 0",DebugType::WARNING);
+        return;
+    }
+    auto curBg = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
+    if (curBg == nullptr) {
+        YUtils::printDebug("saveBrushClicked bg is null",DebugType::WARNING);
+        return;
+    }
+    auto imbzFilename = curBg->getInfo()->imbzFilename;
+    if (imbzFilename.empty()) {
+        YUtils::popupAlert("Embedded IMBZs not yet supported");
+        YUtils::printDebug("imbzFilename is empty, unsupported",DebugType::WARNING);
+        return;
+    }
+    globalSettings.currentBrush->brushTileset = imbzFilename;
+    auto brushNameText = this->textboxBrushName->text().trimmed().toStdString();
+    if (brushNameText.empty()) {
+        YUtils::popupAlert("Please enter a brush name to save");
+        return;
+    }
+    globalSettings.currentBrush->name = brushNameText;
+    globalSettings.brushes.push_back(*globalSettings.currentBrush);
+
+    this->updateStampList();
+    this->textboxBrushName->clear();
 }

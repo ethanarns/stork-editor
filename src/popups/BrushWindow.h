@@ -8,12 +8,14 @@
 #include <QWidget>
 #include <QCheckBox>
 #include <QListWidget>
+#include <QPushButton>
 
 class BrushWindow : public QWidget {
     Q_OBJECT
 public:
     BrushWindow(QWidget *parent, YidsRom* rom);
     BrushTable* brushTable;
+    QLineEdit* textboxBrushName;
     void stateChangedH(int state);
     void stateChangedV(int state);
     void loadSelectionClicked();
@@ -23,6 +25,7 @@ public:
 
     QListWidget* stampList;
     void updateStampList();
+    void saveBrushClicked();
 private:
     YidsRom* yidsRom;
 };
