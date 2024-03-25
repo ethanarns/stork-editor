@@ -1025,6 +1025,13 @@ void DisplayTable::initCellCollision() {
                 this->setCellCollision(y+1,x+1,CollisionDraw::VINE_RIGHT, curCol);
                 break;
             }
+            case CollisionType::BROWN_FLOATING_STAIRS_UP_LEFT: {
+                this->setCellCollision(y  ,x  ,CollisionDraw::STAIRS_DOWN_RIGHT_DRAW, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::STAIRS_DOWN_RIGHT_DRAW, curCol);
+                this->setCellCollision(y+1,x  ,CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::CLEAR, curCol);
+                break;
+            }
             case CollisionType::NONE: {
                 this->setCellCollision(y,  x,  CollisionDraw::CLEAR, curCol);
                 this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);

@@ -567,6 +567,12 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
             result.preview = CollisionDraw::UPSIDE_DOWN_RIGHT_45;
             break;
         }
+        case CollisionType::BROWN_FLOATING_STAIRS_UP_LEFT: {
+            result.prettyName = "Stairs Down";
+            result.preview = CollisionDraw::STAIRS_DOWN_RIGHT_DRAW;
+            break;
+        }
+        // Note: missing stairs up, but coldraw for it is already there
     }
     return result;
 }

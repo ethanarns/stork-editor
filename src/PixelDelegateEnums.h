@@ -154,7 +154,10 @@ enum CollisionDraw {
     UPSIDE_DOWN_SLOPE_30_1_DRAW,
     UPSIDE_DOWN_SLOPE_30_2_DRAW,
     VINE_LEFT,
-    VINE_RIGHT
+    VINE_RIGHT,
+
+    STAIRS_DOWN_RIGHT_DRAW,
+    STAIRS_UP_RIGHT_DRAW
 };
 
 struct CollisionMetadata {
