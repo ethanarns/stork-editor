@@ -846,10 +846,10 @@ void DisplayTable::initCellCollision() {
     }
     auto colArray = collisionTileArray->colData;
     for (int colIndex = 0; colIndex < CELL_LIST_SIZE; colIndex++) {
-        const CollisionType curCol = (CollisionType)colArray.at(colIndex);
+        const auto curCol = colArray.at(colIndex);
         uint32_t y = (colIndex / cutOff)*2;
         uint32_t x = (colIndex % cutOff)*2;
-        switch (curCol) {
+        switch ((CollisionType)curCol) {
             case CollisionType::SQUARE: {
                 this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT, curCol);
                 this->setCellCollision(y+1,x,  CollisionDraw::CORNER_BOTTOM_LEFT, curCol);
@@ -888,6 +888,8 @@ void DisplayTable::initCellCollision() {
             case CollisionType::UP_RIGHT_30: {
                 this->setCellCollision(y+1,x  ,CollisionDraw::UP_RIGHT_30_BL, curCol);
                 this->setCellCollision(y+1,x+1,CollisionDraw::UP_RIGHT_30_BR, curCol);
+                this->setCellCollision(y  ,x  ,CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::CLEAR, curCol);
                 break;
             }
             case CollisionType::UP_RIGHT_30_HALFSTART: {
@@ -939,12 +941,15 @@ void DisplayTable::initCellCollision() {
             case CollisionType::UP_RIGHT_STEEP_2: {
                 this->setCellCollision(y  ,x+1,CollisionDraw::UP_RIGHT_STEEP_SHORT, curCol);
                 this->setCellCollision(y+1,x+1,CollisionDraw::UP_RIGHT_STEEP_TALL, curCol);
+                this->setCellCollision(y+1,x  ,CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y  ,x  ,CollisionDraw::CLEAR, curCol);
                 break;
             }
             case CollisionType::UPSIDE_DOWN_DOWNWARDS_45: {
                 this->setCellCollision(y  ,x+1,CollisionDraw::SQUARE_DRAW, curCol);
                 this->setCellCollision(y  ,x  ,CollisionDraw::UPSIDE_DOWN_DOWNWARDS_45_DRAW, curCol);
                 this->setCellCollision(y+1,x+1,CollisionDraw::UPSIDE_DOWN_DOWNWARDS_45_DRAW, curCol);
+                this->setCellCollision(y+1,x  ,CollisionDraw::CLEAR, curCol);
                 break;
             }
             case CollisionType::DOWN_RIGHT_STEEP_HALFSTART: {
@@ -957,6 +962,8 @@ void DisplayTable::initCellCollision() {
             case CollisionType::DOWN_RIGHT_STEEP: {
                 this->setCellCollision(y  ,x  ,CollisionDraw::DOWN_RIGHT_STEEP_THIN, curCol);
                 this->setCellCollision(y+1,x  ,CollisionDraw::DOWN_RIGHT_STEEP_WIDE, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
                 break;
             }
             case CollisionType::KILL_SPIKES: {
