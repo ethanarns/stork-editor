@@ -671,10 +671,12 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
             uint32_t layerWidth = this->yidsRom->mapData->getCollisionCanvasWidth() / 2;
             uint32_t colX = curItemUnderCursor->column() / 2;
             uint32_t rowY = curItemUnderCursor->row() / 2;
-            uint32_t posInColArray = colX + (rowY * layerWidth);
-            collisionData->colData.at(posInColArray) = globalSettings.colTypeToDraw;
-            this->initCellCollision();
-            emit this->triggerMainWindowUpdate();
+            // uint32_t posInColArray = colX + (rowY * layerWidth);
+            // collisionData->colData.at(posInColArray) = globalSettings.colTypeToDraw;
+            // this->initCellCollision();
+            auto colCmd = new SetCollisionTileCommand(rowY,colX,globalSettings.colTypeToDraw,this->yidsRom,this);
+            emit this->pushStateCommandToStack(colCmd);
+            emit this->triggerMainWindowUpdate(); // Mark savable update mainly
             return;
         } else if (event->button() == Qt::RightButton) {
             std::stringstream ssColInfo;

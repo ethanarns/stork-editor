@@ -154,3 +154,25 @@ void AddTileToGridCommand::redo() {
 void AddTileToGridCommand::undo() {
     this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordOld,this->whichBg,false);
 }
+
+void SetCollisionTileCommand::redo() {
+    auto collisionContainer = this->rom->mapData->getCollisionData();
+    if (collisionContainer == nullptr) {
+        YUtils::printDebug("ColData was null in redo", DebugType::ERROR);
+        return;
+    }
+    uint32_t posInColArray = this->colX + (this->rowY * this->colWidth);
+    collisionContainer->colData.at(posInColArray) = this->colNew;
+    this->grid->initCellCollision();
+}
+
+void SetCollisionTileCommand::undo() {
+    auto collisionContainer = this->rom->mapData->getCollisionData();
+    if (collisionContainer == nullptr) {
+        YUtils::printDebug("ColData was null in undo", DebugType::ERROR);
+        return;
+    }
+    uint32_t posInColArray = this->colX + (this->rowY * this->colWidth);
+    collisionContainer->colData.at(posInColArray) = this->colOld;
+    this->grid->initCellCollision();
+}

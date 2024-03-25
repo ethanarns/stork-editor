@@ -4,6 +4,7 @@
 #include "DisplayTable.h"
 #include "data/MapData.h"
 #include "yidsrom.h"
+#include "PixelDelegateEnums.h"
 
 #include <QString>
 #include <QUndoCommand>
@@ -140,4 +141,37 @@ private:
     YidsRom* rom;
     DisplayTable* grid;
     MapTileRecordData mapRecordOld;
+};
+
+class SetCollisionTileCommand : public QUndoCommand {
+public:
+    /// @brief Set a collision tile
+    /// @param rowYpos Collision-space (divide by 2 from normal position) Y position
+    /// @param colXpos Collision-space (divide by 2 from normal position) X position
+    /// @param colTile CollisionType
+    /// @param yidsrom YidsRom
+    /// @param gridPtr DisplayTable
+    /// @param parent QUndoCommand (optional)
+    SetCollisionTileCommand(int rowYpos, int colXpos, CollisionType colTile, YidsRom* yidsrom, DisplayTable *gridPtr, QUndoCommand* parent = nullptr) :
+        QUndoCommand(parent), rowY(rowYpos), colX(colXpos), colNew(colTile), rom(yidsrom), grid(gridPtr)
+    {
+        // Set up data at creation, but do not make any changes outside of this class
+        this->colWidth = this->rom->mapData->getCollisionCanvasWidth() / 2;
+        uint32_t posInColArray = this->colX + (this->rowY * this->colWidth);
+        this->colOld = (CollisionType)this->rom->mapData->getCollisionData()->colData.at(posInColArray);
+        auto colMeta = YUtils::getCollisionMetadata(this->colNew);
+        std::stringstream ssUndo;
+        ssUndo << "place " << colMeta.prettyName;
+        this->setText(QString::fromStdString(ssUndo.str()));
+    };
+    void undo() override;
+    void redo() override;
+private:
+    int rowY;
+    int colX;
+    CollisionType colNew;
+    YidsRom* rom;
+    DisplayTable* grid;
+    CollisionType colOld = CollisionType::CLIMBABLE_VINE_CEILING; // Debug
+    uint32_t colWidth = 0;
 };
