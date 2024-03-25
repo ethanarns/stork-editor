@@ -659,21 +659,8 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
         }
         auto colData = curItemUnderCursor->data(PixelDelegateData::COLLISION_DEBUG).toInt();
         if (event->button() == Qt::LeftButton) {
-            // Get scen data TODO MAKE THIS LAYER AGNOSTIC
-            auto scen = this->yidsRom->mapData->getScenByBg(2,true);
-            if (scen == nullptr) {
-                YUtils::printDebug("Layer is null",DebugType::WARNING);
-                YUtils::popupAlert("Layer is null");
-                return;
-            }
-            auto collisionData = this->yidsRom->mapData->getCollisionData();
-            // Coll is in 2x2 segments
-            uint32_t layerWidth = this->yidsRom->mapData->getCollisionCanvasWidth() / 2;
             uint32_t colX = curItemUnderCursor->column() / 2;
             uint32_t rowY = curItemUnderCursor->row() / 2;
-            // uint32_t posInColArray = colX + (rowY * layerWidth);
-            // collisionData->colData.at(posInColArray) = globalSettings.colTypeToDraw;
-            // this->initCellCollision();
             auto colCmd = new SetCollisionTileCommand(rowY,colX,globalSettings.colTypeToDraw,this->yidsRom,this);
             emit this->pushStateCommandToStack(colCmd);
             emit this->triggerMainWindowUpdate(); // Mark savable update mainly

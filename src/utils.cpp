@@ -546,6 +546,27 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
             result.preview = CollisionDraw::VINE_RIGHT;
             break;
         }
+        // Next 3 have been tested and confirmed
+        case CollisionType::UPSIDE_DOWN_DOWNWARDS_45: {
+            result.prettyName = "Upside-Down Down 45";
+            result.preview = CollisionDraw::UPSIDE_DOWN_DOWNWARDS_45_DRAW;
+            break;
+        }
+        case CollisionType::UPSIDE_DOWN_UP_30: {
+            result.prettyName = "Upside-Down Up 30 1";
+            result.preview = CollisionDraw::UPSIDE_DOWN_RIGHT_UP_30_SHORT;
+            break;
+        }
+        case CollisionType::UPSIDE_DOWN_UP_30_2: {
+            result.prettyName = "Upside-Down Up 30 2";
+            result.preview = CollisionDraw::UPSIDE_DOWN_RIGHT_UP_30_TALL;
+            break;
+        }
+        case CollisionType::UPSIDE_DOWN_UP_RIGHT: {
+            result.prettyName = "Upside-Down Up Right 45";
+            result.preview = CollisionDraw::UPSIDE_DOWN_RIGHT_45;
+            break;
+        }
     }
     return result;
 }

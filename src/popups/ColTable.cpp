@@ -31,7 +31,7 @@ ColTable::ColTable(QWidget *parent) {
     this->setItemDelegateForColumn(0,new PixelDelegate);
     connect(this,&QTableWidget::cellClicked,this,&ColTable::tableCellClicked);
 
-    for (int row = 0; row < 0xc7; row++) {
+    for (int row = 0; row <= 0xc7; row++) {
         this->updateRow(row,static_cast<CollisionType>(row));
     }
 }
