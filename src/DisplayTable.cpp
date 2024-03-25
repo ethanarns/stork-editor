@@ -333,6 +333,21 @@ void DisplayTable::doBgBrushClick(QTableWidgetItem *curItem) {
         YUtils::popupAlert("Brush tiles size unusual");
         return;
     }
+    auto curScen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
+    if (curScen == nullptr) {
+        YUtils::printDebug("Invalid BG in doBgBrushClick",DebugType::ERROR);
+        return;
+    }
+    std::string curScenImbz = curScen->getInfo()->imbzFilename;
+    std::string curBrushImbz = globalSettings.currentBrush->brushTileset;
+    if (curScenImbz.compare(curBrushImbz) != 0) {
+        std::stringstream ssMismatchImbz;
+        ssMismatchImbz << "Mismatch in current tileset vs brush tileset: ";
+        ssMismatchImbz << curScenImbz << " vs ";
+        ssMismatchImbz << curBrushImbz;
+        YUtils::printDebug(ssMismatchImbz.str(),DebugType::WARNING);
+        return;
+    }
     uint32_t yBase = curItem->row();
     uint32_t xBase = curItem->column();
     // Round down (TODO add a disable toggle in options?)

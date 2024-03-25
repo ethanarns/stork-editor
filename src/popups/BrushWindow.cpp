@@ -293,8 +293,7 @@ void BrushWindow::stampListSelectedRowChanged(int currentRow) {
         ssMismatchImbz << scen->getInfo()->imbzFilename << " vs ";
         ssMismatchImbz << selectedStampData.brushTileset;
         YUtils::printDebug(ssMismatchImbz.str(),DebugType::WARNING);
-        ssMismatchImbz << ", placing tiles may break!";
-        YUtils::popupAlert(ssMismatchImbz.str());
+        return;
     }
     // Change current data in brush
     *globalSettings.currentBrush = selectedStampData;
