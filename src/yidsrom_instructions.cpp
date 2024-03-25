@@ -196,5 +196,17 @@ void YidsRom::getHintMessageData(uint16_t hintMessageId) {
         index++;
         messageTarget = messageTarget + YUtils::getUint16FromVec(mespack,dest + checkLoc + 2);
     } while (index < maxCount);
-    std::cout << std::hex << messageTarget << std::endl;
+    uint messageLocation = 0x388 + messageTarget;
+
+    auto headerVector = YUtils::subVector(mespack,messageLocation,messageLocation+0xc);
+    YUtils::printVector(headerVector);
+    messageLocation += 0xc;
+
+    auto length = YUtils::getUint32FromVec(mespack,messageLocation);
+    messageLocation += 4;
+
+    auto compressedVector = YUtils::subVector(mespack,messageLocation,messageLocation+length);
+    auto uncomped = YCompression::lz10decomp(compressedVector);
+    // 0x80 pixels wide, 4bpp single palette
+    //YUtils::printVector(uncomped);
 }
