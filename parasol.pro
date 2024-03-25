@@ -36,5 +36,8 @@ src/GridOverlay.h src/StateCommands.h src/data/ProjectManager.h
 
 QT += core gui widgets
 
+# version.majorRelease.minorRelease.hotfix
+VERSION = 0.3.3.0
+
 RESOURCES += \
     images.qrc

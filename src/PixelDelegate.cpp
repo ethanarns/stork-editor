@@ -471,7 +471,7 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 std::stringstream ssUnhandledDraw;
                 ssUnhandledDraw << "Unhandled CollisionDraw: 0x";
                 ssUnhandledDraw << std::hex << colDrawType;
-                YUtils::printDebug(ssUnhandledDraw.str(),DebugType::ERROR);
+                YUtils::printDebug(ssUnhandledDraw.str(),DebugType::WARNING);
                 QPainterPath path;
                 path.addRect(X_BASE,Y_BASE,X_WIDTH,Y_HEIGHT);
                 painter->fillPath(path,collisionColorRed);
