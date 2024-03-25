@@ -217,10 +217,20 @@ void BrushWindow::updateStampList() {
     while (this->stampList->count()) {
         delete this->stampList->takeItem(0);
     }
+    auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
+    if (scen == nullptr) {
+        YUtils::printDebug("Invalid layer when updating stamp list",DebugType::WARNING);
+        return;
+    }
+    auto currentScenImbz = scen->getInfo()->imbzFilename;
     // Fill it
     for (auto bit = globalSettings.brushes.begin(); bit != globalSettings.brushes.end(); bit++) {
         auto curBrush = *bit;
         auto newItem = new QListWidgetItem(this->stampList);
+        auto brushImbz = curBrush.brushTileset;
+        if (brushImbz.compare(currentScenImbz) != 0) {
+            newItem->setFlags(newItem->flags() & ~Qt::ItemIsEnabled);
+        }
         newItem->setText(QString::fromStdString(curBrush.name));
         this->stampList->addItem(newItem);
     }
@@ -272,7 +282,22 @@ void BrushWindow::stampListSelectedRowChanged(int currentRow) {
     }
     YUtils::printDebug("stampListSelectedRowChanged");
     auto selectedStampData = globalSettings.brushes.at(currentRow);
-    *globalSettings.currentBrush = selectedStampData; // Change current data in brush
+    auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
+    if (scen == nullptr) {
+        YUtils::printDebug("Invalid layer when selecting stamp",DebugType::WARNING);
+        return;
+    }
+    if (scen->getInfo()->imbzFilename.compare(selectedStampData.brushTileset) != 0) {
+        std::stringstream ssMismatchImbz;
+        ssMismatchImbz << "Mismatch in current tileset vs selected: ";
+        ssMismatchImbz << scen->getInfo()->imbzFilename << " vs ";
+        ssMismatchImbz << selectedStampData.brushTileset;
+        YUtils::printDebug(ssMismatchImbz.str(),DebugType::WARNING);
+        ssMismatchImbz << ", placing tiles may break!";
+        YUtils::popupAlert(ssMismatchImbz.str());
+    }
+    // Change current data in brush
+    *globalSettings.currentBrush = selectedStampData;
     auto tiles = selectedStampData.tileAttrs;
     this->brushTable->resetTable();
     uint width = 12; // temp, brushes should be size agnostic (TODO)

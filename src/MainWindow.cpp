@@ -746,6 +746,7 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
     this->grid->setDragEnabled(false);
     this->grid->setDragDropMode(QAbstractItemView::NoDragDrop);
     globalSettings.currentTileIndex = 0xffff; // Any change in layer resets the tile index
+    this->brushWindow->brushTable->resetTable();
     ss << "Layer selected: ";
     if (str.compare("BG1") == 0) {
         globalSettings.layerSelectMode = LayerMode::BG1_LAYER;
@@ -753,18 +754,21 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
         ss << "BG1";
         this->chartilesTable->refreshLoadedMapTilesMap(1);
         this->chartilesPopup->setWindowTitle("BG1 Tiles");
+        this->brushWindow->updateStampList();
     } else if (str.compare("BG2") == 0) {
         globalSettings.layerSelectMode = LayerMode::BG2_LAYER;
         globalSettings.currentEditingBackground = 2;
         ss << "BG2";
         this->chartilesTable->refreshLoadedMapTilesMap(2);
         this->chartilesPopup->setWindowTitle("BG2 Tiles");
+        this->brushWindow->updateStampList();
     } else if (str.compare("BG3") == 0) {
         globalSettings.layerSelectMode = LayerMode::BG3_LAYER;
         globalSettings.currentEditingBackground = 3;
         ss << "BG3";
         this->chartilesTable->refreshLoadedMapTilesMap(3);
         this->chartilesPopup->setWindowTitle("BG3 Tiles");
+        this->brushWindow->updateStampList();
     } else if (str.compare("Sprites") == 0) {
         globalSettings.layerSelectMode = LayerMode::SPRITES_LAYER;
         globalSettings.currentEditingBackground = 0;
