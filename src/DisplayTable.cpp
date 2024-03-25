@@ -846,129 +846,182 @@ void DisplayTable::initCellCollision() {
     }
     auto colArray = collisionTileArray->colData;
     for (int colIndex = 0; colIndex < CELL_LIST_SIZE; colIndex++) {
-        const auto curCol = colArray.at(colIndex);
+        const CollisionType curCol = (CollisionType)colArray.at(colIndex);
         uint32_t y = (colIndex / cutOff)*2;
         uint32_t x = (colIndex % cutOff)*2;
-        if (curCol == CollisionType::SQUARE) {
-            this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::CORNER_BOTTOM_LEFT, curCol);
-            this->setCellCollision(y,  x+1,CollisionDraw::CORNER_TOP_RIGHT, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT, curCol);
-        } else if (curCol == CollisionType::PLATFORM_PASSABLE) {
-            this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT, curCol);
-            this->setCellCollision(y,  x+1,CollisionDraw::CORNER_TOP_RIGHT, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::ZIG_ZAG, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::ZIG_ZAG, curCol);
-        } else if (curCol == CollisionType::DOWN_RIGHT_45) {
-            this->setCellCollision(y,  x,  CollisionDraw::DIAG_DOWN_RIGHT, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::CORNER_BOTTOM_LEFT, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::DIAG_DOWN_RIGHT, curCol);
-            this->setCellCollision(y  ,x+1,CollisionDraw::CLEAR,curCol);
-        } else if (curCol == CollisionType::UP_RIGHT_45) {
-            this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::DIAG_UP_RIGHT, curCol);
-            this->setCellCollision(y  ,x+1,CollisionDraw::DIAG_UP_RIGHT, curCol);
-            this->setCellCollision(y  ,x  ,CollisionDraw::CLEAR, curCol);
-        } else if (curCol == CollisionType::STATIC_COIN) {
-            this->setCellCollision(y  ,x  ,CollisionDraw::COIN_TOP_LEFT, curCol);
-            this->setCellCollision(y+1,x  ,CollisionDraw::COIN_BOTTOM_LEFT, curCol);
-            this->setCellCollision(y  ,x+1,CollisionDraw::COIN_TOP_RIGHT, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::COIN_BOTTOM_RIGHT, curCol);
-        } else if (curCol == CollisionType::UP_RIGHT_30) {
-            this->setCellCollision(y+1,x  ,CollisionDraw::UP_RIGHT_30_BL, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::UP_RIGHT_30_BR, curCol);
-        } else if (curCol == CollisionType::UP_RIGHT_30_HALFSTART) {
-            this->setCellCollision(y  ,x  ,CollisionDraw::UP_RIGHT_30_BL, curCol);
-            this->setCellCollision(y+1,x  ,CollisionDraw::SQUARE_DRAW, curCol);
-            this->setCellCollision(y  ,x+1,CollisionDraw::UP_RIGHT_30_BR, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::SQUARE_DRAW, curCol);
-        } else if (curCol == CollisionType::DOWN_RIGHT_30_1) {
-            this->setCellCollision(y  ,x  ,CollisionDraw::DOWN_RIGHT_30_TALL, curCol);
-            this->setCellCollision(y+1,x  ,CollisionDraw::SQUARE_DRAW, curCol);
-            this->setCellCollision(y  ,x+1,CollisionDraw::DOWN_RIGHT_30_SHORT, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::SQUARE_DRAW, curCol);
-        } else if (curCol == CollisionType::DOWN_RIGHT_30_2) {
-            this->setCellCollision(y+1,x  ,CollisionDraw::DOWN_RIGHT_30_TALL, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::DOWN_RIGHT_30_SHORT, curCol);
-        } else if (curCol == CollisionType::UPSIDE_DOWN_UP_RIGHT) {
-            this->setCellCollision(y  ,x  ,CollisionDraw::SQUARE_DRAW, curCol);
-            this->setCellCollision(y+1,x  ,CollisionDraw::UPSIDE_DOWN_RIGHT_45, curCol);
-            this->setCellCollision(y  ,x+1,CollisionDraw::UPSIDE_DOWN_RIGHT_45, curCol);
-        } else if (curCol == CollisionType::UPSIDE_DOWN_UP_30) {
-            this->setCellCollision(y+1,x+1,CollisionDraw::UPSIDE_DOWN_RIGHT_UP_30_SHORT, curCol);
-            this->setCellCollision(y  ,x  ,CollisionDraw::SQUARE_DRAW, curCol);
-            this->setCellCollision(y  ,x+1,CollisionDraw::SQUARE_DRAW, curCol);
-            this->setCellCollision(y+1,x  ,CollisionDraw::UPSIDE_DOWN_RIGHT_UP_30_TALL, curCol);
-        } else if (curCol == CollisionType::UPSIDE_DOWN_UP_30_2) {
-            this->setCellCollision(y  ,x  ,CollisionDraw::UPSIDE_DOWN_RIGHT_UP_30_TALL, curCol);
-            this->setCellCollision(y  ,x+1,CollisionDraw::UPSIDE_DOWN_RIGHT_UP_30_SHORT, curCol);
-        } else if (curCol == CollisionType::UP_RIGHT_STEEP_1) {
-            // Side squares
-            this->setCellCollision(y  ,x+1,CollisionDraw::SQUARE_DRAW, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::SQUARE_DRAW, curCol);
-            // Repeat steep
-            this->setCellCollision(y  ,x  ,CollisionDraw::UP_RIGHT_STEEP_SHORT, curCol);
-            this->setCellCollision(y+1,x  ,CollisionDraw::UP_RIGHT_STEEP_TALL, curCol);
-        } else if (curCol == CollisionType::UP_RIGHT_STEEP_2) {
-            this->setCellCollision(y  ,x+1,CollisionDraw::UP_RIGHT_STEEP_SHORT, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::UP_RIGHT_STEEP_TALL, curCol);
-        } else if (curCol == CollisionType::UPSIDE_DOWN_DOWNWARDS_45) {
-            this->setCellCollision(y  ,x+1,CollisionDraw::SQUARE_DRAW, curCol);
-            this->setCellCollision(y  ,x  ,CollisionDraw::UPSIDE_DOWN_DOWNWARDS_45_DRAW, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::UPSIDE_DOWN_DOWNWARDS_45_DRAW, curCol);
-        } else if (curCol == CollisionType::DOWN_RIGHT_STEEP_HALFSTART) {
-            this->setCellCollision(y  ,x  ,CollisionDraw::SQUARE_DRAW, curCol);
-            this->setCellCollision(y+1,x  ,CollisionDraw::SQUARE_DRAW, curCol);
-            this->setCellCollision(y  ,x+1,CollisionDraw::DOWN_RIGHT_STEEP_THIN, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::DOWN_RIGHT_STEEP_WIDE, curCol);
-        } else if (curCol == CollisionType::DOWN_RIGHT_STEEP) {
-            this->setCellCollision(y  ,x  ,CollisionDraw::DOWN_RIGHT_STEEP_THIN, curCol);
-            this->setCellCollision(y+1,x  ,CollisionDraw::DOWN_RIGHT_STEEP_WIDE, curCol);
-        } else if (curCol == CollisionType::KILL_SPIKES) {
-            this->setCellCollision(y,  x,  CollisionDraw::ZIG_ZAG_UPSIDE_DOWN_RED, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::SQERR, curCol);
-            this->setCellCollision(y,  x+1,CollisionDraw::ZIG_ZAG_UPSIDE_DOWN_RED, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::SQERR, curCol);
-        } else if (curCol == CollisionType::ICY_SQUARE) {
-            this->setCellCollision(y,  x,  CollisionDraw::SLIPPERY_ICE_SQUARE_LIGHTER, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::SLIPPERY_ICE_SQUARE, curCol);
-            this->setCellCollision(y,  x+1,CollisionDraw::SLIPPERY_ICE_SQUARE, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::SLIPPERY_ICE_SQUARE_LIGHTER, curCol);
-        } else if (curCol == CollisionType::SOFT_ROCK) {
-            this->setCellCollision(y,  x,  CollisionDraw::SOFT_ROCK_SQUARE, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::SOFT_ROCK_SQUARE, curCol);
-            this->setCellCollision(y,  x+1,CollisionDraw::SOFT_ROCK_SQUARE, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::SOFT_ROCK_SQUARE, curCol);
-        } else if (curCol == CollisionType::UPSIDE_DOWN_SLOPE_30_1) {
-            this->setCellCollision(y,  x,  CollisionDraw::UPSIDE_DOWN_SLOPE_30_1_DRAW, curCol);
-            this->setCellCollision(y,  x+1,CollisionDraw::UPSIDE_DOWN_SLOPE_30_2_DRAW, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
-        } else if (curCol == CollisionType::UPSIDE_DOWN_SLOPE_30_2) {
-            this->setCellCollision(y,  x,  CollisionDraw::SQUARE_DRAW, curCol);
-            this->setCellCollision(y,  x+1,CollisionDraw::SQUARE_DRAW, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::UPSIDE_DOWN_SLOPE_30_1_DRAW, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::UPSIDE_DOWN_SLOPE_30_2_DRAW, curCol);
-        } else if (curCol == CollisionType::CLIMBABLE_VINE_CEILING) {
-            this->setCellCollision(y,  x,  CollisionDraw::VINE_LEFT, curCol);
-            this->setCellCollision(y,  x+1,CollisionDraw::VINE_RIGHT, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
-        } else if (curCol == CollisionType::CLIMBABLE_VINE_TALL) {
-            this->setCellCollision(y,  x,  CollisionDraw::VINE_LEFT, curCol);
-            this->setCellCollision(y,  x+1,CollisionDraw::VINE_RIGHT, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::VINE_LEFT, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::VINE_RIGHT, curCol);
-        } else if (curCol == CollisionType::NONE) {
-            this->setCellCollision(y,  x,  CollisionDraw::CLEAR, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
-            this->setCellCollision(y,  x+1,CollisionDraw::CLEAR, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
-        } else if (curCol != 0) { // Unknown, draw temp
-            this->setCellCollision(y,  x,  CollisionDraw::SQERR, curCol);
-            this->setCellCollision(y+1,x,  CollisionDraw::SQERR, curCol);
-            this->setCellCollision(y,  x+1,CollisionDraw::SQERR, curCol);
-            this->setCellCollision(y+1,x+1,CollisionDraw::SQERR, curCol);
+        switch (curCol) {
+            case CollisionType::SQUARE: {
+                this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::CORNER_BOTTOM_LEFT, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::CORNER_TOP_RIGHT, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT, curCol);
+                break;
+            }
+            case CollisionType::PLATFORM_PASSABLE: {
+                this->setCellCollision(y,  x,  CollisionDraw::CORNER_TOP_LEFT, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::CORNER_TOP_RIGHT, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::ZIG_ZAG, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::ZIG_ZAG, curCol);
+                break;
+            }
+            case CollisionType::DOWN_RIGHT_45: {
+                this->setCellCollision(y,  x,  CollisionDraw::DIAG_DOWN_RIGHT, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::CORNER_BOTTOM_LEFT, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::DIAG_DOWN_RIGHT, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::CLEAR,curCol);
+                break;
+            }
+            case CollisionType::UP_RIGHT_45: {
+                this->setCellCollision(y+1,x+1,CollisionDraw::CORNER_BOTTOM_RIGHT, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::DIAG_UP_RIGHT, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::DIAG_UP_RIGHT, curCol);
+                this->setCellCollision(y  ,x  ,CollisionDraw::CLEAR, curCol);
+                break;
+            }
+            case CollisionType::STATIC_COIN: {
+                this->setCellCollision(y  ,x  ,CollisionDraw::COIN_TOP_LEFT, curCol);
+                this->setCellCollision(y+1,x  ,CollisionDraw::COIN_BOTTOM_LEFT, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::COIN_TOP_RIGHT, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::COIN_BOTTOM_RIGHT, curCol);
+                break;
+            }
+            case CollisionType::UP_RIGHT_30: {
+                this->setCellCollision(y+1,x  ,CollisionDraw::UP_RIGHT_30_BL, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::UP_RIGHT_30_BR, curCol);
+                break;
+            }
+            case CollisionType::UP_RIGHT_30_HALFSTART: {
+                this->setCellCollision(y  ,x  ,CollisionDraw::UP_RIGHT_30_BL, curCol);
+                this->setCellCollision(y+1,x  ,CollisionDraw::SQUARE_DRAW, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::UP_RIGHT_30_BR, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::SQUARE_DRAW, curCol);
+                break;
+            }
+            case CollisionType::DOWN_RIGHT_30_1: {
+                this->setCellCollision(y  ,x  ,CollisionDraw::DOWN_RIGHT_30_TALL, curCol);
+                this->setCellCollision(y+1,x  ,CollisionDraw::SQUARE_DRAW, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::DOWN_RIGHT_30_SHORT, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::SQUARE_DRAW, curCol);
+                break;
+            }
+            case CollisionType::DOWN_RIGHT_30_2: {
+                this->setCellCollision(y+1,x  ,CollisionDraw::DOWN_RIGHT_30_TALL, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::DOWN_RIGHT_30_SHORT, curCol);
+                break;
+            }
+            case CollisionType::UPSIDE_DOWN_UP_RIGHT: {
+                this->setCellCollision(y  ,x  ,CollisionDraw::SQUARE_DRAW, curCol);
+                this->setCellCollision(y+1,x  ,CollisionDraw::UPSIDE_DOWN_RIGHT_45, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::UPSIDE_DOWN_RIGHT_45, curCol);
+                break;
+            }
+            case CollisionType::UPSIDE_DOWN_UP_30: {
+                this->setCellCollision(y+1,x+1,CollisionDraw::UPSIDE_DOWN_RIGHT_UP_30_SHORT, curCol);
+                this->setCellCollision(y  ,x  ,CollisionDraw::SQUARE_DRAW, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::SQUARE_DRAW, curCol);
+                this->setCellCollision(y+1,x  ,CollisionDraw::UPSIDE_DOWN_RIGHT_UP_30_TALL, curCol);
+                break;
+            }
+            case CollisionType::UPSIDE_DOWN_UP_30_2: {
+                this->setCellCollision(y  ,x  ,CollisionDraw::UPSIDE_DOWN_RIGHT_UP_30_TALL, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::UPSIDE_DOWN_RIGHT_UP_30_SHORT, curCol);
+                break;
+            }
+            case CollisionType::UP_RIGHT_STEEP_1: {
+                // Side squares
+                this->setCellCollision(y  ,x+1,CollisionDraw::SQUARE_DRAW, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::SQUARE_DRAW, curCol);
+                // Repeat steep
+                this->setCellCollision(y  ,x  ,CollisionDraw::UP_RIGHT_STEEP_SHORT, curCol);
+                this->setCellCollision(y+1,x  ,CollisionDraw::UP_RIGHT_STEEP_TALL, curCol);
+                break;
+            }
+            case CollisionType::UP_RIGHT_STEEP_2: {
+                this->setCellCollision(y  ,x+1,CollisionDraw::UP_RIGHT_STEEP_SHORT, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::UP_RIGHT_STEEP_TALL, curCol);
+                break;
+            }
+            case CollisionType::UPSIDE_DOWN_DOWNWARDS_45: {
+                this->setCellCollision(y  ,x+1,CollisionDraw::SQUARE_DRAW, curCol);
+                this->setCellCollision(y  ,x  ,CollisionDraw::UPSIDE_DOWN_DOWNWARDS_45_DRAW, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::UPSIDE_DOWN_DOWNWARDS_45_DRAW, curCol);
+                break;
+            }
+            case CollisionType::DOWN_RIGHT_STEEP_HALFSTART: {
+                this->setCellCollision(y  ,x  ,CollisionDraw::SQUARE_DRAW, curCol);
+                this->setCellCollision(y+1,x  ,CollisionDraw::SQUARE_DRAW, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::DOWN_RIGHT_STEEP_THIN, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::DOWN_RIGHT_STEEP_WIDE, curCol);
+                break;
+            }
+            case CollisionType::DOWN_RIGHT_STEEP: {
+                this->setCellCollision(y  ,x  ,CollisionDraw::DOWN_RIGHT_STEEP_THIN, curCol);
+                this->setCellCollision(y+1,x  ,CollisionDraw::DOWN_RIGHT_STEEP_WIDE, curCol);
+                break;
+            }
+            case CollisionType::KILL_SPIKES: {
+                this->setCellCollision(y,  x,  CollisionDraw::ZIG_ZAG_UPSIDE_DOWN_RED, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::SQERR, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::ZIG_ZAG_UPSIDE_DOWN_RED, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::SQERR, curCol);
+                break;
+            }
+            case CollisionType::ICY_SQUARE: {
+                this->setCellCollision(y,  x,  CollisionDraw::SLIPPERY_ICE_SQUARE_LIGHTER, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::SLIPPERY_ICE_SQUARE, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::SLIPPERY_ICE_SQUARE, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::SLIPPERY_ICE_SQUARE_LIGHTER, curCol);
+                break;
+            }
+            case CollisionType::SOFT_ROCK: {
+                this->setCellCollision(y,  x,  CollisionDraw::SOFT_ROCK_SQUARE, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::SOFT_ROCK_SQUARE, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::SOFT_ROCK_SQUARE, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::SOFT_ROCK_SQUARE, curCol);
+                break;
+            }
+            case CollisionType::UPSIDE_DOWN_SLOPE_30_1: {
+                this->setCellCollision(y,  x,  CollisionDraw::UPSIDE_DOWN_SLOPE_30_1_DRAW, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::UPSIDE_DOWN_SLOPE_30_2_DRAW, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
+                break;
+            }
+            case CollisionType::UPSIDE_DOWN_SLOPE_30_2: {
+                this->setCellCollision(y,  x,  CollisionDraw::SQUARE_DRAW, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::SQUARE_DRAW, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::UPSIDE_DOWN_SLOPE_30_1_DRAW, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::UPSIDE_DOWN_SLOPE_30_2_DRAW, curCol);
+                break;
+            }
+            case CollisionType::CLIMBABLE_VINE_CEILING: {
+                this->setCellCollision(y,  x,  CollisionDraw::VINE_LEFT, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::VINE_RIGHT, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
+                break;
+            }
+            case CollisionType::CLIMBABLE_VINE_TALL: {
+                this->setCellCollision(y,  x,  CollisionDraw::VINE_LEFT, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::VINE_RIGHT, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::VINE_LEFT, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::VINE_RIGHT, curCol);
+                break;
+            }
+            case CollisionType::NONE: {
+                this->setCellCollision(y,  x,  CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
+                break;
+            }
+            default: {
+                this->setCellCollision(y,  x,  CollisionDraw::SQERR, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::SQERR, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::SQERR, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::SQERR, curCol);
+                break;
+            }
         }
     }
 }
