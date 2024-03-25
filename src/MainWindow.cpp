@@ -667,8 +667,6 @@ void MainWindow::LoadRom() {
 
         this->guiObjectList->updateList();
         this->statusLabel->setText(tr("ROM Loaded"));
-
-        this->rom->getHintMessageData(0xa);
     }
 }
 

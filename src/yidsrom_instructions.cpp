@@ -207,6 +207,7 @@ void YidsRom::getHintMessageData(uint16_t hintMessageId) {
 
     auto compressedVector = YUtils::subVector(mespack,messageLocation,messageLocation+length);
     auto uncomped = YCompression::lz10decomp(compressedVector);
+    std::cout << "Uncomped size: 0x" << std::hex << uncomped.size() << std::endl;
     // 0x80 pixels wide, 4bpp single palette
-    //YUtils::printVector(uncomped);
+    YUtils::printVector(uncomped);
 }
