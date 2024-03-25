@@ -676,7 +676,8 @@ void MainWindow::LoadRom() {
 
 void MainWindow::toolbarClick_palette() {
     if (this->palettePopup->isVisible()) {
-        this->palettePopup->close();
+        this->palettePopup->raise();
+        this->palettePopup->activateWindow();
     } else {
         this->palettePopup->resize(550,660);
         this->palettePopup->show();
@@ -685,7 +686,8 @@ void MainWindow::toolbarClick_palette() {
 
 void MainWindow::toolbarClick_tiles() {
     if (this->chartilesPopup->isVisible()) {
-        this->chartilesPopup->close();
+        this->chartilesPopup->raise();
+        this->chartilesPopup->activateWindow();
     } else {
         this->chartilesPopup->show();
     }
@@ -693,7 +695,8 @@ void MainWindow::toolbarClick_tiles() {
 
 void MainWindow::toolbarClick_spritePreview() {
     if (this->objtilesPopup->isVisible()) {
-        this->objtilesPopup->close();
+        this->objtilesPopup->raise();
+        this->objtilesPopup->activateWindow();
     } else {
         this->objtilesPopup->show();
     }
@@ -701,7 +704,8 @@ void MainWindow::toolbarClick_spritePreview() {
 
 void MainWindow::toolbarClick_brush() {
     if (this->brushWindow->isVisible()) {
-        this->brushWindow->close();
+        this->brushWindow->raise();
+        this->brushWindow->activateWindow();
     } else {
         this->brushWindow->show();
     }
@@ -709,7 +713,8 @@ void MainWindow::toolbarClick_brush() {
 
 void MainWindow::toolbarClick_col() {
     if (this->colWindow->isVisible()) {
-        this->colWindow->close();
+        this->colWindow->raise();
+        this->colWindow->activateWindow();
     } else {
         this->colWindow->show();
     }
