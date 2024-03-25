@@ -657,7 +657,7 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
             YUtils::printDebug("No collision data present");
             return;
         }
-        auto colData = curItemUnderCursor->data(PixelDelegateData::COLLISION_DEBUG).toInt();
+        auto colData = curItemUnderCursor->data(PixelDelegateData::COLLISION_DEBUG).toUInt();
         if (event->button() == Qt::LeftButton) {
             uint32_t colX = curItemUnderCursor->column() / 2;
             uint32_t rowY = curItemUnderCursor->row() / 2;
@@ -669,6 +669,11 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
             std::stringstream ssColInfo;
             ssColInfo << "Collision data: 0x" << std::hex << colData;
             YUtils::printDebug(ssColInfo.str(),DebugType::VERBOSE);
+            globalSettings.colTypeToDraw = (CollisionType)((int)colData);
+            std::stringstream ssColStatus;
+            auto colName = YUtils::getCollisionMetadata(globalSettings.colTypeToDraw).prettyName;
+            ssColStatus << "Setting collision brush to '" << colName << "'";
+            emit this->updateMainWindowStatus(ssColStatus.str());
             return;
         } else {
             YUtils::printDebug("Unknown mouse action in collision mode",DebugType::VERBOSE);
@@ -909,12 +914,15 @@ void DisplayTable::initCellCollision() {
             case CollisionType::DOWN_RIGHT_30_2: {
                 this->setCellCollision(y+1,x  ,CollisionDraw::DOWN_RIGHT_30_TALL, curCol);
                 this->setCellCollision(y+1,x+1,CollisionDraw::DOWN_RIGHT_30_SHORT, curCol);
+                this->setCellCollision(y  ,x  ,CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y  ,x+1,CollisionDraw::CLEAR, curCol);
                 break;
             }
             case CollisionType::UPSIDE_DOWN_UP_RIGHT: {
                 this->setCellCollision(y  ,x  ,CollisionDraw::SQUARE_DRAW, curCol);
                 this->setCellCollision(y+1,x  ,CollisionDraw::UPSIDE_DOWN_RIGHT_45, curCol);
                 this->setCellCollision(y  ,x+1,CollisionDraw::UPSIDE_DOWN_RIGHT_45, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
                 break;
             }
             case CollisionType::UPSIDE_DOWN_UP_30: {
@@ -927,6 +935,8 @@ void DisplayTable::initCellCollision() {
             case CollisionType::UPSIDE_DOWN_UP_30_2: {
                 this->setCellCollision(y  ,x  ,CollisionDraw::UPSIDE_DOWN_RIGHT_UP_30_TALL, curCol);
                 this->setCellCollision(y  ,x+1,CollisionDraw::UPSIDE_DOWN_RIGHT_UP_30_SHORT, curCol);
+                this->setCellCollision(y+1,x  ,CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
                 break;
             }
             case CollisionType::UP_RIGHT_STEEP_1: {
