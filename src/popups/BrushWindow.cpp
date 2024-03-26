@@ -464,7 +464,12 @@ void BrushWindow::loadBrushFile() {
             YUtils::printDebug("Selected file does not exist",DebugType::ERROR);
             return;
         }
-        this->loadBrushFileToList(fileLoadPath.toStdString());
+        auto wasSuccess = this->loadBrushFileToList(fileLoadPath.toStdString());
+        if (!wasSuccess) {
+            YUtils::printDebug("Failed to load a brush, canceling remaining",DebugType::WARNING);
+            YUtils::popupAlert("Failed to load a brush, canceling remaining");
+            return;
+        }
     }
 }
 
