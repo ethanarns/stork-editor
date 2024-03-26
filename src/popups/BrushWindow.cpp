@@ -199,6 +199,13 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
         YUtils::popupAlert("Cannot load brush file while not in BG mode");
         return false;
     }
+
+    auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
+    if (scen == nullptr) {
+        YUtils::printDebug("BG was null in loadFileToCurrentBrush",DebugType::ERROR);
+        return false;
+    }
+
     QFile loadFile(filePath.c_str());
     if (!loadFile.open(QIODevice::ReadOnly)) {
         YUtils::printDebug("Could not load brush file, read only",DebugType::ERROR);
@@ -208,14 +215,25 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
     QByteArray fileData = loadFile.readAll();
     QJsonDocument loadDoc(QJsonDocument::fromJson(fileData));
     QJsonObject json = loadDoc.object();
+
     // Brush tileset name
     if (const QJsonValue brushTileset = json["brushTileset"]; brushTileset.isString()) {
-        globalSettings.currentBrush->brushTileset = brushTileset.toString().toStdString();
+        auto loadedTilesetName = brushTileset.toString().toStdString();
+        if (scen->getInfo()->imbzFilename.compare(loadedTilesetName) != 0) {
+            std::stringstream ssImbzMismatch;
+            ssImbzMismatch << "Tileset mismatch in loaded brush tileset vs current bg tileset: '";
+            ssImbzMismatch << loadedTilesetName << "' vs '" << scen->getInfo()->imbzFilename << "'";
+            YUtils::printDebug(ssImbzMismatch.str(),DebugType::ERROR);
+            YUtils::popupAlert(ssImbzMismatch.str());
+            return false;
+        }
+        globalSettings.currentBrush->brushTileset = loadedTilesetName;
     } else {
         YUtils::printDebug("Could not load brush, missing 'brushTileset'",DebugType::ERROR);
         YUtils::popupAlert("Could not load brush, missing 'brushTileset'");
         return false;
     }
+
     // Tile attribute array (width not yet needed)
     if (const QJsonValue tileAttrsMaybe = json["tileAttrs"]; tileAttrsMaybe.isArray()) {
         const QJsonArray tileAttrs = tileAttrsMaybe.toArray();
@@ -250,7 +268,6 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
         return false;
     }
 
-    auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
     std::map<uint32_t,Chartile> tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     uint8_t paletteOffset = (uint8_t)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
     if (paletteOffset != filePaletteOffsetValue) {
