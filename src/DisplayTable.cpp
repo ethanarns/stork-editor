@@ -342,9 +342,9 @@ void DisplayTable::doBgBrushClick(QTableWidgetItem *curItem) {
     std::string curBrushImbz = globalSettings.currentBrush->brushTileset;
     if (curScenImbz.compare(curBrushImbz) != 0) {
         std::stringstream ssMismatchImbz;
-        ssMismatchImbz << "Mismatch in current tileset vs brush tileset: ";
-        ssMismatchImbz << curScenImbz << " vs ";
-        ssMismatchImbz << curBrushImbz;
+        ssMismatchImbz << "Mismatch in current tileset vs brush tileset: '";
+        ssMismatchImbz << curScenImbz << "' vs '";
+        ssMismatchImbz << curBrushImbz << "'";
         YUtils::printDebug(ssMismatchImbz.str(),DebugType::WARNING);
         return;
     }
@@ -1168,10 +1168,13 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
     }
     auto pal = mapRecord.paletteId;
     if (pal > 16) {
-        std::cout << "wat? so high 0x" << std::hex << (uint16_t)pal << std::endl;
+        std::cout << "Palette high pre-offset: 0x" << std::hex << (uint16_t)pal << std::endl;
     }
     if (!skipPalOffset) {
         pal += (uint8_t)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
+    }
+    if (pal > 16) {
+        std::cout << "Palette high post-offset: 0x" << std::hex << (uint16_t)pal << std::endl;
     }
     auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
     if (whichBg == 1) {

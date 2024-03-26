@@ -87,6 +87,7 @@ void BrushTable::loadTilesToCurBrush() {
         YUtils::printDebug("No tiles loaded to brush",DebugType::ERROR);
         YUtils::popupAlert("No tiles loaded to brush");
     }
+    globalSettings.currentBrush->brushTileset = scen->getInfo()->imbzFilename;
     this->updateBrushDims();
 }
 
