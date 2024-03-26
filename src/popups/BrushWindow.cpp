@@ -255,8 +255,8 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
     uint8_t paletteOffset = (uint8_t)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
     if (paletteOffset != filePaletteOffsetValue) {
         std::stringstream ssPalOffMismatch;
-        ssPalOffMismatch << "Mismatch between file paletteOffset and current bg paletteOffset: 0x";
-        ssPalOffMismatch << std::hex << filePaletteOffsetValue << " vs 0x" << paletteOffset;
+        ssPalOffMismatch << "Mismatch: file paletteOffset vs current bg paletteOffset: 0x";
+        ssPalOffMismatch << std::hex << (uint16_t)filePaletteOffsetValue << " vs 0x" << (uint16_t)paletteOffset;
         YUtils::printDebug(ssPalOffMismatch.str(),DebugType::ERROR);
         YUtils::popupAlert(ssPalOffMismatch.str());
         return false;
