@@ -343,12 +343,16 @@ void BrushWindow::updateStampList() {
         return;
     }
     auto currentScenImbz = scen->getInfo()->imbzFilename;
+    uint8_t paletteOffset = (uint8_t)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
     // Fill it
     for (auto bit = globalSettings.brushes.begin(); bit != globalSettings.brushes.end(); bit++) {
         auto curBrush = *bit;
         auto newItem = new QListWidgetItem(this->stampList);
         auto brushImbz = curBrush.brushTileset;
         if (brushImbz.compare(currentScenImbz) != 0) {
+            newItem->setFlags(newItem->flags() & ~Qt::ItemIsEnabled);
+        }
+        if (curBrush.paletteOffset != paletteOffset) {
             newItem->setFlags(newItem->flags() & ~Qt::ItemIsEnabled);
         }
         newItem->setText(QString::fromStdString(curBrush.name));

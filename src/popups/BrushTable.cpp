@@ -75,6 +75,14 @@ void BrushTable::loadTilesToCurBrush() {
         YUtils::printDebug(ssMismatch.str(),DebugType::ERROR);
         YUtils::popupAlert(ssMismatch.str());
     }
+    auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
+    if (scen == nullptr) {
+        YUtils::printDebug("Invalid layer during loadTilesToCurBrush",DebugType::WARNING);
+        return;
+    } else {
+        uint8_t paletteOffset = (uint8_t)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
+        globalSettings.currentBrush->paletteOffset = paletteOffset;
+    }
     if (globalSettings.currentBrush->tileAttrs.size() == 0) {
         YUtils::printDebug("No tiles loaded to brush",DebugType::ERROR);
         YUtils::popupAlert("No tiles loaded to brush");
