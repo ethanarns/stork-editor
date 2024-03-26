@@ -167,6 +167,7 @@ void BrushWindow::clearBrushClicked() {
     this->brushTable->resetTable();
     // No pointers, so no need to delete[]
     globalSettings.currentBrush->tileAttrs.clear();
+    this->textboxBrushName->clear();
     this->updateStampList();
 }
 
