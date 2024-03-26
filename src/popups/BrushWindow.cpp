@@ -7,6 +7,7 @@
 #include <QCheckBox>
 #include <QFile>
 #include <QLineEdit>
+#include <QFileDialog>
 
 BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     Q_UNUSED(parent);
@@ -57,7 +58,7 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     bar3->addWidget(this->textboxBrushName);
     // Save brush
     auto saveBrush = new QPushButton("&Save Brush",this);
-    saveBrush->setObjectName("buttonSaveBrushYdb");
+    saveBrush->setObjectName("buttonSaveBrushToList");
     connect(saveBrush,&QPushButton::released,this,&BrushWindow::saveBrushClicked);
     bar3->addWidget(saveBrush);
 
@@ -80,7 +81,7 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     connect(loadBrushButton,&QPushButton::released,this,&BrushWindow::loadBrushFile);
     listButtonBarLayout->addWidget(loadBrushButton);
     auto exportBrushesButton = new QPushButton("Export",this);
-    connect(exportBrushesButton,&QPushButton::released,this,&BrushWindow::exportBrushSet);
+    connect(exportBrushesButton,&QPushButton::released,this,&BrushWindow::exportBrush);
     listButtonBarLayout->addWidget(exportBrushesButton);
 
     rightLayout->addLayout(listButtonBarLayout);
@@ -161,14 +162,24 @@ void BrushWindow::clearBrushClicked() {
 
 bool BrushWindow::saveCurrentBrushToFile() {
     auto json = globalSettings.currentBrush->toJson();
-    std::string saveName = globalSettings.currentBrush->name.append(".ydb");
+    auto fileName = QFileDialog::getSaveFileName(this,tr("Save brush"),".",tr("YIDS Brush files (*.ydb)"));
+    if (fileName.isEmpty()) {
+        YUtils::printDebug("Empty filename, canceling save current brush",DebugType::WARNING);
+        return false;
+    }
+    if (!fileName.endsWith(".ydb")) {
+        fileName.append(".ydb");
+    }
 
-    QFile saveFile(saveName.c_str());
+    QFile saveFile(fileName);
     if (!saveFile.open(QIODevice::WriteOnly)) {
         YUtils::printDebug("Could not save brush file, write only",DebugType::ERROR);
         YUtils::popupAlert("Could not save brush file, write only");
         return false;
     }
+    std::stringstream ss;
+    ss << "Saving brush file '" << fileName.toStdString() << "'";
+    YUtils::printDebug(ss.str()); 
     saveFile.write(QJsonDocument(json).toJson());
     return true;
 }
@@ -344,6 +355,6 @@ void BrushWindow::loadBrushFile() {
     YUtils::printDebug("loadBrushFile");
 }
 
-void BrushWindow::exportBrushSet() {
-    YUtils::printDebug("exportBrushSet");
+void BrushWindow::exportBrush() {
+    this->saveCurrentBrushToFile();
 }

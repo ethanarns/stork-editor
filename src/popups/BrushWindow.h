@@ -29,7 +29,7 @@ public:
     void stampListSelectedRowChanged(int currentRow);
     void deleteSelectedBrush();
     void loadBrushFile();
-    void exportBrushSet();
+    void exportBrush();
 private:
     YidsRom* yidsRom;
 };

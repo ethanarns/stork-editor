@@ -39,6 +39,8 @@ struct TileBrush {
         QJsonObject jobj;
         jobj["tileAttrs"] = tileArray;
         jobj["brushTileset"] = jstring;
+        jobj["width"] = this->brushWidth;
+        jobj["name"] = QJsonValue(this->name.c_str());
         return jobj;
     };
 };
