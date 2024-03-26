@@ -193,7 +193,7 @@ MainWindow::MainWindow() {
     menu_view->addAction(this->action_viewBg3);
     connect(this->action_viewBg3, &QAction::triggered, this, &MainWindow::menuClick_viewBg3);
 
-    this->action_viewObjects = new QAction("&Show Objects");
+    this->action_viewObjects = new QAction("&Show Sprites");
     this->action_viewObjects->setShortcut(tr("CTRL+4"));
     this->action_viewObjects->setCheckable(true);
     this->action_viewObjects->setChecked(true);
