@@ -144,6 +144,7 @@ void BrushWindow::loadSelectionClicked() {
         this->brushTable->setTile(row,col,mapTile);
     }
     this->brushTable->loadTilesToCurBrush();
+    globalSettings.currentBrush->brushWidth = width;
 }
 
 void BrushWindow::clearBrushClicked() {

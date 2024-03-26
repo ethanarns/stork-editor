@@ -26,6 +26,8 @@ struct TileBrush {
     std::vector<MapTileRecordData> tileAttrs;
     std::string brushTileset;
     std::string name;
+    // Storage only
+    int brushWidth;
     QJsonObject toJson() {
         QJsonArray tileArray;
         for (auto it = this->tileAttrs.begin(); it != this->tileAttrs.end(); it++) {

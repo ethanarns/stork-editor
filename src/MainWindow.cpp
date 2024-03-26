@@ -53,6 +53,7 @@ MainWindow::MainWindow() {
     globalSettings.currentBrush->tileAttrs = std::vector<MapTileRecordData>();
     globalSettings.currentBrush->name = "errorName";
     globalSettings.currentBrush->brushTileset = "errorChar";
+    globalSettings.currentBrush->brushWidth = 2;
     globalSettings.layerSelectMode = LayerMode::SPRITES_LAYER;
 
     if (!std::filesystem::exists("./lib/")) {
