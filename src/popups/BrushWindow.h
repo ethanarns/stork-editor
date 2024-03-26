@@ -27,6 +27,8 @@ public:
     void updateStampList();
     void saveBrushClicked();
     void stampListSelectedRowChanged(int currentRow);
+    void deleteSelectedBrush();
+    void loadBrushFile();
 private:
     YidsRom* yidsRom;
 };

@@ -70,6 +70,16 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     this->stampList = new QListWidget(this);
     connect(this->stampList,&QListWidget::currentRowChanged,this,&BrushWindow::stampListSelectedRowChanged);
     rightLayout->addWidget(this->stampList);
+
+    auto listButtonBarLayout = new QHBoxLayout(this);
+    auto deleteButton = new QPushButton("Delete",this);
+    connect(deleteButton,&QPushButton::released,this,&BrushWindow::deleteSelectedBrush);
+    listButtonBarLayout->addWidget(deleteButton);
+    auto loadBrushButton = new QPushButton("Load",this);
+    connect(loadBrushButton,&QPushButton::released,this,&BrushWindow::loadBrushFile);
+    listButtonBarLayout->addWidget(loadBrushButton);
+    rightLayout->addLayout(listButtonBarLayout);
+
     mainLayout->addLayout(rightLayout);
 
     this->setLayout(mainLayout);
@@ -308,4 +318,12 @@ void BrushWindow::stampListSelectedRowChanged(int currentRow) {
     }
     this->brushTable->loadTilesToCurBrush();
     this->textboxBrushName->setText(QString::fromStdString(selectedStampData.name));
+}
+
+void BrushWindow::deleteSelectedBrush() {
+    YUtils::printDebug("deleteSelectedBrush");
+}
+
+void BrushWindow::loadBrushFile() {
+    YUtils::printDebug("loadBrushFile");
 }
