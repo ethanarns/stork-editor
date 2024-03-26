@@ -407,7 +407,7 @@ void BrushWindow::stampListSelectedRowChanged(int currentRow) {
         YUtils::popupAlert("Brush list widget has too many brushes");
         return;
     }
-    YUtils::printDebug("stampListSelectedRowChanged");
+    //YUtils::printDebug("stampListSelectedRowChanged");
     auto selectedStampData = globalSettings.brushes.at(currentRow);
     auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
     if (scen == nullptr) {

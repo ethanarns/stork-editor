@@ -45,7 +45,7 @@ void BrushTable::resetTable() {
 }
 
 void BrushTable::loadTilesToCurBrush() {
-    YUtils::printDebug("Loading brush window tiles to current brush");
+    //YUtils::printDebug("Loading brush window tiles to current brush");
     globalSettings.currentBrush->tileAttrs.clear();
     for (int y = 0; y < this->rowCount(); y++) {
         for (int x = 0; x < this->columnCount(); x++) {
