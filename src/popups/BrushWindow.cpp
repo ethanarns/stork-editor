@@ -321,7 +321,17 @@ void BrushWindow::stampListSelectedRowChanged(int currentRow) {
 }
 
 void BrushWindow::deleteSelectedBrush() {
-    YUtils::printDebug("deleteSelectedBrush");
+    int brushIndex = this->stampList->currentRow();
+    if (brushIndex == -1) {
+        YUtils::printDebug("No brush selected",DebugType::VERBOSE);
+        return;
+    }
+    auto brushName = globalSettings.brushes.at(brushIndex).name;
+    std::stringstream ss;
+    ss << "Deleting brush '" << brushName << "'";
+    YUtils::printDebug(ss.str(),DebugType::VERBOSE);
+    globalSettings.brushes.erase(std::next(globalSettings.brushes.begin(),brushIndex));
+    this->updateStampList();
 }
 
 void BrushWindow::loadBrushFile() {

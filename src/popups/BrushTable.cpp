@@ -29,7 +29,7 @@ BrushTable::BrushTable(QWidget *parent, YidsRom *rom) {
 }
 
 void BrushTable::resetTable() {
-    YUtils::printDebug("resetTable");
+    //YUtils::printDebug("resetTable");
     for (int y = 0; y < this->rowCount(); y++) {
         for (int x = 0; x < this->columnCount(); x++) {
             auto potentialExisting = this->item(y,x);
