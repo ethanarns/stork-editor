@@ -310,7 +310,7 @@ void BrushWindow::stampListSelectedRowChanged(int currentRow) {
     *globalSettings.currentBrush = selectedStampData;
     auto tiles = selectedStampData.tileAttrs;
     this->brushTable->resetTable();
-    uint width = 12; // temp, brushes should be size agnostic (TODO)
+    uint width = BrushTable::CELL_COUNT_DIMS; // temp, brushes should be size agnostic (TODO)
     for (uint tileIndex = 0; tileIndex < tiles.size(); tileIndex++) {
         auto mapTile = tiles.at(tileIndex);
         int row = tileIndex / width;
