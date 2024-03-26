@@ -148,11 +148,11 @@ void SpriteSettingsChangeCommand::redo() {
 }
 
 void AddTileToGridCommand::redo() {
-    this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordNew,this->whichBg,false);
+    this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordNew,this->whichBg,true);
 }
 
 void AddTileToGridCommand::undo() {
-    this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordOld,this->whichBg,false);
+    this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordOld,this->whichBg,true);
 }
 
 void SetCollisionTileCommand::redo() {
