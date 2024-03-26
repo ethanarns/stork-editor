@@ -39,7 +39,7 @@ struct TileBrush {
         QJsonObject jobj;
         jobj["tileAttrs"] = tileArray;
         jobj["brushTileset"] = jstring;
-        jobj["width"] = this->brushWidth;
+        jobj["width"] = (double)this->brushWidth; // Everything in JavaScript is a double
         jobj["name"] = QJsonValue(this->name.c_str());
         return jobj;
     };

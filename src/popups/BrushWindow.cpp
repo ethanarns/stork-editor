@@ -9,6 +9,8 @@
 #include <QLineEdit>
 #include <QFileDialog>
 
+#include <filesystem>
+
 BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     Q_UNUSED(parent);
     this->yidsRom = rom;
@@ -162,6 +164,13 @@ void BrushWindow::clearBrushClicked() {
 
 bool BrushWindow::saveCurrentBrushToFile() {
     auto json = globalSettings.currentBrush->toJson();
+    auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
+    if (scen == nullptr) {
+        YUtils::printDebug("Could not find bg in saveCurrentBrushToFile",DebugType::ERROR);
+        return false;
+    }
+    int paletteOffset = (int)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
+    json["paletteOffset"] = (double)paletteOffset; // Everything in JavaScript is a double
     auto fileName = QFileDialog::getSaveFileName(this,tr("Save brush"),".",tr("YIDS Brush files (*.ydb)"));
     if (fileName.isEmpty()) {
         YUtils::printDebug("Empty filename, canceling save current brush",DebugType::WARNING);
@@ -184,13 +193,13 @@ bool BrushWindow::saveCurrentBrushToFile() {
     return true;
 }
 
-bool BrushWindow::loadFileToCurrentBrush(std::string filename) {
+bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
     if (globalSettings.currentEditingBackground == 0) {
         YUtils::printDebug("Cannot load brush file while not in BG mode",DebugType::WARNING);
         YUtils::popupAlert("Cannot load brush file while not in BG mode");
         return false;
     }
-    QFile loadFile(filename.c_str());
+    QFile loadFile(filePath.c_str());
     if (!loadFile.open(QIODevice::ReadOnly)) {
         YUtils::printDebug("Could not load brush file, read only",DebugType::ERROR);
         YUtils::popupAlert("Could not load brush file, read only");
@@ -199,9 +208,15 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filename) {
     QByteArray fileData = loadFile.readAll();
     QJsonDocument loadDoc(QJsonDocument::fromJson(fileData));
     QJsonObject json = loadDoc.object();
+    // Brush tileset name
     if (const QJsonValue brushTileset = json["brushTileset"]; brushTileset.isString()) {
         globalSettings.currentBrush->brushTileset = brushTileset.toString().toStdString();
+    } else {
+        YUtils::printDebug("Could not load brush, missing 'brushTileset'",DebugType::ERROR);
+        YUtils::popupAlert("Could not load brush, missing 'brushTileset'");
+        return false;
     }
+    // Tile attribute array (width not yet needed)
     if (const QJsonValue tileAttrsMaybe = json["tileAttrs"]; tileAttrsMaybe.isArray()) {
         const QJsonArray tileAttrs = tileAttrsMaybe.toArray();
         globalSettings.currentBrush->tileAttrs.clear();
@@ -211,11 +226,41 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filename) {
             auto attrTile = YUtils::getMapTileRecordDataFromShort(attr);
             globalSettings.currentBrush->tileAttrs.push_back(attrTile);
         }
+    } else {
+        YUtils::printDebug("Could not load brush, missing 'tileAttrs'",DebugType::ERROR);
+        YUtils::popupAlert("Could not load brush, missing 'tileAttrs'");
+        return false;
     }
-    this->brushTable->updateBrushDims();
+    // Palette Offset
+    uint8_t filePaletteOffsetValue = 0;
+    if (const QJsonValue filePaletteOffset = json["paletteOffset"]; filePaletteOffset.isDouble()) {
+        filePaletteOffsetValue = (uint8_t)filePaletteOffset.toInt();
+    } else {
+        YUtils::printDebug("'paletteOffset' not found",DebugType::ERROR);
+        YUtils::popupAlert("Could not load brush, missing 'paletteOffset'");
+        return false;
+    }
+    // Saved width (int, stored as double)
+    int storedWidth = 0;
+    if (const QJsonValue storedWidthValue = json["width"]; storedWidthValue.isDouble()) {
+        storedWidth = storedWidthValue.toInt();
+    } else {
+        YUtils::printDebug("Value 'width' not found",DebugType::ERROR);
+        YUtils::popupAlert("Could not load brush, missing 'width'");
+        return false;
+    }
+
     auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
     std::map<uint32_t,Chartile> tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     uint8_t paletteOffset = (uint8_t)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
+    if (paletteOffset != filePaletteOffsetValue) {
+        std::stringstream ssPalOffMismatch;
+        ssPalOffMismatch << "Mismatch between file paletteOffset and current bg paletteOffset: 0x";
+        ssPalOffMismatch << std::hex << filePaletteOffsetValue << " vs 0x" << paletteOffset;
+        YUtils::printDebug(ssPalOffMismatch.str(),DebugType::ERROR);
+        YUtils::popupAlert(ssPalOffMismatch.str());
+        return false;
+    }
     for (int y = 0; y < this->brushTable->rowCount(); y++) {
         for (int x = 0; x < this->brushTable->columnCount(); x++) {
             auto item = this->brushTable->item(y,x);
@@ -235,6 +280,11 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filename) {
             item->setData(PixelDelegateData::FLIP_H_BG1,mapTile.flipH);
             item->setData(PixelDelegateData::FLIP_V_BG1,mapTile.flipV);
         }
+    }
+    this->brushTable->updateBrushDims();
+    if (globalSettings.brushW != storedWidth) {
+        YUtils::printDebug("Mismatch in auto dimensions vs stored dimensions",DebugType::WARNING);
+        // Continue, for now
     }
     return true;
 }
@@ -352,7 +402,16 @@ void BrushWindow::deleteSelectedBrush() {
 }
 
 void BrushWindow::loadBrushFile() {
-    YUtils::printDebug("loadBrushFile");
+    auto fileLoadPath = QFileDialog::getOpenFileName(this,tr("Open brush"),".",tr("YIDS Brush files (*.ydb)"));
+    if (fileLoadPath.isEmpty()) {
+        YUtils::printDebug("Brush load canceled",DebugType::VERBOSE);
+        return;
+    }
+    if (!std::filesystem::exists(fileLoadPath.toStdString())) {
+        YUtils::printDebug("Selected file does not exist",DebugType::ERROR);
+        return;
+    }
+    this->loadFileToCurrentBrush(fileLoadPath.toStdString());
 }
 
 void BrushWindow::exportBrush() {
