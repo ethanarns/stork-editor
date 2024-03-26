@@ -13,9 +13,9 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     this->yidsRom = rom;
     this->setWindowTitle(tr("Brush Window"));
     this->setObjectName(tr("brushWindow"));
-    this->setMinimumHeight(301);
-    this->resize(417,301);
-    this->setMinimumWidth(417);
+    this->setMinimumHeight(365);
+    this->resize(543,365);
+    this->setMinimumWidth(543);
     auto mainLayout = new QHBoxLayout(this);
     auto rightLayout = new QVBoxLayout(this);
     auto leftLayout = new QVBoxLayout(this);
@@ -71,6 +71,7 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     connect(this->stampList,&QListWidget::currentRowChanged,this,&BrushWindow::stampListSelectedRowChanged);
     rightLayout->addWidget(this->stampList);
 
+    // Button list
     auto listButtonBarLayout = new QHBoxLayout(this);
     auto deleteButton = new QPushButton("Delete",this);
     connect(deleteButton,&QPushButton::released,this,&BrushWindow::deleteSelectedBrush);
@@ -78,6 +79,10 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     auto loadBrushButton = new QPushButton("Load",this);
     connect(loadBrushButton,&QPushButton::released,this,&BrushWindow::loadBrushFile);
     listButtonBarLayout->addWidget(loadBrushButton);
+    auto exportBrushesButton = new QPushButton("Export",this);
+    connect(exportBrushesButton,&QPushButton::released,this,&BrushWindow::exportBrushSet);
+    listButtonBarLayout->addWidget(exportBrushesButton);
+
     rightLayout->addLayout(listButtonBarLayout);
 
     mainLayout->addLayout(rightLayout);
@@ -337,4 +342,8 @@ void BrushWindow::deleteSelectedBrush() {
 
 void BrushWindow::loadBrushFile() {
     YUtils::printDebug("loadBrushFile");
+}
+
+void BrushWindow::exportBrushSet() {
+    YUtils::printDebug("exportBrushSet");
 }

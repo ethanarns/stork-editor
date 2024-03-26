@@ -14,7 +14,7 @@ public:
     void updateBrushDims();
     void setTile(int row, int column, MapTileRecordData tile);
 
-    const static int CELL_COUNT_DIMS = 12;
+    const static int CELL_COUNT_DIMS = 16;
 protected:
     void mousePressEvent(QMouseEvent *event) override;
 private:
