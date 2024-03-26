@@ -21,7 +21,7 @@ public:
     void loadSelectionClicked();
     void clearBrushClicked();
     bool saveCurrentBrushToFile();
-    bool loadFileToCurrentBrush(std::string filename);
+    bool loadBrushFileToList(std::string filename);
 
     QListWidget* stampList;
     void updateStampList();

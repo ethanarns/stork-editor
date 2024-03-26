@@ -25,6 +25,7 @@ enum LayerMode {
 struct TileBrush {
     std::vector<MapTileRecordData> tileAttrs;
     std::string brushTileset;
+    uint8_t paletteOffset;
     std::string name;
     // Storage only
     int brushWidth;
@@ -41,6 +42,7 @@ struct TileBrush {
         jobj["brushTileset"] = jstring;
         jobj["width"] = (double)this->brushWidth; // Everything in JavaScript is a double
         jobj["name"] = QJsonValue(this->name.c_str());
+        jobj["paletteOffset"] = (double)((int)this->paletteOffset);
         return jobj;
     };
 };

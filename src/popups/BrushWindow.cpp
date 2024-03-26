@@ -153,6 +153,14 @@ void BrushWindow::loadSelectionClicked() {
     }
     this->brushTable->loadTilesToCurBrush();
     globalSettings.currentBrush->brushWidth = width;
+    // Add current palette offset
+    auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
+    if (scen == nullptr) {
+        YUtils::printDebug("Could not find bg in loadSelectionClicked",DebugType::ERROR);
+        return;
+    }
+    int paletteOffset = (int)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
+    globalSettings.currentBrush->paletteOffset = paletteOffset;
 }
 
 void BrushWindow::clearBrushClicked() {
@@ -164,13 +172,6 @@ void BrushWindow::clearBrushClicked() {
 
 bool BrushWindow::saveCurrentBrushToFile() {
     auto json = globalSettings.currentBrush->toJson();
-    auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
-    if (scen == nullptr) {
-        YUtils::printDebug("Could not find bg in saveCurrentBrushToFile",DebugType::ERROR);
-        return false;
-    }
-    int paletteOffset = (int)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
-    json["paletteOffset"] = (double)paletteOffset; // Everything in JavaScript is a double
     auto fileName = QFileDialog::getSaveFileName(this,tr("Save brush"),".",tr("YIDS Brush files (*.ydb)"));
     if (fileName.isEmpty()) {
         YUtils::printDebug("Empty filename, canceling save current brush",DebugType::WARNING);
@@ -193,7 +194,7 @@ bool BrushWindow::saveCurrentBrushToFile() {
     return true;
 }
 
-bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
+bool BrushWindow::loadBrushFileToList(std::string filePath) {
     if (globalSettings.currentEditingBackground == 0) {
         YUtils::printDebug("Cannot load brush file while not in BG mode",DebugType::WARNING);
         YUtils::popupAlert("Cannot load brush file while not in BG mode");
@@ -202,7 +203,7 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
 
     auto scen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
     if (scen == nullptr) {
-        YUtils::printDebug("BG was null in loadFileToCurrentBrush",DebugType::ERROR);
+        YUtils::printDebug("BG was null in loadBrushFileToList",DebugType::ERROR);
         return false;
     }
 
@@ -217,6 +218,7 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
     QJsonObject json = loadDoc.object();
 
     // Brush tileset name
+    std::string newBrushTileset = "error";
     if (const QJsonValue brushTileset = json["brushTileset"]; brushTileset.isString()) {
         auto loadedTilesetName = brushTileset.toString().toStdString();
         if (scen->getInfo()->imbzFilename.compare(loadedTilesetName) != 0) {
@@ -227,7 +229,7 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
             YUtils::popupAlert(ssImbzMismatch.str());
             return false;
         }
-        globalSettings.currentBrush->brushTileset = loadedTilesetName;
+        newBrushTileset = loadedTilesetName;
     } else {
         YUtils::printDebug("Could not load brush, missing 'brushTileset'",DebugType::ERROR);
         YUtils::popupAlert("Could not load brush, missing 'brushTileset'");
@@ -235,20 +237,21 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
     }
 
     // Tile attribute array (width not yet needed)
+    std::vector<MapTileRecordData> newTileAttrs;
     if (const QJsonValue tileAttrsMaybe = json["tileAttrs"]; tileAttrsMaybe.isArray()) {
         const QJsonArray tileAttrs = tileAttrsMaybe.toArray();
-        globalSettings.currentBrush->tileAttrs.clear();
-        globalSettings.currentBrush->tileAttrs.reserve(tileAttrs.size());
+        newTileAttrs.reserve(tileAttrs.size());
         for (const QJsonValue &attrData : tileAttrs) {
             auto attr = (uint16_t)attrData.toInt();
             auto attrTile = YUtils::getMapTileRecordDataFromShort(attr);
-            globalSettings.currentBrush->tileAttrs.push_back(attrTile);
+            newTileAttrs.push_back(attrTile);
         }
     } else {
         YUtils::printDebug("Could not load brush, missing 'tileAttrs'",DebugType::ERROR);
         YUtils::popupAlert("Could not load brush, missing 'tileAttrs'");
         return false;
     }
+
     // Palette Offset
     uint8_t filePaletteOffsetValue = 0;
     if (const QJsonValue filePaletteOffset = json["paletteOffset"]; filePaletteOffset.isDouble()) {
@@ -258,6 +261,7 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
         YUtils::popupAlert("Could not load brush, missing 'paletteOffset'");
         return false;
     }
+
     // Saved width (int, stored as double)
     int storedWidth = 0;
     if (const QJsonValue storedWidthValue = json["width"]; storedWidthValue.isDouble()) {
@@ -268,7 +272,18 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
         return false;
     }
 
-    std::map<uint32_t,Chartile> tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
+    // Brush name
+    std::string newBrushName = "error";
+    if (const QJsonValue brushName = json["name"]; brushName.isString()) {
+        auto loadedBrushName = brushName.toString().toStdString();
+        newBrushName = loadedBrushName;
+    } else {
+        YUtils::printDebug("Could not load brush, missing 'brushTileset'",DebugType::ERROR);
+        YUtils::popupAlert("Could not load brush, missing 'brushTileset'");
+        return false;
+    }
+
+    // CHECK the palette offset
     uint8_t paletteOffset = (uint8_t)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
     if (paletteOffset != filePaletteOffsetValue) {
         std::stringstream ssPalOffMismatch;
@@ -278,31 +293,42 @@ bool BrushWindow::loadFileToCurrentBrush(std::string filePath) {
         YUtils::popupAlert(ssPalOffMismatch.str());
         return false;
     }
-    for (int y = 0; y < this->brushTable->rowCount(); y++) {
-        for (int x = 0; x < this->brushTable->columnCount(); x++) {
-            auto item = this->brushTable->item(y,x);
-            uint32_t index = x + (y*this->brushTable->columnCount());
-            auto mapTile = globalSettings.currentBrush->tileAttrs.at(index);
-            if (item == nullptr) {
-                item = new QTableWidgetItem();
-                this->brushTable->setItem(y,x,item);
-                item->setData(PixelDelegateData::DRAW_BG1,true);
-                item->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
-            }
-            auto pal = mapTile.paletteId + paletteOffset;
-            item->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tilesMap.at(mapTile.tileId).tiles);
-            item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[pal]);
-            item->setData(PixelDelegateData::TILE_ID_BG1,mapTile.tileId);
-            item->setData(PixelDelegateData::PALETTE_ID_BG1,pal);
-            item->setData(PixelDelegateData::FLIP_H_BG1,mapTile.flipH);
-            item->setData(PixelDelegateData::FLIP_V_BG1,mapTile.flipV);
-        }
-    }
-    this->brushTable->updateBrushDims();
-    if (globalSettings.brushW != storedWidth) {
-        YUtils::printDebug("Mismatch in auto dimensions vs stored dimensions",DebugType::WARNING);
-        // Continue, for now
-    }
+
+    // Create the brush itself
+    TileBrush newBrush;
+    newBrush.brushTileset = newBrushTileset;
+    newBrush.paletteOffset = filePaletteOffsetValue;
+    newBrush.brushWidth = storedWidth;
+    newBrush.tileAttrs = newTileAttrs;
+    newBrush.name = newBrushName;
+    
+    // for (int y = 0; y < this->brushTable->rowCount(); y++) {
+    //     for (int x = 0; x < this->brushTable->columnCount(); x++) {
+    //         auto item = this->brushTable->item(y,x);
+    //         uint32_t index = x + (y*this->brushTable->columnCount());
+    //         auto mapTile = globalSettings.currentBrush->tileAttrs.at(index);
+    //         if (item == nullptr) {
+    //             item = new QTableWidgetItem();
+    //             this->brushTable->setItem(y,x,item);
+    //             item->setData(PixelDelegateData::DRAW_BG1,true);
+    //             item->setData(PixelDelegateData::DRAW_TRANS_TILES,false);
+    //         }
+    //         auto pal = mapTile.paletteId + paletteOffset;
+    //         item->setData(PixelDelegateData::PIXEL_ARRAY_BG1,tilesMap.at(mapTile.tileId).tiles);
+    //         item->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->backgroundPalettes[pal]);
+    //         item->setData(PixelDelegateData::TILE_ID_BG1,mapTile.tileId);
+    //         item->setData(PixelDelegateData::PALETTE_ID_BG1,pal);
+    //         item->setData(PixelDelegateData::FLIP_H_BG1,mapTile.flipH);
+    //         item->setData(PixelDelegateData::FLIP_V_BG1,mapTile.flipV);
+    //     }
+    // }
+    // this->brushTable->updateBrushDims();
+    // if (globalSettings.brushW != storedWidth) {
+    //     YUtils::printDebug("Mismatch in auto dimensions vs stored dimensions",DebugType::WARNING);
+    //     // Continue, for now
+    // }
+    globalSettings.brushes.push_back(newBrush);
+    this->updateStampList();
     return true;
 }
 
@@ -353,7 +379,10 @@ void BrushWindow::saveBrushClicked() {
         YUtils::popupAlert("Please enter a brush name to save");
         return;
     }
+    
     globalSettings.currentBrush->name = brushNameText;
+    int paletteOffset = (int)this->yidsRom->chartileVramPaletteOffset[curBg->getInfo()->charBaseBlock];
+    globalSettings.currentBrush->paletteOffset = paletteOffset;
     globalSettings.brushes.push_back(*globalSettings.currentBrush);
 
     this->updateStampList();
@@ -419,16 +448,19 @@ void BrushWindow::deleteSelectedBrush() {
 }
 
 void BrushWindow::loadBrushFile() {
-    auto fileLoadPath = QFileDialog::getOpenFileName(this,tr("Open brush"),".",tr("YIDS Brush files (*.ydb)"));
-    if (fileLoadPath.isEmpty()) {
+    auto fileLoadPaths = QFileDialog::getOpenFileNames(this,tr("Open brush"),".",tr("YIDS Brush files (*.ydb)"));
+    if (fileLoadPaths.isEmpty()) {
         YUtils::printDebug("Brush load canceled",DebugType::VERBOSE);
         return;
     }
-    if (!std::filesystem::exists(fileLoadPath.toStdString())) {
-        YUtils::printDebug("Selected file does not exist",DebugType::ERROR);
-        return;
+    for (int i = 0; i < fileLoadPaths.size(); i++) {
+        auto fileLoadPath = fileLoadPaths.at(i);
+        if (!std::filesystem::exists(fileLoadPath.toStdString())) {
+            YUtils::printDebug("Selected file does not exist",DebugType::ERROR);
+            return;
+        }
+        this->loadBrushFileToList(fileLoadPath.toStdString());
     }
-    this->loadFileToCurrentBrush(fileLoadPath.toStdString());
 }
 
 void BrushWindow::exportBrush() {
