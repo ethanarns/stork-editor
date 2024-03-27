@@ -83,13 +83,13 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tileWidth = 4;
             break;
         }
-        case 0xfb:   // Poundable Pillar trigger
+        case 0xfb:   // Poundable Pillar trigger (links to 6a often)
         case 0x2b: { // Poundable Pillar
             meta.indexOfTiles = 0x17;
             meta.indexOfPalette = 0x8d;
             meta.tileWidth = 2;
             meta.tilesCount = 4;
-            // TODO: How far can it repeat down?
+            // It just goes down until it hits collision
             break;
         }
         case 0x2c: { // One-way gate
