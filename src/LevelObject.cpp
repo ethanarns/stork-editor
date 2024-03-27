@@ -83,6 +83,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tileWidth = 4;
             break;
         }
+        case 0xfb:   // Poundable Pillar trigger
         case 0x2b: { // Poundable Pillar
             meta.indexOfTiles = 0x17;
             meta.indexOfPalette = 0x8d;
