@@ -97,7 +97,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfTiles = 0x19;
             meta.indexOfPalette = 0x8e;
             meta.tileWidth = 2;
-            meta.tilesCount = 2 * 6;
+            meta.tilesCount = 2 * 4;
             break;
         }
         case 0x36: { // Yellow Shy Guy
