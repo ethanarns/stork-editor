@@ -1540,9 +1540,8 @@ void DisplayTable::placeObjectTile(
             uint32_t tileStart = frameIndex << 4;
             int16_t xOffset = YUtils::getSint16FromVec(objectVector, addrOfPositionRecord + 2); // Needs printf to show up:
             int16_t yOffset = YUtils::getSint16FromVec(objectVector, addrOfPositionRecord + 4); // printf("y: %d\n",yOffset);
-            const int16_t singleTileDim = static_cast<int16_t>(Constants::SINGLE_TILE_DIM);
-            xOffset = YUtils::roundI16Down(xOffset,singleTileDim);
-            yOffset = YUtils::roundI16Down(yOffset,singleTileDim);
+            xOffset = YUtils::roundI16Down(xOffset,Constants::SINGLE_TILE_DIM);
+            yOffset = YUtils::roundI16Down(yOffset,Constants::SINGLE_TILE_DIM);
             //printf("x: %d, y: %d\n",xOffset, yOffset);
 
             // uint16_t constructionCode = YUtils::getUint16FromVec(objectVector,addrOfPositionRecord + 6);
