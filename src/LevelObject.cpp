@@ -77,7 +77,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             constexpr uint32_t VERTICAL_PIPE_TILES = 0x13;
             constexpr uint32_t HORIZONTAL_PIPE_TILES = 0x12;
             Q_UNUSED(HORIZONTAL_PIPE_TILES);
-            //uint32_t pipeHeight = (uint32_t)lo.settings.at(2)*2;
+            //uint32_t pipeHeight = (uint32_t)lo.settings.at(2)*2; // Doesn't work because data repeats
             int32_t pipeHeight = 6;
             meta.indexOfTiles = VERTICAL_PIPE_TILES;
             meta.indexOfPalette = 0x89;
@@ -85,10 +85,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tileWidth = 4;
             meta.frame = 0;
             // TODO: Special rendering to repeat downwards
-            meta.specialRender = ([](){
-                std::vector<RenderInstruction> instructions;
-                return instructions;
-            });
+            meta.specialRender = std::vector<RenderInstruction>();
             break;
         }
         case 0x28: { // Flower

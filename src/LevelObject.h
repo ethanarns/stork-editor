@@ -51,7 +51,7 @@ struct ObjectGraphicMetadata {
      */
     int32_t yPixelOffset;
 
-    std::function<std::vector<RenderInstruction>()> specialRender;
+    std::vector<RenderInstruction> specialRender;
 };
 
 struct ObjectTextMetadata {
