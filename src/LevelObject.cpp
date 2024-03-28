@@ -35,6 +35,21 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.tilesCount = 4 * 8;
             break;
         }
+        case 0x1d: { // Spring ball small
+            meta.indexOfTiles = 0xf;
+            meta.tileWidth = 4;
+            meta.tilesCount = 4 * 3;
+            meta.indexOfPalette = 0x86;
+            break;
+        }
+        case 0x1e: { // Spring ball large
+            meta.indexOfTiles = 0xe;
+            meta.tileWidth = 4;
+            meta.tilesCount = 4 * 4;
+            meta.indexOfPalette = 0x86;
+            meta.yPixelOffset = -8;
+            break;
+        }
         case 0x20: { // Falling donuts
             meta.indexOfTiles = 0x11;
             meta.indexOfPalette = 0x87;
