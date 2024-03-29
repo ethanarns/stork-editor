@@ -25,9 +25,8 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     row1->addWidget(musicIdLabel);
     this->musicIdDropdown = new QComboBox(this);
     this->musicIdDropdown->setObjectName("levelMusicIdDropdown");
-    // Fill with music
-    const uint8_t LATEST_MAX_MUSIC = 0x11;
-    // Less than or equal to because we want it to hit the max
+    // Populate music name dropdown
+    const uint8_t LATEST_MAX_MUSIC = 0x19;
     for (uint8_t musicId = 0; musicId <= LATEST_MAX_MUSIC; musicId++) {
         std::stringstream ssMusic;
         ssMusic << "0x" << std::hex << (uint16_t)musicId << " - ";
