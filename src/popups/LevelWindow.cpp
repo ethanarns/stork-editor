@@ -26,12 +26,13 @@ LevelWindow::LevelWindow(QWidget *parent, YidsRom *rom) {
     this->musicIdDropdown = new QComboBox(this);
     this->musicIdDropdown->setObjectName("levelMusicIdDropdown");
     // Fill with music
-    const int LATEST_MAX_MUSIC = 0x11; // TODO: more (beat the game first)
+    const uint8_t LATEST_MAX_MUSIC = 0x11;
     // Less than or equal to because we want it to hit the max
-    for (int musicId = 0; musicId <= LATEST_MAX_MUSIC; musicId++) {
+    for (uint8_t musicId = 0; musicId <= LATEST_MAX_MUSIC; musicId++) {
         std::stringstream ssMusic;
-        ssMusic << "0x" << std::hex << musicId;
-        this->musicIdDropdown->addItem(tr(ssMusic.str().c_str()));
+        ssMusic << "0x" << std::hex << (uint16_t)musicId << " - ";
+        ssMusic << YUtils::musicIdToText(musicId);
+        this->musicIdDropdown->addItem(QString::fromStdString(ssMusic.str()));
     }
 
     row1->addWidget(this->musicIdDropdown);
@@ -235,7 +236,7 @@ void LevelWindow::musicIdChanged(const QString text) {
     // Do updates for everything else //
     auto curLevel = this->yidsRom->currentLevelSelectData->getLevelByMpdz(this->yidsRom->mapData->filename);
     if (curLevel->musicId != musicIdIndex) {
-        curLevel->musicId = static_cast<LevelSelectEnums::MapMusicId>(musicIdIndex);
+        curLevel->musicId = musicIdIndex;
         YUtils::printDebug("Modifying CRSB: Music ID",DebugType::VERBOSE);
     }
 }

@@ -51,7 +51,7 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
         crsbIndex += 2;
         auto exitPortalCount = crsbBytes.at(crsbIndex);
         crsbIndex++;
-        levelMeta->musicId = (LevelSelectEnums::MapMusicId)crsbBytes.at(crsbIndex);
+        levelMeta->musicId = crsbBytes.at(crsbIndex);
         crsbIndex++;
         // This is at offset 0xC
         auto mpdzFilename = YUtils::getNullTermTextFromVec(crsbBytes,crsbIndex);

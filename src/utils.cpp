@@ -630,6 +630,27 @@ std::string YUtils::generateUuid() {
     return ss.str();
 }
 
+std::string YUtils::musicIdToText(uint8_t musicId) {
+    // https://www.youtube.com/watch?v=Zb9jvSQg9sw
+    // To find these, break on 2013208, load 1-1, and edit 0231e307
+    // TODO: See which of these are unused in CSCNs
+    switch(musicId) {
+        case 0x03: return "Flower Field";
+        case 0x06: return "Training Course";
+        case 0x07: return "Score";
+        case 0x08: return "Minigame";
+        case 0x09: return "Flower Garden";
+        case 0x0A: return "Underground";
+        case 0x0B: return "Sea Coast";
+        case 0x0C: return "Jungle";
+        case 0x0D: return "Castle";
+        case 0x0E: return "In the Clouds";
+        case 0x0F: return "Wildlands";
+        case 0x10: return "Bonus Challenge";
+        default: return "Unhandled";
+    }
+}
+
 std::string YUtils::relativeToEscapedAbs(std::string relPath) {
     std::stringstream res;
     auto absPath = std::filesystem::absolute(relPath);

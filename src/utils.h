@@ -66,6 +66,7 @@ public:
     static QColor invertColor(QColor in);
     static std::string magicToAscii(uint32_t hexText);
     static std::string generateUuid();
+    static std::string musicIdToText(uint8_t musicId);
 };
 
 #endif
