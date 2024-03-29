@@ -635,7 +635,12 @@ std::string YUtils::musicIdToText(uint8_t musicId) {
     // To find these, break on 2013208, load 1-1, and edit 0231e307
     // TODO: See which of these are unused in CSCNs
     switch(musicId) {
+        case 0x00: return "Flower Garden (duplicate?)";
+        case 0x01: return "Story Music Box";
+        case 0x02: return "Yoshi's Island DS";
         case 0x03: return "Flower Field";
+        case 0x04: return "Yoshi's Island DS (duplicate?)";
+        case 0x05: return "Yoshi's Island DS (duplicate?)";
         case 0x06: return "Training Course";
         case 0x07: return "Score";
         case 0x08: return "Minigame";
@@ -647,6 +652,16 @@ std::string YUtils::musicIdToText(uint8_t musicId) {
         case 0x0E: return "In the Clouds";
         case 0x0F: return "Wildlands";
         case 0x10: return "Bonus Challenge";
+        case 0x11: return "Kamek's Theme";
+        case 0x12: return "Mini-Boss";
+        case 0x13: return "Boss Room";
+        case 0x14: return "Big Boss";
+        case 0x15: return "Flower Garden (duplicate?)";
+        case 0x16: return "Bowser";
+        case 0x17: return "Castle (duplicate?)";
+        case 0x18: return "Silence";
+        case 0x19: return "Silence (Echoes)";
+        // 0x1A, 1b, just repeats silence and echoes
         default: return "Unhandled";
     }
 }
