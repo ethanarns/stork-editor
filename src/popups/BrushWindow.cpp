@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QLineEdit>
 #include <QFileDialog>
+#include <QLabel>
 
 #include <filesystem>
 
@@ -87,6 +88,9 @@ BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     listButtonBarLayout->addWidget(exportBrushesButton);
 
     rightLayout->addLayout(listButtonBarLayout);
+
+    this->curCharset = new QLabel(tr(" "),this);
+    rightLayout->addWidget(this->curCharset);
 
     mainLayout->addLayout(rightLayout);
 
@@ -330,6 +334,7 @@ bool BrushWindow::loadBrushFileToList(std::string filePath) {
     // }
     globalSettings.brushes.push_back(newBrush);
     this->updateStampList();
+    this->updateCharsetLabel();
     return true;
 }
 
@@ -475,4 +480,25 @@ void BrushWindow::loadBrushFile() {
 
 void BrushWindow::exportBrush() {
     this->saveCurrentBrushToFile();
+}
+
+void BrushWindow::updateCharsetLabel() {
+    if (globalSettings.currentEditingBackground == 0) {
+        YUtils::printDebug("Can only update charset in BG mode",DebugType::WARNING);
+        return;
+    }
+    auto curScen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
+    if (curScen == nullptr) {
+        YUtils::printDebug("curScen was null when attempting to update charset label",DebugType::ERROR);
+        return;
+    }
+    auto imbz = curScen->getInfo()->imbzFilename;
+    std::string charSet = "Current BG charset: '";
+    if (imbz.empty()) {
+        charSet.append("<embedded>");
+    } else {
+        charSet.append(imbz);
+    }
+    charSet.append("'");
+    this->curCharset->setText(QString::fromStdString(charSet));
 }
