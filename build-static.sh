@@ -1,7 +1,6 @@
 #!/bin/bash
 
+# https://doc.qt.io/qt-6/linux-deployment.html
 make clean
-PATH=/usr/local/Qt-6.6.3/bin:$PATH
-export PATH
-qmake -config release
+/usr/local/Qt-6.6.3/bin/qmake -config release
 make
