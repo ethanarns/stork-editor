@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # https://doc.qt.io/qt-6/linux-deployment.html
+./clean.sh
 rm stork
-make clean
 /usr/local/Qt-6.6.3/bin/qmake -config release
 make
 # sanity check
@@ -15,3 +15,5 @@ ARCH=x86_64 ~/Programs/appimagetool-x86_64.AppImage AppDir StorkEditor.AppImage
 chmod +x StorkEditor.AppImage
 # sanity check again
 ./StorkEditor.AppImage --version
+
+zip StorkEditor.X.Y.Z-linux.zip StorkEditor.AppImage lib/* sample_brushes/
