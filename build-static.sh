@@ -10,3 +10,8 @@ make
 # create AppImage structure
 mkdir -p AppDir/usr/bin
 cp stork AppDir/usr/bin
+echo "AppImage structure generated"
+ARCH=x86_64 ~/Programs/appimagetool-x86_64.AppImage AppDir StorkEditor.AppImage
+chmod +x StorkEditor.AppImage
+# sanity check again
+./StorkEditor.AppImage --version

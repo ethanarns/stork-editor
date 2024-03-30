@@ -16,6 +16,8 @@ _nds_unpack/
 qrc_images.cpp
 clean
 stork_plugin_import.cpp
+.DirIcon
+StorkEditor.AppImage
 
 # test extracted files
 *.arcz
