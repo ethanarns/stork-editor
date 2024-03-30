@@ -7,3 +7,6 @@ make clean
 make
 # sanity check
 ./stork --version
+# create AppImage structure
+mkdir -p AppDir/usr/bin
+cp stork AppDir/usr/bin
