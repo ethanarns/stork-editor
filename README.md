@@ -16,7 +16,7 @@ It uses the USA version 1.0. Do NOT use 1.1 or "rev 1." SHA256 Sum: `c75bf32c31f
 ### Linux run instructions:
 1. Download release ZIP
 2. Extract
-3. Install libraries: `sudo apt install libxcb-cursor0` (requires Universe repositories)
+3. Install libraries: `sudo apt install libxcb-cursor0 libpcre2-dev` (requires Universe repositories)
 4. Run StorkEditor.AppImage
 
 ### Linux build instructions: (update to QT6 plox)
