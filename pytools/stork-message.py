@@ -25,12 +25,13 @@ def generate(filename: str,messageId: int):
     if (filename.endswith("mespack.mes") == False):
         print("Warning: file is not called mespack.mes")
     mespack = bytearray(open(filename,'rb').read())
+    # 020ccdc8
     index = 0
     dest = 0
     messageTarget = 0
     maxCount = readUint32(mespack,dest)
-    print(hex(maxCount))
-    while (index <= maxCount):
+    shouldBreak = False
+    while (index <= maxCount or shouldBreak == False):
         checkLoc = index * 4
         checkValue = readUint16(mespack,dest+index*4)
         if (checkValue == messageId):
@@ -40,7 +41,10 @@ def generate(filename: str,messageId: int):
             break
         index += 1
         messageTarget = messageTarget + readUint16(mespack,dest + checkLoc + 2)
-    messageLocation = 0x388 + messageTarget
+    print(hex(messageTarget))
+    # 020ccf7c
+    messageLocation = 0x388 + 0x160c - 0xc + messageTarget
+    print(hex(messageLocation))
     headerVector = mespack[messageLocation:messageLocation+0xC]
     messageLocation += 0xC
     length = readUint32(mespack,messageLocation)
@@ -48,7 +52,7 @@ def generate(filename: str,messageId: int):
     compressedVector = mespack[messageLocation:messageLocation+length]
     byteVector = bytearray(lz10.decompress(compressedVector))
     print("uncomped size: " + hex(len(byteVector)))
-    IMAGE_WIDTH = 80*2
+    IMAGE_WIDTH = 80*2 # 80 BYTES wide, but this is 4bits per pixel, not 8 bits
     # create blank image
     baseImg = Image.new("RGB",(IMAGE_WIDTH,800),"black")
     pixels = baseImg.load()

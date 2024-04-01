@@ -1247,7 +1247,6 @@ void DisplayTable::clearVisualSpriteSelection() {
 }
 
 void DisplayTable::setLayerDraw(uint whichLayer, bool shouldDraw) {
-    this->yidsRom->getHintMessageData(3);
     if (whichLayer == 1) {
         this->drawBg1 = shouldDraw;
     } else if (whichLayer == 2) {
