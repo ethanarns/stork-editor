@@ -25,6 +25,7 @@ HEADER_INDEX_ENGLISH = 1 # multiplied by 2 later because 2 byte values
 BASE_POINTERS_LENGTH = 0x388 # End of this starts the actual data
 LANGUAGE_SELECT_HEADER_SIZE = 0xc
 IMAGE_WIDTH = 80*2 # 80 BYTES wide, but this is 4bits per pixel, not 8 bits
+IMAGE_HEIGHT = 0x60
 
 def generate(filename: str,messageId: int):
     if (filename.endswith("mespack.mes") == False):
@@ -49,14 +50,16 @@ def generate(filename: str,messageId: int):
     headerVector = mespack[messageLocation:messageLocation+LANGUAGE_SELECT_HEADER_SIZE]
     # The header is a bunch of offsets pertaining to each language, 6 different ones, 0 being Japanese...
     messageLocation += readUint16(headerVector,HEADER_INDEX_ENGLISH*2) #020ccf7c
-    length = readUint32(mespack,messageLocation)
-    messageLocation += 4
+    length = readUint16(mespack,messageLocation)
+    messageLocation += 2
+    remaining = readUint16(mespack,messageLocation)
+    messageLocation += 2
     compressedVector = mespack[messageLocation:messageLocation+length]
     byteVector = bytearray(lz10.decompress(compressedVector))
     # TODO: look for next block using guaranteed header "10 00 1E 00" (every one is 0x1e00)
 
     # create blank image
-    baseImg = Image.new("RGB",(IMAGE_WIDTH,600),"black")
+    baseImg = Image.new("RGB",(IMAGE_WIDTH,IMAGE_HEIGHT),"black")
     pixels = baseImg.load()
 
     # load pixels
