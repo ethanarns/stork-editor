@@ -30,20 +30,19 @@ def generate(filename: str,messageId: int):
     mespack = bytearray(open(filename,'rb').read())
     # 020ccdc8
     index = 0
-    dest = 0
     messageTarget = 0
-    maxCount = readUint32(mespack,dest)
+    maxCount = readUint32(mespack,0)
     shouldBreak = False
     while (index <= maxCount or shouldBreak == False):
         checkLoc = index * 4
-        checkValue = readUint16(mespack,dest+index*4)
+        checkValue = readUint16(mespack,index*4)
         if (checkValue == messageId):
             break
         if (checkValue == 0xffff):
             print("Message search overflow")
             break
         index += 1
-        messageTarget = messageTarget + readUint16(mespack,dest + checkLoc + 2)
+        messageTarget = messageTarget + readUint16(mespack,checkLoc + 2)
     print(hex(messageTarget))
     messageLocation = 0x388 + messageTarget
     print(hex(messageLocation))
