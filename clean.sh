@@ -11,3 +11,4 @@ rm rom_uncomp_temp.nds
 rm stork_plugin_import.cpp
 rm -r AppDir/usr/bin
 rm clean
+rm StorkEditor.AppImage
