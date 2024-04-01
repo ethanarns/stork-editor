@@ -50,16 +50,24 @@ def generate(filename: str,messageId: int):
     headerVector = mespack[messageLocation:messageLocation+LANGUAGE_SELECT_HEADER_SIZE]
     # The header is a bunch of offsets pertaining to each language, 6 different ones, 0 being Japanese...
     messageLocation += readUint16(headerVector,HEADER_INDEX_ENGLISH*2) #020ccf7c
-    length = readUint16(mespack,messageLocation)
-    messageLocation += 2
-    remaining = readUint16(mespack,messageLocation)
-    messageLocation += 2
-    compressedVector = mespack[messageLocation:messageLocation+length]
-    byteVector = bytearray(lz10.decompress(compressedVector))
-    # TODO: look for next block using guaranteed header "10 00 1E 00" (every one is 0x1e00)
+    hasMore = 1
+    byteVector = bytearray()
+    numPulled = 0
+    while hasMore != 0:
+        #print(hex(messageLocation))
+        length = readUint16(mespack,messageLocation)
+        #print(hex(length))
+        messageLocation += 2
+        hasMore = readUint16(mespack,messageLocation) # if hasMore is 0, end
+        messageLocation += 2
+        compressedVector = mespack[messageLocation:messageLocation+length]
+        uncomped = lz10.decompress(compressedVector)
+        byteVector.extend(uncomped)
+        numPulled += 1
+        messageLocation += length
 
     # create blank image
-    baseImg = Image.new("RGB",(IMAGE_WIDTH,IMAGE_HEIGHT),"black")
+    baseImg = Image.new("RGB",(IMAGE_WIDTH,IMAGE_HEIGHT*numPulled),"black")
     pixels = baseImg.load()
 
     # load pixels
@@ -82,4 +90,4 @@ def generate(filename: str,messageId: int):
 if __name__ == '__main__':
     args = parser.parse_args()
     filename = args.filename
-    generate(filename, 3) # 1-1's first block
+    generate(filename, 0x82) # 3 is 1-1's first block
