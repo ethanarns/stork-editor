@@ -42,11 +42,10 @@ def generate(filename: str,messageId: int):
         index += 1
         messageTarget = messageTarget + readUint16(mespack,dest + checkLoc + 2)
     print(hex(messageTarget))
-    # 020ccf7c
-    messageLocation = 0x388 + 0x160c - 0xc + messageTarget
+    messageLocation = 0x388 + messageTarget
     print(hex(messageLocation))
     headerVector = mespack[messageLocation:messageLocation+0xC]
-    messageLocation += 0xC
+    messageLocation += readUint16(headerVector,2) #020ccf7c
     length = readUint32(mespack,messageLocation)
     messageLocation += 4
     compressedVector = mespack[messageLocation:messageLocation+length]
