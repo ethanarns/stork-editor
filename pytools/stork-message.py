@@ -21,6 +21,9 @@ def fourBppToCol(bpp: int) -> tuple:
     else:
         return (200,200,200)
 
+HEADER_INDEX_ENGLISH = 1 # multiplied by 2 later because 2 byte values
+IMAGE_WIDTH = 80*2 # 80 BYTES wide, but this is 4bits per pixel, not 8 bits
+
 def generate(filename: str,messageId: int):
     if (filename.endswith("mespack.mes") == False):
         print("Warning: file is not called mespack.mes")
@@ -45,19 +48,19 @@ def generate(filename: str,messageId: int):
     messageLocation = 0x388 + messageTarget
     print(hex(messageLocation))
     headerVector = mespack[messageLocation:messageLocation+0xC]
-    messageLocation += readUint16(headerVector,2) #020ccf7c
+    # The header is a bunch of offsets pertaining to each language, 6 different ones, 0 being Japanese...
+    messageLocation += readUint16(headerVector,HEADER_INDEX_ENGLISH*2) #020ccf7c
     length = readUint32(mespack,messageLocation)
     messageLocation += 4
     compressedVector = mespack[messageLocation:messageLocation+length]
     byteVector = bytearray(lz10.decompress(compressedVector))
-    print("uncomped size: " + hex(len(byteVector)))
-    IMAGE_WIDTH = 80*2 # 80 BYTES wide, but this is 4bits per pixel, not 8 bits
+    # TODO: look for next block using guaranteed header "10 00 1E 00" (every one is 0x1e00)
+
     # create blank image
-    baseImg = Image.new("RGB",(IMAGE_WIDTH,800),"black")
+    baseImg = Image.new("RGB",(IMAGE_WIDTH,600),"black")
     pixels = baseImg.load()
 
     # load pixels
-    byteIndex = 0
     fourBitIndex = 0
     for colsByte in byteVector:
         lowBit = colsByte % 0x10
