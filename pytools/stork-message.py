@@ -22,6 +22,8 @@ def fourBppToCol(bpp: int) -> tuple:
         return (200,200,200)
 
 HEADER_INDEX_ENGLISH = 1 # multiplied by 2 later because 2 byte values
+BASE_POINTERS_LENGTH = 0x388 # End of this starts the actual data
+LANGUAGE_SELECT_HEADER_SIZE = 0xc
 IMAGE_WIDTH = 80*2 # 80 BYTES wide, but this is 4bits per pixel, not 8 bits
 
 def generate(filename: str,messageId: int):
@@ -35,7 +37,7 @@ def generate(filename: str,messageId: int):
     shouldBreak = False
     while (index <= maxCount or shouldBreak == False):
         checkLoc = index * 4
-        checkValue = readUint16(mespack,index*4)
+        checkValue = readUint16(mespack,checkLoc)
         if (checkValue == messageId):
             break
         if (checkValue == 0xffff):
@@ -43,10 +45,8 @@ def generate(filename: str,messageId: int):
             break
         index += 1
         messageTarget = messageTarget + readUint16(mespack,checkLoc + 2)
-    print(hex(messageTarget))
-    messageLocation = 0x388 + messageTarget
-    print(hex(messageLocation))
-    headerVector = mespack[messageLocation:messageLocation+0xC]
+    messageLocation = BASE_POINTERS_LENGTH + messageTarget
+    headerVector = mespack[messageLocation:messageLocation+LANGUAGE_SELECT_HEADER_SIZE]
     # The header is a bunch of offsets pertaining to each language, 6 different ones, 0 being Japanese...
     messageLocation += readUint16(headerVector,HEADER_INDEX_ENGLISH*2) #020ccf7c
     length = readUint32(mespack,messageLocation)
