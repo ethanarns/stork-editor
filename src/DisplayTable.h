@@ -62,8 +62,8 @@ public:
         uint32_t paletteOffset,
         std::string paletteFile,
         std::string objectFile,
-        uint32_t manualXoffset,
-        uint32_t manualYoffset,
+        int manualXoffset,
+        int manualYoffset,
         uint32_t uuid
     );
     void setCellCollision(int row, int column, CollisionDraw colType, uint8_t _colDebug);

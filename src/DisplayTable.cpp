@@ -1607,9 +1607,10 @@ void DisplayTable::placeObjectGraphic(
     uint32_t objectOffset, uint32_t frame,
     uint32_t paletteOffset, std::string paletteFile,
     std::string objectFile,
-    uint32_t manualXoffsetFine, uint32_t manualYoffsetFine,
+    int manualXoffsetFine, int manualYoffsetFine,
     uint32_t uuid)
 {
+    // std::cout << "placeObjectGraphic" << std::endl;
     // Will skip if already loaded
     this->yidsRom->loadSpriteRenderFile(objectFile);
     this->yidsRom->loadSpriteRenderFile(paletteFile);
@@ -1642,20 +1643,27 @@ void DisplayTable::placeObjectGraphic(
     for (auto bit = curFrame.buildFrames.begin(); bit != curFrame.buildFrames.end(); bit++) {
         auto tileShapeValue = (*bit)->flags & 0b11111;
         QPoint dims = YUtils::getSpriteDimsFromFlagValue(tileShapeValue);
-        uint curSpriteWidth = dims.x();
-        uint curSpriteHeight = dims.y();
-        uint buildFrameOffsetXfine = (*bit)->xOffset;
-        uint buildFrameOffsetYfine = (*bit)->yOffset;
-        uint gridXposition = x + (buildFrameOffsetXfine + manualXoffsetFine)/8;
-        uint gridYposition = y + (buildFrameOffsetYfine + manualYoffsetFine)/8;
+        int curSpriteWidth = dims.x();
+        int curSpriteHeight = dims.y();
+        int buildFrameOffsetXfine = (*bit)->xOffset;
+        //std::cout << "buildFrameOffsetXfine: " << std::dec << buildFrameOffsetXfine << std::endl;
+        int buildFrameOffsetYfine = (*bit)->yOffset;
+        int gridXposition = x + (buildFrameOffsetXfine + manualXoffsetFine)/8;
+        // std::cout << "x: " << x << std::endl;
+        // std::cout << "buildFrameOffsetXfine + manualXoffsetFine: " << (buildFrameOffsetXfine + manualXoffsetFine) << std::endl;
+        // std::cout << "/8: " << (buildFrameOffsetXfine + manualXoffsetFine)/8 << std::endl;
+        // std::cout << "gridXposition: " << gridXposition << std::endl;
+        int gridYposition = y + (buildFrameOffsetYfine + manualYoffsetFine)/8;
         auto tiles = objectTileData->getChartiles((*bit)->tileOffset << 4,curSpriteHeight*curSpriteWidth);
-        for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
+        for (int tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
             auto objChartile = tiles.at(tilesIndex);
-            uint32_t tileIndexOffsetX = tilesIndex % curSpriteWidth;
-            uint32_t tileIndexOffsetY = tilesIndex / curSpriteWidth;
-            // PIXEL_ARRAY_BG1 = objChartile
-            // PALETTE_ARRAY_BG1 = objectPalette
-            auto tileItem = this->item(gridYposition+tileIndexOffsetY,gridXposition+tileIndexOffsetX);
+            int tileIndexOffsetX = tilesIndex % curSpriteWidth;
+            int tileIndexOffsetY = tilesIndex / curSpriteWidth;
+            int finalX = gridXposition+tileIndexOffsetX;
+            int finalY = gridYposition+tileIndexOffsetY;
+            // std::cout << "finalX: " << finalX << std::endl;
+            // std::cout << "finalY: " << finalY << std::endl;
+            auto tileItem = this->item(finalY,finalX);
             if (tileItem == nullptr) {
                 tileItem = new QTableWidgetItem();
             }
