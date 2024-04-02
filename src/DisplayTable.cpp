@@ -1430,30 +1430,34 @@ void DisplayTable::updateSprites() {
             bottomRight->setData(PixelDelegateData::OBJECT_PALETTE,this->yidsRom->backgroundPalettes[0]);
             bottomRight->setToolTip(tr(ss.str().c_str()));
         } else {
-            this->placeObjectTile(
-                (uint32_t)x,(uint32_t)y,
-                objectGraphicsMeta.indexOfTiles,
-                objectGraphicsMeta.frame,
-                objectGraphicsMeta.indexOfPalette,
-                objectGraphicsMeta.tileWidth,
-                objectGraphicsMeta.tilesCount,
-                objectGraphicsMeta.whichPaletteFile,
-                objectGraphicsMeta.whichObjectFile,
-                objectGraphicsMeta.xPixelOffset,
-                objectGraphicsMeta.yPixelOffset,
-                it->uuid
-            );
-            this->placeObjectGraphic(
-                (uint32_t)x,(uint32_t)y,
-                objectGraphicsMeta.indexOfTiles,
-                objectGraphicsMeta.frame,
-                objectGraphicsMeta.indexOfPalette,
-                objectGraphicsMeta.whichPaletteFile,
-                objectGraphicsMeta.whichObjectFile,
-                objectGraphicsMeta.xPixelOffset,
-                objectGraphicsMeta.yPixelOffset,
-                it->uuid
-            );
+            if (it->objectId == 0x9A) {
+                this->placeObjectGraphic(
+                    (uint32_t)x,(uint32_t)y,
+                    objectGraphicsMeta.indexOfTiles,
+                    objectGraphicsMeta.frame,
+                    objectGraphicsMeta.indexOfPalette,
+                    objectGraphicsMeta.whichPaletteFile,
+                    objectGraphicsMeta.whichObjectFile,
+                    objectGraphicsMeta.xPixelOffset,
+                    objectGraphicsMeta.yPixelOffset,
+                    it->uuid
+                );
+                exit(EXIT_SUCCESS);
+            } else {
+                this->placeObjectTile(
+                    (uint32_t)x,(uint32_t)y,
+                    objectGraphicsMeta.indexOfTiles,
+                    objectGraphicsMeta.frame,
+                    objectGraphicsMeta.indexOfPalette,
+                    objectGraphicsMeta.tileWidth,
+                    objectGraphicsMeta.tilesCount,
+                    objectGraphicsMeta.whichPaletteFile,
+                    objectGraphicsMeta.whichObjectFile,
+                    objectGraphicsMeta.xPixelOffset,
+                    objectGraphicsMeta.yPixelOffset,
+                    it->uuid
+                );
+            }
         }
     }
     // // Timing
@@ -1613,7 +1617,9 @@ void DisplayTable::placeObjectGraphic(
     
     QByteArray objectPalette = this->yidsRom->backgroundPalettes[0]; // Default
     try {
-        auto paletteDataList = this->yidsRom->spriteRenderFiles[paletteFile].objectPaletteDataVector;
+        auto paletteDataList = this->yidsRom->spriteRenderFiles[paletteFile]->objectPaletteDataVector;
+        std::cout << "paletteDataList size: 0x" << std::hex << paletteDataList.size() << std::endl;
+        std::cout << "paletteOffset: 0x" << std::hex << paletteOffset << std::endl;
         auto curPalData = paletteDataList.at(paletteOffset);
         objectPalette = curPalData->palettes.at(0);
     } catch (...) {
@@ -1623,7 +1629,7 @@ void DisplayTable::placeObjectGraphic(
         YUtils::printDebug(ssPalFail.str(),DebugType::ERROR);
     }
 
-    auto objectVector = this->yidsRom->spriteRenderFiles[objectFile].objectTileDataVector;
+    auto objectVector = this->yidsRom->spriteRenderFiles[objectFile]->objectTileDataVector;
     auto objectTileData = objectVector.at(objectOffset);
     auto curFrame = objectTileData->getFrameAt(frame);
 

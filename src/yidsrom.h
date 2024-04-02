@@ -69,7 +69,7 @@ public:
     void reloadChartileVram(uint frame = 0);
 
     std::map<std::string,ObjectFile> objectRenderFiles;
-    std::map<std::string,ObjectRenderArchive> spriteRenderFiles;
+    std::map<std::string,ObjectRenderArchive*> spriteRenderFiles;
 
     bool filesLoaded = false;
     YidsRom();

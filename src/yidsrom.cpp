@@ -336,6 +336,7 @@ Address YidsRom::getAddrFromAddrPtr(Address pointerAddress_file) {
 }
 
 std::vector<uint8_t> YidsRom::getByteVectorFromFile(std::string fileName) {
+    std::cout << "getByteVectorFromFile: " << fileName << std::endl;
     std::vector<uint8_t> vec;
     std::stringstream ssUnpackedFileLoc;
     ssUnpackedFileLoc << globalSettings.extractFolderName << "/data/file/";

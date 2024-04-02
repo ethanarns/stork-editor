@@ -178,6 +178,7 @@ bool YidsRom::loadObjectRenderFile(std::string obarFileFull) {
 }
 
 bool YidsRom::loadSpriteRenderFile(std::string obarFilenameFull) {
+    std::cout << "loadSpriteRenderFile: " << obarFilenameFull << std::endl;
     if (obarFilenameFull.empty()) {
         YUtils::printDebug("Given empty OBAR file name",DebugType::WARNING);
         return false;
@@ -186,7 +187,9 @@ bool YidsRom::loadSpriteRenderFile(std::string obarFilenameFull) {
         return false;
     }
     auto byteVector = this->getByteVectorFromFile(obarFilenameFull);
-    this->spriteRenderFiles[obarFilenameFull] = ObjectRenderArchive(byteVector);
+    std::cout << byteVector.size() << std::endl;
+    auto ora = new ObjectRenderArchive(byteVector);
+    this->spriteRenderFiles[obarFilenameFull] = ora;
     return true;
 }
 

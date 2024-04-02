@@ -23,9 +23,8 @@ ObjTilesTable::ObjTilesTable(QWidget* parent, YidsRom* rom) {
     this->horizontalHeader()->setDefaultSectionSize(ObjTilesTable::OBJTILES_CELL_SIZE_PX);
     this->verticalHeader()->setMinimumSectionSize(0);
     this->verticalHeader()->setDefaultSectionSize(ObjTilesTable::OBJTILES_CELL_SIZE_PX);
-    this->setColumnCount(0x2);
-    this->setRowCount(0x2);
-    this->setRowCount(ObjTilesTable::OBJTILES_ROW_COUNT_DEFAULT);
+    this->setColumnCount(0x8);
+    this->setRowCount(0x8);
     this->horizontalHeader()->hide();
     this->verticalHeader()->hide();
     this->setStyleSheet("QTableView::item {margin: 0;padding: 0;}");
@@ -131,21 +130,22 @@ void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
     }
     auto curObjb = objbs.at(this->objbIndex);
     auto curFrame = curObjb->getFrameAt(this->frameIndex);
-    auto tileCount = 18;
+    auto tileCount = 8*8;
     Q_UNUSED(guessTileCount);
-    // if (guessTileCount) {
-    //     this->setColumnCount(this->getSpriteTilesWidth(curFrame.buildFrame->flags));
-    //     //tileCount = this->getSpriteTilesWidth(curFrame.buildFrame->flags);
-    // }
-    //tileCount = this->rowCount() * this->columnCount();
     this->wipeTiles();
-    // TODO: Add support for multiple tiles
+    std::cout << "build frame size: 0x" << std::hex << curFrame.buildFrames.size() << std::endl;
     for (auto bit = curFrame.buildFrames.begin(); bit != curFrame.buildFrames.end(); bit++) {
+        auto flagDims = YUtils::getSpriteDimsFromFlagValue((*bit)->flags & 0b11111);
+        tileCount = flagDims.x() * flagDims.y();
         auto tiles = curObjb->getChartiles((*bit)->tileOffset << 4,tileCount);
         if (this->currentPalette == nullptr) {
             //std::cout << "Setting to default" << std::endl;
             this->currentPalette = this->yidsRom->backgroundPalettes[0];
         }
+        auto bitXoffset = (*bit)->xOffset;
+        auto bitYoffset = (*bit)->yOffset;
+        std::cout << "bitXoffset: 0x" << bitXoffset << std::endl;
+        std::cout << "bitYoffset: 0x" << bitYoffset << std::endl;
         for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
             auto objChartile = tiles.at(tilesIndex);
             auto tileItem = new QTableWidgetItem();
@@ -156,8 +156,8 @@ void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
             tileItem->setData(PixelDelegateData::DEBUG_DATA,0x69);
             tileItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
             tileItem->setData(PixelDelegateData::DRAW_BG1,true);
-            uint32_t x = tilesIndex % this->columnCount();
-            uint32_t y = tilesIndex / this->columnCount();
+            uint32_t x = (tilesIndex % flagDims.x());
+            uint32_t y = (tilesIndex / flagDims.x());
             if (this->item(y,x) != nullptr) {
                 delete this->item(y,x);
             }

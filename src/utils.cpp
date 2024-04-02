@@ -668,8 +668,16 @@ std::string YUtils::musicIdToText(uint8_t musicId) {
 
 QPoint YUtils::getSpriteDimsFromFlagValue(uint flagValue) {
     // Width is X, Height is Y
-    QPoint result(3,3);
-    return result;
+    switch (flagValue) {
+        case 0x0:  return QPoint(1,1);
+        case 0x1:  return QPoint(2,2);
+        case 0x9:  return QPoint(4,1);
+        case 0xA:  return QPoint(4,2);
+        case 0x10: return QPoint(1,2);
+        case 0x11: return QPoint(1,4);
+        default:   return QPoint(3,3);
+    }
+    return QPoint(3,3);
 }
 
 std::string YUtils::relativeToEscapedAbs(std::string relPath) {
