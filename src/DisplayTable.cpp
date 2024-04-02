@@ -1587,22 +1587,50 @@ void DisplayTable::placeObjectTile(
     }
 }
 
-// void DisplayTable::wipeObject(uint32_t uuid) {
-//     auto allItems = this->findItems("sprite",Qt::MatchExactly);
-//     if (allItems.size() == 0) {
-//         YUtils::printDebug("Zero sprites given text data!",DebugType::WARNING);
-//         return;
-//     }
-//     for (int i = 0; i < allItems.size(); i++) {
-//         auto potentialItem = allItems.at(i);
-//         if (potentialItem != nullptr) {
-//             uint32_t foundUuid = potentialItem->data(PixelDelegateData::OBJECT_UUID).toUInt();
-//             if (foundUuid == uuid) {
-//                 potentialItem->setData(PixelDelegateData::OBJECT_UUID,QVariant::fromValue(nullptr));
-//                 potentialItem->setData(PixelDelegateData::OBJECT_ID,QVariant::fromValue(nullptr));
-//                 potentialItem->setData(PixelDelegateData::OBJECT_PALETTE,QVariant::fromValue(nullptr));
-//                 potentialItem->setData(PixelDelegateData::OBJECT_TILES,QVariant::fromValue(nullptr));
-//             }
-//         }
-//     }
-// }
+void DisplayTable::placeObjectGraphic(
+    uint32_t x, uint32_t y,
+    uint32_t objectOffset, uint32_t frame,
+    uint32_t paletteOffset, std::string paletteFile,
+    std::string objectFile,
+    uint32_t manualXoffset, uint32_t manualYoffset,
+    uint32_t uuid)
+{
+    // Will skip if already loaded
+    this->yidsRom->loadSpriteRenderFile(objectFile);
+    this->yidsRom->loadSpriteRenderFile(paletteFile);
+    
+    QByteArray objectPalette = this->yidsRom->backgroundPalettes[0]; // Default
+    try {
+        auto paletteDataList = this->yidsRom->spriteRenderFiles[paletteFile].objectPaletteDataVector;
+        auto curPalData = paletteDataList.at(paletteOffset);
+        objectPalette = curPalData->palettes.at(0);
+    } catch (...) {
+        std::stringstream ssPalFail;
+        ssPalFail << "Failed to get object palette for object with uuid 0x" << std::hex << uuid;
+        ssPalFail << ", using backgroundPalettes[0]";
+        YUtils::printDebug(ssPalFail.str(),DebugType::ERROR);
+    }
+
+    auto objectVector = this->yidsRom->spriteRenderFiles[objectFile].objectTileDataVector;
+    auto objectData = objectVector.at(objectOffset);
+    auto curFrame = objectData->getFrameAt(frame);
+
+    if (objectPalette.size() < 0xf) {
+        std::stringstream ssEmptyPalette;
+        ssEmptyPalette << "Palette size is too small! Size: 0x";
+        ssEmptyPalette << std::hex << objectPalette.size();
+        ssEmptyPalette << ", paletteFile value is 0x" << std::hex << paletteFile;
+        ssEmptyPalette << ", object uuid is 0x" << std::hex << uuid;
+        YUtils::printDebug(ssEmptyPalette.str(),DebugType::ERROR);
+    }
+    bool continueBuildFrameLoop = true;
+    const uint buildFrameLoopMax = 0x10;
+    uint buildFrameLoopIndex = 0;
+    while(continueBuildFrameLoop) {
+        if (buildFrameLoopIndex > buildFrameLoopMax) {
+            YUtils::printDebug("Very high buildFrameLoopIndex",DebugType::WARNING);
+            return;
+        }
+        buildFrameLoopIndex++;
+    }
+}

@@ -55,6 +55,17 @@ public:
         uint32_t yPixelOffset,
         uint32_t uuid
     );
+    void placeObjectGraphic(
+        uint32_t x, uint32_t y,
+        uint32_t objectOffset,
+        uint32_t frame,
+        uint32_t paletteOffset,
+        std::string paletteFile,
+        std::string objectFile,
+        uint32_t manualXoffset,
+        uint32_t manualYoffset,
+        uint32_t uuid
+    );
     void setCellCollision(int row, int column, CollisionDraw colType, uint8_t _colDebug);
     void updateBg();
     void initCellCollision();
