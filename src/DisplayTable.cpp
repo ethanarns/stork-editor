@@ -1443,6 +1443,17 @@ void DisplayTable::updateSprites() {
                 objectGraphicsMeta.yPixelOffset,
                 it->uuid
             );
+            this->placeObjectGraphic(
+                (uint32_t)x,(uint32_t)y,
+                objectGraphicsMeta.indexOfTiles,
+                objectGraphicsMeta.frame,
+                objectGraphicsMeta.indexOfPalette,
+                objectGraphicsMeta.whichPaletteFile,
+                objectGraphicsMeta.whichObjectFile,
+                objectGraphicsMeta.xPixelOffset,
+                objectGraphicsMeta.yPixelOffset,
+                it->uuid
+            );
         }
     }
     // // Timing
@@ -1587,12 +1598,13 @@ void DisplayTable::placeObjectTile(
     }
 }
 
+// TODO: ERROR NOT WORKING
 void DisplayTable::placeObjectGraphic(
     uint32_t x, uint32_t y,
     uint32_t objectOffset, uint32_t frame,
     uint32_t paletteOffset, std::string paletteFile,
     std::string objectFile,
-    uint32_t manualXoffset, uint32_t manualYoffset,
+    uint32_t manualXoffsetFine, uint32_t manualYoffsetFine,
     uint32_t uuid)
 {
     // Will skip if already loaded
@@ -1612,8 +1624,8 @@ void DisplayTable::placeObjectGraphic(
     }
 
     auto objectVector = this->yidsRom->spriteRenderFiles[objectFile].objectTileDataVector;
-    auto objectData = objectVector.at(objectOffset);
-    auto curFrame = objectData->getFrameAt(frame);
+    auto objectTileData = objectVector.at(objectOffset);
+    auto curFrame = objectTileData->getFrameAt(frame);
 
     if (objectPalette.size() < 0xf) {
         std::stringstream ssEmptyPalette;
@@ -1632,5 +1644,31 @@ void DisplayTable::placeObjectGraphic(
             return;
         }
         buildFrameLoopIndex++;
+        for (auto bit = curFrame.buildFrames.begin(); bit != curFrame.buildFrames.end(); bit++) {
+            auto tileShapeValue = (*bit)->flags & 0b11111;
+            QPoint dims = YUtils::getSpriteDimsFromFlagValue(tileShapeValue);
+            uint curSpriteWidth = dims.x();
+            uint curSpriteHeight = dims.y();
+            uint buildFrameOffsetXfine = (*bit)->xOffset;
+            uint buildFrameOffsetYfine = (*bit)->yOffset;
+            uint gridXposition = x + (buildFrameOffsetXfine + manualXoffsetFine)/8;
+            uint gridYposition = y + (buildFrameOffsetYfine + manualYoffsetFine)/8;
+            auto tiles = objectTileData->getChartiles((*bit)->tileOffset << 4,curSpriteHeight*curSpriteWidth);
+            for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
+                auto objChartile = tiles.at(tilesIndex);
+                uint32_t tileIndexOffsetX = tilesIndex % curSpriteWidth;
+                uint32_t tileIndexOffsetY = tilesIndex / curSpriteWidth;
+                // PIXEL_ARRAY_BG1 = objChartile
+                // PALETTE_ARRAY_BG1 = objectPalette
+                auto tileItem = this->item(gridYposition+tileIndexOffsetY,gridXposition+tileIndexOffsetX);
+                if (tileItem == nullptr) {
+                    tileItem = new QTableWidgetItem();
+                }
+                tileItem->setData(PixelDelegateData::OBJECT_TILES,objChartile);
+                tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette);
+                tileItem->setData(PixelDelegateData::OBJECT_UUID,uuid);
+                tileItem->setText("sprite");
+            }
+        }
     }
 }

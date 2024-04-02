@@ -132,7 +132,13 @@ ObjbFrame ObjectTileData::getFrameAt(uint32_t frameIndex) {
         frameBuild->flags = YUtils::getUint16FromVec(this->byteData,buildFrameLocation);
         buildFrameLocation += 2;
         frame.buildFrames.push_back(frameBuild);
-        continueBuildFrameLoop = false; // Check flags to do this
+        bool flagIndex7 = frameBuild->flags & 0b10000000;
+        if (flagIndex7 == 0) {
+            YUtils::printDebug("MORE");
+        } else {
+            // Reached end of list, since it was 1
+            continueBuildFrameLoop = false;
+        }
     }
     return frame;
 }
