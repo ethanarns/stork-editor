@@ -666,6 +666,12 @@ std::string YUtils::musicIdToText(uint8_t musicId) {
     }
 }
 
+QPoint YUtils::getSpriteDimsFromFlagValue(uint flagValue) {
+    // Width is X, Height is Y
+    QPoint result(3,3);
+    return result;
+}
+
 std::string YUtils::relativeToEscapedAbs(std::string relPath) {
     std::stringstream res;
     auto absPath = std::filesystem::absolute(relPath);

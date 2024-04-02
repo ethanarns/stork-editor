@@ -13,6 +13,7 @@
 #include <QtCore>
 #include <QColor>
 #include <QByteArray>
+#include <QPoint>
 
 enum DebugType {
     VERBOSE,
@@ -67,6 +68,7 @@ public:
     static std::string magicToAscii(uint32_t hexText);
     static std::string generateUuid();
     static std::string musicIdToText(uint8_t musicId);
+    static QPoint getSpriteDimsFromFlagValue(uint flagValue);
 };
 
 #endif
