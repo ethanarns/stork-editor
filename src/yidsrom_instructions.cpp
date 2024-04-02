@@ -177,6 +177,19 @@ bool YidsRom::loadObjectRenderFile(std::string obarFileFull) {
     return true;
 }
 
+bool YidsRom::loadSpriteRenderFile(std::string obarFilenameFull) {
+    if (obarFilenameFull.empty()) {
+        YUtils::printDebug("Given empty OBAR file name",DebugType::WARNING);
+        return false;
+    }
+    if (this->spriteRenderFiles.count(obarFilenameFull) > 0) {
+        return false;
+    }
+    auto byteVector = this->getByteVectorFromFile(obarFilenameFull);
+    this->spriteRenderFiles[obarFilenameFull] = ObjectRenderArchive(byteVector);
+    return true;
+}
+
 void YidsRom::getHintMessageData(uint16_t hintMessageId) {
     YUtils::printDebug("getHintMessageData");
     std::vector<uint8_t> mespack = this->getByteVectorFromFile("mespack.mes");

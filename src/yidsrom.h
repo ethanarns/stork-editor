@@ -19,6 +19,7 @@
 
 #include "data/MapData.h"
 #include "data/LevelSelectData.h"
+#include "data/ObjectRenderFile.h"
 
 #include <QByteArray>
 
@@ -68,6 +69,7 @@ public:
     void reloadChartileVram(uint frame = 0);
 
     std::map<std::string,ObjectFile> objectRenderFiles;
+    std::map<std::string,ObjectRenderArchive> spriteRenderFiles;
 
     bool filesLoaded = false;
     YidsRom();
@@ -88,6 +90,7 @@ public:
     std::vector<uint8_t> getByteVectorFromFile(std::string fileName);
     ObjectFile getObjPltFile(std::string objset_filename);
     bool loadObjectRenderFile(std::string obarFileFull);
+    bool loadSpriteRenderFile(std::string obarFilenameFull);
 
     void getHintMessageData(uint16_t hintMessageId);
 
