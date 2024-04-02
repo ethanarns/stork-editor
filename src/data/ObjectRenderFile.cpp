@@ -8,8 +8,7 @@ ObjectRenderArchive::ObjectRenderArchive() {
     YUtils::printDebug("Initializing empty ObjectRenderArchive",DebugType::WARNING);
 }
 
-ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector)
-{
+ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
     if (obarVector.size() < 1) {
         YUtils::popupAlert("Empty OBAR file");
         return;
@@ -47,11 +46,11 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector)
             uint32_t endPos = obarIndex + innerLength;
             auto objb = new ObjectTileData(obarVector, obarIndex, endPos);
             // Metadata
-            objb->_globalIndex = globalIndex;
-            globalIndex++;
             objb->_obarAddress = obarIndex;
             // Push it
             this->objectTileDataVector.push_back(objb);
+            this->objectTileDataMap[globalIndex] = objb;
+            globalIndex++;
             obarIndex = endPos;
         } else if (headerCheck == Constants::PLTB_MAGIC_NUM || headerCheck == Constants::PALB_MAGIC_NUM) {
             auto pltbSector = YUtils::subVector(obarVector,obarIndex,obarIndex+innerLength);
@@ -70,28 +69,29 @@ ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector)
                 objPltb->palettes.push_back(curPalette);
             }
             // Metadata
-            objPltb->_globalIndex = globalIndex;
-            globalIndex++;
             objPltb->_obarAddress = obarIndex;
             // Push it
             this->objectPaletteDataVector.push_back(objPltb);
+            this->objectPaletteDataMap[globalIndex] = objPltb;
+            globalIndex++;
             obarIndex += innerLength;
         } else if (headerCheck == Constants::OBJZ_MAGIC_NUM) {
             auto sectionCompressed = YUtils::subVector(obarVector,obarIndex,obarIndex + innerLength);
             auto decomp = YCompression::lz10decomp(sectionCompressed);
             auto objz = new ObjectTileData(decomp);
             // Metadata
-            objz->_globalIndex = globalIndex;
-            globalIndex++;
             objz->_obarAddress = obarIndex;
             // Push it
             this->objectTileDataVector.push_back(objz);
+            this->objectTileDataMap[globalIndex] = objz;
+            globalIndex++;
             obarIndex += innerLength;
         } else {
             std::stringstream ssUnknownHeader;
             ssUnknownHeader << "Unknown header when loading OBAR file: ";
             ssUnknownHeader << std::hex << headerCheck;
             YUtils::printDebug(ssUnknownHeader.str(),DebugType::ERROR);
+            globalIndex++;
             obarIndex += innerLength;
         }
     }

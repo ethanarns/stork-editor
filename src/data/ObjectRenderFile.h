@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <string>
 #include <sstream>
+#include <map>
 
 #include <QByteArray>
 
@@ -32,7 +33,6 @@ struct ObjFrameBuild {
 
 struct ObjPltb {
     std::vector<QByteArray> palettes;
-    uint32_t _globalIndex;
     uint32_t _obarAddress;
 };
 
@@ -68,7 +68,6 @@ public:
 
     //std::vector<ObjbFrame*> frames;
 
-    uint32_t _globalIndex;
     uint32_t _obarAddress;
 private:
     // Store raw, as the program accesses it that way
@@ -80,6 +79,10 @@ class ObjectRenderArchive {
 public:
     ObjectRenderArchive();
     ObjectRenderArchive(std::vector<uint8_t> obarVector);
+
     std::vector<ObjectTileData*> objectTileDataVector;
+    std::map<uint32_t,ObjectTileData*> objectTileDataMap;
+
     std::vector<ObjPltb*> objectPaletteDataVector;
+    std::map<uint32_t,ObjPltb*> objectPaletteDataMap;
 };
