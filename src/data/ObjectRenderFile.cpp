@@ -4,7 +4,12 @@
 #include "../compression.h"
 #include "../constants.h"
 
-ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector) {
+ObjectRenderArchive::ObjectRenderArchive() {
+    /* Do nothing */
+}
+
+ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector)
+{
     if (obarVector.size() < 1) {
         YUtils::popupAlert("Empty OBAR file");
         return;
@@ -114,12 +119,21 @@ ObjbFrame ObjectTileData::getFrameAt(uint32_t frameIndex) {
         return frame;
     }
     uint32_t buildFrameLocation = frame.buildOffset + frame._binOffset;
-    ObjFrameBuild* frameBuild = new ObjFrameBuild();
-    frameBuild->tileOffset = YUtils::getUint16FromVec(this->byteData,buildFrameLocation);
-    frameBuild->xOffset = YUtils::getSint16FromVec(this->byteData,buildFrameLocation+2);
-    frameBuild->yOffset = YUtils::getSint16FromVec(this->byteData,buildFrameLocation+4);
-    frameBuild->flags = YUtils::getUint16FromVec(this->byteData,buildFrameLocation+6);
-    frame.buildFrame = frameBuild;
+    // This is a loop
+    bool continueBuildFrameLoop = true;
+    while (continueBuildFrameLoop) {
+        ObjFrameBuild* frameBuild = new ObjFrameBuild();
+        frameBuild->tileOffset = YUtils::getUint16FromVec(this->byteData,buildFrameLocation);
+        buildFrameLocation += 2;
+        frameBuild->xOffset = YUtils::getSint16FromVec(this->byteData,buildFrameLocation);
+        buildFrameLocation += 2;
+        frameBuild->yOffset = YUtils::getSint16FromVec(this->byteData,buildFrameLocation);
+        buildFrameLocation += 2;
+        frameBuild->flags = YUtils::getUint16FromVec(this->byteData,buildFrameLocation);
+        buildFrameLocation += 2;
+        frame.buildFrames.push_back(frameBuild);
+        continueBuildFrameLoop = false; // Check flags to do this
+    }
     return frame;
 }
 

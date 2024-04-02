@@ -42,7 +42,7 @@ struct ObjbFrame {
     uint16_t buildOffset;
     uint8_t holdTime;
     int8_t frameJump;
-    ObjFrameBuild *buildFrame;
+    std::vector<ObjFrameBuild*> buildFrames;
     uint32_t _binOffset;
     std::string toString() {
         std::stringstream ss;
@@ -78,6 +78,7 @@ private:
 // OBAR
 class ObjectRenderArchive {
 public:
+    ObjectRenderArchive();
     ObjectRenderArchive(std::vector<uint8_t> obarVector);
     std::vector<ObjectTileData*> objectTileDataVector;
     std::vector<ObjPltb*> objectPaletteDataVector;

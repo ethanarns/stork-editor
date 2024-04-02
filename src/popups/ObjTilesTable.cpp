@@ -138,7 +138,7 @@ void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
     //     //tileCount = this->getSpriteTilesWidth(curFrame.buildFrame->flags);
     // }
     tileCount = this->rowCount() * this->columnCount();
-    auto tiles = curObjb->getChartiles(curFrame.buildFrame->tileOffset << 4,tileCount);
+    auto tiles = curObjb->getChartiles(curFrame.buildFrames.at(0)->tileOffset << 4,tileCount);
     this->wipeTiles();
     if (this->currentPalette == nullptr) {
         //std::cout << "Setting to default" << std::endl;
