@@ -137,29 +137,32 @@ void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
     //     this->setColumnCount(this->getSpriteTilesWidth(curFrame.buildFrame->flags));
     //     //tileCount = this->getSpriteTilesWidth(curFrame.buildFrame->flags);
     // }
-    tileCount = this->rowCount() * this->columnCount();
-    auto tiles = curObjb->getChartiles(curFrame.buildFrames.at(0)->tileOffset << 4,tileCount);
+    //tileCount = this->rowCount() * this->columnCount();
     this->wipeTiles();
-    if (this->currentPalette == nullptr) {
-        //std::cout << "Setting to default" << std::endl;
-        this->currentPalette = this->yidsRom->backgroundPalettes[0];
-    }
-    for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
-        auto objChartile = tiles.at(tilesIndex);
-        auto tileItem = new QTableWidgetItem();
-        tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,objChartile);
-        tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->currentPalette);
-        tileItem->setData(PixelDelegateData::FLIP_H_BG1,false);
-        tileItem->setData(PixelDelegateData::FLIP_V_BG1,false);
-        tileItem->setData(PixelDelegateData::DEBUG_DATA,0x69);
-        tileItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
-        tileItem->setData(PixelDelegateData::DRAW_BG1,true);
-        uint32_t x = tilesIndex % this->columnCount();
-        uint32_t y = tilesIndex / this->columnCount();
-        if (this->item(y,x) != nullptr) {
-            delete this->item(y,x);
+    // TODO: Add support for multiple tiles
+    for (auto bit = curFrame.buildFrames.begin(); bit != curFrame.buildFrames.end(); bit++) {
+        auto tiles = curObjb->getChartiles((*bit)->tileOffset << 4,tileCount);
+        if (this->currentPalette == nullptr) {
+            //std::cout << "Setting to default" << std::endl;
+            this->currentPalette = this->yidsRom->backgroundPalettes[0];
         }
-        this->setItem(y,x,tileItem);
+        for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
+            auto objChartile = tiles.at(tilesIndex);
+            auto tileItem = new QTableWidgetItem();
+            tileItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,objChartile);
+            tileItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->currentPalette);
+            tileItem->setData(PixelDelegateData::FLIP_H_BG1,false);
+            tileItem->setData(PixelDelegateData::FLIP_V_BG1,false);
+            tileItem->setData(PixelDelegateData::DEBUG_DATA,0x69);
+            tileItem->setData(PixelDelegateData::DRAW_OBJECTS,true);
+            tileItem->setData(PixelDelegateData::DRAW_BG1,true);
+            uint32_t x = tilesIndex % this->columnCount();
+            uint32_t y = tilesIndex / this->columnCount();
+            if (this->item(y,x) != nullptr) {
+                delete this->item(y,x);
+            }
+            this->setItem(y,x,tileItem);
+        }
     }
 }
 

@@ -5,7 +5,7 @@
 #include "../constants.h"
 
 ObjectRenderArchive::ObjectRenderArchive() {
-    /* Do nothing */
+    YUtils::printDebug("Initializing empty ObjectRenderArchive",DebugType::WARNING);
 }
 
 ObjectRenderArchive::ObjectRenderArchive(std::vector<uint8_t> obarVector)
