@@ -16,36 +16,31 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     meta.whichObjectFile = "objset.arcz";
     meta.xPixelOffset = 0;
     meta.yPixelOffset = 0;
+    meta.indexOfPalette = 0;
+    meta.indexOfTiles = 0;
     switch(objectId) {
         case 0x0: { // Basic yellow coin
             meta.indexOfTiles = 0x0;
             meta.indexOfPalette = 0x7e; // 020267c4
-            meta.tilesCount = 4;
-            meta.tileWidth = 2;
             break;
         }
         case 0x13: { // Question mark cloud?
-            meta.tilesCount = 0; // Needs special rendering...
+            // meta.indexOfTiles = 9;
+            // meta.indexOfPalette = 0xa9;
             break;
         }
         case 0x14: { // Stork Stop
             meta.indexOfTiles = 0xa;
             meta.indexOfPalette = 0xaa;
-            meta.tileWidth = 4;
-            meta.tilesCount = 4 * 8;
             break;
         }
         case 0x1d: { // Spring ball small
             meta.indexOfTiles = 0xf;
-            meta.tileWidth = 4;
-            meta.tilesCount = 4 * 3;
             meta.indexOfPalette = 0x86;
             break;
         }
         case 0x1e: { // Spring ball large
             meta.indexOfTiles = 0xe;
-            meta.tileWidth = 4;
-            meta.tilesCount = 4 * 4;
             meta.indexOfPalette = 0x86;
             meta.yPixelOffset = -8;
             break;
@@ -53,15 +48,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x20: { // Falling donuts
             meta.indexOfTiles = 0x11;
             meta.indexOfPalette = 0x87;
-            meta.tilesCount = 4;
-            meta.tileWidth = 2;
             break;
         }
         case 0x21: { // Pirhana Plant 1
             meta.indexOfTiles = 0x24;
             meta.indexOfPalette = 0x97;
-            meta.tilesCount = 8;
-            meta.tileWidth = 2;
             meta.frame = 1;
             break;
         }
@@ -81,8 +72,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             int32_t pipeHeight = 6;
             meta.indexOfTiles = VERTICAL_PIPE_TILES;
             meta.indexOfPalette = 0x89;
-            meta.tilesCount = 4 * pipeHeight;
-            meta.tileWidth = 4;
             meta.frame = 0;
             // TODO: Special rendering to repeat downwards
             meta.specialRender = std::vector<RenderInstruction>();
@@ -91,16 +80,12 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x28: { // Flower
             meta.indexOfTiles = 0x16;
             meta.indexOfPalette = 0x9b;
-            meta.tilesCount = 16;
-            meta.tileWidth = 4;
             break;
         }
         case 0xfb:   // Poundable Pillar trigger (links to 6a often)
         case 0x2b: { // Poundable Pillar
             meta.indexOfTiles = 0x17;
             meta.indexOfPalette = 0x8d;
-            meta.tileWidth = 2;
-            meta.tilesCount = 4;
             // It just goes down until it hits collision
             break;
         }
@@ -108,15 +93,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             // TODO: Render bottom half as mirror and handle reverse
             meta.indexOfTiles = 0x19;
             meta.indexOfPalette = 0x8e;
-            meta.tileWidth = 2;
-            meta.tilesCount = 2 * 4;
             break;
         }
         case 0x36: { // Yellow Shy Guy
             meta.indexOfTiles = 0x21; // 0202de24
             meta.frame = 0x1;
-            meta.tileWidth = 2;
-            meta.tilesCount = 2 * 3;
             meta.indexOfPalette = 0x91; // 0202de18 see above
             // todo: fix x offset?
             break;
@@ -124,8 +105,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x37: { // Green Shy Guy
             meta.indexOfTiles = 0x21; // 0202de24
             meta.frame = 0x1;
-            meta.tileWidth = 2;
-            meta.tilesCount = 2 * 3;
             meta.indexOfPalette = 0x92; // 0202de18 see above
             // todo: fix x offset?
             break;
@@ -133,8 +112,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x38: { // Blue Shy Guy
             meta.indexOfTiles = 0x21; // 0202de24
             meta.frame = 0x1;
-            meta.tileWidth = 2;
-            meta.tilesCount = 2 * 3;
             meta.indexOfPalette = 0x93; // 0202de18 see above
             // todo: fix x offset?
             break;
@@ -142,8 +119,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x39: { // Red Shy Guy
             meta.indexOfTiles = 0x21; // 0202de24
             meta.frame = 0x1;
-            meta.tileWidth = 2;
-            meta.tilesCount = 2 * 3;
             meta.indexOfPalette = 0x90; // 0202de18 see above
             // todo: fix x offset?
             break;
@@ -151,51 +126,37 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x3b: { // Red coin
             meta.indexOfTiles = 0;
             meta.indexOfPalette = 0x7e;
-            meta.tilesCount = 4;
-            meta.tileWidth = 2;
             meta.frame = 6;
             break;
         }
         case 0x3c: { // Timer Block
             meta.indexOfTiles = 0x1e;
             meta.indexOfPalette = 0xe3;
-            meta.tilesCount = 4;
-            meta.tileWidth = 2;
             break;
         }
         case 0x40: { // Nipper plant
             meta.indexOfTiles = 0x20;
             meta.indexOfPalette = 0x8f;
-            meta.tilesCount = 4;
-            meta.tileWidth = 2;
             meta.frame = 1;
             break;
         }
         case 0x4b: { // Windbag
             meta.indexOfTiles = 0x33;
             meta.indexOfPalette = 0xa1;
-            meta.tileWidth = 4;
-            meta.tilesCount = 4 * 7;
             break;
         }
         case 0x4e: { // Dandylion
             meta.indexOfTiles = 0x2f;
             meta.indexOfPalette = 0x8f;
-            meta.tilesCount = 4*6;
-            meta.tileWidth = 4;
             break;
         }
         case 0x50: { // Poundable Box (stars?)
             meta.indexOfTiles = 0x35;
             meta.indexOfPalette = 0xAD;
-            meta.tilesCount = 8*8;
-            meta.tileWidth = 8;
             break;
         }
         case 0x54: { // Crayzee Dayzee
             meta.indexOfTiles = 0x37;
-            meta.tileWidth = 2;
-            meta.tilesCount = 2 * 4;
             meta.frame = 0;
             meta.indexOfPalette = 0xb0;
             break;
@@ -204,22 +165,16 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfTiles = 0x48;
             // See 020db27c for other potential palettes
             meta.indexOfPalette = 0xCD;
-            meta.tilesCount = 4 * 4;
-            meta.tileWidth = 4;
             break;
         }
         case 0x92: { // Stairs
             // TODO: special print me
             meta.indexOfTiles = 0x54;
             meta.indexOfPalette = 0xe2;
-            meta.tilesCount = 8;
-            meta.tileWidth = 4;
             break;
         }
         case 0x94: { // Chomp-breakable blocks
             // From an arc file: "objsbblock.arc"
-            meta.tilesCount = 4*5;
-            meta.tileWidth = 4;
             meta.frame = 0;
             meta.indexOfTiles = 0;
             meta.whichObjectFile = "objsbblock.arc";
@@ -231,16 +186,12 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x97: { // Ghost Guy
             meta.indexOfTiles = 0x56;
             meta.indexOfPalette = 0xda;
-            meta.tilesCount = 6;
-            meta.tileWidth = 2;
             break;
         }
         case 0x9A: { // Red arrow signs
             meta.indexOfTiles = 0x5A;
             meta.indexOfPalette = 0xDC;
             // Defaults to classic red arrow sign
-            meta.tilesCount = 12;
-            meta.tileWidth = 4;
             if (lo.settingsLength < 2) {
                 std::stringstream ssRedSignSettingsLen;
                 ssRedSignSettingsLen << "Red Sign needs at least 2 bytes of settings, instead got " << lo.settingsLength;
@@ -251,38 +202,19 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.frame = firstSettingsByte;
             switch(firstSettingsByte) {
                 case 0x1: { // Classic right pointing signpost
-                    meta.tilesCount = 3 * 4;
-                    meta.tileWidth = 4;
+                    meta.frame = 0;
                     break;
                 }
                 case 0x2: {
                     meta.frame = 2;
-                    meta.tileWidth = 2;
-                    meta.tilesCount = 6;
                     break;
                 }
                 case 0x3: {
                     meta.frame = 3;
-                    meta.tileWidth = 2;
-                    meta.tilesCount = 6;
                     break;
                 }
                 case 0x4: {
                     meta.frame = 4;
-                    meta.tileWidth = 2;
-                    meta.tilesCount = 4;
-                    break;
-                }
-                case 0x5: { // Down right
-                    // TODO: ROTATED, NEEDS SPECIAL RENDER
-                    meta.tilesCount = 4;
-                    meta.tileWidth = 2;
-                    meta.frame = 3;
-                    break;
-                }
-                case 0x6: { // Upwards pointing arrow
-                    meta.tilesCount = 6;
-                    meta.tileWidth = 2;
                     break;
                 }
                 default: {
@@ -297,8 +229,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x9f: { // Info/hint block
             meta.indexOfTiles = 0x5d;
             meta.indexOfPalette = 0xa9;
-            meta.tilesCount = 4;
-            meta.tileWidth = 2;
             break;
         }
         case 0xa1: { // Block that expands when you hit it
@@ -307,8 +237,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0x2a-2; // Is in objeffect.arcz, strange offset
             // 02096680 is where the function to get the palette address is
             // Actual function is at 020e448c. Doesn't SEEM to have any offset, but might skip the first few?
-            meta.tilesCount = 4;
-            meta.tileWidth = 2;
             break;
         }
         case 0xd2: { // Yellow egg block
@@ -316,15 +244,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.whichPaletteFile = "objeffect.arcz";
             meta.indexOfPalette = 0x2a-2;
             meta.frame = 4; // TODO: Get from object data values
-            meta.tilesCount = 4;
-            meta.tileWidth = 2;
             break;
         }
         case 0xdb: { // Outline coin
             meta.indexOfTiles = 0x0;
             meta.indexOfPalette = 0x7e;
-            meta.tilesCount = 4;
-            meta.tileWidth = 2;
             meta.frame = 12; // Flip to transparency frame
             break;
         }
@@ -332,30 +256,23 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0xe7: { // M Block that only shows up when carrying baby Mario
             meta.indexOfTiles = 0x5f;
             meta.indexOfPalette = 0xe3;
-            meta.tilesCount = 4;
-            meta.tileWidth = 2;
             break;
         }
         case 0xe9: { // Lantern Ghost, 020ba7f4
             meta.whichObjectFile = "objkantera.arcz";
             meta.whichPaletteFile = "objkantera.arcz";
             meta.indexOfTiles = 0;
-            meta.tileWidth = 4;
-            meta.tilesCount = 4 * 3;
             meta.frame = 0;
             meta.indexOfPalette = 1;
             break;
         }
         case 0x112: { // Locked minigame hut
             // Pulled from "objhouse.arcz"
-            meta.tilesCount = 0;
             break;
         }
         default: {
             meta.indexOfTiles = 0;
             meta.indexOfPalette = 0;
-            meta.tilesCount = 0;
-            meta.tileWidth = 0;
             break;
         }
     }

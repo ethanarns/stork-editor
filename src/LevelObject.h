@@ -29,14 +29,17 @@ struct ObjectGraphicMetadata {
      * This is hard-coded in the code sadly, no tables
      */
     uint32_t indexOfPalette;
-    /**
-     * @brief How many tiles (8x8) wide this is before looping
-     */
-    uint32_t tileWidth;
-    /**
-     * @brief How many tiles will be printed out, not factoring in loop
-     */
-    uint32_t tilesCount;
+    
+    // The following are made obsolete once the size values were found //
+
+    // /**
+    //  * @brief How many tiles (8x8) wide this is before looping
+    //  */
+    // uint32_t tileWidth;
+    // /**
+    //  * @brief How many tiles will be printed out, not factoring in loop
+    //  */
+    // uint32_t tilesCount;
 
     uint32_t frame;
 

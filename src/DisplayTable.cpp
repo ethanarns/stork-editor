@@ -1387,7 +1387,7 @@ void DisplayTable::updateSprites() {
         //     std::cout << objectGraphicsMeta.whichObjectFile << std::endl;
         // }
         auto objectTextMeta = this->yidsRom->getSpriteMetadata(it->objectId);
-        if (objectGraphicsMeta.tilesCount == 0) {
+        if (objectGraphicsMeta.indexOfPalette == 0 && objectGraphicsMeta.indexOfTiles == 0) {
             // top left I think
             potentialExisting->setData(PixelDelegateData::OBJECT_ID,(uint32_t)it->objectId);
             potentialExisting->setData(PixelDelegateData::OBJECT_UUID,it->uuid);
