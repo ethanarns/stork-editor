@@ -18,6 +18,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     meta.yPixelOffset = 0;
     meta.indexOfPalette = 0;
     meta.indexOfTiles = 0;
+    meta.isLz10 = false;
     switch(objectId) {
         case 0x0: { // Basic yellow coin
             meta.indexOfTiles = 0x0;
@@ -25,8 +26,9 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         case 0x13: { // Question mark cloud?
-            // meta.indexOfTiles = 9;
-            // meta.indexOfPalette = 0xa9;
+            meta.indexOfTiles = 9;
+            meta.indexOfPalette = 0xa9;
+            meta.isLz10 = true;
             break;
         }
         case 0x14: { // Stork Stop
@@ -69,7 +71,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             constexpr uint32_t HORIZONTAL_PIPE_TILES = 0x12;
             Q_UNUSED(HORIZONTAL_PIPE_TILES);
             //uint32_t pipeHeight = (uint32_t)lo.settings.at(2)*2; // Doesn't work because data repeats
-            int32_t pipeHeight = 6;
             meta.indexOfTiles = VERTICAL_PIPE_TILES;
             meta.indexOfPalette = 0x89;
             meta.frame = 0;

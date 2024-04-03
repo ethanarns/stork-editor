@@ -41,6 +41,8 @@ struct ObjectGraphicMetadata {
     //  */
     // uint32_t tilesCount;
 
+    bool isLz10;
+
     uint32_t frame;
 
     /**

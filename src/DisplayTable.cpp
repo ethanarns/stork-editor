@@ -1440,7 +1440,8 @@ void DisplayTable::updateSprites() {
                 objectGraphicsMeta.whichObjectFile,
                 objectGraphicsMeta.xPixelOffset,
                 objectGraphicsMeta.yPixelOffset,
-                it->uuid
+                it->uuid,
+                objectGraphicsMeta.isLz10
             );
             // this->placeObjectTile(
             //     (uint32_t)x,(uint32_t)y,
@@ -1605,7 +1606,7 @@ void DisplayTable::placeObjectGraphic(
     uint32_t paletteOffset, std::string paletteFile,
     std::string objectFile,
     int manualXoffsetFine, int manualYoffsetFine,
-    uint32_t uuid)
+    uint32_t uuid, bool isLz10)
 {
     // std::cout << "placeObjectGraphic" << std::endl;
     // Will skip if already loaded
@@ -1649,7 +1650,12 @@ void DisplayTable::placeObjectGraphic(
         int gridXposition = x + (int)std::round(xd8);
         double yd8 = static_cast<double>(buildFrameOffsetYfine + manualYoffsetFine)/8;
         int gridYposition = y + (int)std::round(yd8);
-        auto tiles = objectTileData->getChartiles((*bit)->tileOffset << 4,curSpriteHeight*curSpriteWidth,BgColorMode::MODE_16);
+        std::vector<QByteArray> tiles = std::vector<QByteArray>();
+        if (isLz10) {
+            tiles = objectTileData->getChartilesCompressed((*bit)->tileOffset << 4,curSpriteHeight*curSpriteWidth,BgColorMode::MODE_16);
+        } else {
+            tiles = objectTileData->getChartiles((*bit)->tileOffset << 4,curSpriteHeight*curSpriteWidth,BgColorMode::MODE_16);
+        }
         int tilesSize = tiles.size();
         for (int tilesIndex = 0; tilesIndex < tilesSize; tilesIndex++) {
             auto objChartile = tiles.at(tilesIndex);
