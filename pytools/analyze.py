@@ -106,12 +106,15 @@ def handleSCEN(data: bytearray, index: int, stop: int) -> None:
             frameCount = anmz[anmzIndex]
             anmzIndex += 1
             print(ind(3) + "Frame count: " + str(frameCount))
+            
             anmzUnk1 = anmz[anmzIndex]
             anmzIndex += 1
             print(ind(3) + "Unknown 1: " + hex(anmzUnk1))
+
             anmzUnk2 = readUint16(anmz,anmzIndex)
             anmzIndex += 2
             print(ind(3) + "Unknown 2: " + hex(anmzUnk2))
+
             anmzVramOffset = readUint16(anmz,anmzIndex)
             anmzIndex += 2
             print(ind(3) + "VRAM Offset: " + hex(anmzVramOffset))
@@ -196,15 +199,22 @@ def handleGRAD(data: bytearray, index: int, stop: int):
         print(ind(2) + gradMagic + " (length = " + hex(gradLength) + ")")
         tempIndex = index + 0 # Just in case it's wrong
         if gradMagic == "GINF":
-            tempIndex += 1
-            tempIndex += 1
-            tempIndex += 1
-            tempIndex += 1
+            recordCount = readUint16(data,tempIndex)
+            tempIndex += 2
+            print(ind(3) + "Record count?: " + hex(recordCount))
+
+            unknownSigned = readUint16(data,tempIndex)
+            tempIndex += 2
+            print(ind(3) + "Unknown Signed: " + str(unknownSigned))
+
             unk1 = readUint16(data,tempIndex)
             tempIndex += 2
-            print(ind(3) + "Unknown 1: " + hex(unk1))
-            tempIndex += 1
-            tempIndex += 1
+            print(ind(3) + "Unknown 2: " + hex(unk1))
+
+            unk3 = readUint16(data,tempIndex)
+            tempIndex += 2
+            print(ind(3) + "Unknown 3 (maybe padding): " + hex(unk3))
+
             yOffset = readUint32(data,tempIndex)
             tempIndex += 4
             print(ind(3) + "Y Offset: " + hex(yOffset))
