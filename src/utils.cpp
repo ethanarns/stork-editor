@@ -673,17 +673,23 @@ QPoint YUtils::getSpriteDimsFromFlagValue(uint flagValue) {
         case 0x1:  return QPoint(2,2);
         case 0x2:  return QPoint(4,4);
         case 0x3:  return QPoint(8,8);
-        // 0x4-0x7 extended palette?
+        case 0x4:  return QPoint(1,1);
+        case 0x5:  return QPoint(2,2);
+        case 0x6:  return QPoint(4,4);
+        case 0x7:  return QPoint(8,8);
         case 0x8:  return QPoint(2,1);
         case 0x9:  return QPoint(4,1);
         case 0xA:  return QPoint(4,2);
         case 0xB:  return QPoint(8,4);
-        // 0xC-0xF extended palette?
+        case 0xC:  return QPoint(2,1);
+        case 0xD:  return QPoint(4,1);
+        case 0xE:  return QPoint(4,2);
+        case 0xF:  return QPoint(8,4);
         case 0x10: return QPoint(1,2);
         case 0x11: return QPoint(1,4);
         case 0x12: return QPoint(2,4);
         case 0x13: return QPoint(4,8);
-        // 0x14: extended palette?
+        case 0x14: return QPoint(1,2);
         default:   break;
     }
     std::stringstream ss;

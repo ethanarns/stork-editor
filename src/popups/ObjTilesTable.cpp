@@ -142,10 +142,10 @@ void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
             //std::cout << "Setting to default" << std::endl;
             this->currentPalette = this->yidsRom->backgroundPalettes[0];
         }
-        auto bitXoffset = (*bit)->xOffset;
-        auto bitYoffset = (*bit)->yOffset;
-        std::cout << "bitXoffset: 0x" << bitXoffset << std::endl;
-        std::cout << "bitYoffset: 0x" << bitYoffset << std::endl;
+        // auto bitXoffset = (*bit)->xOffset; // Can't go negative with this
+        // auto bitYoffset = (*bit)->yOffset;
+        // std::cout << "bitXoffset: 0x" << bitXoffset << std::endl;
+        // std::cout << "bitYoffset: 0x" << bitYoffset << std::endl;
         for (uint tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
             auto objChartile = tiles.at(tilesIndex);
             auto tileItem = new QTableWidgetItem();
@@ -163,6 +163,7 @@ void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
             }
             this->setItem(y,x,tileItem);
         }
+        return; // Will be tough to add more than 1
     }
 }
 

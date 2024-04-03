@@ -497,6 +497,7 @@ MainWindow::MainWindow() {
     this->spritePaletteSelect->setObjectName("spritePopupPaletteSelect");
     this->spritePaletteSelect->setEnabled(true);
     this->spritePaletteSelect->setMinimum(-1); // -1 = universal palette
+    this->spritePaletteSelect->setMaximum(0xffff);
     this->spritePaletteSelect->setDisplayIntegerBase(16);
     //this->spritePaletteSelect->setPrefix("0x");
     this->spritePaletteSelect->setValue(-1);
