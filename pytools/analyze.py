@@ -254,8 +254,12 @@ def handleArea(data: bytearray, index: int, stop: int):
         print(ind(2) + "Warning: unequal ending in AREA")
 
 def handleALPH(data: bytearray, index: int, stop: int):
-    print(data[index:stop])
-    pass
+    bldcnt = readUint16(data,index)
+    index += 2
+    bldalpha = readUint16(data,index)
+    index += 2
+    print(ind(2) + "BLDCNT: " + hex(bldcnt))
+    print(ind(2) + "BLDALPHA: " + hex(bldalpha))
 
 def handlePath(data: bytearray, index: int, stop: int):
     pathCount = readUint32(data,index)
