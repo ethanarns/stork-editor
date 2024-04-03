@@ -138,7 +138,16 @@ void ObjTilesTable::refreshWithCurrentData() {
         auto flagDims = YUtils::getSpriteDimsFromFlagValue((*bit)->flags & 0b11111);
         std::cout << "TileShapeValue: " << std::hex << ((*bit)->flags & 0b11111) << std::endl;
         tileCount = flagDims.x() * flagDims.y();
-        auto tiles = curObjb->getChartiles((*bit)->tileOffset << 4,tileCount,BgColorMode::MODE_16);
+        std::vector<QByteArray> tiles = std::vector<QByteArray>();
+        if (this->isSpriteCompressed) {
+            tiles = curObjb->getChartilesCompressed((*bit)->tileOffset << 4,tileCount,BgColorMode::MODE_16);
+        } else {
+            tiles = curObjb->getChartiles((*bit)->tileOffset << 4,tileCount,BgColorMode::MODE_16);
+        }
+        if (tiles.size() == 0) {
+            YUtils::printDebug("Empty chartiles pulled in refreshWithCurrentData",DebugType::ERROR);
+            return;
+        }
         if (this->currentPalette == nullptr) {
             //std::cout << "Setting to default" << std::endl;
             this->currentPalette = this->yidsRom->backgroundPalettes[0];

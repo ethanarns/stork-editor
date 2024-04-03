@@ -168,3 +168,43 @@ std::vector<QByteArray> ObjectTileData::getChartiles(uint32_t baseDataIndex, uin
     }
     return chartiles;
 }
+
+std::vector<QByteArray> ObjectTileData::getChartilesCompressed(uint32_t baseDataIndex, uint32_t countOfTiles, BgColorMode colMode) {
+    std::vector<QByteArray> resultTiles;
+    int tileBytesSize = Constants::CHARTILE_DATA_SIZE;
+    if (colMode == BgColorMode::MODE_256) {
+        tileBytesSize = 64; // Since each one is a single byte, instead of split into 2, 8x8 = 64
+    }
+    // Get the decompressed data
+    uint32_t totalLength = tileBytesSize * countOfTiles;
+    auto compressedVector = YUtils::subVector(this->byteData,baseDataIndex,baseDataIndex+totalLength);
+    if (compressedVector.at(0) != 0x10) {
+        YUtils::printDebug("First tile was not 0x10 in getChartilesCompressed",DebugType::WARNING);
+        resultTiles.resize(tileBytesSize);
+        return resultTiles;
+    }
+    auto decompressedVector = YCompression::lz10decomp(compressedVector);
+    if (decompressedVector.size() == 0) {
+        YUtils::printDebug("Failed to decompress vector",DebugType::ERROR);
+        resultTiles.resize(tileBytesSize);
+        return resultTiles;
+    }
+    // For each tile...
+    for (uint currentTileIndex = 0; currentTileIndex < countOfTiles; currentTileIndex++) {
+        // Get a segment of the uncompressed data
+        uint32_t start = currentTileIndex*tileBytesSize;
+        auto curSection = YUtils::subVector(decompressedVector,start,start+tileBytesSize);
+        if (colMode == BgColorMode::MODE_16) {
+            // This splits things up
+            resultTiles.push_back(YUtils::tileVectorToQByteArray(curSection));
+        } else {
+            QByteArray color256array;
+            for (int index256 = 0; index256 < 64; index256++) {
+                // Don't split bytes for the 8x8
+                color256array.push_back(curSection.at(index256));
+            }
+            resultTiles.push_back(color256array);
+        }
+    }
+    return resultTiles;
+}

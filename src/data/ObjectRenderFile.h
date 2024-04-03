@@ -65,6 +65,7 @@ public:
     //ObjbFrame* getFrameData(uint32_t frameIndex);
     ObjbFrame getFrameAt(uint32_t frameIndex);
     std::vector<QByteArray> getChartiles(uint32_t baseDataIndex, uint32_t countOfTiles, BgColorMode colMode = BgColorMode::MODE_16);
+    std::vector<QByteArray> getChartilesCompressed(uint32_t baseDataIndex, uint32_t countOfTiles, BgColorMode colMode = BgColorMode::MODE_16);
 
     //std::vector<ObjbFrame*> frames;
 
