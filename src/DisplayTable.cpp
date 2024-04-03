@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <cmath>
 
 DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
     this->setParent(parent);
@@ -1352,7 +1353,7 @@ void DisplayTable::updateBg() {
 }
 
 void DisplayTable::updateSprites() {
-    YUtils::printDebug("updateSprites");
+    //YUtils::printDebug("updateSprites");
     // Full wipe
     uint32_t xWidth = this->columnCount();
     uint32_t yHeight = this->rowCount();
@@ -1430,7 +1431,7 @@ void DisplayTable::updateSprites() {
             bottomRight->setData(PixelDelegateData::OBJECT_PALETTE,this->yidsRom->backgroundPalettes[0]);
             bottomRight->setToolTip(tr(ss.str().c_str()));
         } else {
-            if (it->objectId == 0x9A) {
+            if (it->objectId == 0x36) {
                 this->placeObjectGraphic(
                     (uint32_t)x,(uint32_t)y,
                     objectGraphicsMeta.indexOfTiles,
@@ -1648,12 +1649,10 @@ void DisplayTable::placeObjectGraphic(
         int buildFrameOffsetXfine = (*bit)->xOffset;
         //std::cout << "buildFrameOffsetXfine: " << std::dec << buildFrameOffsetXfine << std::endl;
         int buildFrameOffsetYfine = (*bit)->yOffset;
-        int gridXposition = x + (buildFrameOffsetXfine + manualXoffsetFine)/8;
-        // std::cout << "x: " << x << std::endl;
-        // std::cout << "buildFrameOffsetXfine + manualXoffsetFine: " << (buildFrameOffsetXfine + manualXoffsetFine) << std::endl;
-        // std::cout << "/8: " << (buildFrameOffsetXfine + manualXoffsetFine)/8 << std::endl;
-        // std::cout << "gridXposition: " << gridXposition << std::endl;
-        int gridYposition = y + (buildFrameOffsetYfine + manualYoffsetFine)/8;
+        double xd8 = static_cast<double>(buildFrameOffsetXfine + manualXoffsetFine)/8;
+        int gridXposition = x + (int)std::round(xd8);
+        double yd8 = static_cast<double>(buildFrameOffsetYfine + manualYoffsetFine)/8;
+        int gridYposition = y + (int)std::round(yd8);
         auto tiles = objectTileData->getChartiles((*bit)->tileOffset << 4,curSpriteHeight*curSpriteWidth);
         for (int tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
             auto objChartile = tiles.at(tilesIndex);
