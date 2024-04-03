@@ -675,8 +675,11 @@ QPoint YUtils::getSpriteDimsFromFlagValue(uint flagValue) {
         case 0xA:  return QPoint(4,2);
         case 0x10: return QPoint(1,2);
         case 0x11: return QPoint(1,4);
-        default:   return QPoint(3,3);
+        default:   break;
     }
+    std::stringstream ss;
+    ss << "Unknown flagValue: 0x" << std::hex << flagValue;
+    YUtils::printDebug(ss.str(),DebugType::ERROR);
     return QPoint(3,3);
 }
 
