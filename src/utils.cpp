@@ -671,11 +671,15 @@ QPoint YUtils::getSpriteDimsFromFlagValue(uint flagValue) {
     switch (flagValue) {
         case 0x0:  return QPoint(1,1);
         case 0x1:  return QPoint(2,2);
+        case 0x2:  return QPoint(4,4);
+        case 0x3:  return QPoint(8,8);
         case 0x8:  return QPoint(2,1);
         case 0x9:  return QPoint(4,1);
         case 0xA:  return QPoint(4,2);
+        case 0xB:  return QPoint(8,4);
         case 0x10: return QPoint(1,2);
         case 0x11: return QPoint(1,4);
+        case 0x12: return QPoint(2,4);
         default:   break;
     }
     std::stringstream ss;

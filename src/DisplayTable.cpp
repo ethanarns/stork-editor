@@ -1431,7 +1431,7 @@ void DisplayTable::updateSprites() {
             bottomRight->setData(PixelDelegateData::OBJECT_PALETTE,this->yidsRom->backgroundPalettes[0]);
             bottomRight->setToolTip(tr(ss.str().c_str()));
         } else {
-            if (it->objectId == 0x36) {
+            if (it->objectId != 0xffff) {
                 this->placeObjectGraphic(
                     (uint32_t)x,(uint32_t)y,
                     objectGraphicsMeta.indexOfTiles,

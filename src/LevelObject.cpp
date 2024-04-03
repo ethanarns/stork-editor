@@ -253,7 +253,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                 case 0x1: { // Classic right pointing signpost
                     meta.tilesCount = 3 * 4;
                     meta.tileWidth = 4;
-                    meta.yPixelOffset = -8;
                     break;
                 }
                 case 0x2: {

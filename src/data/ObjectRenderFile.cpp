@@ -134,7 +134,7 @@ ObjbFrame ObjectTileData::getFrameAt(uint32_t frameIndex) {
         frame.buildFrames.push_back(frameBuild);
         bool flagIndex7 = frameBuild->flags & 0b10000000;
         if (flagIndex7 == 0) {
-            YUtils::printDebug("MORE");
+            //YUtils::printDebug("MORE");
         } else {
             // Reached end of list, since it was 1
             continueBuildFrameLoop = false;
