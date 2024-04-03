@@ -40,6 +40,7 @@
 #include <QMessageBox>
 #include <QSpinBox>
 #include <QFrame>
+#include <QCheckBox>
 
 #include <iostream>
 #include <filesystem>
@@ -499,17 +500,23 @@ MainWindow::MainWindow() {
     this->spritePaletteSelect->setMinimum(-1); // -1 = universal palette
     this->spritePaletteSelect->setMaximum(0xffff);
     this->spritePaletteSelect->setDisplayIntegerBase(16);
-    //this->spritePaletteSelect->setPrefix("0x");
+    this->spritePaletteSelect->setPrefix("0x");
     this->spritePaletteSelect->setValue(-1);
     this->spritePaletteSelect->setToolTip(tr("Select palette to use within the OBAR (-1 is universal palette)"));
+    // Checkbox
+    auto checkbox = new QCheckBox(this);
+    checkbox->setText(tr("LZ10"));
+    checkbox->setChecked(false);
     // Connect
     connect(this->spriteWidthSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::widthChanged);
     connect(this->spriteHeightSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::heightChanged);
     connect(this->spritePaletteSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::paletteChanged);
+    connect(checkbox,&QCheckBox::stateChanged,this->objtilesTable,&ObjTilesTable::checkboxChanged);
     // Add selectors 2
     spriteWidthPaletteLayout->addWidget(this->spriteWidthSelect);
     spriteWidthPaletteLayout->addWidget(this->spriteHeightSelect);
     spriteWidthPaletteLayout->addWidget(this->spritePaletteSelect);
+    spriteWidthPaletteLayout->addWidget(checkbox);
     objtilesLayout->addLayout(spriteWidthPaletteLayout);
 
     // Finishing touches //

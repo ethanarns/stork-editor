@@ -114,8 +114,9 @@ void ObjTilesTable::frameValueChanged(int i) {
     this->refreshWithCurrentData();
 }
 
-void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
-    // YUtils::printDebug("refreshWithCurrentData()",DebugType::VERBOSE);
+void ObjTilesTable::refreshWithCurrentData() {
+    YUtils::printDebug("refreshWithCurrentData()",DebugType::VERBOSE);
+    std::cout << "compressed: " << this->isSpriteCompressed << std::endl;
     // if (guessTileCount) {
     //     std::cout << "Guessing tile count" << std::endl;
     // }
@@ -131,11 +132,11 @@ void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
     auto curObjb = objbs.at(this->objbIndex);
     auto curFrame = curObjb->getFrameAt(this->frameIndex);
     auto tileCount = 8*8;
-    Q_UNUSED(guessTileCount);
     this->wipeTiles();
-    std::cout << "build frame size: 0x" << std::hex << curFrame.buildFrames.size() << std::endl;
+    //std::cout << "build frame size: 0x" << std::hex << curFrame.buildFrames.size() << std::endl;
     for (auto bit = curFrame.buildFrames.begin(); bit != curFrame.buildFrames.end(); bit++) {
         auto flagDims = YUtils::getSpriteDimsFromFlagValue((*bit)->flags & 0b11111);
+        std::cout << "TileShapeValue: " << std::hex << ((*bit)->flags & 0b11111) << std::endl;
         tileCount = flagDims.x() * flagDims.y();
         auto tiles = curObjb->getChartiles((*bit)->tileOffset << 4,tileCount,BgColorMode::MODE_16);
         if (this->currentPalette == nullptr) {
@@ -174,7 +175,7 @@ void ObjTilesTable::widthChanged(int i) {
         return;
     }
     this->setColumnCount(i);
-    this->refreshWithCurrentData(false);
+    this->refreshWithCurrentData();
 }
 
 void ObjTilesTable::heightChanged(int i) {
@@ -184,7 +185,7 @@ void ObjTilesTable::heightChanged(int i) {
         return;
     }
     this->setRowCount(i);
-    this->refreshWithCurrentData(false);
+    this->refreshWithCurrentData();
 }
 
 void ObjTilesTable::paletteChanged(int i) {
@@ -207,6 +208,15 @@ void ObjTilesTable::paletteChanged(int i) {
     auto curPaletteData = paletteDataMap.at(i);
     //std::cout << "Getting first QByteArray..." << std::endl;
     this->currentPalette = curPaletteData->palettes.at(0);
+    this->refreshWithCurrentData();
+}
+
+void ObjTilesTable::checkboxChanged(int state) {
+    if (state == Qt::CheckState::Checked) {
+        this->isSpriteCompressed = true;
+    } else {
+        this->isSpriteCompressed = false;
+    }
     this->refreshWithCurrentData();
 }
 

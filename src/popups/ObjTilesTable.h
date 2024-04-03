@@ -19,10 +19,11 @@ public:
     void doFileLoad(const QString text);
     void objbValueChanged(int i);
     void frameValueChanged(int i);
-    void refreshWithCurrentData(bool guessTileCount = true);
+    void refreshWithCurrentData();
     void widthChanged(int i);
     void heightChanged(int i);
     void paletteChanged(int i);
+    void checkboxChanged(int state);
 private:
     const static int OBJTILES_CELL_SIZE_PX = 32;
     const static int OBJTILES_ROW_COUNT_DEFAULT = 0x1;
@@ -33,4 +34,5 @@ private:
     std::string currentFileName = "";
     QByteArray currentPalette;
     uint32_t getSpriteTilesWidth(uint32_t buildFlags);
+    bool isSpriteCompressed = false;
 };
