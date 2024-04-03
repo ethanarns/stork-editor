@@ -1431,33 +1431,30 @@ void DisplayTable::updateSprites() {
             bottomRight->setData(PixelDelegateData::OBJECT_PALETTE,this->yidsRom->backgroundPalettes[0]);
             bottomRight->setToolTip(tr(ss.str().c_str()));
         } else {
-            if (it->objectId != 0xffff) {
-                this->placeObjectGraphic(
-                    (uint32_t)x,(uint32_t)y,
-                    objectGraphicsMeta.indexOfTiles,
-                    objectGraphicsMeta.frame,
-                    objectGraphicsMeta.indexOfPalette,
-                    objectGraphicsMeta.whichPaletteFile,
-                    objectGraphicsMeta.whichObjectFile,
-                    objectGraphicsMeta.xPixelOffset,
-                    objectGraphicsMeta.yPixelOffset,
-                    it->uuid
-                );
-            } else {
-                this->placeObjectTile(
-                    (uint32_t)x,(uint32_t)y,
-                    objectGraphicsMeta.indexOfTiles,
-                    objectGraphicsMeta.frame,
-                    objectGraphicsMeta.indexOfPalette,
-                    objectGraphicsMeta.tileWidth,
-                    objectGraphicsMeta.tilesCount,
-                    objectGraphicsMeta.whichPaletteFile,
-                    objectGraphicsMeta.whichObjectFile,
-                    objectGraphicsMeta.xPixelOffset,
-                    objectGraphicsMeta.yPixelOffset,
-                    it->uuid
-                );
-            }
+            this->placeObjectGraphic(
+                (uint32_t)x,(uint32_t)y,
+                objectGraphicsMeta.indexOfTiles,
+                objectGraphicsMeta.frame,
+                objectGraphicsMeta.indexOfPalette,
+                objectGraphicsMeta.whichPaletteFile,
+                objectGraphicsMeta.whichObjectFile,
+                objectGraphicsMeta.xPixelOffset,
+                objectGraphicsMeta.yPixelOffset,
+                it->uuid
+            );
+            // this->placeObjectTile(
+            //     (uint32_t)x,(uint32_t)y,
+            //     objectGraphicsMeta.indexOfTiles,
+            //     objectGraphicsMeta.frame,
+            //     objectGraphicsMeta.indexOfPalette,
+            //     objectGraphicsMeta.tileWidth,
+            //     objectGraphicsMeta.tilesCount,
+            //     objectGraphicsMeta.whichPaletteFile,
+            //     objectGraphicsMeta.whichObjectFile,
+            //     objectGraphicsMeta.xPixelOffset,
+            //     objectGraphicsMeta.yPixelOffset,
+            //     it->uuid
+            // );
         }
     }
     // // Timing
@@ -1602,7 +1599,6 @@ void DisplayTable::placeObjectTile(
     }
 }
 
-// TODO: ERROR NOT WORKING
 void DisplayTable::placeObjectGraphic(
     uint32_t x, uint32_t y,
     uint32_t objectOffset, uint32_t frame,
@@ -1653,8 +1649,9 @@ void DisplayTable::placeObjectGraphic(
         int gridXposition = x + (int)std::round(xd8);
         double yd8 = static_cast<double>(buildFrameOffsetYfine + manualYoffsetFine)/8;
         int gridYposition = y + (int)std::round(yd8);
-        auto tiles = objectTileData->getChartiles((*bit)->tileOffset << 4,curSpriteHeight*curSpriteWidth);
-        for (int tilesIndex = 0; tilesIndex < tiles.size(); tilesIndex++) {
+        auto tiles = objectTileData->getChartiles((*bit)->tileOffset << 4,curSpriteHeight*curSpriteWidth,BgColorMode::MODE_16);
+        int tilesSize = tiles.size();
+        for (int tilesIndex = 0; tilesIndex < tilesSize; tilesIndex++) {
             auto objChartile = tiles.at(tilesIndex);
             int tileIndexOffsetX = tilesIndex % curSpriteWidth;
             int tileIndexOffsetY = tilesIndex / curSpriteWidth;

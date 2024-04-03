@@ -137,7 +137,7 @@ void ObjTilesTable::refreshWithCurrentData(bool guessTileCount) {
     for (auto bit = curFrame.buildFrames.begin(); bit != curFrame.buildFrames.end(); bit++) {
         auto flagDims = YUtils::getSpriteDimsFromFlagValue((*bit)->flags & 0b11111);
         tileCount = flagDims.x() * flagDims.y();
-        auto tiles = curObjb->getChartiles((*bit)->tileOffset << 4,tileCount);
+        auto tiles = curObjb->getChartiles((*bit)->tileOffset << 4,tileCount,BgColorMode::MODE_16);
         if (this->currentPalette == nullptr) {
             //std::cout << "Setting to default" << std::endl;
             this->currentPalette = this->yidsRom->backgroundPalettes[0];
