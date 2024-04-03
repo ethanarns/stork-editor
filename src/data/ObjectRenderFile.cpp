@@ -143,17 +143,28 @@ ObjbFrame ObjectTileData::getFrameAt(uint32_t frameIndex) {
     return frame;
 }
 
-std::vector<QByteArray> ObjectTileData::getChartiles(uint32_t index, uint32_t count, BgColorMode colMode) {
+std::vector<QByteArray> ObjectTileData::getChartiles(uint32_t baseDataIndex, uint32_t countOfTiles, BgColorMode colMode) {
     std::vector<QByteArray> chartiles;
-    int dataSize = Constants::CHARTILE_DATA_SIZE;
+    int tileBytesSize = Constants::CHARTILE_DATA_SIZE;
     if (colMode == BgColorMode::MODE_256) {
-        dataSize = 64;
+        tileBytesSize = 64; // Since each one is a single byte, instead of split into 2, 8x8 = 64
     }
-    // TODO: 256 support
-    for (uint i = 0; i < count; i++) {
-        uint32_t curIndex = index + (i * dataSize);
-        auto curSection = YUtils::subVector(this->byteData,curIndex,curIndex+dataSize);
-        chartiles.push_back(YUtils::tileVectorToQByteArray(curSection));
+    // For each tile...
+    for (uint currentTileIndex = 0; currentTileIndex < countOfTiles; currentTileIndex++) {
+        uint32_t curIndex = baseDataIndex + (currentTileIndex * tileBytesSize);
+        // Get a segment that is 
+        auto curSection = YUtils::subVector(this->byteData,curIndex,curIndex+tileBytesSize);
+        if (colMode == BgColorMode::MODE_16) {
+            // This splits things up
+            chartiles.push_back(YUtils::tileVectorToQByteArray(curSection));
+        } else {
+            QByteArray color256array;
+            for (int index256 = 0; index256 < 64; index256++) {
+                // Don't split bytes for the 8x8
+                color256array.push_back(curSection.at(index256));
+            }
+            chartiles.push_back(color256array);
+        }
     }
     return chartiles;
 }
