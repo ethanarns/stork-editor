@@ -198,14 +198,12 @@ void ObjTilesTable::paletteChanged(int i) {
         this->refreshWithCurrentData();
         return;
     }
-    auto paletteDataList = this->currentObar->objectPaletteDataVector;
-    auto size = paletteDataList.size(); // Can be 0
-    //std::cout << "paletteDataSize: 0x" << std::hex << size << std::endl;
-    if ((uint32_t)i >= size) {
-        YUtils::printDebug("i too big in paletteChanged",DebugType::WARNING);
+    auto paletteDataMap = this->currentObar->objectPaletteDataMap;
+    if (paletteDataMap.count(i) == 0) {
+        YUtils::printDebug("i not found in paletteChanged",DebugType::WARNING);
         return;
     }
-    auto curPaletteData = paletteDataList.at(i);
+    auto curPaletteData = paletteDataMap.at(i);
     //std::cout << "Getting first QByteArray..." << std::endl;
     this->currentPalette = curPaletteData->palettes.at(0);
     this->refreshWithCurrentData();

@@ -462,7 +462,7 @@ MainWindow::MainWindow() {
     this->frameSelect->setEnabled(true);
     this->frameSelect->setMinimum(0);
     this->frameSelect->setDisplayIntegerBase(16);
-    this->frameSelect->setPrefix(tr("Frame 0x"));
+    this->frameSelect->setPrefix(tr("0x"));
     this->frameSelect->setToolTip(tr("Select which frame of the object to render"));
     // Connect
     connect(this->objbSelect,QOverload<int>::of(&QSpinBox::valueChanged),this->objtilesTable,&ObjTilesTable::objbValueChanged);
@@ -476,7 +476,7 @@ MainWindow::MainWindow() {
     // Sprite width
     this->spriteWidthSelect = new QSpinBox(this);
     this->spriteWidthSelect->setObjectName("spritePopupWidthSelect");
-    this->spriteWidthSelect->setEnabled(true);
+    this->spriteWidthSelect->setEnabled(false);
     this->spriteWidthSelect->setMinimum(1);
     this->spriteWidthSelect->setDisplayIntegerBase(16);
     this->spriteWidthSelect->setPrefix(tr("W 0x"));
@@ -485,7 +485,7 @@ MainWindow::MainWindow() {
     // Sprite height
     this->spriteHeightSelect = new QSpinBox(this);
     this->spriteHeightSelect->setObjectName("spritePopupHeightSelect");
-    this->spriteHeightSelect->setEnabled(true);
+    this->spriteHeightSelect->setEnabled(false);
     this->spriteHeightSelect->setMinimum(1);
     this->spriteHeightSelect->setDisplayIntegerBase(16);
     this->spriteHeightSelect->setPrefix(tr("H 0x"));
@@ -497,7 +497,7 @@ MainWindow::MainWindow() {
     this->spritePaletteSelect->setEnabled(true);
     this->spritePaletteSelect->setMinimum(-1); // -1 = universal palette
     this->spritePaletteSelect->setDisplayIntegerBase(16);
-    this->spritePaletteSelect->setPrefix("PLTB 0x");
+    //this->spritePaletteSelect->setPrefix("0x");
     this->spritePaletteSelect->setValue(-1);
     this->spritePaletteSelect->setToolTip(tr("Select palette to use within the OBAR (-1 is universal palette)"));
     // Connect
