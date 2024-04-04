@@ -28,8 +28,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x7: { // Egg block (hit for eggs)
             meta.indexOfTiles = 0x1;
             meta.indexOfPalette = 0x89; // Fallback to objset if objeffect doesn't work
-            // meta.whichPaletteFile = "objeffect.arcz";
-            // meta.indexOfPalette = 0x2a;
+            // Which it seems not to
             break;
         }
         case 0xf: { // Pirhana Plant 2
@@ -90,6 +89,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.frame = 0;
             // TODO: Special rendering to repeat downwards
             meta.specialRender = std::vector<RenderInstruction>();
+            break;
+        }
+        case 0x25: { // Red Switch 1
+            meta.indexOfTiles = 0x15;
+            meta.indexOfPalette = 0x8b;
             break;
         }
         case 0x28: { // Flower
@@ -289,6 +293,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             // Actual function is at 020e448c. Doesn't SEEM to have any offset, but might skip the first few?
             break;
         }
+        case 0xa2: { // Slugger TODO: Test. Where is it located??
+            meta.indexOfTiles = 0x5c;
+            meta.indexOfPalette = 0xe1;
+            break;
+        }
         case 0xc4: { // Item-Carrying Balloon
             meta.indexOfTiles = 0x64;
             meta.indexOfPalette = 0xEb;
@@ -357,6 +366,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                     meta.indexOfTiles = 4; // Bowser for error
                     break;
                 }
+            }
+            case 0x116: { // Red Switch 2
+                meta.indexOfTiles = 0x15;
+                meta.indexOfPalette = 0x8b;
+                break;
             }
             break;
         }
