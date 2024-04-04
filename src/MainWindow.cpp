@@ -457,6 +457,7 @@ MainWindow::MainWindow() {
     this->objbSelect->setObjectName("spritePopupObjbSelect");
     this->objbSelect->setEnabled(true);
     this->objbSelect->setMinimum(0);
+    this->objbSelect->setMaximum(0xffff);
     this->objbSelect->setDisplayIntegerBase(16);
     this->objbSelect->setPrefix(tr("0x"));
     this->objbSelect->setToolTip(tr("Select which OBJB record to load"));

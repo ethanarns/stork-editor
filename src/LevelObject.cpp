@@ -266,6 +266,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             // Actual function is at 020e448c. Doesn't SEEM to have any offset, but might skip the first few?
             break;
         }
+        case 0xc4: { // Item-Carrying Balloon
+            meta.indexOfTiles = 0x64;
+            meta.indexOfPalette = 0xEA;
+            break;
+        }
         case 0xd2: { // Yellow egg block
             meta.indexOfTiles = 0x1;
             meta.whichPaletteFile = "objeffect.arcz";
@@ -316,7 +321,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                     break;
                 }
                 default: {
-                    meta.indexOfTiles = 4;
+                    meta.indexOfTiles = 4; // Bowser for error
                     break;
                 }
             }
