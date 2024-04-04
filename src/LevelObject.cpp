@@ -25,6 +25,19 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0x7e; // 020267c4
             break;
         }
+        case 0x7: { // Egg block (hit for eggs)
+            meta.indexOfTiles = 0x1;
+            meta.indexOfPalette = 0x89; // Fallback to objset if objeffect doesn't work
+            // meta.whichPaletteFile = "objeffect.arcz";
+            // meta.indexOfPalette = 0x2a;
+            break;
+        }
+        case 0xf: { // Pirhana Plant 2
+            meta.indexOfTiles = 0x24;
+            meta.indexOfPalette = 0x97;
+            meta.frame = 1;
+            break;
+        }
         case 0x13: { // Winged Cloud (items)
             meta.indexOfTiles = 9;
             meta.indexOfPalette = 0xa9;
@@ -155,6 +168,16 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.frame = 4;
             break;
         }
+        case 0x44: { // Pointey
+            meta.indexOfTiles = 0x23;
+            meta.indexOfPalette = 0xa8;
+            break;
+        }
+        case 0x48: { // Ukiki
+            meta.indexOfTiles = 0x26;
+            meta.indexOfPalette = 0x9c;
+            break;
+        }
         case 0x4b: { // Windbag
             meta.indexOfTiles = 0x33;
             meta.indexOfPalette = 0xa1;
@@ -267,6 +290,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         case 0xc4: { // Item-Carrying Balloon
+            meta.indexOfTiles = 0x64;
+            meta.indexOfPalette = 0xEb;
+            break;
+        }
+        case 0xca: { // Danger-Carrying Balloon
             meta.indexOfTiles = 0x64;
             meta.indexOfPalette = 0xEA;
             break;

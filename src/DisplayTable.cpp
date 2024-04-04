@@ -1669,6 +1669,17 @@ void DisplayTable::placeObjectGraphic(
             if (tileItem == nullptr) {
                 tileItem = new QTableWidgetItem();
             }
+            // TODO: Make this optional for performance purposes
+            bool dontPlaceInvisibles = true;
+            if (dontPlaceInvisibles == true) {
+                uint total = 0;
+                for (auto oit = objChartile.begin(); oit != objChartile.end(); oit++) {
+                    total += (uint)(*oit);
+                }
+                if (total == 0) {
+                    continue;
+                }
+            }
             tileItem->setData(PixelDelegateData::OBJECT_TILES,objChartile);
             tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette);
             tileItem->setData(PixelDelegateData::OBJECT_UUID,uuid);
