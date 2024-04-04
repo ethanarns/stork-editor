@@ -25,10 +25,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0x7e; // 020267c4
             break;
         }
-        case 0x13: { // Question mark cloud?
+        case 0x13: { // Winged Cloud (items)
             meta.indexOfTiles = 9;
             meta.indexOfPalette = 0xa9;
             meta.isLz10 = true;
+            meta.frame = 0;
             break;
         }
         case 0x14: { // Stork Stop
@@ -96,6 +97,13 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0x8e;
             break;
         }
+        case 0x2d: { // Winged Cloud (Activator)
+            meta.indexOfTiles = 9;
+            meta.indexOfPalette = 0xa9;
+            meta.isLz10 = true;
+            meta.frame = 2; // Just to differ from 0x13
+            break;
+        }
         case 0x36: { // Yellow Shy Guy
             meta.indexOfTiles = 0x21; // 0202de24
             meta.frame = 0x1;
@@ -146,6 +154,12 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0xa1;
             break;
         }
+        case 0x4c: { // Glide Guy (umbrella heads)
+            meta.indexOfTiles = 0x2b;
+            meta.indexOfPalette = 0xa5;
+            meta.frame = 1;
+            break;
+        }
         case 0x4e: { // Dandylion
             meta.indexOfTiles = 0x2f;
             meta.indexOfPalette = 0x8f;
@@ -160,6 +174,12 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfTiles = 0x37;
             meta.frame = 0;
             meta.indexOfPalette = 0xb0;
+            break;
+        }
+        case 0x7f: { // Fly guy
+            meta.indexOfTiles = 0x4b;
+            meta.indexOfPalette = 0x90;
+            meta.frame = 3;
             break;
         }
         case 0x8e: { // Large breakable rock squares

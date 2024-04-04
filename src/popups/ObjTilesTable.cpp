@@ -115,8 +115,8 @@ void ObjTilesTable::frameValueChanged(int i) {
 }
 
 void ObjTilesTable::refreshWithCurrentData() {
-    YUtils::printDebug("refreshWithCurrentData()",DebugType::VERBOSE);
-    std::cout << "compressed: " << this->isSpriteCompressed << std::endl;
+    //YUtils::printDebug("refreshWithCurrentData()",DebugType::VERBOSE);
+    //std::cout << "compressed: " << this->isSpriteCompressed << std::endl;
     // if (guessTileCount) {
     //     std::cout << "Guessing tile count" << std::endl;
     // }
