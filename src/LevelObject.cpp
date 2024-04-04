@@ -149,6 +149,12 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.frame = 1;
             break;
         }
+        case 0x43: { // Woozy Guy
+            meta.indexOfTiles = 0x21;
+            meta.indexOfPalette = 0x90;
+            meta.frame = 4;
+            break;
+        }
         case 0x4b: { // Windbag
             meta.indexOfTiles = 0x33;
             meta.indexOfPalette = 0xa1;
@@ -289,6 +295,31 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         }
         case 0x112: { // Locked minigame hut
             // Pulled from "objhouse.arcz"
+            break;
+        }
+        case 0x113: {
+            meta.whichObjectFile = "objcharacoin.arc";
+            meta.whichPaletteFile = "objcharacoin.arc";
+            meta.frame = 0;
+            meta.indexOfPalette = 0x6;
+            switch(lo.settings.at(0)) {
+                case 0x0: {
+                    meta.indexOfTiles = 0;
+                    break;
+                }
+                case 0x1: {
+                    meta.indexOfTiles = 1;
+                    break;
+                }
+                case 0x2: {
+                    meta.indexOfTiles = 2;
+                    break;
+                }
+                default: {
+                    meta.indexOfTiles = 4;
+                    break;
+                }
+            }
             break;
         }
         default: {
