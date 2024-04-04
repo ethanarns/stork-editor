@@ -37,6 +37,9 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
         } else if (subMagic == Constants::IMBZ_MAGIC_NUM) {
             auto imbz = new ImbzLayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength,this->getInfo()->colorMode);
             this->subScenData.push_back(imbz);
+        } else if (subMagic == Constants::PLAN_MAGIC_NUM) {
+            auto plan = new PaletteAnimationData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subScenData.push_back(plan);
         } else {
             std::stringstream unknownMagic;
             unknownMagic << "Unknown magic number in LayerData: 0x" << std::hex << subMagic;
@@ -530,4 +533,36 @@ ImbzLayerData::ImbzLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzInde
 ImbzLayerData::~ImbzLayerData() {
     this->chartiles.clear();
     this->chartiles.shrink_to_fit();
+}
+
+PaletteAnimationData::PaletteAnimationData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    YUtils::printDebug("PaletteAnimationData");
+    this->palAnimStart = mpdzBytes.at(mpdzIndex);
+    mpdzIndex++;
+    this->palAnimStop = mpdzBytes.at(mpdzIndex);
+    mpdzIndex++;
+    this->frameHoldTime = mpdzBytes.at(mpdzIndex);
+    mpdzIndex++;
+    this->frameCount = mpdzBytes.at(mpdzIndex);
+    mpdzIndex++;
+    uint colorsPerFrame = this->palAnimStop - this->palAnimStart + 1;
+    uint totalColors = colorsPerFrame * this->frameCount;
+    for (uint i = 0; i < totalColors; i++) {
+        auto curColor = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+        this->colors.push_back(curColor);
+        mpdzIndex += 2;
+    }
+    std::stringstream ssResult;
+    ssResult << "Pulled 0x" << std::hex << this->colors.size() << "/";
+    ssResult << std::dec << this->colors.size() << " colors for PLAN.";
+    YUtils::printDebug(ssResult.str());
+    int remainingDiff = (int)stop - (int)mpdzIndex;
+    if (remainingDiff > 2 || remainingDiff == 1 || remainingDiff < 0) { // Should only ever be 2 or 0
+        std::stringstream ssError;
+        ssError << "Unusual remaining bytes in PLAN: " << std::hex << remainingDiff;
+        YUtils::printDebug(ssError.str(),DebugType::ERROR);
+        mpdzIndex = stop;
+        return;
+    }
+    mpdzIndex += (uint)remainingDiff;
 }

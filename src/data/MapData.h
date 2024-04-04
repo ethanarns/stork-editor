@@ -574,6 +574,40 @@ public:
     std::vector<std::vector<PathSection*>> paths;
 };
 
+// PLAN
+class PaletteAnimationData : public LevelData {
+public:
+    PaletteAnimationData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    uint32_t getMagic() { return Constants::PLAN_MAGIC_NUM; }
+    std::string toString() {
+        std::stringstream ss;
+        ss << "PaletteAnimationData { Palette Start Index: ...";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
+        std::vector<uint8_t> result;
+        result.push_back(palAnimStart);
+        result.push_back(palAnimStop);
+        result.push_back(frameHoldTime);
+        result.push_back(frameCount);
+        for (auto it = colors.begin(); it != colors.end(); it++) {
+            auto colorVec = YUtils::uint16toVec(*it);
+            YUtils::appendVector(result,colorVec);
+        }
+        while (result.size() % 4 != 0) {
+            result.push_back(0x00);
+        }
+        result = FsPacker::packInstruction(Constants::PLAN_MAGIC_NUM,result,false);
+        return result;
+    };
+    uint8_t palAnimStart;
+    uint8_t palAnimStop;
+    uint8_t frameHoldTime;
+    uint8_t frameCount;
+    std::vector<uint16_t> colors;
+};
+
 // MPDZ
 class MapData : public LevelData {
 public:
