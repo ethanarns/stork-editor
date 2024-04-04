@@ -306,7 +306,14 @@ def handlePath(data: bytearray, index: int, stop: int):
         print(ind(2) + "Warning: unequal ending in PATH")
     if pathCount != pathIndex: # It increments at the last second, so no +1 needed on the pathIndex
         print(ind(2) + "Mismatch in path count and paths found")
-    
+
+def handleBLKZ(data: bytearray, index: int, stop: int):
+    compressedBlkzBytes = data[index:stop]
+    blkz = bytearray(ndspy.lz10.decompress(compressedBlkzBytes))
+    print(ind(2) + "Decompressed to " + hex(len(blkz)) + " bytes")
+
+def handleBRAK(data: bytearray, index: int, stop: int):
+    print("Unhandled top-length instruction")
 
 def handleMpdz(filename):
     print(filename)
@@ -348,6 +355,10 @@ def handleMpdz(filename):
             handlePath(mpdz,readIndex+0,readIndex+topLength)
         elif topMagic == "ALPH":
             handleALPH(mpdz,readIndex+0,readIndex+topLength)
+        elif topMagic == "BLKZ":
+            handleBLKZ(mpdz,readIndex+0,readIndex+topLength)
+        elif topMagic == "BRAK":
+            handleBRAK(mpdz,readIndex+0,readIndex+topLength)
         else:
             print("Unhandled top-length instruction")
         readIndex += topLength
