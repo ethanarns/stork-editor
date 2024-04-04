@@ -284,7 +284,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.frame = 12; // Flip to transparency frame
             break;
         }
-        case 0xdc: {
+        case 0xdc: { // ? Bucket, drops coins
             meta.indexOfTiles = 0x6a;
             meta.indexOfPalette = 0xf8;
             break;
