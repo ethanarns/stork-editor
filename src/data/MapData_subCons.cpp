@@ -280,6 +280,39 @@ AnimatedMapData::~AnimatedMapData() {
     this->chartiles.shrink_to_fit();
 }
 
+SoftRockBackdrop::SoftRockBackdrop(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
+    auto blkzData = YCompression::lz10decomp(compressed);
+    uint32_t blkzIndex = 0;
+    this->xOffset = YUtils::getUint16FromVec(blkzData,blkzIndex);
+    blkzIndex += 2;
+    this->yOffset = YUtils::getUint16FromVec(blkzData,blkzIndex);
+    blkzIndex += 2;
+    this->width = YUtils::getUint16FromVec(blkzData,blkzIndex);
+    blkzIndex += 2;
+    this->height = YUtils::getUint16FromVec(blkzData,blkzIndex);
+    blkzIndex += 2;
+    // Now get the MapTiles
+    uint totalTiles = this->width*this->height;
+    for (uint i = 0; i < totalTiles; i++) {
+        auto curShort = YUtils::getUint16FromVec(blkzData,blkzIndex);
+        auto mapTile = YUtils::getMapTileRecordDataFromShort(curShort);
+        blkzIndex += 2;
+        this->mapTiles.push_back(mapTile);
+    }
+    auto bytesPulled = this->mapTiles.size() * 2;
+    auto blkzMinus8 = blkzData.size() - 8;
+    if (bytesPulled != blkzMinus8) {
+        std::stringstream ssMismatch;
+        ssMismatch << "Mismatch in bytesPulled vs blkzSize-8 in SoftRockBackdrop: 0x";
+        ssMismatch << std::hex << bytesPulled << " vs 0x" << std::hex << blkzMinus8;
+        YUtils::printDebug(ssMismatch.str(),DebugType::ERROR);
+        YUtils::popupAlert(ssMismatch.str());
+    }
+    // Just do this since you never adjusted it earlier
+    mpdzIndex = stop;
+}
+
 // COLZ
 MapCollisionData::MapCollisionData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);

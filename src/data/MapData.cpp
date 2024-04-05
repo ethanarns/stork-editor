@@ -172,6 +172,9 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
         } else if (subMagic == Constants::ALPH_MAGIC_NUM) {
             auto alph = new AlphaData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subData.push_back(alph);
+        } else if (subMagic == Constants::BLKZ_MAGIC_NUM) {
+            auto blkz = new SoftRockBackdrop(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subData.push_back(blkz);
         } else {
             std::stringstream ssSubNotFound;
             ssSubNotFound << "Unknown MPDZ data: ";

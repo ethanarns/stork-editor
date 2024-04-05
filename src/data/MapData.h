@@ -608,6 +608,42 @@ public:
     std::vector<uint16_t> colors;
 };
 
+// BLKZ
+class SoftRockBackdrop : public LevelData {
+public:
+    SoftRockBackdrop(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    uint32_t getMagic() { return Constants::BLKZ_MAGIC_NUM; }
+    std::string toString() {
+        std::stringstream ss;
+        ss << "SoftRockBackdrop { todo ...";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
+        std::vector<uint8_t> result;
+        auto xOff = YUtils::uint16toVec(this->xOffset);
+        YUtils::appendVector(result,xOff);
+        auto yOff = YUtils::uint16toVec(this->yOffset);
+        YUtils::appendVector(result,yOff);
+        auto w = YUtils::uint16toVec(this->width);
+        YUtils::appendVector(result,w);
+        auto h = YUtils::uint16toVec(this->height);
+        YUtils::appendVector(result,h);
+        for (auto it = this->mapTiles.begin(); it != this->mapTiles.end(); it++) {
+            auto us = it->compile();
+            auto usv = YUtils::uint16toVec(us);
+            YUtils::appendVector(result,usv);
+        }
+        result = FsPacker::packInstruction(Constants::BLKZ_MAGIC_NUM,result,true);
+        return result;
+    };
+    uint16_t xOffset;
+    uint16_t yOffset;
+    uint16_t width;
+    uint16_t height;
+    std::vector<MapTileRecordData> mapTiles;
+};
+
 // MPDZ
 class MapData : public LevelData {
 public:
