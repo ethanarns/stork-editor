@@ -1627,7 +1627,15 @@ void DisplayTable::placeObjectGraphic(
         YUtils::printDebug(ssPalFail.str(),DebugType::ERROR);
     }
 
-    auto objectTileData = this->yidsRom->spriteRenderFiles[objectFile]->objectTileDataMap.at(objectOffset);
+    auto tileDataMap = this->yidsRom->spriteRenderFiles[objectFile]->objectTileDataMap;
+    if (tileDataMap.count(objectOffset) == 0) {
+        std::stringstream ssCharFail;
+        ssCharFail << "Failed to get object chartiles for object with uuid 0x" << std::hex << uuid;
+        ssCharFail << ", canceling placement";
+        YUtils::printDebug(ssCharFail.str(),DebugType::ERROR);
+        return;
+    }
+    auto objectTileData = tileDataMap.at(objectOffset);
     auto curFrame = objectTileData->getFrameAt(frame);
 
     if (objectPalette.size() < 0xf) {
