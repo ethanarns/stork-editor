@@ -108,7 +108,7 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
     //pal += scen->paletteStartOffset - 1; // Bad, keep for info though
 
     auto bgItem = this->item(y,x);
-    auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
+    auto colorMode = scen->getInfo()->colorMode;
     QByteArray layerDrawOrder = this->yidsRom->mapData->getLayerOrder();
     if (layerDrawOrder.size() > 3) {
         YUtils::printDebug("Size error in layer order, should be 3, was:",DebugType::FATAL);
@@ -122,12 +122,14 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
     if (whichBg == 2) {
         // BG 2 //
         bgItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
-        if (!isColorMode256) {
+        if (colorMode == BgColorMode::MODE_16 || colorMode == BgColorMode::MODE_UNKNOWN) {
             bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
-        } else {
+        } else if (colorMode == BgColorMode::MODE_256) {
             // Note: the 256 palettes thing does not always start at 0x10 (including the +1)
             // 1-3, there's a palette missing from the palette screen that made this start at 0xf
             bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,scen->getPalette()->extendedPalette);
+        } else {
+            YUtils::printDebug("Unhandled color mode",DebugType::WARNING);
         }
         bgItem->setData(PixelDelegateData::FLIP_H_BG2,pren.flipH);
         bgItem->setData(PixelDelegateData::FLIP_V_BG2,pren.flipV);
@@ -136,10 +138,12 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
     } else if (whichBg == 1) {
         // BG 1 //
         bgItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
-        if (!isColorMode256) {
+        if (colorMode == BgColorMode::MODE_16 || colorMode == BgColorMode::MODE_UNKNOWN) {
             bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
-        } else {
+        } else if (colorMode == BgColorMode::MODE_256) {
             bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,scen->getPalette()->extendedPalette);
+        } else {
+            YUtils::printDebug("Unhandled color mode",DebugType::WARNING);
         }
         bgItem->setData(PixelDelegateData::FLIP_H_BG1,pren.flipH);
         bgItem->setData(PixelDelegateData::FLIP_V_BG1,pren.flipV);
@@ -148,10 +152,12 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
     } else if (whichBg == 3) {
         // BG 3 //
         bgItem->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
-        if (!isColorMode256) {
+        if (colorMode == BgColorMode::MODE_16 || colorMode == BgColorMode::MODE_UNKNOWN) {
             bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
-        } else {
+        } else if (colorMode == BgColorMode::MODE_256) {
             bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,scen->getPalette()->extendedPalette);
+        } else {
+            YUtils::printDebug("Unhandled color mode",DebugType::WARNING);
         }
         bgItem->setData(PixelDelegateData::FLIP_H_BG3,pren.flipH);
         bgItem->setData(PixelDelegateData::FLIP_V_BG3,pren.flipV);

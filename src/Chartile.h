@@ -8,7 +8,8 @@
 
 enum BgColorMode {
     MODE_16 = 0,
-    MODE_256 = 1
+    MODE_256 = 1,
+    MODE_UNKNOWN = 2
 };
 
 struct Chartile {

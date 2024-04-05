@@ -88,8 +88,8 @@ std::vector<Chartile> LayerData::parseImbzFromFile(std::string filename_noExt, B
         Chartile curTile;
         curTile.index = currentTileIndex;
         curTile.tiles.resize(64);
-        if (bgColMode == BgColorMode::MODE_16) {
-            curTile.bgColMode = BgColorMode::MODE_16;
+        if (bgColMode == BgColorMode::MODE_16 || bgColMode == BgColorMode::MODE_UNKNOWN) {
+            curTile.bgColMode = bgColMode;
             // Go up by 2 since you split the bytes
             for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
                 uint8_t curByte = uncompressedImbz.at(imbzIndex + currentTileBuildIndex);
@@ -99,20 +99,35 @@ std::vector<Chartile> LayerData::parseImbzFromFile(std::string filename_noExt, B
                 curTile.tiles[innerPosition+1] = highBit;
                 curTile.tiles[innerPosition+0] = lowBit;
             }
-        } else {
-            curTile.bgColMode = BgColorMode::MODE_256;
+        } else if (bgColMode == BgColorMode::MODE_256) {
+            curTile.bgColMode = bgColMode;
             for (int currentTileIndex = 0; currentTileIndex < 64; currentTileIndex++) {
                 uint8_t curByte = uncompressedImbz.at(imbzIndex + currentTileIndex);
                 curTile.tiles[currentTileIndex] = curByte;
             }
+        } else {
+            std::stringstream ssUnknownColorMode;
+            ssUnknownColorMode << "Unknown color mode for imbz tiles: 0x" << std::hex;
+            ssUnknownColorMode << bgColMode;
+            YUtils::printDebug(ssUnknownColorMode.str(),DebugType::FATAL);
+            YUtils::popupAlert(ssUnknownColorMode.str());
+            exit(EXIT_FAILURE);
         }
         result.push_back(curTile);
         
-        if (bgColMode == BgColorMode::MODE_16) {
+        if (bgColMode == BgColorMode::MODE_16 || bgColMode == BgColorMode::MODE_UNKNOWN) {
             // Skip ahead by 0x20/32
             imbzIndex += Constants::CHARTILE_DATA_SIZE;
-        } else {
+        } else if (bgColMode == BgColorMode::MODE_256) {
+            // By 0x40/64, since its 1 byte per tile in 8x8
             imbzIndex += 64;
+        } else {
+            std::stringstream ssUnknownColorMode;
+            ssUnknownColorMode << "Unknown color mode for imbzIndex: 0x" << std::hex;
+            ssUnknownColorMode << bgColMode;
+            YUtils::printDebug(ssUnknownColorMode.str(),DebugType::FATAL);
+            YUtils::popupAlert(ssUnknownColorMode.str());
+            exit(EXIT_FAILURE);
         }
         currentTileIndex++;
     }

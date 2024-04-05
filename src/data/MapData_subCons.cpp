@@ -90,8 +90,8 @@ ScenInfoData::ScenInfoData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
     mpdzIndex++;
     this->screenBaseBlock = mpdzBytes.at(mpdzIndex);
     mpdzIndex++;
-    auto colorMode = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
-    this->colorMode = colorMode == 0 ? BgColorMode::MODE_16 : BgColorMode::MODE_256;
+    auto colorModeValue = YUtils::getUint32FromVec(mpdzBytes,mpdzIndex);
+    this->colorMode = static_cast<BgColorMode>((int)colorModeValue);
     mpdzIndex += 4;
     if (mpdzIndex == stop) {
         //YUtils::printDebug("No IMBZ string",DebugType::VERBOSE);
@@ -137,6 +137,16 @@ LayerPaletteData::LayerPaletteData(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
             extPal[i] = mpdzBytes.at(mpdzIndex++);
         }
         this->extendedPalette = extPal;
+    } else if (colMode == BgColorMode::MODE_UNKNOWN) {
+        while (mpdzIndex < stop) {
+            QByteArray currentLoadingPalette;
+            currentLoadingPalette.resize(Constants::PALETTE_SIZE);
+            for (uint32_t curPaletteIndex = 0; curPaletteIndex < Constants::PALETTE_SIZE; curPaletteIndex++) {
+                currentLoadingPalette[curPaletteIndex] = mpdzBytes.at(mpdzIndex);
+                mpdzIndex++;
+            }
+            this->palettes.push_back(currentLoadingPalette);
+        }
     } else {
         YUtils::printDebug("Somehow, an invalid BgColorMode was passed to LayerPaletteData",DebugType::FATAL);
         YUtils::popupAlert("Invalid color mode when initializing palette");
