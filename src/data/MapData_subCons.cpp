@@ -38,6 +38,7 @@ LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint3
             auto imbz = new ImbzLayerData(mpdzBytes,mpdzIndex,mpdzIndex+subLength,this->getInfo()->colorMode);
             this->subScenData.push_back(imbz);
         } else if (subMagic == Constants::PLAN_MAGIC_NUM) {
+            YUtils::popupAlert("PLAN (Animated Palette) data will save, but is not yet supported for editing");
             auto plan = new PaletteAnimationData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subScenData.push_back(plan);
         } else {
@@ -300,6 +301,7 @@ SoftRockBackdrop::SoftRockBackdrop(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
         blkzIndex += 2;
         this->mapTiles.push_back(mapTile);
     }
+    // Check pull was correct
     auto bytesPulled = this->mapTiles.size() * 2;
     auto blkzMinus8 = blkzData.size() - 8;
     if (bytesPulled != blkzMinus8) {

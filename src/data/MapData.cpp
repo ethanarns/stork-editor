@@ -170,9 +170,11 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
             auto path = new PathData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subData.push_back(path);
         } else if (subMagic == Constants::ALPH_MAGIC_NUM) {
+            YUtils::popupAlert("ALPH (BG blending) data will save, but is not yet supported for editing");
             auto alph = new AlphaData(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subData.push_back(alph);
         } else if (subMagic == Constants::BLKZ_MAGIC_NUM) {
+            YUtils::popupAlert("BLKZ (softrock backing MapTiles) data will save, but is not yet supported for editing");
             auto blkz = new SoftRockBackdrop(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subData.push_back(blkz);
         } else {
