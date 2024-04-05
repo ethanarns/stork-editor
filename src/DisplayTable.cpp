@@ -1157,6 +1157,12 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
         YUtils::popupAlert("256-bit color mode layers not yet supported");
         return false;
     }
+    // TODO
+    if (scen->getInfo()->colorMode == BgColorMode::MODE_UNKNOWN) {
+        YUtils::printDebug("0x2 color mode layers not yet supported",DebugType::WARNING);
+        YUtils::popupAlert("0x2 color mode layers not yet supported");
+        return false;
+    }
     auto vramChartiles = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     Chartile loadedTile;
     try {
@@ -1183,15 +1189,15 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
     if (pal > 16) {
         std::cout << "Palette high post-offset: 0x" << std::hex << (uint16_t)pal << std::endl;
     }
-    auto isColorMode256 = scen->getInfo()->colorMode == BgColorMode::MODE_256;
+    auto colorMode = scen->getInfo()->colorMode;
     if (whichBg == 1) {
         // BG 1 //
         curItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
-        if (!isColorMode256) {
+        if (colorMode == BgColorMode::MODE_16 || colorMode == BgColorMode::MODE_UNKNOWN) {
             curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
         } else {
             curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,scen->getPalette()->extendedPalette);
-        }
+        } // TODO: Check for other color modes and error
         curItem->setData(PixelDelegateData::PALETTE_ID_BG1,pal);
         curItem->setData(PixelDelegateData::FLIP_H_BG1,mapRecord.flipH);
         curItem->setData(PixelDelegateData::FLIP_V_BG1,mapRecord.flipV);
@@ -1200,7 +1206,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
     } else if (whichBg == 2) {
         // BG 2 //
         curItem->setData(PixelDelegateData::PIXEL_ARRAY_BG2,loadedTile.tiles);
-        if (!isColorMode256) {
+        if (colorMode == BgColorMode::MODE_16 || colorMode == BgColorMode::MODE_UNKNOWN) {
             curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
         } else {
             curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG2,scen->getPalette()->extendedPalette);
@@ -1213,7 +1219,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
     } else if (whichBg == 3) {
         // BG 3 //
         curItem->setData(PixelDelegateData::PIXEL_ARRAY_BG3,loadedTile.tiles);
-        if (!isColorMode256) {
+        if (colorMode == BgColorMode::MODE_16 || colorMode == BgColorMode::MODE_UNKNOWN) {
             curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
         } else {
             curItem->setData(PixelDelegateData::PALETTE_ARRAY_BG3,scen->getPalette()->extendedPalette);

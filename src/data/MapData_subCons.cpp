@@ -202,7 +202,7 @@ MapTilesData::MapTilesData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex,
     while (mIndex < end) {
         uint16_t curShort = YUtils::getUint16FromVec(mpbzData,mIndex);
         mIndex += 2;
-        if (info->colorMode == BgColorMode::MODE_16) {
+        if (info->colorMode == BgColorMode::MODE_16 || info->colorMode == BgColorMode::MODE_UNKNOWN) {
             curShort += 0x1000; // 0201c730
         }
         //this->tileRenderData.push_back(curShort);
@@ -542,8 +542,8 @@ ImbzLayerData::ImbzLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzInde
         Chartile curTile;
         curTile.index = currentTileIndex;
         curTile.tiles.resize(64);
-        if (bgColMode == BgColorMode::MODE_16) {
-            curTile.bgColMode = BgColorMode::MODE_16;
+        if (bgColMode == BgColorMode::MODE_16 || bgColMode == BgColorMode::MODE_UNKNOWN) {
+            curTile.bgColMode = bgColMode;
             // Go up by 2 since you split the bytes
             for (int currentTileBuildIndex = 0; currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE; currentTileBuildIndex++) {
                 uint8_t curByte = uncompressedImbz.at(imbzIndex + currentTileBuildIndex);
@@ -553,20 +553,28 @@ ImbzLayerData::ImbzLayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzInde
                 curTile.tiles[innerPosition+1] = highBit;
                 curTile.tiles[innerPosition+0] = lowBit;
             }
-        } else {
-            curTile.bgColMode = BgColorMode::MODE_256;
+        } else if (bgColMode == BgColorMode::MODE_256) {
+            curTile.bgColMode = bgColMode;
             for (int currentTileIndex = 0; currentTileIndex < 64; currentTileIndex++) {
                 uint8_t curByte = uncompressedImbz.at(imbzIndex + currentTileIndex);
                 curTile.tiles[currentTileIndex] = curByte;
             }
+        } else {
+            YUtils::printDebug("Unknown color mode in ImbzLayerData",DebugType::FATAL);
+            YUtils::popupAlert("Unknown color mode in ImbzLayerData");
+            exit(EXIT_FAILURE);
         }
         this->chartiles.push_back(curTile);
         
-        if (bgColMode == BgColorMode::MODE_16) {
+        if (bgColMode == BgColorMode::MODE_16 || bgColMode == BgColorMode::MODE_UNKNOWN) {
             // Skip ahead by 0x20/32
             imbzIndex += Constants::CHARTILE_DATA_SIZE;
-        } else {
+        } else if (bgColMode == BgColorMode::MODE_256) {
             imbzIndex += 64;
+        } else {
+            YUtils::printDebug("Unknown color mode in ImbzLayerData 2",DebugType::FATAL);
+            YUtils::popupAlert("Unknown color mode in ImbzLayerData 2");
+            exit(EXIT_FAILURE);
         }
         currentTileIndex++;
     }

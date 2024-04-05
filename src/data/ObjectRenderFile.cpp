@@ -154,7 +154,7 @@ std::vector<QByteArray> ObjectTileData::getChartiles(uint32_t baseDataIndex, uin
         uint32_t curIndex = baseDataIndex + (currentTileIndex * tileBytesSize);
         // Get a segment that is 
         auto curSection = YUtils::subVector(this->byteData,curIndex,curIndex+tileBytesSize);
-        if (colMode == BgColorMode::MODE_16) {
+        if (colMode == BgColorMode::MODE_16 || colMode == BgColorMode::MODE_UNKNOWN) {
             // This splits things up
             chartiles.push_back(YUtils::tileVectorToQByteArray(curSection));
         } else {
