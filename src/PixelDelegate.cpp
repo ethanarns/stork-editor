@@ -26,6 +26,7 @@ QImage EXIT_IMAGE(":/assets/exit.png");
 const QColor collisionColor(     0,255,0  ,100);
 const QColor collisionColorAlt(200,255,200,180);
 const QColor collisionColorRed(255,0,0,180);
+const QColor collisionColorWater(143,209,223);
 const QColor collisionColorLightBlue(205,239,255,200);
 const QColor collisionColorLighestBlue(240,240,255,200);
 const QColor collisionSoftRock(254,225,158,200);
@@ -470,6 +471,17 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT));
                 path.addPolygon(poly);
                 painter->fillPath(path,collisionColorRed);
+                break;
+            }
+            case CollisionDraw::WATER_STILL_DRAW: {
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE,(double)Y_BASE+(Y_HEIGHT/2));
+                poly << QPointF((double)X_BASE+(X_WIDTH/2),(double)Y_BASE);
+                poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+(Y_HEIGHT/2)));
+                poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT)) << QPointF((double)(X_BASE),(double)(Y_BASE+Y_HEIGHT));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColorWater);
                 break;
             }
             // case CollisionDraw::STAIRS_UP_RIGHT_DRAW: {

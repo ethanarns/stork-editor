@@ -572,6 +572,11 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
             result.preview = CollisionDraw::STAIRS_DOWN_RIGHT_DRAW;
             break;
         }
+        case CollisionType::WATER_STILL: {
+            result.prettyName = "Still Water";
+            result.preview = CollisionDraw::WATER_STILL_DRAW;
+            break;
+        }
         // Note: missing stairs up, but coldraw for it is already there
     }
     return result;
