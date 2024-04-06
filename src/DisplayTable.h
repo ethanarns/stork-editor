@@ -42,19 +42,6 @@ public:
 
     DisplayTable(QWidget *parent, YidsRom* rom);
     void putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, uint16_t whichBg);
-    void placeObjectTile(
-        uint32_t x, uint32_t y,
-        uint32_t objectOffset,
-        uint32_t subTile,
-        uint32_t paletteOffset,
-        uint32_t spriteWidth,
-        uint32_t tilesLength,
-        std::string paletteFile,
-        std::string objectFile,
-        uint32_t xPixelOffset,
-        uint32_t yPixelOffset,
-        uint32_t uuid
-    );
     void placeObjectGraphic(
         uint32_t x, uint32_t y,
         uint32_t objectOffset,

@@ -43,6 +43,8 @@ struct ObjectGraphicMetadata {
 
     bool isLz10;
 
+    bool is256;
+
     uint32_t frame;
 
     /**

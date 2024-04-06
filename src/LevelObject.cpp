@@ -19,6 +19,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     meta.indexOfPalette = 0;
     meta.indexOfTiles = 0;
     meta.isLz10 = false;
+    meta.is256 = false;
     switch(objectId) {
         case 0x0: { // Basic yellow coin
             meta.indexOfTiles = 0x0;
@@ -255,7 +256,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x9A: { // Red arrow signs
             meta.indexOfTiles = 0x5A;
             meta.indexOfPalette = 0xDC;
-            // Defaults to classic red arrow sign
             if (lo.settingsLength < 2) {
                 std::stringstream ssRedSignSettingsLen;
                 ssRedSignSettingsLen << "Red Sign needs at least 2 bytes of settings, instead got " << lo.settingsLength;
@@ -263,7 +263,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                 break;
             }
             auto firstSettingsByte = (uint32_t)lo.settings.at(0);
-            meta.frame = firstSettingsByte;
             switch(firstSettingsByte) {
                 case 0x1: { // Classic right pointing signpost
                     meta.frame = 0;
@@ -285,6 +284,8 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                     std::stringstream ssUnhandledRedSign;
                     ssUnhandledRedSign << "Unhandled red arrow sign type: " << std::hex << firstSettingsByte;
                     YUtils::printDebug(ssUnhandledRedSign.str(),DebugType::WARNING);
+                    meta.indexOfTiles = 0;
+                    meta.indexOfPalette = 0;
                     break;
                 }
             }
