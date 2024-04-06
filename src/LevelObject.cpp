@@ -280,6 +280,14 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                     meta.frame = 4;
                     break;
                 }
+                case 0x5: {
+                    meta.frame = 5;
+                    break;
+                }
+                case 0x6: {
+                    meta.frame = 6;
+                    break;
+                }
                 default: {
                     std::stringstream ssUnhandledRedSign;
                     ssUnhandledRedSign << "Unhandled red arrow sign type: " << std::hex << firstSettingsByte;

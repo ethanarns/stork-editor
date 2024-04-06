@@ -536,13 +536,13 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                     qc = YUtils::invertColor(qc);
                 }
                 int x = i % 8;
-                // if (index.data(PixelDelegateData::FLIP_H_BG1).toBool() == true) {
-                //     x = (8 - x - 1);
-                // }
+                if (index.data(PixelDelegateData::OBJECT_TILES_FLIPH).toBool() == true) {
+                    x = (8 - x - 1);
+                }
                 int y = i / 8;
-                // if (index.data(PixelDelegateData::FLIP_V_BG1).toBool() == true) {
-                //     y = (8 - y - 1);
-                // }
+                if (index.data(PixelDelegateData::OBJECT_TILES_FLIPV).toBool() == true) {
+                    y = (8 - y - 1);
+                }
                 this->drawPixel(painter, option.rect, x, y, qc);
                 if (selected) {
                     this->drawPixel(painter, option.rect, x, y, hardSelectionColor);

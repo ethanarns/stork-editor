@@ -80,7 +80,10 @@ enum PixelDelegateData {
     ENTRANCE_TYPE = 141, // int/enum
     ENTRANCE_INDEX = 142, // uint
     DRAW_EXITS = 143, // bool
-    DRAW_ENTRANCES = 144 // bool
+    DRAW_ENTRANCES = 144, // bool
+
+    OBJECT_TILES_FLIPV = 145, // bool
+    OBJECT_TILES_FLIPH = 146  // bool
 };
 
 enum CollisionType {
