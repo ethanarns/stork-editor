@@ -1669,7 +1669,7 @@ void DisplayTable::placeObjectGraphic(
         double xd8 = static_cast<double>(buildFrameOffsetXfine + manualXoffsetFine)/8;
         int gridXposition = x + (int)std::floor(xd8);
         double yd8 = static_cast<double>(buildFrameOffsetYfine + manualYoffsetFine)/8;
-        int gridYposition = y + (int)std::round(yd8); // Should this be floor too? See if there's any objects with y gaps
+        int gridYposition = y + (int)std::floor(yd8);
         std::vector<QByteArray> tiles = std::vector<QByteArray>();
         if (isLz10) {
             tiles = objectTileData->getChartilesCompressed((*bit)->tileOffset << 4,curSpriteHeight*curSpriteWidth,BgColorMode::MODE_16);

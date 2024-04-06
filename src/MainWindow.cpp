@@ -442,6 +442,7 @@ MainWindow::MainWindow() {
     this->spriteFileSelect->addItem("objeffect.arcz");
     this->spriteFileSelect->addItem("objcharacoin.arc");
     this->spriteFileSelect->addItem("objcharacoin.arcz");
+    this->spriteFileSelect->addItem("objraft.arcz");
 
     //this->spriteFileSelect->addItem("title3_bg.arcz"); No OBAR found, crashes
 

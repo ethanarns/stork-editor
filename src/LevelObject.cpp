@@ -315,6 +315,13 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.frame = 4; // TODO: Get from object data values
             break;
         }
+        case 0xd5: { // Raft
+            meta.whichObjectFile = "objraft.arcz";
+            meta.whichPaletteFile = "objraft.arcz";
+            meta.indexOfTiles = 0x1;
+            meta.indexOfPalette = 0x3;
+            break;
+        }
         case 0xdb: { // Outline coin
             meta.indexOfTiles = 0x0;
             meta.indexOfPalette = 0x7e;
@@ -338,6 +345,12 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfTiles = 0;
             meta.frame = 0;
             meta.indexOfPalette = 1;
+            break;
+        }
+        case 0x109: { // Toober guy
+            meta.indexOfTiles = 0x7b;
+            meta.indexOfPalette = 0xa5;
+            // TODO: Somehow render 0x7a/0x90 (the shy guy) as well
             break;
         }
         case 0x112: { // Locked minigame hut
@@ -367,11 +380,17 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                     break;
                 }
             }
-            case 0x116: { // Red Switch 2
-                meta.indexOfTiles = 0x15;
-                meta.indexOfPalette = 0x8b;
-                break;
-            }
+            break;
+        }
+        case 0x116: { // Red Switch 2
+            meta.indexOfTiles = 0x15;
+            meta.indexOfPalette = 0x8b;
+            break;
+        }
+        case 0x121: { // Pirate Guy
+            meta.whichObjectFile = "objpirateheiho.arcz";
+            meta.indexOfTiles = 0;
+            meta.indexOfPalette = 0x90;
             break;
         }
         default: {
