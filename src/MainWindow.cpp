@@ -422,7 +422,6 @@ MainWindow::MainWindow() {
     this->spriteFileSelect->addItem("objsbkachikachi.arcz");
     this->spriteFileSelect->addItem("objkantera.arcz");
     this->spriteFileSelect->addItem("objset.arcz");
-    this->spriteFileSelect->addItem("objiceblock.arcz");
     this->spriteFileSelect->addItem("objsbblock.arc");
     this->spriteFileSelect->addItem("objyamori.arcz");
     this->spriteFileSelect->addItem("objtori_yuuhi.arcz");
@@ -440,9 +439,7 @@ MainWindow::MainWindow() {
 
     this->spriteFileSelect->addItem("objhintwindow.arcz");
     this->spriteFileSelect->addItem("objeffect.arcz");
-    this->spriteFileSelect->addItem("objcharacoin.arc");
-    this->spriteFileSelect->addItem("objcharacoin.arcz");
-    this->spriteFileSelect->addItem("objraft.arcz");
+    this->spriteFileSelect->addItem("objtransform.arcz");
 
     //this->spriteFileSelect->addItem("title3_bg.arcz"); No OBAR found, crashes
 

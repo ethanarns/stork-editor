@@ -101,6 +101,16 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0x9b;
             break;
         }
+        case 0x29: { // Tap Tap (Silver)
+            meta.indexOfTiles = 0x18;
+            meta.indexOfPalette = 0x98;
+            break;
+        }
+        case 0x2a: { // Tap Tap (Orange)
+            meta.indexOfTiles = 0x18;
+            meta.indexOfPalette = 0x99;
+            break;
+        }
         case 0xfb:   // Poundable Pillar trigger (links to 6a often)
         case 0x2b: { // Poundable Pillar
             meta.indexOfTiles = 0x17;
