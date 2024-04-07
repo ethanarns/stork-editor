@@ -196,9 +196,14 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.frame = 4;
             break;
         }
-        case 0x44: { // Pointey
+        case 0x44: { // Pointey, test on 2-1 #3
             meta.indexOfTiles = 0x23;
             meta.indexOfPalette = 0xa8;
+            if (lo.settings.at(1) == 0x1) {
+                // 1 means upside down
+                meta.forceFlipV = true;
+                meta.yPixelOffset = 16;
+            }
             break;
         }
         case 0x48: { // Ukiki

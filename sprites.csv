@@ -50,6 +50,7 @@ Sprite ID,Sprite name,Info,Len,Construction Function,Setings 0,Settings 1,Settin
 0x43,Woozy Guy,Frontflipping Shy Guy (at least 3 bytes used),4,02057a78,,,,,,,,,,
 0x44,Pointey,Shoots up; bounce off,4,0205928c,uint8 length (0 defaults to 2),"uint8 direction (0 = upwards, 1 = downwards)",Maybe more?,,,,,,,
 0x46,Bouncy,Insane amount of settings,16,,,,,,,,,,,
+0x47,Nipper Spores,Slowly fall,4,,,,,,,,,,,
 0x48,Ukiki,Monkey!,0,0205bc24,,,,,,,,,,
 0x49,Chomp Rock,4 bytes,4,,,,,,,,,,,
 0x4b,Windbag,Sneezes; blowing,16,,,,,,,,,,,
