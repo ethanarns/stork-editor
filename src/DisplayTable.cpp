@@ -1534,34 +1534,35 @@ void DisplayTable::placeObjectGraphic(
         ssEmptyPalette << ", object uuid is 0x" << std::hex << uuid;
         YUtils::printDebug(ssEmptyPalette.str(),DebugType::ERROR);
     }
+    bool shouldFlipV = false;
+    bool shouldFlipH = false;
     uint buildFrameIndex = 0;
     for (auto bit = curFrame.buildFrames.begin(); bit != curFrame.buildFrames.end(); bit++) {
         uint16_t flags = (*bit)->flags;
         auto tileShapeValue = flags & 0b11111;
         QPoint dims = YUtils::getSpriteDimsFromFlagValue(tileShapeValue);
-        auto flipV = (flags & 0b0010'0000'0000'0000) != 0; // Confirmed working, y
-        auto flipH = (flags & 0b0001'0000'0000'0000) != 0; // Confirmed working, x
+        if (buildFrameIndex == 0) {
+            // First flags override all
+            shouldFlipV = (flags & 0b0010'0000'0000'0000) != 0;
+            shouldFlipH = (flags & 0b0001'0000'0000'0000) != 0;
+        }
         int curSpriteWidth = dims.x();
         int curSpriteHeight = dims.y();
         int buildFrameOffsetXfine = (*bit)->xOffset;
         //std::cout << "buildFrameOffsetXfine: " << std::dec << buildFrameOffsetXfine << std::endl;
         int buildFrameOffsetYfine = (*bit)->yOffset;
-        double xd8 = static_cast<double>(buildFrameOffsetXfine);
+        double xd8 = static_cast<double>(buildFrameOffsetXfine+manualXoffsetFine);
         int xd = (int)std::floor(xd8/8);
-        double yd8 = static_cast<double>(buildFrameOffsetYfine);
+        double yd8 = static_cast<double>(buildFrameOffsetYfine+manualYoffsetFine);
         int yd = (int)std::floor(yd8/8);
-        if (uuid == 0x01) {
-            std::cout << "> UUID 0x1 detected" << std::endl;
-            std::cout << "Flags: 0x" << std::hex << flags << std::endl;
-            std::cout << "curSpriteWidth: 0x" << std::hex << curSpriteWidth << std::endl;
-            std::cout << "curSpriteHeight: 0x" << std::hex << curSpriteHeight << std::endl;
-            std::cout << "xd: " << std::dec << xd << std::endl;
-            std::cout << "yd: " << std::dec << yd << std::endl;
-        }
-        Q_UNUSED(flipV);
-        Q_UNUSED(flipH);
-        Q_UNUSED(manualXoffsetFine);
-        Q_UNUSED(manualYoffsetFine);
+        // if (uuid == 0x01) {
+        //     std::cout << "> UUID 0x1 detected" << std::endl;
+        //     std::cout << "Flags: 0x" << std::hex << flags << std::endl;
+        //     std::cout << "curSpriteWidth: 0x" << std::hex << curSpriteWidth << std::endl;
+        //     std::cout << "curSpriteHeight: 0x" << std::hex << curSpriteHeight << std::endl;
+        //     std::cout << "xd: " << std::dec << xd << std::endl;
+        //     std::cout << "yd: " << std::dec << yd << std::endl;
+        // }
         std::vector<QByteArray> tiles = std::vector<QByteArray>();
         if (isLz10) {
             tiles = objectTileData->getChartilesCompressed((*bit)->tileOffset << 4,curSpriteHeight*curSpriteWidth,BgColorMode::MODE_16);
@@ -1572,13 +1573,13 @@ void DisplayTable::placeObjectGraphic(
         for (int tilesIndex = 0; tilesIndex < tilesSize; tilesIndex++) {
             auto objChartile = tiles.at(tilesIndex);
             int tileIndexOffsetX = tilesIndex % curSpriteWidth;
-            if (flipH) {
-                tileIndexOffsetX = curSpriteWidth - tileIndexOffsetX - 1;
-            }
+            // if (flipH) {
+            //     tileIndexOffsetX = curSpriteWidth - tileIndexOffsetX - 1;
+            // }
             int tileIndexOffsetY = tilesIndex / curSpriteWidth;
-            if (flipV) {
-                tileIndexOffsetY = curSpriteHeight - tileIndexOffsetY - 1;
-            }
+            // if (flipV) {
+            //     tileIndexOffsetY = curSpriteHeight - tileIndexOffsetY - 1;
+            // }
             // x position on map, offset by buildframe x and inner tile-build x
             int finalX = x+xd+tileIndexOffsetX;
             int finalY = y+yd+tileIndexOffsetY;
@@ -1602,8 +1603,9 @@ void DisplayTable::placeObjectGraphic(
             tileItem->setData(PixelDelegateData::OBJECT_TILES,objChartile);
             tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette);
             tileItem->setData(PixelDelegateData::OBJECT_UUID,uuid);
-            tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPH,flipH);
-            tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPV,flipV);
+            // These will be set later
+            // tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPH,flipH);
+            // tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPV,flipV);
             tileItem->setData(PixelDelegateData::OBJECT_TILES_BUILDFRAME_INDEX,buildFrameIndex);
             tileItem->setText("sprite");
         }
