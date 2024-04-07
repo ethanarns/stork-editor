@@ -29,4 +29,5 @@ It uses the USA version 1.0. Do NOT use 1.1 or "rev 1." SHA256 Sum: `c75bf32c31f
 - Line following implementation
 - Gradient and Alpha BG support
 - New map creation
+- Soft rock editing
 - Graphics editing
