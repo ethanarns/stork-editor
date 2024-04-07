@@ -419,7 +419,7 @@ MainWindow::MainWindow() {
     this->spriteFileSelect->setObjectName("spriteFileSelectDropdown");
     this->spriteFileSelect->setToolTip(tr("Load an object render file"));
     this->spriteFileSelect->addItem("---");
-    this->spriteFileSelect->addItem("objsbkachikachi.arcz");
+    this->spriteFileSelect->addItem("objbutu.arcz");
     this->spriteFileSelect->addItem("objkantera.arcz");
     this->spriteFileSelect->addItem("objset.arcz");
     this->spriteFileSelect->addItem("objsbblock.arc");

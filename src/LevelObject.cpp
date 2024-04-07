@@ -239,10 +239,22 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.frame = 3;
             break;
         }
+        // case 0x81: { // Middle Ring
+        //     meta.whichObjectFile = "objsavepointobj.arcz";
+        //     break;
+        // }
         case 0x8e: { // Large breakable rock squares
             meta.indexOfTiles = 0x48;
             // See 020db27c for other potential palettes
             meta.indexOfPalette = 0xCD;
+            break;
+        }
+        case 0x8f: { // Gooey Goon
+            meta.whichObjectFile = "objbutu.arcz";
+            meta.whichPaletteFile = "objbutu.arcz";
+            meta.indexOfTiles = 0;
+            meta.indexOfPalette = 1;
+            meta.yPixelOffset = 16;
             break;
         }
         case 0x92: { // Stairs
