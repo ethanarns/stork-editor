@@ -58,6 +58,9 @@ struct ObjectGraphicMetadata {
      */
     int32_t yPixelOffset;
 
+    bool forceFlipV;
+    bool forceFlipH;
+
     std::vector<RenderInstruction> specialRender;
 };
 

@@ -20,6 +20,8 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     meta.indexOfTiles = 0;
     meta.isLz10 = false;
     meta.is256 = false;
+    meta.forceFlipH = false;
+    meta.forceFlipV = false;
     switch(objectId) {
         case 0x0: { // Basic yellow coin
             meta.indexOfTiles = 0x0;
@@ -36,6 +38,15 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfTiles = 0x24;
             meta.indexOfPalette = 0x97;
             meta.frame = 1;
+            break;
+        }
+        case 0x10: { // Pirhana Plant 2 (upside down)
+            meta.indexOfTiles = 0x24;
+            meta.indexOfPalette = 0x97;
+            meta.frame = 1;
+            meta.yPixelOffset = 32; // push up 2 full tiles
+            meta.xPixelOffset = 8;
+            meta.forceFlipV = true;
             break;
         }
         case 0x13: { // Winged Cloud (items)
@@ -70,16 +81,18 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfTiles = 0x24;
             meta.indexOfPalette = 0x97;
             meta.frame = 1;
+            meta.xPixelOffset = 8;
             break;
         }
-        // case 0x22: { // Pirhana Plant 1 Upside down
-        //     meta.indexOfTiles = 0x24;
-        //     meta.indexOfPalette = 0x97;
-        //     meta.tilesCount = 8;
-        //     meta.tileWidth = 2;
-        //     meta.frame = 1;
-        //     break;
-        // }
+        case 0x22: { // Pirhana Plant 1 Upside down
+            meta.indexOfTiles = 0x24;
+            meta.indexOfPalette = 0x97;
+            meta.frame = 1;
+            meta.yPixelOffset = 32; // push up 2 full tiles
+            meta.xPixelOffset = 8;
+            meta.forceFlipV = true;
+            break;
+        }
         case 0x23: { // Green pipe
             constexpr uint32_t VERTICAL_PIPE_TILES = 0x13;
             constexpr uint32_t HORIZONTAL_PIPE_TILES = 0x12;

@@ -1460,7 +1460,9 @@ void DisplayTable::updateSprites() {
                 objectGraphicsMeta.xPixelOffset,
                 objectGraphicsMeta.yPixelOffset,
                 it->uuid,
-                objectGraphicsMeta.isLz10
+                objectGraphicsMeta.isLz10,
+                objectGraphicsMeta.forceFlipH,
+                objectGraphicsMeta.forceFlipV
             );
         }
     }
@@ -1509,7 +1511,8 @@ void DisplayTable::placeObjectGraphic(
     uint32_t paletteOffset, std::string paletteFile,
     std::string objectFile,
     int manualXoffsetFine, int manualYoffsetFine,
-    uint32_t uuid, bool isLz10)
+    uint32_t uuid, bool isLz10,
+    bool forceFlipH, bool forceFlipV)
 {
     // std::cout << "placeObjectGraphic" << std::endl;
     // Will skip if already loaded
@@ -1617,6 +1620,12 @@ void DisplayTable::placeObjectGraphic(
             steps.push_back(step);
         }
         buildFrameIndex++;
+    }
+    if (forceFlipH) {
+        shouldFlipH = true;
+    }
+    if (forceFlipV) {
+        shouldFlipV = true;
     }
     double midY = ((double)(minY + maxY)) / 2;
     double midX = ((double)(minX + maxX)) / 2;
