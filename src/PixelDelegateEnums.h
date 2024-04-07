@@ -83,7 +83,8 @@ enum PixelDelegateData {
     DRAW_ENTRANCES = 144, // bool
 
     OBJECT_TILES_FLIPV = 145, // bool
-    OBJECT_TILES_FLIPH = 146  // bool
+    OBJECT_TILES_FLIPH = 146,  // bool
+    OBJECT_TILES_BUILDFRAME_INDEX = 147
 };
 
 enum CollisionType {

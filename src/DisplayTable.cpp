@@ -1534,6 +1534,7 @@ void DisplayTable::placeObjectGraphic(
         ssEmptyPalette << ", object uuid is 0x" << std::hex << uuid;
         YUtils::printDebug(ssEmptyPalette.str(),DebugType::ERROR);
     }
+    uint buildFrameIndex = 0;
     for (auto bit = curFrame.buildFrames.begin(); bit != curFrame.buildFrames.end(); bit++) {
         uint16_t flags = (*bit)->flags;
         auto tileShapeValue = flags & 0b11111;
@@ -1571,7 +1572,13 @@ void DisplayTable::placeObjectGraphic(
         for (int tilesIndex = 0; tilesIndex < tilesSize; tilesIndex++) {
             auto objChartile = tiles.at(tilesIndex);
             int tileIndexOffsetX = tilesIndex % curSpriteWidth;
+            if (flipH) {
+                tileIndexOffsetX = curSpriteWidth - tileIndexOffsetX - 1;
+            }
             int tileIndexOffsetY = tilesIndex / curSpriteWidth;
+            if (flipV) {
+                tileIndexOffsetY = curSpriteHeight - tileIndexOffsetY - 1;
+            }
             // x position on map, offset by buildframe x and inner tile-build x
             int finalX = x+xd+tileIndexOffsetX;
             int finalY = y+yd+tileIndexOffsetY;
@@ -1595,9 +1602,11 @@ void DisplayTable::placeObjectGraphic(
             tileItem->setData(PixelDelegateData::OBJECT_TILES,objChartile);
             tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette);
             tileItem->setData(PixelDelegateData::OBJECT_UUID,uuid);
-            // tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPH,flipH);
-            // tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPV,flipV);
+            tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPH,flipH);
+            tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPV,flipV);
+            tileItem->setData(PixelDelegateData::OBJECT_TILES_BUILDFRAME_INDEX,buildFrameIndex);
             tileItem->setText("sprite");
         }
+        buildFrameIndex++;
     }
 }

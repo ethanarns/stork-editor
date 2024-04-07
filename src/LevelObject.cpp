@@ -264,8 +264,12 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             }
             auto firstSettingsByte = (uint32_t)lo.settings.at(0);
             switch(firstSettingsByte) {
-                case 0x1: { // Classic right pointing signpost
+                case 0x0: { // Left pointing, flipped
                     meta.frame = 0;
+                    break;
+                }
+                case 0x1: { // Classic right pointing signpost
+                    meta.frame = 1;
                     break;
                 }
                 case 0x2: {
