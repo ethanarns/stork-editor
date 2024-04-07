@@ -272,20 +272,24 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                     meta.frame = 1;
                     break;
                 }
-                case 0x2: {
+                case 0x2: { // Up decal
                     meta.frame = 2;
+                    meta.yPixelOffset = 8;
                     break;
                 }
-                case 0x3: {
+                case 0x3: { // Up right decal
                     meta.frame = 3;
                     break;
                 }
-                case 0x4: {
+                case 0x4: { // Right decal
                     meta.frame = 4;
+                    meta.xPixelOffset = 8;
                     break;
                 }
-                case 0x5: {
+                case 0x5: { // Down right decal
                     meta.frame = 5;
+                    meta.yPixelOffset = -8;
+                    meta.xPixelOffset = 8;
                     break;
                 }
                 case 0x6: {

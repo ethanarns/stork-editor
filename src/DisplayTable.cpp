@@ -1552,10 +1552,10 @@ void DisplayTable::placeObjectGraphic(
     bool shouldFlipV = false;
     bool shouldFlipH = false;
     uint buildFrameIndex = 0;
-    int minY = 0xffff;
-    int maxY = 0x0000;
-    int minX = 0xffff;
-    int maxX = 0x0000;
+    int minY = 0xffffff;
+    int maxY = 0x000000;
+    int minX = 0xffffff;
+    int maxX = 0x000000;
     std::vector<SpritePlacementStep> steps;
     for (auto bit = curFrame.buildFrames.begin(); bit != curFrame.buildFrames.end(); bit++) {
         uint16_t flags = (*bit)->flags;
@@ -1570,7 +1570,6 @@ void DisplayTable::placeObjectGraphic(
         int curSpriteWidth = dims.x();
         int curSpriteHeight = dims.y();
         int buildFrameOffsetXfine = (*bit)->xOffset;
-        //std::cout << "buildFrameOffsetXfine: " << std::dec << buildFrameOffsetXfine << std::endl;
         int buildFrameOffsetYfine = (*bit)->yOffset;
         double xd8 = static_cast<double>(buildFrameOffsetXfine+manualXoffsetFine);
         int xd = (int)std::floor(xd8/8);
