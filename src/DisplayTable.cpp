@@ -1488,6 +1488,21 @@ int DisplayTable::wipeTable() {
     return 0;
 }
 
+struct SpritePlacementStep {
+    uint32_t x;
+    uint32_t y;
+    QByteArray objChartile;
+    uint buildFrameIndex;
+    void flipV(uint32_t midY) {
+        uint32_t doubled = midY * 2;
+        this->y = doubled - this->y;
+    };
+    void flipH(uint32_t midX) {
+        uint32_t doubled = midX * 2;
+        this->x = doubled = this->x;
+    }
+};
+
 void DisplayTable::placeObjectGraphic(
     uint32_t x, uint32_t y,
     uint32_t objectOffset, uint32_t frame,
@@ -1537,6 +1552,11 @@ void DisplayTable::placeObjectGraphic(
     bool shouldFlipV = false;
     bool shouldFlipH = false;
     uint buildFrameIndex = 0;
+    int minY = 0xffff;
+    int maxY = 0x0000;
+    int minX = 0xffff;
+    int maxX = 0x0000;
+    std::vector<SpritePlacementStep> steps;
     for (auto bit = curFrame.buildFrames.begin(); bit != curFrame.buildFrames.end(); bit++) {
         uint16_t flags = (*bit)->flags;
         auto tileShapeValue = flags & 0b11111;
@@ -1545,6 +1565,7 @@ void DisplayTable::placeObjectGraphic(
             // First flags override all
             shouldFlipV = (flags & 0b0010'0000'0000'0000) != 0;
             shouldFlipH = (flags & 0b0001'0000'0000'0000) != 0;
+            // Others don't even have any effect
         }
         int curSpriteWidth = dims.x();
         int curSpriteHeight = dims.y();
@@ -1585,30 +1606,81 @@ void DisplayTable::placeObjectGraphic(
             int finalY = y+yd+tileIndexOffsetY;
             // std::cout << "finalX: " << finalX << std::endl;
             // std::cout << "finalY: " << finalY << std::endl;
-            auto tileItem = this->item(finalY,finalX);
-            if (tileItem == nullptr) {
-                tileItem = new QTableWidgetItem();
+            // auto tileItem = this->item(finalY,finalX);
+            if (finalY > maxY) {
+                maxY = finalY;
             }
+            if (finalY < minY) {
+                minY = finalY;
+            }
+            if (finalX > maxX) {
+                maxX = finalX;
+            }
+            if (finalX < minX) {
+                minX = finalX;
+            }
+            SpritePlacementStep step;
+            step.x = finalX;
+            step.y = finalY;
+            step.objChartile = objChartile;
+            step.buildFrameIndex = buildFrameIndex;
+            steps.push_back(step);
+            // if (tileItem == nullptr) {
+            //     tileItem = new QTableWidgetItem();
+            // }
             // TODO: Make this optional for performance purposes
-            bool dontPlaceInvisibles = true;
-            if (dontPlaceInvisibles == true) {
-                uint total = 0;
-                for (auto oit = objChartile.begin(); oit != objChartile.end(); oit++) {
-                    total += (uint)(*oit);
-                }
-                if (total == 0) {
-                    continue;
-                }
-            }
-            tileItem->setData(PixelDelegateData::OBJECT_TILES,objChartile);
-            tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette);
-            tileItem->setData(PixelDelegateData::OBJECT_UUID,uuid);
-            // These will be set later
-            // tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPH,flipH);
-            // tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPV,flipV);
-            tileItem->setData(PixelDelegateData::OBJECT_TILES_BUILDFRAME_INDEX,buildFrameIndex);
-            tileItem->setText("sprite");
+            // bool dontPlaceInvisibles = true;
+            // if (dontPlaceInvisibles == true) {
+            //     uint total = 0;
+            //     for (auto oit = objChartile.begin(); oit != objChartile.end(); oit++) {
+            //         total += (uint)(*oit);
+            //     }
+            //     if (total == 0) {
+            //         continue;
+            //     }
+            // }
+            // tileItem->setData(PixelDelegateData::OBJECT_TILES,objChartile);
+            // tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette);
+            // tileItem->setData(PixelDelegateData::OBJECT_UUID,uuid);
+            // // These will be set later
+            // // tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPH,flipH);
+            // // tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPV,flipV);
+            // tileItem->setData(PixelDelegateData::OBJECT_TILES_BUILDFRAME_INDEX,buildFrameIndex);
+            // tileItem->setText("sprite");
         }
         buildFrameIndex++;
+    }
+    uint32_t midY = (minY + maxY) / 2;
+    uint32_t midX = (minX + maxX) / 2;
+    for (auto fit = steps.begin(); fit != steps.end(); fit++) {
+        auto step = *fit;
+        if (shouldFlipV) {
+            step.flipV(midY);
+        }
+        // if (shouldFlipH) {
+        //     step.flipH(midX);
+        // }
+        auto tileItem = this->item(step.y,step.x);
+        if (tileItem == nullptr) {
+            tileItem = new QTableWidgetItem();
+        }
+            // TODO: Make this optional for performance purposes
+            // bool dontPlaceInvisibles = true;
+            // if (dontPlaceInvisibles == true) {
+            //     uint total = 0;
+            //     for (auto oit = objChartile.begin(); oit != objChartile.end(); oit++) {
+            //         total += (uint)(*oit);
+            //     }
+            //     if (total == 0) {
+            //         continue;
+            //     }
+            // }
+        tileItem->setData(PixelDelegateData::OBJECT_TILES,step.objChartile);
+        tileItem->setData(PixelDelegateData::OBJECT_PALETTE,objectPalette);
+        tileItem->setData(PixelDelegateData::OBJECT_UUID,uuid);
+        tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPV,shouldFlipV);
+        //tileItem->setData(PixelDelegateData::OBJECT_TILES_FLIPH,shouldFlipH);
+        tileItem->setData(PixelDelegateData::OBJECT_TILES_BUILDFRAME_INDEX,step.buildFrameIndex);
+        tileItem->setText("sprite");
     }
 }
