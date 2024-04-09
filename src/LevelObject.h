@@ -14,8 +14,6 @@
 
 #include <QByteArray>
 
-#include "InstructionRenderer.h"
-
 struct ObjectGraphicMetadata {
     /**
      * @brief The offset/index of the OBJB data.
@@ -61,7 +59,7 @@ struct ObjectGraphicMetadata {
     bool forceFlipV;
     bool forceFlipH;
 
-    std::vector<RenderInstruction> specialRender;
+    std::vector<ObjectGraphicMetadata> extras;
 };
 
 struct ObjectTextMetadata {

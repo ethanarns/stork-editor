@@ -1,6 +1,5 @@
 #include "LevelObject.h"
 #include "utils.h"
-#include "InstructionRenderer.h"
 
 #include <vector>
 #include <iostream>
@@ -102,7 +101,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0x89;
             meta.frame = 0;
             // TODO: Special rendering to repeat downwards
-            meta.specialRender = std::vector<RenderInstruction>();
             break;
         }
         case 0x25: { // Red Switch 1
