@@ -182,6 +182,31 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             // TODO: Render bottom half as mirror and handle reverse
             meta.indexOfTiles = 0x19;
             meta.indexOfPalette = 0x8e;
+            ObjectGraphicMetadata extra;
+            extra.indexOfTiles = 0x19;
+            extra.indexOfPalette = 0x8e;
+            uint16_t direction = YUtils::getUint16FromVec(lo.settings,0);
+            if (direction == 0) {
+                // Right only
+                extra.forceFlipV = true;
+                extra.yPixelOffset = 16*2;
+                meta.extras.push_back(extra);
+            } else if (direction == 1) {
+                // Left only
+                extra.xPixelOffset = -8;
+                meta.xPixelOffset = -8;
+                meta.forceFlipH = true;
+                extra.forceFlipH = true;
+                extra.forceFlipV = true;
+                extra.yPixelOffset = 16*2;
+                meta.extras.push_back(extra);
+            } else if (direction == 2) {
+                // Down only
+            } else {
+                YUtils::printDebug("Unusual gate direction",DebugType::ERROR);
+                YUtils::popupAlert("Unusual gate direction");
+                break;
+            }
             break;
         }
         case 0x2d: { // Winged Cloud (Activator)

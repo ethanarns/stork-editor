@@ -565,7 +565,7 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                 // Do they match?
                 auto cursorUuidMaybe = curItemUnderCursor->data(PixelDelegateData::OBJECT_UUID);
                 if (cursorUuidMaybe.isNull()) {
-                    YUtils::printDebug("Mismatch in selected item and cursor item, deselecting",DebugType::VERBOSE);
+                    //YUtils::printDebug("Mismatch in selected item and cursor item, deselecting",DebugType::VERBOSE);
                     this->selectedObjects.clear();
                     this->clearVisualSpriteSelection();
                     return;
