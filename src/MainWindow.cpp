@@ -328,6 +328,7 @@ MainWindow::MainWindow() {
     this->layerSelectDropdown->addItem("Colliders");
     this->layerSelectDropdown->addItem("Portals");
     this->layerSelectDropdown->setCurrentText("Sprites");
+    this->layerSelectDropdown->setDisabled(true);
     toolbar->addWidget(this->layerSelectDropdown);
     connect(this->layerSelectDropdown,&QComboBox::currentTextChanged,this,&MainWindow::toolbarClick_layerSelect);
 
@@ -652,6 +653,8 @@ void MainWindow::LoadRom() {
         // Objects //
         this->grid->updateSprites();
         this->grid->setLayerDraw(4,true); // 4 here means objects
+        this->layerSelectDropdown->setDisabled(false);
+        this->toolbarClick_layerSelect("Sprites");
 
         // Triggers //
         this->grid->shouldShowTriggers = true;
@@ -889,6 +892,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     this->grid->updateTriggerBoxes();
     // If it was hidden last time, hide it again
     this->grid->updatePortals(this->grid->shouldDrawEntrances,this->grid->shouldDrawExits);
+    this->brushWindow->updateCharsetLabel();
 }
 
 void MainWindow::menuClick_viewBg1(bool checked) {

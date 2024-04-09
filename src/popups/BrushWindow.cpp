@@ -484,7 +484,7 @@ void BrushWindow::exportBrush() {
 
 void BrushWindow::updateCharsetLabel() {
     if (globalSettings.currentEditingBackground == 0) {
-        YUtils::printDebug("Can only update charset in BG mode",DebugType::WARNING);
+        this->curCharset->setText(QString::fromStdString("No BG selected"));
         return;
     }
     auto curScen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
