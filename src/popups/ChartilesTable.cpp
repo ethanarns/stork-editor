@@ -1,12 +1,12 @@
 #include "ChartilesTable.h"
 #include "../yidsrom.h"
-#include "../Chartile.h"
 #include "../PixelDelegate.h"
 #include "../PixelDelegateEnums.h"
 #include "../utils.h"
 #include "../GlobalSettings.h"
 
 #include <iostream>
+#include <map>
 
 #include <QtCore>
 #include <QTableWidget>
@@ -42,13 +42,25 @@ void ChartilesTable::refreshLoadedMapTilesMap(int whichBg) {
     this->wipeTiles();
     std::map<uint32_t,Chartile> tilesMap;
     if (whichBg == 1) {
-        auto scen = this->yidsRom->mapData->getScenByBg(1);
+        auto scen = this->yidsRom->mapData->getScenByBg(1,true);
+        if (scen == nullptr) {
+            YUtils::printDebug("refreshLoadedMapTilesMap: couldn't get BG 1",DebugType::WARNING);
+            return;
+        }
         tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     } else if (whichBg == 2) {
-        auto scen = this->yidsRom->mapData->getScenByBg(2);
+        auto scen = this->yidsRom->mapData->getScenByBg(2,true);
+        if (scen == nullptr) {
+            YUtils::printDebug("refreshLoadedMapTilesMap: couldn't get BG 2",DebugType::WARNING);
+            return;
+        }
         tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     } else {
-        auto scen = this->yidsRom->mapData->getScenByBg(3);
+        auto scen = this->yidsRom->mapData->getScenByBg(3,true);
+        if (scen == nullptr) {
+            YUtils::printDebug("refreshLoadedMapTilesMap: couldn't get BG 3",DebugType::WARNING);
+            return;
+        }
         tilesMap = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     }
     uint32_t mapSize = tilesMap.size();
