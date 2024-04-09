@@ -326,6 +326,19 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                     meta.frame = 6;
                     break;
                 }
+                case 0x7: {
+                    meta.frame = 7;
+                    meta.yPixelOffset = -8;
+                    break;
+                }
+                case 0x8: {
+                    meta.frame = 8;
+                    break;
+                }
+                case 0x9: {
+                    meta.frame = 9;
+                    break;
+                }
                 default: {
                     std::stringstream ssUnhandledRedSign;
                     ssUnhandledRedSign << "Unhandled red arrow sign type: " << std::hex << firstSettingsByte;
