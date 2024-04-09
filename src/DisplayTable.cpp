@@ -1053,13 +1053,6 @@ void DisplayTable::initCellCollision() {
                 this->setCellCollision(y+1,x+1,CollisionDraw::LAVA_KILL_DRAW, curCol);
                 break;
             }
-            case CollisionType::NONE: {
-                this->setCellCollision(y,  x,  CollisionDraw::CLEAR, curCol);
-                this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
-                this->setCellCollision(y,  x+1,CollisionDraw::CLEAR, curCol);
-                this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
-                break;
-            }
             case CollisionType::UPSIDE_DOWN_SHARP_UP_1: {
                 this->setCellCollision(y,  x,  CollisionDraw::UPSIDE_DOWN_SHARP_UP_TALL_DRAW, curCol);
                 this->setCellCollision(y,  x+1,CollisionDraw::CLEAR, curCol);
@@ -1072,6 +1065,29 @@ void DisplayTable::initCellCollision() {
                 this->setCellCollision(y,  x+1,CollisionDraw::UPSIDE_DOWN_SHARP_UP_TALL_DRAW, curCol);
                 this->setCellCollision(y+1,x,  CollisionDraw::SQUARE_DRAW, curCol);
                 this->setCellCollision(y+1,x+1,CollisionDraw::UPSIDE_DOWN_SHARP_UP_SHORT_DRAW, curCol);
+                break;
+            }
+
+            case CollisionType::UPSIDE_DOWN_SHARP_DOWN_1: {
+                this->setCellCollision(y,  x,  CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::UPSIDE_DOWN_SHARP_DOWN_TALL_DRAW, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::UPSIDE_DOWN_SHARP_DOWN_SHORT_DRAW, curCol);
+                break;
+            }
+            case CollisionType::UPSIDE_DOWN_SHARP_DOWN_2: {
+                this->setCellCollision(y,  x,  CollisionDraw::UPSIDE_DOWN_SHARP_DOWN_TALL_DRAW, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::SQUARE_DRAW, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::UPSIDE_DOWN_SHARP_DOWN_SHORT_DRAW, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::SQUARE_DRAW, curCol);
+                break;
+            }
+
+            case CollisionType::NONE: {
+                this->setCellCollision(y,  x,  CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
                 break;
             }
             default: {

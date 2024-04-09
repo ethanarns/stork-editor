@@ -513,6 +513,24 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                 painter->fillPath(path,collisionColor);
                 break;
             }
+            case CollisionDraw::UPSIDE_DOWN_SHARP_DOWN_SHORT_DRAW: {
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE+X_WIDTH/2,(double)Y_BASE) << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE));
+                poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColor);
+                break;
+            }
+            case CollisionDraw::UPSIDE_DOWN_SHARP_DOWN_TALL_DRAW: {
+                QPainterPath path;
+                QPolygonF poly;
+                poly << QPointF((double)X_BASE,(double)Y_BASE) << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE));
+                poly << QPointF((double)(X_BASE+X_WIDTH),(double)(Y_BASE+Y_HEIGHT)) << QPointF((double)(X_BASE+X_WIDTH/2),(double)(Y_BASE+Y_HEIGHT));
+                path.addPolygon(poly);
+                painter->fillPath(path,collisionColor);
+                break;
+            }
             // case CollisionDraw::STAIRS_UP_RIGHT_DRAW: {
             //     QPainterPath path;
             //     QPolygonF poly;
