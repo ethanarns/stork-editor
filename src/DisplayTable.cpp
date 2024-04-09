@@ -1464,6 +1464,25 @@ void DisplayTable::updateSprites() {
                 objectGraphicsMeta.forceFlipH,
                 objectGraphicsMeta.forceFlipV
             );
+            if (objectGraphicsMeta.extras.size() > 0) {
+                for (auto eit = objectGraphicsMeta.extras.begin(); eit != objectGraphicsMeta.extras.end(); eit++) {
+                    this->placeObjectGraphic(
+                        (uint32_t)x,(uint32_t)y, // Has its own offsets from the base
+                        eit->indexOfTiles,
+                        eit->frame,
+                        eit->indexOfPalette,
+                        eit->whichPaletteFile,
+                        eit->whichObjectFile,
+                        eit->xPixelOffset,
+                        eit->yPixelOffset,
+                        it->uuid, // Absolutely must be kept the same
+                        eit->isLz10,
+                        eit->forceFlipH,
+                        eit->forceFlipV,
+                        true
+                    );
+                }
+            }
         }
     }
     // // Timing
@@ -1512,8 +1531,10 @@ void DisplayTable::placeObjectGraphic(
     std::string objectFile,
     int manualXoffsetFine, int manualYoffsetFine,
     uint32_t uuid, bool isLz10,
-    bool forceFlipH, bool forceFlipV)
+    bool forceFlipH, bool forceFlipV,
+    bool isExtra)
 {
+    Q_UNUSED(isExtra); // Perhaps use for debug someday
     // std::cout << "placeObjectGraphic" << std::endl;
     // Will skip if already loaded
     this->yidsRom->loadSpriteRenderFile(objectFile);

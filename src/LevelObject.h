@@ -15,6 +15,20 @@
 #include <QByteArray>
 
 struct ObjectGraphicMetadata {
+    ObjectGraphicMetadata() {
+        this->isLz10 = false;
+        this->is256 = false;
+        this->frame = 0;
+        this->xPixelOffset = 0;
+        this->yPixelOffset = 0;
+        this->forceFlipH = false;
+        this->forceFlipV = false;
+        this->extras = std::vector<ObjectGraphicMetadata>();
+        this->whichObjectFile = "objset.arcz";
+        this->whichPaletteFile = "objset.arcz";
+        this->indexOfTiles = 0; // Use coin
+        this->indexOfPalette = 0x99; // Look broken
+    };
     /**
      * @brief The offset/index of the OBJB data.
      * This is hard-coded in the code sadly, no tables

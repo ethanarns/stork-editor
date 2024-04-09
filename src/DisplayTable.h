@@ -53,7 +53,8 @@ public:
         int manualYoffset,
         uint32_t uuid,
         bool isLz10,
-        bool forceFlipH, bool forceFlipV
+        bool forceFlipH, bool forceFlipV,
+        bool isExtra = false
     );
     void setCellCollision(int row, int column, CollisionDraw colType, uint8_t _colDebug);
     void updateBg();

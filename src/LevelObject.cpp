@@ -10,17 +10,8 @@
 ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
     ObjectGraphicMetadata meta;
     auto objectId = lo.objectId;
-    meta.frame = 0;
     meta.whichPaletteFile = "objset.arcz";
     meta.whichObjectFile = "objset.arcz";
-    meta.xPixelOffset = 0;
-    meta.yPixelOffset = 0;
-    meta.indexOfPalette = 0;
-    meta.indexOfTiles = 0;
-    meta.isLz10 = false;
-    meta.is256 = false;
-    meta.forceFlipH = false;
-    meta.forceFlipV = false;
     switch(objectId) {
         case 0x0: { // Basic yellow coin
             meta.indexOfTiles = 0x0;
@@ -95,8 +86,9 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x23: { // Green pipe
             constexpr uint32_t VERTICAL_PIPE_TILES = 0x13;
             constexpr uint32_t HORIZONTAL_PIPE_TILES = 0x12;
+            constexpr uint32_t PIPE_PALETTE = 0x89;
             meta.frame = 0;
-            meta.indexOfPalette = 0x89;
+            meta.indexOfPalette = PIPE_PALETTE;
             auto direction = YUtils::getUint16FromVec(lo.settings,0);
             auto length = YUtils::getUint16FromVec(lo.settings,2);
             if (length == 0) {
@@ -106,6 +98,23 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             if (direction == 0) {
                 // Going down
                 meta.indexOfTiles = VERTICAL_PIPE_TILES;
+                for (uint i = 0; i < length; i++) {
+                    ObjectGraphicMetadata extra;
+                    extra.indexOfTiles = VERTICAL_PIPE_TILES;
+                    extra.indexOfPalette = PIPE_PALETTE;
+                    extra.frame = 1;
+                    extra.xPixelOffset = 0;
+                    extra.yPixelOffset = (i * 16) + 16;
+                    std::cout << "Making extra with yPixelOffset 0x" << std::hex << extra.yPixelOffset << std::endl;
+                    meta.extras.push_back(extra);
+                }
+                ObjectGraphicMetadata finalExtra;
+                finalExtra.indexOfTiles = VERTICAL_PIPE_TILES;
+                finalExtra.indexOfPalette = PIPE_PALETTE;
+                finalExtra.frame = 2;
+                finalExtra.xPixelOffset = 0;
+                finalExtra.yPixelOffset = (length * 16) + 16;
+                meta.extras.push_back(finalExtra);
             } else if (direction == 1) {
                 // Going up
                 meta.indexOfTiles = VERTICAL_PIPE_TILES;
