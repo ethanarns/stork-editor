@@ -610,7 +610,7 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                     this->selectItemByUuid(cursorItemUuid);
                     return;
                 } else {
-                    YUtils::printDebug("Area clicked does not have an item UUID, deselecting all");
+                    //YUtils::printDebug("Area clicked does not have an item UUID, deselecting all");
                     this->selectedObjects.clear();
                     this->clearVisualSpriteSelection();
                     return;

@@ -202,6 +202,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                 meta.extras.push_back(extra);
             } else if (direction == 2) {
                 // Down only
+                meta.frame = 0x17;
+                extra.frame = 0x17;
+                extra.xPixelOffset = 16*2;
+                extra.forceFlipH = true;
+                meta.extras.push_back(extra);
             } else {
                 YUtils::printDebug("Unusual gate direction",DebugType::ERROR);
                 YUtils::popupAlert("Unusual gate direction");
