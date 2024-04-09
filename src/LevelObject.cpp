@@ -105,7 +105,6 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                     extra.frame = 1;
                     extra.xPixelOffset = 0;
                     extra.yPixelOffset = (i * 16) + 16;
-                    std::cout << "Making extra with yPixelOffset 0x" << std::hex << extra.yPixelOffset << std::endl;
                     meta.extras.push_back(extra);
                 }
                 ObjectGraphicMetadata finalExtra;
@@ -118,8 +117,24 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             } else if (direction == 1) {
                 // Going up
                 meta.indexOfTiles = VERTICAL_PIPE_TILES;
-                meta.forceFlipV = true;
+                meta.frame = 3;
                 meta.yPixelOffset = -16;
+                for (uint i = 0; i < length; i++) {
+                    ObjectGraphicMetadata extra;
+                    extra.indexOfTiles = VERTICAL_PIPE_TILES;
+                    extra.indexOfPalette = PIPE_PALETTE;
+                    extra.frame = 4;
+                    extra.xPixelOffset = 0;
+                    extra.yPixelOffset = -16 - (i * 16) - 16; // Second -16 is accounting for base yPixelOffset
+                    meta.extras.push_back(extra);
+                }
+                ObjectGraphicMetadata finalExtra;
+                finalExtra.indexOfTiles = VERTICAL_PIPE_TILES;
+                finalExtra.indexOfPalette = PIPE_PALETTE;
+                finalExtra.frame = 5;
+                finalExtra.xPixelOffset = 0;
+                finalExtra.yPixelOffset = -16 - (length * 16) - 16;
+                meta.extras.push_back(finalExtra);
             } else if (direction == 2) {
                 // Going right
                 meta.indexOfTiles = HORIZONTAL_PIPE_TILES;
