@@ -34,7 +34,15 @@ def handleCrsb(filename: str):
             exit(1)
         cscnLen = readUint32(crsb,index+4)
         indexOfCString = index + 12
-        print(ind(1) + crsb[indexOfCString:indexOfCString+10].decode("ascii"))
+        buildFileName = ""
+        while True:
+            curChar = crsb[indexOfCString]
+            if curChar == 0x00:
+                break
+            curLetter = crsb[indexOfCString:indexOfCString+1].decode("ascii")
+            buildFileName = buildFileName + curLetter
+            indexOfCString += 1
+        print(ind(0) + buildFileName)
         index += cscnLen + 8
 
 
