@@ -582,6 +582,16 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
             result.preview = CollisionDraw::LAVA_KILL_DRAW;
             break;
         }
+        case CollisionType::UPSIDE_DOWN_SHARP_UP_1: {
+            result.prettyName = "Upside-Down Up Sharp 1";
+            result.preview = CollisionDraw::UPSIDE_DOWN_SHARP_UP_SHORT_DRAW;
+            break;
+        }
+        case CollisionType::UPSIDE_DOWN_SHARP_UP_2: {
+            result.prettyName = "Upside-Down Up Sharp 2";
+            result.preview = CollisionDraw::UPSIDE_DOWN_SHARP_UP_TALL_DRAW;
+            break;
+        }
         // Note: missing stairs up, but coldraw for it is already there
     }
     return result;
