@@ -95,12 +95,36 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0x23: { // Green pipe
             constexpr uint32_t VERTICAL_PIPE_TILES = 0x13;
             constexpr uint32_t HORIZONTAL_PIPE_TILES = 0x12;
-            Q_UNUSED(HORIZONTAL_PIPE_TILES);
-            //uint32_t pipeHeight = (uint32_t)lo.settings.at(2)*2; // Doesn't work because data repeats
-            meta.indexOfTiles = VERTICAL_PIPE_TILES;
-            meta.indexOfPalette = 0x89;
             meta.frame = 0;
-            // TODO: Special rendering to repeat downwards
+            meta.indexOfPalette = 0x89;
+            auto direction = YUtils::getUint16FromVec(lo.settings,0);
+            auto length = YUtils::getUint16FromVec(lo.settings,2);
+            if (length == 0) {
+                YUtils::printDebug("Pipe length read is 0",DebugType::ERROR);
+                break;
+            }
+            if (direction == 0) {
+                // Going down
+                meta.indexOfTiles = VERTICAL_PIPE_TILES;
+            } else if (direction == 1) {
+                // Going up
+                meta.indexOfTiles = VERTICAL_PIPE_TILES;
+                meta.forceFlipV = true;
+                meta.yPixelOffset = -16;
+            } else if (direction == 2) {
+                // Going right
+                meta.indexOfTiles = HORIZONTAL_PIPE_TILES;
+            } else if (direction == 3) {
+                // Going left
+                meta.indexOfTiles = HORIZONTAL_PIPE_TILES;
+                meta.forceFlipH = true;
+                meta.xPixelOffset = -16;
+            } else {
+                std::stringstream ssUnknownDir;
+                ssUnknownDir << "Unknown pipe direction: 0x" << std::hex << direction;
+                YUtils::printDebug(ssUnknownDir.str(),DebugType::ERROR);
+                break;
+            }
             break;
         }
         case 0x25: { // Red Switch 1
