@@ -602,7 +602,10 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
             result.preview = CollisionDraw::UPSIDE_DOWN_SHARP_DOWN_SHORT_DRAW;
             break;
         }
-        // Note: missing stairs up, but coldraw for it is already there
+        case CollisionType::STAIRS_UP_RIGHT: {
+            result.prettyName = "Stairs Up";
+            result.preview = CollisionDraw::STAIRS_UP_RIGHT_DRAW;
+        }
     }
     return result;
 }

@@ -104,6 +104,7 @@ enum CollisionType {
     SOFT_ROCK = 0x1b,
     CLIMBABLE_VINE_CEILING = 0x1c,
     CLIMBABLE_VINE_TALL = 0x1d,
+    STAIRS_UP_RIGHT = 0x1f, // 1-4 #1 top right example
     DOWN_RIGHT_30_2 = 0x43,
     DOWN_RIGHT_30_1 = 0x44,
     DOWN_RIGHT_STEEP_HALFSTART = 0x45,
