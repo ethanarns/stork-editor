@@ -235,6 +235,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                 // Flightless
                 meta.frame = 0x19;
             }
+            // TODO: Carrying
             break;
         }
         case 0x36: { // Yellow Shy Guy
