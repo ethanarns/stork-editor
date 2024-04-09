@@ -221,6 +221,22 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.frame = 2; // Just to differ from 0x13
             break;
         }
+        case 0x35: { // Goonie Bird
+            auto type = YUtils::getUint16FromVec(lo.settings,0);
+            auto secondSetting = YUtils::getUint16FromVec(lo.settings,2);
+            if (type < 2) { // 0204d1fc
+                meta.indexOfTiles = 0x1d; // Living
+                meta.indexOfPalette = 0xc9;
+            } else {
+                meta.indexOfTiles = 0x69; // Undead
+                meta.indexOfPalette = 0xf7;
+            }
+            if (type == 1) {
+                // Flightless
+                meta.frame = 0x19;
+            }
+            break;
+        }
         case 0x36: { // Yellow Shy Guy
             meta.indexOfTiles = 0x21; // 0202de24
             meta.frame = 0x1;
