@@ -97,6 +97,7 @@ enum CollisionType {
     UP_RIGHT_STEEP_2 = 0x6,
     UP_RIGHT_45 = 0x7,
     KILL_SPIKES = 0x8,
+    LAVA_KILL = 0x9,
     ICY_SQUARE = 0xb, // Discovered on 4-6, if you're looking to test
     WATER_STILL = 0x12, // Discovered on 3-2 #1, if you're looking to test
     STATIC_COIN = 0x1a,
@@ -163,7 +164,8 @@ enum CollisionDraw {
 
     STAIRS_DOWN_RIGHT_DRAW,
     STAIRS_UP_RIGHT_DRAW,
-    WATER_STILL_DRAW
+    WATER_STILL_DRAW,
+    LAVA_KILL_DRAW
 };
 
 struct CollisionMetadata {

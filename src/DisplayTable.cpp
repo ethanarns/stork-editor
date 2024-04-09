@@ -1046,6 +1046,13 @@ void DisplayTable::initCellCollision() {
                 this->setCellCollision(y+1,x+1,CollisionDraw::WATER_STILL_DRAW, curCol);
                 break;
             }
+            case CollisionType::LAVA_KILL: {
+                this->setCellCollision(y,  x,  CollisionDraw::LAVA_KILL_DRAW, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::LAVA_KILL_DRAW, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::LAVA_KILL_DRAW, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::LAVA_KILL_DRAW, curCol);
+                break;
+            }
             case CollisionType::NONE: {
                 this->setCellCollision(y,  x,  CollisionDraw::CLEAR, curCol);
                 this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);

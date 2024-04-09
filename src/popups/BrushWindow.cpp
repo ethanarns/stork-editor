@@ -489,7 +489,7 @@ void BrushWindow::updateCharsetLabel() {
     }
     auto curScen = this->yidsRom->mapData->getScenByBg(globalSettings.currentEditingBackground);
     if (curScen == nullptr) {
-        YUtils::printDebug("curScen was null when attempting to update charset label",DebugType::ERROR);
+        //YUtils::printDebug("curScen was null when attempting to update charset label",DebugType::ERROR);
         return;
     }
     auto imbz = curScen->getInfo()->imbzFilename;
