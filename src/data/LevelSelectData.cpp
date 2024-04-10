@@ -106,7 +106,13 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
             exitData->_whichMapToName = mapName;
             auto entrancesOfThatMap = this->levels.at(exitData->whichMapTo)->entrances;
             if (exitData->whichEntranceTo >= entrancesOfThatMap.size()) {
-                YUtils::printDebug("Failed to find entrance, skipping");
+                std::stringstream ssEnterErr;
+                ssEnterErr << "Failed to find entrance of map '" << mapName << "' at index 0x";
+                ssEnterErr << std::hex << (uint16_t)exitData->whichEntranceTo << " when processing level '";
+                ssEnterErr << curLevel->mpdzFileNoExtension << "', please set the correct entrance in the ";
+                ssEnterErr << "level data settings of " << curLevel->mpdzFileNoExtension;
+                YUtils::printDebug(ssEnterErr.str(),DebugType::ERROR);
+                YUtils::popupAlert(ssEnterErr.str());
                 continue;
             }
             auto entranceOfThatMap = entrancesOfThatMap.at(exitData->whichEntranceTo);

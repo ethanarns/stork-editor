@@ -64,7 +64,7 @@ void MapSelect::updateLeftList() {
         YUtils::popupAlert("Could not retrieve CRSBs, directory invalid");
         return;
     }
-    YUtils::printDebug("Refreshing leftList",DebugType::VERBOSE);
+    YUtils::printDebug("Refreshing CRSB list",DebugType::VERBOSE);
     this->leftList->clearSelection();
     for (int i = 0; i < this->leftList->count(); i++) {
         delete this->leftList->item(i);
@@ -158,6 +158,13 @@ void MapSelect::addMapClicked() {
         newMpdz->mpdzFileNoExtension = fileName.split("/").last().replace(".mpdz","").toStdString();
         #endif
         newMpdz->musicId = 0;
+        auto firstMapEntrance = new MapEntrance();
+        firstMapEntrance->enterMapAnimation = LevelSelectEnums::MapEntranceAnimation::SPAWN_STATIC_RIGHT;
+        firstMapEntrance->entranceX = 0;
+        firstMapEntrance->entranceY = 0;
+        firstMapEntrance->whichDsScreen = LevelSelectEnums::StartingDsScreen::START_BOTTOM;
+        firstMapEntrance->_uuid = this->crsbTemp->_portalUuid++;
+        newMpdz->entrances.push_back(firstMapEntrance);
         if (this->crsbTemp == nullptr) {
             YUtils::printDebug("CRSBTEMP null",DebugType::ERROR);
             YUtils::popupAlert("CrsbTemp Error");
@@ -171,7 +178,9 @@ void MapSelect::addMapClicked() {
         YUtils::writeByteVectorToFile(compiledCrsb,crsbOutFile.str());
         YUtils::printDebug("Added new MPDZ to CRSB file");
         this->rightList->addItem(QString::fromStdString(newMpdz->mpdzFileNoExtension));
-        YUtils::popupAlert("Success! Ensure your entrances and exits are in place");
+        YUtils::popupAlert("Success! Ensure your entrances and exits are connected");
+        this->rightList->setCurrentRow(this->rightList->count()-1);
+        this->confirmClicked();
     }
 }
 
