@@ -50,6 +50,7 @@ MapSelect::MapSelect(QWidget *parent, YidsRom *rom) {
     connect(addButton,&QPushButton::pressed,this,&MapSelect::addMapClicked);
 
     auto deleteButton = new QPushButton("&Delete",this);
+    deleteButton->setDisabled(true); // TODO: Add delete
     buttonContainer->addWidget(deleteButton);
     connect(deleteButton,&QPushButton::pressed,this,&MapSelect::deleteMapClicked);
 }
@@ -130,7 +131,7 @@ void MapSelect::currentItemChanged(QListWidgetItem *current, QListWidgetItem *pr
 }
 
 void MapSelect::addMapClicked() {
-    YUtils::printDebug("Add map clicked");
+    //YUtils::printDebug("Add map clicked");
     auto fileName = QFileDialog::getOpenFileName(this,tr("Select map file"),".",tr("MPDZ files (*.mpdz)"));
     if (fileName.isEmpty()) {
         YUtils::printDebug("Canceled file dialog",DebugType::VERBOSE);
@@ -163,13 +164,14 @@ void MapSelect::addMapClicked() {
             delete newMpdz;
             return;
         }
-        std::cout << this->crsbTemp->filename << std::endl;
         this->crsbTemp->levels.push_back(newMpdz);
         auto compiledCrsb = this->crsbTemp->compile();
         std::stringstream crsbOutFile;
         crsbOutFile << globalSettings.extractFolderName << "/data/file/" << this->crsbTemp->filename;
         YUtils::writeByteVectorToFile(compiledCrsb,crsbOutFile.str());
         YUtils::printDebug("Added new MPDZ to CRSB file");
+        this->rightList->addItem(QString::fromStdString(newMpdz->mpdzFileNoExtension));
+        YUtils::popupAlert("Success! Ensure your entrances and exits are in place");
     }
 }
 
