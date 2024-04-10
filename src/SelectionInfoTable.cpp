@@ -123,7 +123,7 @@ void SelectionInfoTable::cellChanged(int row, int column) {
                 YUtils::printDebug("Base 16 value parse failed");
                 return;
             }
-            std::cout << "Changing Y POS to " << std::hex << value << std::endl;
+            //std::cout << "Changing Y POS to " << std::hex << value << std::endl;
             uint16_t newXPos = this->spritePointer->xPosition;
             uint16_t newYpos = value;
             auto movy = new MoveSpriteCommand(*this->spritePointer,newXPos,newYpos,this->grid,this->yidsRom);
@@ -136,7 +136,7 @@ void SelectionInfoTable::cellChanged(int row, int column) {
                 YUtils::printDebug("Base 16 value parse failed");
                 return;
             }
-            std::cout << "Changing X POS to " << std::hex << value << std::endl;
+            //std::cout << "Changing X POS to " << std::hex << value << std::endl;
             uint16_t newXpos = value;
             uint16_t newYpos = this->spritePointer->yPosition;
             auto movX = new MoveSpriteCommand(*this->spritePointer,newXpos,newYpos,this->grid,this->yidsRom);
