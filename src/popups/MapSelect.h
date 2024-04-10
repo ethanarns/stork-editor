@@ -12,7 +12,8 @@ public:
     YidsRom* yidsRom;
     void updateLeftList();
     void currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-    void cancelClicked();
+    void addMapClicked();
+    void deleteMapClicked();
     void confirmClicked();
 private:
     QListWidget* leftList;
