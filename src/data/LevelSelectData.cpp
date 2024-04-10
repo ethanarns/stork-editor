@@ -101,11 +101,12 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
     for (auto lit = this->levels.begin(); lit != this->levels.end(); lit++) {
         auto curLevel = (*lit);
         for (auto crexit = curLevel->exits.begin(); crexit != curLevel->exits.end(); crexit++) {
-            auto crit = (*crexit);
-            auto mapName = this->levels.at(crit->whichMapTo)->mpdzFileNoExtension;
-            crit->_whichMapToName = mapName;
-            auto entranceOfThatMap = this->levels.at(crit->whichMapTo)->entrances.at(crit->whichEntranceTo);
-            crit->_whichEntranceToUuid = entranceOfThatMap->_uuid;
+            auto exitData = (*crexit);
+            auto mapName = this->levels.at(exitData->whichMapTo)->mpdzFileNoExtension;
+            exitData->_whichMapToName = mapName;
+            auto entrancesOfThatMap = this->levels.at(exitData->whichMapTo)->entrances;
+            auto entranceOfThatMap = entrancesOfThatMap.at(exitData->whichEntranceTo);
+            exitData->_whichEntranceToUuid = entranceOfThatMap->_uuid;
         }
     }
 }
