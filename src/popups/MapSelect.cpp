@@ -149,11 +149,27 @@ void MapSelect::addMapClicked() {
             YUtils::popupAlert("Not an MPDZ file");
             return;
         }
-        YUtils::printDebug("MPDZ file confirmed, adding");
-        LevelMetadata newMpdz;
-        newMpdz.mpdzFileNoExtension = fileName.split("/").last().replace(".mpdz","").toStdString();
-        newMpdz.musicId = 0;
-        std::cout << newMpdz.mpdzFileNoExtension << std::endl;
+        YUtils::printDebug("MPDZ file confirmed");
+        auto newMpdz = new LevelMetadata();
+        #ifdef _WIN32
+        newMpdz->mpdzFileNoExtension = fileName.split("\\").last().replace(".mpdz","").toStdString();
+        #else
+        newMpdz->mpdzFileNoExtension = fileName.split("/").last().replace(".mpdz","").toStdString();
+        #endif
+        newMpdz->musicId = 0;
+        if (this->crsbTemp == nullptr) {
+            YUtils::printDebug("CRSBTEMP null",DebugType::ERROR);
+            YUtils::popupAlert("CrsbTemp Error");
+            delete newMpdz;
+            return;
+        }
+        std::cout << this->crsbTemp->filename << std::endl;
+        this->crsbTemp->levels.push_back(newMpdz);
+        auto compiledCrsb = this->crsbTemp->compile();
+        std::stringstream crsbOutFile;
+        crsbOutFile << globalSettings.extractFolderName << "/data/file/" << this->crsbTemp->filename;
+        YUtils::writeByteVectorToFile(compiledCrsb,crsbOutFile.str());
+        YUtils::printDebug("Added new MPDZ to CRSB file");
     }
 }
 
