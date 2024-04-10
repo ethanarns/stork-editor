@@ -105,6 +105,10 @@ LevelSelectData::LevelSelectData(std::vector<uint8_t> crsbBytes) {
             auto mapName = this->levels.at(exitData->whichMapTo)->mpdzFileNoExtension;
             exitData->_whichMapToName = mapName;
             auto entrancesOfThatMap = this->levels.at(exitData->whichMapTo)->entrances;
+            if (exitData->whichEntranceTo >= entrancesOfThatMap.size()) {
+                YUtils::printDebug("Failed to find entrance, skipping");
+                continue;
+            }
             auto entranceOfThatMap = entrancesOfThatMap.at(exitData->whichEntranceTo);
             exitData->_whichEntranceToUuid = entranceOfThatMap->_uuid;
         }
