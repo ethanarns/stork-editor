@@ -1051,7 +1051,7 @@ void MainWindow::updateUndoMenu() {
 void MainWindow::objectListClick() {
     auto selectedItems = this->guiObjectList->selectedItems();
     if (selectedItems.size() == 0) {
-        YUtils::printDebug("No items selected",DebugType::ERROR);
+        YUtils::printDebug("No items selected when clicking object list",DebugType::ERROR);
         return;
     }
     if (selectedItems.size() > 1) {

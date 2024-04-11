@@ -39,6 +39,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.forceFlipV = true;
             break;
         }
+        case 0x12: { // Star Item
+            meta.indexOfTiles = 8;
+            meta.indexOfPalette = 0x81;
+            break;
+        }
         case 0x13: { // Winged Cloud (items)
             meta.indexOfTiles = 9;
             meta.indexOfPalette = 0xa9;
