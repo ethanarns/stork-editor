@@ -506,6 +506,14 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0xEA;
             break;
         }
+        case 0xd1: { // Ice Block
+            meta.whichObjectFile = "objiceblock.arcz";
+            meta.indexOfTiles = 0x0;
+            meta.whichPaletteFile = "objiceblock.arcz";
+            meta.indexOfPalette = 0x2;
+            // More settings change it
+            break;
+        }
         case 0xd2: { // Yellow egg block
             meta.indexOfTiles = 0x1;
             meta.whichPaletteFile = "objeffect.arcz";

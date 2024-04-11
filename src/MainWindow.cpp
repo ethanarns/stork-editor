@@ -423,7 +423,7 @@ MainWindow::MainWindow() {
     this->spriteFileSelect->addItem("objbutu.arcz");
     this->spriteFileSelect->addItem("objkantera.arcz");
     this->spriteFileSelect->addItem("objset.arcz");
-    this->spriteFileSelect->addItem("objsbblock.arc");
+    this->spriteFileSelect->addItem("objiceblock.arcz");
     this->spriteFileSelect->addItem("objyamori.arcz");
     this->spriteFileSelect->addItem("objtori_yuuhi.arcz");
     this->spriteFileSelect->addItem("objplayer.arcz");
