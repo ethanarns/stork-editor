@@ -1103,6 +1103,20 @@ void DisplayTable::initCellCollision() {
                 this->setCellCollision(y+1,x+1,CollisionDraw::CLEAR, curCol);
                 break;
             }
+            case CollisionType::PASSABLE_DOWN_RIGHT_30_1: { // 0x55
+                this->setCellCollision(y,  x,  CollisionDraw::DOWN_RIGHT_30_SHORT, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::ZIG_ZAG, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::DOWN_RIGHT_30_TALL, curCol);
+                break;
+            }
+            case CollisionType::PASSABLE_DOWN_RIGHT_30_2: { // 0x54
+                this->setCellCollision(y,  x,  CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y,  x+1,CollisionDraw::CLEAR, curCol);
+                this->setCellCollision(y+1,x,  CollisionDraw::ZIG_ZAG, curCol);
+                this->setCellCollision(y+1,x+1,CollisionDraw::DOWN_RIGHT_30_SHORT, curCol);
+                break;
+            }
             case CollisionType::NONE: {
                 this->setCellCollision(y,  x,  CollisionDraw::CLEAR, curCol);
                 this->setCellCollision(y+1,x,  CollisionDraw::CLEAR, curCol);
