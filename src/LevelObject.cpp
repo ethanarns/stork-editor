@@ -355,10 +355,40 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.yPixelOffset = 16;
             break;
         }
-        case 0x92: { // Stairs
-            // TODO: special print me
+        // case 0x92: { // Stairs
+        //     // TODO: special print me
+        //     meta.indexOfTiles = 0x54;
+        //     meta.indexOfPalette = 0xe2;
+        //     break;
+        // }
+        case 0x93: { // Stairs Outline
             meta.indexOfTiles = 0x54;
             meta.indexOfPalette = 0xe2;
+            meta.frame = 1;
+            // Left or right
+            if (lo.settings.at(0) == 0) {
+                meta.xPixelOffset = 8;
+                for (int i = 0; i < 3; i++) {
+                    ObjectGraphicMetadata extra;
+                    extra.indexOfTiles = 0x54;
+                    extra.indexOfPalette = 0xe2;
+                    extra.xPixelOffset = i*-8;
+                    extra.yPixelOffset = -8 - (i*8); // Negative is upwards
+                    extra.frame = 1;
+                    meta.extras.push_back(extra);
+                }
+            } else {
+                meta.xPixelOffset = -8;
+                for (int i = 0; i < 3; i++) {
+                    ObjectGraphicMetadata extra;
+                    extra.indexOfTiles = 0x54;
+                    extra.indexOfPalette = 0xe2;
+                    extra.xPixelOffset = i*8;
+                    extra.yPixelOffset = -8 - (i*8); // Negative is upwards
+                    extra.frame = 1;
+                    meta.extras.push_back(extra);
+                }
+            }
             break;
         }
         case 0x94: { // Chomp-breakable blocks
