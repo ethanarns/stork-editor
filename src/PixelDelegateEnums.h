@@ -100,6 +100,8 @@ enum CollisionType {
     LAVA_KILL = 0x9,
     ICY_SQUARE = 0xb, // Discovered on 4-6, if you're looking to test
     WATER_STILL = 0x12, // Discovered on 3-2 #1, if you're looking to test
+    PASSABLE_UP_RIGHT_30_1 = 0x14,
+    PASSABLE_UP_RIGHT_30_2 = 0x15,
     PASSABLE_UP_RIGHT_45 = 0x18,
     STATIC_COIN = 0x1a,
     SOFT_ROCK = 0x1b,

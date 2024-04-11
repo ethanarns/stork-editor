@@ -617,6 +617,26 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
             result.preview = CollisionDraw::ZIG_ZAG;
             break;
         }
+        case CollisionType::PASSABLE_DOWN_RIGHT_30_1: {
+            result.prettyName = "Passable Down Right 30 1";
+            result.preview = CollisionDraw::DOWN_RIGHT_30_TALL;
+            break;
+        }
+        case CollisionType::PASSABLE_DOWN_RIGHT_30_2: {
+            result.prettyName = "Passable Down Right 30 2";
+            result.preview = CollisionDraw::DOWN_RIGHT_30_SHORT;
+            break;
+        }
+        case CollisionType::PASSABLE_UP_RIGHT_30_1: {
+            result.prettyName = "Passable Up Right 30 1";
+            result.preview = CollisionDraw::UP_RIGHT_30_BL;
+            break;
+        }
+        case CollisionType::PASSABLE_UP_RIGHT_30_2: {
+            result.prettyName = "Passable Up Right 30 2";
+            result.preview = CollisionDraw::UP_RIGHT_30_BR;
+            break;
+        }
     }
     return result;
 }
