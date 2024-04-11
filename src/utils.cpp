@@ -605,6 +605,17 @@ CollisionMetadata YUtils::getCollisionMetadata(CollisionType colType) {
         case CollisionType::STAIRS_UP_RIGHT: {
             result.prettyName = "Stairs Up";
             result.preview = CollisionDraw::STAIRS_UP_RIGHT_DRAW;
+            break;
+        }
+        case CollisionType::PASSABLE_DOWN_RIGHT_45: {
+            result.prettyName = "Passable Down Right 45";
+            result.preview = CollisionDraw::ZIG_ZAG;
+            break;
+        }
+        case CollisionType::PASSABLE_UP_RIGHT_45: {
+            result.prettyName = "Passable Up Right 45";
+            result.preview = CollisionDraw::ZIG_ZAG;
+            break;
         }
     }
     return result;

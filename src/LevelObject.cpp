@@ -44,6 +44,10 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0xa9;
             meta.isLz10 = true;
             meta.frame = 0;
+            if (lo.settings.at(1) == 1) {
+                // 1 means starts invisible
+                meta.indexOfPalette = 0xc5;
+            }
             break;
         }
         case 0x14: { // Stork Stop
@@ -236,6 +240,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
                 meta.frame = 0x19;
             }
             // TODO: Carrying
+            Q_UNUSED(secondSetting);
             break;
         }
         case 0x36: { // Yellow Shy Guy
