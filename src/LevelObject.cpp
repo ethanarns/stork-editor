@@ -18,6 +18,24 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0x7e; // 020267c4
             break;
         }
+        case 0x3: { // Green Egg Item
+            // Kinda cheaty... Use animation from egg block
+            meta.indexOfTiles = 0x1;
+            meta.frame = 0x20;
+            meta.xPixelOffset = 8;
+            meta.yPixelOffset = 32; // Since the egg block animation is super high up
+            meta.indexOfPalette = 0xc7; // TODO: find the ACTUAL palette, this looks bad
+            break;
+        }
+        case 0x5: { // Red egg item
+            // Kinda cheaty... Use animation from egg block
+            meta.indexOfTiles = 0x1;
+            meta.frame = 0x20;
+            meta.xPixelOffset = 8;
+            meta.yPixelOffset = 32; // Since the egg block animation is super high up
+            meta.indexOfPalette = 0xe2;
+            break;
+        }
         case 0x7: { // Egg block (hit for eggs)
             meta.indexOfTiles = 0x1;
             meta.indexOfPalette = 0x89; // Fallback to objset if objeffect doesn't work
