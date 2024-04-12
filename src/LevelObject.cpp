@@ -71,6 +71,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.yPixelOffset = -8;
             break;
         }
+        // 0x1f is at 0x91
         case 0x20: { // Falling donuts
             meta.indexOfTiles = 0x11;
             meta.indexOfPalette = 0x87;
@@ -323,6 +324,13 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfTiles = 0x2b;
             meta.indexOfPalette = 0xa5;
             meta.frame = 1;
+            ObjectGraphicMetadata extra;
+            extra.indexOfTiles = 0x21;
+            extra.indexOfPalette = 0x90;
+            extra.frame = 1;
+            extra.xPixelOffset = 8;
+            extra.yPixelOffset = 32;
+            meta.extras.push_back(extra);
             break;
         }
         case 0x4e: { // Dandylion
@@ -363,6 +371,66 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfTiles = 0;
             meta.indexOfPalette = 1;
             meta.yPixelOffset = 16;
+            break;
+        }
+        case 0x1f:
+        case 0x91: {
+            uint32_t whichPalette = 0x82;
+            // 82 is green
+            switch (lo.settings.at(0)) {
+                case 0x0:
+                case 0x1: {
+                    whichPalette = 0x84;
+                    break;
+                }
+                case 0x2:
+                case 0x3: {
+                    whichPalette = 0x82;
+                    break;
+                }
+                case 0x4:
+                case 0x5: {
+                    whichPalette = 0x85;
+                    break;
+                }
+                case 0x6:
+                case 0x7: {
+                    whichPalette = 0x83;
+                    break;
+                }
+                default: {
+                    whichPalette = 0x81; // Show broken
+                    break;
+                }
+            }
+            meta.indexOfTiles = 0x10; // platform used is 0xd
+            meta.indexOfPalette = whichPalette;
+            meta.xPixelOffset = 4; // May round this up or down
+            meta.yPixelOffset = 4; // But it's *actually* 4
+
+            ObjectGraphicMetadata bottom;
+            bottom.indexOfTiles = 0xd;
+            bottom.indexOfPalette = whichPalette;
+            bottom.yPixelOffset = (int32_t)lo.settings.at(1);
+            meta.extras.push_back(bottom);
+
+            ObjectGraphicMetadata top;
+            top.indexOfTiles = 0xd;
+            top.indexOfPalette = whichPalette;
+            top.yPixelOffset = ((int32_t)lo.settings.at(1)) * -1;
+            meta.extras.push_back(top);
+
+            ObjectGraphicMetadata left;
+            left.indexOfTiles = 0xd;
+            left.indexOfPalette = whichPalette;
+            left.xPixelOffset = ((int32_t)lo.settings.at(1)) * -1;
+            meta.extras.push_back(left);
+
+            ObjectGraphicMetadata right;
+            right.indexOfTiles = 0xd;
+            right.indexOfPalette = whichPalette;
+            right.xPixelOffset = (int32_t)lo.settings.at(1);
+            meta.extras.push_back(right);
             break;
         }
         // case 0x92: { // Stairs
@@ -565,7 +633,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             break;
         }
         case 0x112: { // Locked minigame hut
-            // Pulled from "objhouse.arcz"
+            meta.whichObjectFile = "objhouse.arcz";
+            meta.whichPaletteFile = "objhouse.arcz";
+            meta.indexOfTiles = 0x0;
+            meta.indexOfPalette = 0x1;
+            meta.xPixelOffset = 8;
             break;
         }
         case 0x113: {
