@@ -721,6 +721,8 @@ void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
                         new AddTileToGridCommand(tw->row(),tw->column(),blankTileAttr,this->yidsRom,this,totalRmCmd);
                     }
                     emit this->pushStateCommandToStack(totalRmCmd);
+                    // Links to displayTableUpdate, this is mainly for making savable
+                    emit this->triggerMainWindowUpdate();
                 }
             } else {
                 // Do single
