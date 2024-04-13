@@ -272,13 +272,13 @@ MainWindow::MainWindow() {
     toolbar->setMovable(false);
 
     QPixmap iconTiles(":/assets/icon_tiles.png");
-    this->button_iconTiles = toolbar->addAction(QIcon(iconTiles), tr("Open BG Tiles Dialog"));
+    this->button_iconTiles = toolbar->addAction(QIcon(iconTiles), tr("Open BG Tiles Window"));
     this->button_iconTiles->setObjectName("button_iconTiles");
     this->button_iconTiles->setDisabled(true);
     connect(this->button_iconTiles, &QAction::triggered, this, &MainWindow::toolbarClick_tiles);
 
     QPixmap iconPalette(":/assets/icon_palette.png");
-    this->button_iconPalette = toolbar->addAction(QIcon(iconPalette), tr("Open Palette Dialog"));
+    this->button_iconPalette = toolbar->addAction(QIcon(iconPalette), tr("Open Palette Window"));
     this->button_iconPalette->setObjectName("button_iconPalette");
     this->button_iconPalette->setDisabled(true);
     connect(this->button_iconPalette, &QAction::triggered, this, &MainWindow::toolbarClick_palette);
@@ -368,7 +368,7 @@ MainWindow::MainWindow() {
     qApp->setStyleSheet("QGroupBox { border: 1px solid gray;}"); // Debug
 
     // Top groupbox //
-    QGroupBox* leftPanelTopGroupBox = new QGroupBox(tr("Tile Info"));
+    QGroupBox* leftPanelTopGroupBox = new QGroupBox(tr("Sprite Info"));
     leftPanelTopGroupBox->setObjectName("groupBox_leftPanel_top");
     leftPanelTopGroupBox->setStyleSheet("QGroupBox {padding-top: 22px;}");
     leftPanelLayout->addWidget(leftPanelTopGroupBox);
@@ -714,6 +714,7 @@ void MainWindow::toolbarClick_spritePreview() {
         this->objtilesPopup->raise();
         this->objtilesPopup->activateWindow();
     } else {
+        YUtils::popupAlert("WARNING: This utility is very glitchy, and only to be used for advanced sprite debugging. It WILL crash with unusual selections, save your work! This will likely be deleted in future versions.");
         this->objtilesPopup->show();
     }
 }

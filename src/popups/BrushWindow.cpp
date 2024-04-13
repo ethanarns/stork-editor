@@ -15,7 +15,7 @@
 BrushWindow::BrushWindow(QWidget *parent, YidsRom *rom) {
     Q_UNUSED(parent);
     this->yidsRom = rom;
-    this->setWindowTitle(tr("Brush Window"));
+    this->setWindowTitle(tr("Tile Brush Window"));
     this->setObjectName(tr("brushWindow"));
     this->setMinimumHeight(365);
     this->resize(543,365);
