@@ -20,6 +20,7 @@ stork_plugin_import.cpp
 .DirIcon
 StorkEditor.AppImage
 lib/ndstool.exe
+_bak*
 
 # test extracted files
 *.arcz
