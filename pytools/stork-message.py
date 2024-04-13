@@ -13,14 +13,48 @@ def readUint32(data: bytearray, start: int) -> int:
 def readUint16(data: bytearray, start: int) -> int:
     return (data[start+1] << 8) + data[start]
 
+def gbaPalColsToTuple(r: int, g: int, b: int) -> tuple:
+    red = int(r*8.2)
+    green = int(g*8.2)
+    blue = int(b*8.2)
+    return (red,green,blue)
+
 # Change this around to support greater color set eventually
 def fourBppToCol(bpp: int) -> tuple:
-    if (bpp == 0x8):
-        return (72,120,104) # The green
+    if (bpp == 0x0):
+        return gbaPalColsToTuple(0x08,0x03,0x12)
+    elif (bpp == 0x1):
+        return gbaPalColsToTuple(0,0,0)
+    elif (bpp == 0x2):
+        return gbaPalColsToTuple(0x06,0x04,0x03)
+    elif (bpp == 0x3):
+        return gbaPalColsToTuple(0x0c,0x08,0x06)
+    elif (bpp == 0x4):
+        return gbaPalColsToTuple(0x10,0x0b,0x08)
+    elif (bpp == 0x5):
+        return gbaPalColsToTuple(0x12,0x0d,0x09)
+    elif (bpp == 0x6):
+        return gbaPalColsToTuple(0x03,0x09,0x06)
+    elif (bpp == 0x7):
+        return gbaPalColsToTuple(0x07,0x0d,0x0b)
+    elif (bpp == 0x8):
+        return gbaPalColsToTuple(0x09,0x0f,0x0d) # The green
+    elif (bpp == 0x9):
+        return gbaPalColsToTuple(0x0b,0x11,0x0f)
+    elif (bpp == 0xa):
+        return gbaPalColsToTuple(0x0e,0x13,0x11)
+    elif (bpp == 0xb):
+        return gbaPalColsToTuple(0x12,0x16,0x14)
+    elif (bpp == 0xc):
+        return gbaPalColsToTuple(0x16,0x18,0x17)
+    elif (bpp == 0xd):
+        return gbaPalColsToTuple(0x18,0x18,0x18)
+    elif (bpp == 0xe):
+        return gbaPalColsToTuple(0x1c,0x1d,0x1c)
     elif (bpp == 0xf):
         return (255,255,255) # White
     else:
-        return (200,200,200)
+        return (255,0,0) # red
 
 HEADER_INDEX_ENGLISH = 1 # multiplied by 2 later because 2 byte values
 BASE_POINTERS_LENGTH = 0x388 # End of this starts the actual data
