@@ -307,9 +307,10 @@ public:
             // Padding header built
         }
         bool isColorMode16 = info.colorMode == BgColorMode::MODE_16;
+        bool isColorModeUnknown = info.colorMode == BgColorMode::MODE_UNKNOWN;
         for (uint i = startOffset; i < this->mapTiles.size(); i++) {
             uint16_t curShort = this->mapTiles.at(i).compile();
-            if (isColorMode16) {
+            if (isColorMode16 || isColorModeUnknown) {
                 curShort -= 0x1000;
             }
             auto vec = YUtils::uint16toVec(curShort);
@@ -341,16 +342,18 @@ public:
     };
     std::vector<uint8_t> compile(ScenInfoData &info) {
         std::vector<uint8_t> result;
-        if (info.colorMode == BgColorMode::MODE_16) {
+        if (info.colorMode == BgColorMode::MODE_16 || info.colorMode == BgColorMode::MODE_UNKNOWN) {
             for (auto it = this->palettes.cbegin(); it != this->palettes.cend(); it++) {
                 for (uint pIndex = 0; pIndex < Constants::PALETTE_SIZE; pIndex++) {
                     result.push_back(it->at(pIndex));
                 }
             }
-        } else { // Extended mode/256
+        } else if (info.colorMode == BgColorMode::MODE_256) { // Extended mode/256
             for (uint eIndex = 0; eIndex < this->extendedPalette.size(); eIndex++) {
                 result.push_back(this->extendedPalette.at(eIndex));
             }
+        } else {
+            YUtils::printDebug("Unknown color mode in LayerPaletteData",DebugType::ERROR);
         }
         result = FsPacker::packInstruction(Constants::PLTB_MAGIC_NUM,result,false);
         return result;

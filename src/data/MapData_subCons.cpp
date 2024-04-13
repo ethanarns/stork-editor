@@ -249,8 +249,8 @@ AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
         Chartile curTile;
         curTile.index = currentTileIndex;
         curTile.tiles.resize(64);
-        if (colorMode == BgColorMode::MODE_16) {
-            curTile.bgColMode = BgColorMode::MODE_16;
+        curTile.bgColMode = colorMode;
+        if (colorMode == BgColorMode::MODE_16 || colorMode == BgColorMode::MODE_UNKNOWN) {
             for (
                 int currentTileBuildIndex = 0;
                 currentTileBuildIndex < Constants::CHARTILE_DATA_SIZE;
@@ -264,8 +264,7 @@ AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
                 curTile.tiles[innerPosition+1] = highBit;
                 curTile.tiles[innerPosition+0] = lowBit;
             }
-        } else {
-            curTile.bgColMode = BgColorMode::MODE_256;
+        } else if (colorMode == BgColorMode::MODE_256) {
             // Instead of being split, each pixel is a full byte
             // Meaning 64 places
             for (
@@ -277,6 +276,8 @@ AnimatedMapData::AnimatedMapData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdz
                 anmzIndex++;
                 curTile.tiles[currentTileBuildIndex] = curByte;
             }
+        } else {
+            YUtils::printDebug("Unknown color mode in AnimatedMapData",DebugType::ERROR);
         }
         this->chartiles.push_back(curTile);
     }

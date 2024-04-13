@@ -194,16 +194,18 @@ std::vector<QByteArray> ObjectTileData::getChartilesCompressed(uint32_t baseData
         // Get a segment of the uncompressed data
         uint32_t start = currentTileIndex*tileBytesSize;
         auto curSection = YUtils::subVector(decompressedVector,start,start+tileBytesSize);
-        if (colMode == BgColorMode::MODE_16) {
+        if (colMode == BgColorMode::MODE_16 || colMode == BgColorMode::MODE_UNKNOWN) {
             // This splits things up
             resultTiles.push_back(YUtils::tileVectorToQByteArray(curSection));
-        } else {
+        } else if (colMode == BgColorMode::MODE_256) {
             QByteArray color256array;
             for (int index256 = 0; index256 < 64; index256++) {
                 // Don't split bytes for the 8x8
                 color256array.push_back(curSection.at(index256));
             }
             resultTiles.push_back(color256array);
+        } else {
+            YUtils::printDebug("Unknown color mode in getChartilesCompressed",DebugType::ERROR);
         }
     }
     return resultTiles;
