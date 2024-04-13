@@ -19,7 +19,42 @@ def gbaPalColsToTuple(r: int, g: int, b: int) -> tuple:
     blue = int(b*8.2)
     return (red,green,blue)
 
-# Change this around to support greater color set eventually
+def colorTupleToGbaNum(colorTup: tuple) -> int:
+    if (colorTup == gbaPalColsToTuple(0x08,0x03,0x12)):
+        return 0x0
+    elif (colorTup == gbaPalColsToTuple(0x00,0x00,0x00)):
+        return 0x1
+    elif (colorTup == gbaPalColsToTuple(0x06,0x04,0x03)):
+        return 0x2
+    elif (colorTup == gbaPalColsToTuple(0x0c,0x08,0x06)):
+        return 0x3
+    elif (colorTup == gbaPalColsToTuple(0x10,0x0b,0x08)):
+        return 0x4
+    elif (colorTup == gbaPalColsToTuple(0x12,0x0d,0x09)):
+        return 0x5
+    elif (colorTup == gbaPalColsToTuple(0x03,0x09,0x06)):
+        return 0x6
+    elif (colorTup == gbaPalColsToTuple(0x07,0x0d,0x0b)):
+        return 0x7
+    elif (colorTup == gbaPalColsToTuple(0x09,0x0f,0x0d)):
+        return 0x8 # The green
+    elif (colorTup == gbaPalColsToTuple(0x0b,0x11,0x0f)):
+        return 0x9
+    elif (colorTup == gbaPalColsToTuple(0x0e,0x13,0x11)):
+        return 0xa
+    elif (colorTup == gbaPalColsToTuple(0x12,0x16,0x14)):
+        return 0xb
+    elif (colorTup == gbaPalColsToTuple(0x16,0x18,0x17)):
+        return 0xc
+    elif (colorTup == gbaPalColsToTuple(0x18,0x18,0x18)):
+        return 0xd
+    elif (colorTup == gbaPalColsToTuple(0x1c,0x1d,0x1c)):
+        return 0xe
+    elif (colorTup == gbaPalColsToTuple(0x1f,0x1f,0x1f)):
+        return 0xf # White
+    else:
+        return 0x0 # error
+
 def fourBppToCol(bpp: int) -> tuple:
     if (bpp == 0x0):
         return gbaPalColsToTuple(0x08,0x03,0x12)
@@ -52,7 +87,7 @@ def fourBppToCol(bpp: int) -> tuple:
     elif (bpp == 0xe):
         return gbaPalColsToTuple(0x1c,0x1d,0x1c)
     elif (bpp == 0xf):
-        return (255,255,255) # White
+        return gbaPalColsToTuple(0x1f,0x1f,0x1f) # White
     else:
         return (255,0,0) # red
 
@@ -61,6 +96,10 @@ BASE_POINTERS_LENGTH = 0x388 # End of this starts the actual data
 LANGUAGE_SELECT_HEADER_SIZE = 0xc
 IMAGE_WIDTH = 80*2 # 80 BYTES wide, but this is 4bits per pixel, not 8 bits
 IMAGE_HEIGHT = 0x60
+
+def bmpToVector(img: Image.Image) -> bytearray:
+    result = bytearray()
+    return result
 
 def generate(mespack: bytearray,messageId: int, show: bool, languageIndex: int = HEADER_INDEX_ENGLISH):
     if messageId < 0:
