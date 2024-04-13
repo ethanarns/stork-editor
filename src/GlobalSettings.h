@@ -59,6 +59,7 @@ struct GlobalSettings {
     int brushH = 2;
     LayerMode layerSelectMode;
     CollisionType colTypeToDraw = CollisionType::SQUARE;
+    bool isColPressing = false;
     std::vector<QTableWidgetItem*> selectedItemPointers;
     uint32_t currentSpriteIdToAdd = 0;
     uint32_t gridCellSizePx = 8;

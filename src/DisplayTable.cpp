@@ -473,6 +473,40 @@ void DisplayTable::handleSpritesRightClickPress(QMouseEvent *event) {
     emit this->triggerMainWindowUpdate();
 }
 
+void DisplayTable::handleCollisionMouseClick(QPoint position, bool isCopy) {
+    auto curItemUnderCursor = this->itemAt(position);
+    if (curItemUnderCursor == nullptr) {
+        YUtils::printDebug("Item under cursor in mousePressEvent for COLL is null", DebugType::ERROR);
+        return;
+    }
+    if (curItemUnderCursor->data(PixelDelegateData::COLLISION_DRAW).isNull()) {
+        YUtils::printDebug("No collision data present");
+        return;
+    }
+    auto colData = curItemUnderCursor->data(PixelDelegateData::COLLISION_DEBUG).toUInt();
+    // May have more button support later
+    if (isCopy == false) {
+        uint32_t colX = curItemUnderCursor->column() / 2;
+        uint32_t rowY = curItemUnderCursor->row() / 2;
+        auto colCmd = new SetCollisionTileCommand(rowY,colX,globalSettings.colTypeToDraw,this->yidsRom,this);
+        emit this->pushStateCommandToStack(colCmd);
+        emit this->triggerMainWindowUpdate(); // Mark savable update mainly
+        return;
+    } else if (isCopy == true) {
+        std::stringstream ssColInfo;
+        ssColInfo << "Collision data: 0x" << std::hex << colData;
+        YUtils::printDebug(ssColInfo.str(),DebugType::VERBOSE);
+        globalSettings.colTypeToDraw = (CollisionType)((int)colData);
+        std::stringstream ssColStatus;
+        auto colName = YUtils::getCollisionMetadata(globalSettings.colTypeToDraw).prettyName;
+        ssColStatus << "Setting collision brush to '" << colName << "'";
+        emit this->updateMainWindowStatus(ssColStatus.str());
+        return;
+    } else {
+        YUtils::printDebug("Unknown mouse action in handleCollisionMouseClick",DebugType::VERBOSE);
+    }
+}
+
 void DisplayTable::updatePortals(bool drawEntrances, bool drawExits) {
     //YUtils::printDebug("Updating level entrances and exits",DebugType::VERBOSE);
     if (this->yidsRom == nullptr) {
@@ -655,41 +689,23 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
             return;
         }
     } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
-        auto curItemUnderCursor = this->itemAt(event->pos());
-        if (curItemUnderCursor == nullptr) {
-            YUtils::printDebug("Item under cursor in mousePressEvent for COLL is null", DebugType::ERROR);
-            return;
-        }
-        if (curItemUnderCursor->data(PixelDelegateData::COLLISION_DRAW).isNull()) {
-            YUtils::printDebug("No collision data present");
-            return;
-        }
-        auto colData = curItemUnderCursor->data(PixelDelegateData::COLLISION_DEBUG).toUInt();
         if (event->button() == Qt::LeftButton) {
-            uint32_t colX = curItemUnderCursor->column() / 2;
-            uint32_t rowY = curItemUnderCursor->row() / 2;
-            auto colCmd = new SetCollisionTileCommand(rowY,colX,globalSettings.colTypeToDraw,this->yidsRom,this);
-            emit this->pushStateCommandToStack(colCmd);
-            emit this->triggerMainWindowUpdate(); // Mark savable update mainly
-            return;
+            globalSettings.isColPressing = true;
+            this->handleCollisionMouseClick(event->pos(),false);
         } else if (event->button() == Qt::RightButton) {
-            std::stringstream ssColInfo;
-            ssColInfo << "Collision data: 0x" << std::hex << colData;
-            YUtils::printDebug(ssColInfo.str(),DebugType::VERBOSE);
-            globalSettings.colTypeToDraw = (CollisionType)((int)colData);
-            std::stringstream ssColStatus;
-            auto colName = YUtils::getCollisionMetadata(globalSettings.colTypeToDraw).prettyName;
-            ssColStatus << "Setting collision brush to '" << colName << "'";
-            emit this->updateMainWindowStatus(ssColStatus.str());
-            return;
+            globalSettings.isColPressing = true;
+            this->handleCollisionMouseClick(event->pos(),true);
         } else {
-            YUtils::printDebug("Unknown mouse action in collision mode",DebugType::VERBOSE);
+            YUtils::printDebug("Unknown mouse button in collision layer mode",DebugType::VERBOSE);
         }
     }
     QTableWidget::mousePressEvent(event);
 }
 
 void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
+    // Do these no matter what to avoid bugs
+    globalSettings.isColPressing = false;
+
     if (
         globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
         globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
@@ -740,7 +756,6 @@ void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
         } else {
             std::cout << "Unknown mouse button release" << std::endl;
         }
-
     } else {
         QTableWidget::mouseReleaseEvent(event);
     }
@@ -753,7 +768,10 @@ void DisplayTable::mouseMoveEvent(QMouseEvent *event) {
         globalSettings.layerSelectMode == LayerMode::BG3_LAYER
     ) {
         this->selectorBand->setGeometry(QRect(this->selectorBandOrigin, event->pos()).normalized());
-        
+    } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
+        if (globalSettings.isColPressing) {
+            this->handleCollisionMouseClick(event->pos(), event->button() == Qt::RightButton);
+        }
     }
     // Does too much stuff, such as drag and cell entering, to not do
     QTableWidget::mouseMoveEvent(event);

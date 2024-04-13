@@ -92,6 +92,8 @@ private:
     std::vector<QTableWidgetItem*> getIntersectedTiles(QRect selectionRect);
     void updateSelectedTilesVisuals(int whichBg);
     void handleSpritesRightClickPress(QMouseEvent *event);
+
+    void handleCollisionMouseClick(QPoint position, bool isCopy = false);
 protected:
     QPoint dragStartPosition;
     void mousePressEvent(QMouseEvent *event) override;
