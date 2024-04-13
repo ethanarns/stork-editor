@@ -1352,6 +1352,13 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
     auto mpbzMaybe = scen->getFirstDataByMagic(Constants::MPBZ_MAGIC_NUM);
     auto mpbz = static_cast<MapTilesData*>(mpbzMaybe);
     uint32_t index = column + (row * scen->getInfo()->layerWidth);
+    if (index >= mpbz->mapTiles.size()) {
+        std::stringstream ssOverflow;
+        ssOverflow << "mapTiles index overflow in placeNewTileOnMap, 0x" << std::hex;
+        ssOverflow << index << " >= 0x" << std::hex << mpbz->mapTiles.size();
+        YUtils::printDebug(ssOverflow.str(),DebugType::WARNING);
+        return false;
+    }
     mpbz->mapTiles.at(index) = mapRecord;
     return true;
 }

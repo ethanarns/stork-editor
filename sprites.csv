@@ -136,7 +136,7 @@ Sprite ID,Sprite name,Info,Len,Construction Function,Setings 0,Settings 1,Settin
 0xc4,Item Carrying Balloon,Lots of possibilities,4,,,,,,,,,,,
 0xc5,Swinging Vine Controlled,TODO: find differences,8,,,,,,,,,,,
 0xc7,Crate Balloon,Balloons that carry a crate,0,,,,,,,,,,,
-0xca,Danger Carrying Balloon?,Default carries spike balls,4,,,,,,,,,,,
+0xca,Danger Balloon,u8 payload; bool respawns,4,020ae104,"u8 whatCarrying (0 = spiny, 1 = bomb)",bool respawns?,,,,,,,,
 0xcc,Drool Hard,Drools Pokeys,4,,,,,,,,,,,
 0xcf,Bumpty,Boing,4,,,,,,,,,,,
 0xd0,Tulip,Throw an enemy to their doom for stars!,4,,,,,,,,,,,

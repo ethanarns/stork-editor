@@ -179,6 +179,19 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             }
             break;
         }
+        case 0x24: { // Bill Blaster
+            meta.indexOfTiles = 0x14;
+            meta.indexOfPalette = 0xbf;
+            meta.xPixelOffset = 8;
+            ObjectGraphicMetadata base;
+            base.indexOfTiles = 0x14;
+            base.indexOfPalette = 0xbf;
+            base.frame = 0x18;
+            base.xPixelOffset = 8;
+            base.yPixelOffset = 4;
+            meta.extras.push_back(base);
+            break;
+        }
         case 0x25: { // Red Switch 1
             meta.indexOfTiles = 0x15;
             meta.indexOfPalette = 0x8b;
