@@ -5,6 +5,7 @@ from ndspy import lz10
 
 parser = argparse.ArgumentParser("stork-message")
 parser.add_argument("filename",help="mespack.mes file")
+parser.add_argument("-e","--extract",help="Hexadecimal ID of message block")
 
 def readUint32(data: bytearray, start: int) -> int:
     return (data[start+3] << 24) + (data[start+2] << 16) + (data[start+1] << 8) + data[start]
@@ -30,6 +31,9 @@ IMAGE_HEIGHT = 0x60
 def generate(filename: str,messageId: int):
     if (filename.endswith("mespack.mes") == False):
         print("Warning: file is not called mespack.mes")
+    if messageInt < 0:
+        print("ERROR: messageInt cannot be negative")
+        return
     mespack = bytearray(open(filename,'rb').read())
     # 020ccdc8
     index = 0
@@ -90,4 +94,13 @@ def generate(filename: str,messageId: int):
 if __name__ == '__main__':
     args = parser.parse_args()
     filename = args.filename
-    generate(filename, 0x82) # 3 is 1-1's first block
+    messageId = args.extract
+    if messageId == None:
+        print("No message ID")
+        exit(1)
+    if str(messageId).lower() == "all":
+        print("Extracting all")
+        exit(0)
+    messageInt = int(messageId,base=16)
+    print(hex(messageInt))
+    generate(filename, messageInt) # 3 is 1-1's first block
