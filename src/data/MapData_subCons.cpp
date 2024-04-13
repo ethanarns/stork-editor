@@ -325,6 +325,11 @@ SoftRockBackdrop::SoftRockBackdrop(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
     mpdzIndex = stop;
 }
 
+SoftRockSiding::SoftRockSiding(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
+    this->bytes = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
+    mpdzIndex = stop;
+}
+
 // COLZ
 MapCollisionData::MapCollisionData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     auto compressed = YUtils::subVector(mpdzBytes,mpdzIndex,stop);

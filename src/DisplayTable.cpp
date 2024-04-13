@@ -139,7 +139,15 @@ void DisplayTable::putTileBg(uint32_t x, uint32_t y, MapTileRecordData &pren, ui
         // BG 1 //
         bgItem->setData(PixelDelegateData::PIXEL_ARRAY_BG1,loadedTile.tiles);
         if (colorMode == BgColorMode::MODE_16 || colorMode == BgColorMode::MODE_UNKNOWN) {
-            bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
+            try {
+                bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal));
+            } catch (...) {
+                std::stringstream ssBg1Pal;
+                ssBg1Pal << "Failed to place BG1 background palette. Palettes size: 0x" << std::hex;
+                ssBg1Pal << this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).size();
+                ssBg1Pal << ", pal value: 0x" << std::hex << (uint16_t)pal;
+                YUtils::printDebug(ssBg1Pal.str(),DebugType::ERROR);
+            }
         } else if (colorMode == BgColorMode::MODE_256) {
             bgItem->setData(PixelDelegateData::PALETTE_ARRAY_BG1,scen->getPalette()->extendedPalette);
         } else {

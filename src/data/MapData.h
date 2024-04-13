@@ -644,6 +644,25 @@ public:
     std::vector<MapTileRecordData> mapTiles;
 };
 
+// BRAK
+class SoftRockSiding : public LevelData {
+public:
+    SoftRockSiding(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    uint32_t getMagic() { return Constants::BRAK_MAGIC_NUM; }
+    std::string toString() {
+        std::stringstream ss;
+        ss << "SoftRockSiding? { todo ...";
+        return ss.str();
+    };
+    std::vector<uint8_t> compile(ScenInfoData &info) {
+        Q_UNUSED(info);
+        std::vector<uint8_t> result = this->bytes;
+        result = FsPacker::packInstruction(Constants::BRAK_MAGIC_NUM,result,false);
+        return result;
+    };
+    std::vector<uint8_t> bytes;
+};
+
 // MPDZ
 class MapData : public LevelData {
 public:

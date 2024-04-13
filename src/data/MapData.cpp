@@ -192,6 +192,10 @@ MapData::MapData(std::vector<uint8_t> mpdzBytes, bool compressed, QByteArray bgP
             YUtils::popupAlert("BLKZ (softrock backing MapTiles) data will save, but is not yet supported for editing");
             auto blkz = new SoftRockBackdrop(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
             this->subData.push_back(blkz);
+        } else if (subMagic == Constants::BRAK_MAGIC_NUM) {
+            YUtils::popupAlert("BRAK (no frickin clue) data will save, but is not yet supported for editing");
+            auto brak = new SoftRockSiding(mpdzBytes,mpdzIndex,mpdzIndex+subLength);
+            this->subData.push_back(brak);
         } else {
             std::stringstream ssSubNotFound;
             ssSubNotFound << "Unknown MPDZ data: ";
