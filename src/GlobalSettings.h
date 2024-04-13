@@ -63,7 +63,7 @@ struct GlobalSettings {
     std::vector<QTableWidgetItem*> selectedItemPointers;
     uint32_t currentSpriteIdToAdd = 0;
     uint32_t gridCellSizePx = 8;
-    std::string extractFolderName = "_nds_unpack";
+    std::string extractFolderName = "yromfs";
 
     uint32_t temp_paletteOffset = 0;
 

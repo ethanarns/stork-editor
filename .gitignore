@@ -12,7 +12,7 @@ stork
 blz
 lzss
 moc_*
-_nds_unpack/
+yromfs/
 *.user
 qrc_images.cpp
 clean

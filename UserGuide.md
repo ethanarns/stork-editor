@@ -7,7 +7,7 @@
 4. Wait for it to load everything for the first time. It will need to extract files. Wait for the status `ROM Loaded`
 5. It should load World 1 Level 1's first map. You'll need to scroll down to see the level itself
 6. To remove the green collision overlay, you can either click the menu button with the eye and orange arrow, check off Menu Bar > View > Show Collision, or press `Control + 5`
-7. Backup your working files (by default `_nds_extract`) by copying it to a different folder periodically
+7. Backup your working files (by default `yromfs`) by copying it to a different folder periodically
 
 ## Sprites (Level Objects)
 1. Switch your layer mode to Sprites. This is a dropdown on the toolbar at the top of the window. It should start in this mode, but you can return to it via this dropdown
@@ -51,7 +51,7 @@
 10. Save your new brush to that folder. You can now load it again later for use with that same tileset!
 
 ## Portals (Entrances and Exits)
-0. **Warning**: portal connections are very fragile and glitchy. Make sure to check all your connections are accurate when modifying connections, and especially when deleting an entrance or exit! **I highly recommend backing up your data directory (by default `_nds_extract/`) before making any connection changes**
+0. **Warning**: portal connections are very fragile and glitchy. Make sure to check all your connections are accurate when modifying connections, and especially when deleting an entrance or exit! **I highly recommend backing up your data directory (by default `yromfs`) before making any connection changes**
 1. Open Menu Bar > Tools > Level Settings or press Control + L
 2. You can select any existing Entrances or Exit and change all its values, add new portals, or delete portals (be careful with deletion)
 3. There is a planned Portals layer mode, but it is currently not implemented. The only way to change portal positions as of writing this guide is within the Level Window

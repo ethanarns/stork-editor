@@ -261,7 +261,6 @@ MainWindow::MainWindow() {
     action_about->setIcon(QIcon::fromTheme("help-about"));
     menu_help->addAction(action_about);
     connect(action_about,&QAction::triggered,this,&MainWindow::menuClick_about);
-    // Add connect() once implemented
     
     /***************
      *** TOOLBAR ***
