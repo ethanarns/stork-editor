@@ -62,7 +62,7 @@ LANGUAGE_SELECT_HEADER_SIZE = 0xc
 IMAGE_WIDTH = 80*2 # 80 BYTES wide, but this is 4bits per pixel, not 8 bits
 IMAGE_HEIGHT = 0x60
 
-def generate(mespack: bytearray,messageId: int, show: bool):
+def generate(mespack: bytearray,messageId: int, show: bool, languageIndex: int = HEADER_INDEX_ENGLISH):
     if messageId < 0:
         print("ERROR: messageInt cannot be negative")
         return 
@@ -85,7 +85,7 @@ def generate(mespack: bytearray,messageId: int, show: bool):
     messageLocation = BASE_POINTERS_LENGTH + messageTarget
     headerVector = mespack[messageLocation:messageLocation+LANGUAGE_SELECT_HEADER_SIZE]
     # The header is a bunch of offsets pertaining to each language, 6 different ones, 0 being Japanese...
-    messageLocation += readUint16(headerVector,HEADER_INDEX_ENGLISH*2) #020ccf7c
+    messageLocation += readUint16(headerVector,languageIndex*2) #020ccf7c
     hasMore = 1
     byteVector = bytearray()
     numPulled = 0
