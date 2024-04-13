@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse
+import argparse, os
 from PIL import Image
 from ndspy import lz10
 
@@ -28,13 +28,10 @@ LANGUAGE_SELECT_HEADER_SIZE = 0xc
 IMAGE_WIDTH = 80*2 # 80 BYTES wide, but this is 4bits per pixel, not 8 bits
 IMAGE_HEIGHT = 0x60
 
-def generate(filename: str,messageId: int):
-    if (filename.endswith("mespack.mes") == False):
-        print("Warning: file is not called mespack.mes")
-    if messageInt < 0:
+def generate(mespack: bytearray,messageId: int):
+    if messageId < 0:
         print("ERROR: messageInt cannot be negative")
-        return
-    mespack = bytearray(open(filename,'rb').read())
+        return 
     # 020ccdc8
     index = 0
     messageTarget = 0
@@ -46,8 +43,8 @@ def generate(filename: str,messageId: int):
         if (checkValue == messageId):
             break
         if (checkValue == 0xffff):
-            print("Message search overflow")
-            break
+            print("Message search overflow: " + str(messageId).zfill(3))
+            return None
         index += 1
         messageTarget = messageTarget + readUint16(mespack,checkLoc + 2)
     messageLocation = BASE_POINTERS_LENGTH + messageTarget
@@ -87,20 +84,33 @@ def generate(filename: str,messageId: int):
         y = int(fourBitIndex / IMAGE_WIDTH)
         pixels[x,y] = fourBppToCol(highBit)
         fourBitIndex += 1
-
-    baseImg.show()
-    print("Done!")
+    #baseImg.show()
+    return baseImg
 
 if __name__ == '__main__':
     args = parser.parse_args()
     filename = args.filename
+    if (filename.endswith("mespack.mes") == False):
+        print("Warning: file is not called mespack.mes")
+    mespack = bytearray(open(filename,'rb').read())
     messageId = args.extract
     if messageId == None:
         print("No message ID")
         exit(1)
     if str(messageId).lower() == "all":
         print("Extracting all")
+        parentDir = os.path.abspath(os.path.dirname(__file__))
+        folderPath = os.path.join(parentDir,"mespack_files")
+        if not os.path.exists(folderPath):
+            os.mkdir(folderPath)
+        for x in range(0,1502):
+            curImage = generate(mespack,x)
+            if (curImage == None):
+                continue
+            imageFileName = "msg_" + str(x).zfill(3) + ".bmp"
+            imageFilePath = os.path.join(folderPath,imageFileName)
+            curImage.save(imageFilePath,"bmp")
         exit(0)
     messageInt = int(messageId,base=16)
     print(hex(messageInt))
-    generate(filename, messageInt) # 3 is 1-1's first block
+    generate(mespack, messageInt) # 3 is 1-1's first block
