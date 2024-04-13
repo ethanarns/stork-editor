@@ -260,7 +260,7 @@ MainWindow::MainWindow() {
     action_about->setShortcut(tr("F1"));
     action_about->setIcon(QIcon::fromTheme("help-about"));
     menu_help->addAction(action_about);
-    connect(action_about,&QAction::triggered,this,&MainWindow::markSavableUpdate);
+    connect(action_about,&QAction::triggered,this,&MainWindow::menuClick_about);
     // Add connect() once implemented
     
     /***************
@@ -859,6 +859,18 @@ void MainWindow::menuClick_levelSettings() {
     this->levelWindow->show();
     this->spritePickerWindow->raise();
     this->levelWindow->activateWindow();
+}
+
+void MainWindow::menuClick_about() {
+    std::stringstream ssAbout;
+    #ifdef APP_VERSION
+    ssAbout << "Stork Editor v" << APP_VERSION << " ";
+    #else
+    ssAbout << "Stork Editor ";
+    #endif
+    ssAbout << "by Zolarch" << std::endl;
+    ssAbout << "https://www.smwcentral.net/?p=viewthread&t=127068";
+    YUtils::popupAlert(ssAbout.str());
 }
 
 void MainWindow::menuClick_viewExits(bool checked) {
