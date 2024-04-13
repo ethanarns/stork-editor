@@ -28,7 +28,7 @@ LANGUAGE_SELECT_HEADER_SIZE = 0xc
 IMAGE_WIDTH = 80*2 # 80 BYTES wide, but this is 4bits per pixel, not 8 bits
 IMAGE_HEIGHT = 0x60
 
-def generate(mespack: bytearray,messageId: int):
+def generate(mespack: bytearray,messageId: int, show: bool):
     if messageId < 0:
         print("ERROR: messageInt cannot be negative")
         return 
@@ -43,7 +43,8 @@ def generate(mespack: bytearray,messageId: int):
         if (checkValue == messageId):
             break
         if (checkValue == 0xffff):
-            #print("Message search overflow: " + str(messageId).zfill(3))
+            if show == True:
+                print("Message search overflow: " + hex(messageId))
             return None
         index += 1
         messageTarget = messageTarget + readUint16(mespack,checkLoc + 2)
@@ -84,7 +85,8 @@ def generate(mespack: bytearray,messageId: int):
         y = int(fourBitIndex / IMAGE_WIDTH)
         pixels[x,y] = fourBppToCol(highBit)
         fourBitIndex += 1
-    #baseImg.show()
+    if show == True:
+        baseImg.show()
     return baseImg
 
 if __name__ == '__main__':
@@ -104,13 +106,14 @@ if __name__ == '__main__':
         if not os.path.exists(folderPath):
             os.mkdir(folderPath)
         for x in range(0,1502):
-            curImage = generate(mespack,x)
+            curImage = generate(mespack, x, False)
             if (curImage == None):
                 continue
-            imageFileName = "msg_" + str(x).zfill(3) + ".bmp"
+            # Don't use hex for file names
+            imageFileName = "msg_" + str(x).zfill(4) + "_" + hex(x) + ".bmp"
             imageFilePath = os.path.join(folderPath,imageFileName)
             curImage.save(imageFilePath,"bmp")
         exit(0)
     messageInt = int(messageId,base=16)
     print(hex(messageInt))
-    generate(mespack, messageInt) # 3 is 1-1's first block
+    generate(mespack, messageInt, True) # 3 is 1-1's first block
