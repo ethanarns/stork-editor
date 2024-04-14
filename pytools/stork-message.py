@@ -107,12 +107,13 @@ LANGUAGE_SELECT_HEADER_SIZE = 0xc
 IMAGE_WIDTH = 80*2 # 80 BYTES wide, but this is 4bits per pixel, not 8 bits
 IMAGE_HEIGHT = 0x60
 
-def bmpToVector(img: Image.Image) -> bytearray:
+def bmpToVector(img: Image.Image, whichPanel: int) -> bytearray:
     result = bytearray()
     pixels = img.load()
     curPixelIndex = 0
     curByteBuild = -1
-    for y in range(0,IMAGE_HEIGHT):
+    yOffset = whichPanel*IMAGE_HEIGHT
+    for y in range(0+yOffset,IMAGE_HEIGHT+yOffset):
         for x in range(0,IMAGE_WIDTH):
             curCol = pixels[x,y]
             #palCol = colorTupleToGbaNum(curCol)
@@ -210,16 +211,21 @@ if __name__ == '__main__':
     messageId = args.extract
     if (args.bitmap != None):
         bmpFile = Image.open(args.bitmap)
-        vec = bmpToVector(bmpFile)
-        print(vec)
-        compressedVector = bytearray(lz10.compress(vec))
-        messageInt = 0xa
-        writeLoc = getMessageLocation(mespack,messageInt,True)
-        writeVec = uint16toVec(len(compressedVector))
-        hasMoreVec = uint16toVec(0)
-        writeVec.extend(hasMoreVec)
-        writeVec.extend(compressedVector)
-        writeBytes(mespack,writeVec,writeLoc)
+        imageHeight = bmpFile.height
+        frameCount = int(imageHeight / IMAGE_HEIGHT)
+        writeLoc = getMessageLocation(mespack,0x3,True)
+        for whichPanel in range(0,frameCount):
+            vec = bmpToVector(bmpFile,whichPanel)
+            #print(vec)
+            compressedVector = bytearray(lz10.compress(vec))
+            writeVec = uint16toVec(len(compressedVector))
+            hasMoreVec = uint16toVec(1)
+            if (whichPanel + 1 == frameCount):
+                hasMoreVec = uint16toVec(0)
+            writeVec.extend(hasMoreVec)
+            writeVec.extend(compressedVector)
+            writeBytes(mespack,writeVec,writeLoc)
+            writeLoc += len(writeVec)
         o = open(filename,"wb")
         o.write(mespack)
         o.close()
