@@ -14,6 +14,14 @@ def readUint32(data: bytearray, start: int) -> int:
 def readUint16(data: bytearray, start: int) -> int:
     return (data[start+1] << 8) + data[start]
 
+def uint16toVec(uint16: int) -> bytearray:
+    byte1 = (uint16 >> 0) % 0x100
+    byte2 = (uint16 >> 8) % 0x100
+    result = bytearray()
+    result.append(byte1)
+    result.append(byte2)
+    return result
+
 def gbaPalColsToTuple(r: int, g: int, b: int) -> tuple:
     red = int(r*8.2)
     green = int(g*8.2)
@@ -103,8 +111,8 @@ def bmpToVector(img: Image.Image) -> bytearray:
     pixels = img.load()
     curPixelIndex = 0
     curByteBuild = -1
-    for x in range(0,IMAGE_WIDTH):
-        for y in range(0,IMAGE_HEIGHT):
+    for y in range(0,IMAGE_HEIGHT):
+        for x in range(0,IMAGE_WIDTH):
             curCol = pixels[x,y]
             palCol = colorTupleToGbaNum(curCol)
             if curPixelIndex % 2 == 0:
@@ -201,10 +209,15 @@ if __name__ == '__main__':
     if (args.bitmap != None):
         bmpFile = Image.open(args.bitmap)
         vec = bmpToVector(bmpFile)
+        print(vec)
         compressedVector = bytearray(lz10.compress(vec))
         messageInt = 0xa
         writeLoc = getMessageLocation(mespack,messageInt,True)
-        writeBytes(mespack,compressedVector,writeLoc)
+        writeVec = uint16toVec(len(compressedVector))
+        hasMoreVec = uint16toVec(0)
+        writeVec.extend(hasMoreVec)
+        writeVec.extend(compressedVector)
+        writeBytes(mespack,writeVec,writeLoc)
         o = open(filename,"wb")
         o.write(mespack)
         o.close()
@@ -225,5 +238,4 @@ if __name__ == '__main__':
             curImage.save(imageFilePath,"bmp")
     else:
         messageInt = int(messageId,base=16)
-        print(hex(messageInt))
         generate(mespack, messageInt, True) # 3 is 1-1's first block
