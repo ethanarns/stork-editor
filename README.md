@@ -26,8 +26,4 @@ It uses the USA version 1.0. Do NOT use 1.1 or "rev 1." SHA256 Sum: `c75bf32c31f
 3. Extract a USA YIDS 1.0 rom (see details above)
 
 ### Todo
-- Line following implementation
-- Gradient and Alpha BG support
-- New map creation
-- Soft rock editing
-- Graphics editing
+See documentation for latest: https://docs.google.com/spreadsheets/d/14wyO5R_ZZthzR4zfV5cDCKMmF-06exZupx3A8-u-xac/edit?usp=sharing
