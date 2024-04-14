@@ -172,21 +172,18 @@ def generate(mespack: bytearray,messageId: int, show: bool, languageIndex: int =
         baseImg.show()
     return baseImg
 
-def repackDirectory(directory: str):
-    if os.path.isfile(filename):
-        print("Not a folder")
-        exit(1)
-    print("Repacking directory")
-    pass
-
 if __name__ == '__main__':
     args = parser.parse_args()
     filename = args.filename
     if (filename.endswith("mespack.mes") == False):
         if not os.path.exists(filename):
-            print("Folder doesn't exist")
+            print("filename doesn't exist")
             exit(1)
-        repackDirectory(filename)
+        if os.path.isfile(filename) and filename.endswith(".bmp"):
+            bmpFile = Image.open(filename)
+            bmpToVector(bmpFile)
+        else:
+            print("Full directory")
         exit(0)
     mespack = bytearray(open(filename,'rb').read())
     messageId = args.extract
