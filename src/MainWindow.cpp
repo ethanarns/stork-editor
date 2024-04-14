@@ -307,6 +307,12 @@ MainWindow::MainWindow() {
     this->button_addSpriteWindow->setDisabled(true);
     connect(this->button_addSpriteWindow,&QAction::triggered,this,&MainWindow::toolbarClick_spritePicker);
 
+    QPixmap iconTriggerWindow(":/assets/coin.png");
+    this->button_triggerBoxWindow = toolbar->addAction(QIcon(iconTriggerWindow), tr("Open Trigger window"));
+    this->button_triggerBoxWindow->setObjectName("button_triggerBoxWindow");
+    this->button_triggerBoxWindow->setDisabled(true);
+    connect(this->button_triggerBoxWindow,&QAction::triggered,this,&MainWindow::toolbarClick_triggerWindow);
+
     toolbar->addSeparator();
 
     QPixmap iconCollisionShow(":/assets/icon_collision.png");
@@ -571,6 +577,9 @@ MainWindow::MainWindow() {
 
     // SpritePickerWindow //
     this->spritePickerWindow = new SpritePickerWindow(this,this->rom);
+
+    // TriggerWindow //
+    this->triggerWindow = new TriggerWindow(this,this->rom);
     
     // Level data window //
     this->levelWindow = new LevelWindow(this,this->rom);
@@ -629,6 +638,8 @@ void MainWindow::LoadRom() {
         // Sprite Window //
         this->button_addSpriteWindow->setDisabled(false);
         this->spritePickerWindow->updateSpriteList("");
+
+        this->button_triggerBoxWindow->setDisabled(false);
 
         // Level window //
         this->levelWindow->refreshLists();
@@ -742,6 +753,15 @@ void MainWindow::toolbarClick_spritePicker() {
         this->spritePickerWindow->activateWindow();
     } else {
         this->spritePickerWindow->show();
+    }
+}
+
+void MainWindow::toolbarClick_triggerWindow() {
+    if (this->triggerWindow->isVisible()) {
+        this->triggerWindow->raise();
+        this->triggerWindow->activateWindow();
+    } else {
+        this->triggerWindow->show();
     }
 }
 

@@ -33,6 +33,7 @@
 #include "popups/LevelWindow.h"
 #include "GridOverlay.h"
 #include "data/ProjectManager.h"
+#include "popups/TriggerWindow.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -52,6 +53,7 @@ public:
     BrushWindow* brushWindow;
     ColWindow* colWindow;
     SpritePickerWindow* spritePickerWindow;
+    TriggerWindow* triggerWindow;
     LevelWindow* levelWindow;
     ProjectManager* projectManager;
 
@@ -87,6 +89,7 @@ private:
     QAction* button_iconBrush;
     QAction* button_colWindow;
     QAction* button_addSpriteWindow;
+    QAction* button_triggerBoxWindow;
     QAction* button_toggleCollision;
 
     QAction* menu_levelSelect;
@@ -121,6 +124,7 @@ private:
     void toolbarClick_brush();
     void toolbarClick_col();
     void toolbarClick_spritePicker();
+    void toolbarClick_triggerWindow();
     void toolbarClick_showCollision(bool shouldShow);
     void toolbarClick_toggleCollision();
     void toolbarClick_layerSelect(const QString str);

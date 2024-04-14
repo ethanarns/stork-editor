@@ -57,6 +57,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.forceFlipV = true;
             break;
         }
+        // Cloud drop 0x11: Objset 0x7 ; 0x9a
         case 0x12: { // Star Item
             meta.indexOfTiles = 8;
             meta.indexOfPalette = 0x81;
@@ -657,6 +658,7 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 1;
             break;
         }
+        // 0xf1 fleeper: 0x70 - 0xfe
         case 0x109: { // Toober guy
             meta.indexOfTiles = 0x7b;
             meta.indexOfPalette = 0xa5;
