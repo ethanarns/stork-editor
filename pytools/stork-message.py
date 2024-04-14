@@ -6,6 +6,7 @@ from ndspy import lz10
 parser = argparse.ArgumentParser("stork-message")
 parser.add_argument("filename",help="mespack.mes file")
 parser.add_argument("-e","--extract",help="Hexadecimal ID of message block")
+parser.add_argument("-b","--bitmap",help="BMP file to repack")
 
 def readUint32(data: bytearray, start: int) -> int:
     return (data[start+3] << 24) + (data[start+2] << 16) + (data[start+1] << 8) + data[start]
@@ -176,17 +177,14 @@ if __name__ == '__main__':
     args = parser.parse_args()
     filename = args.filename
     if (filename.endswith("mespack.mes") == False):
-        if not os.path.exists(filename):
-            print("filename doesn't exist")
-            exit(1)
-        if os.path.isfile(filename) and filename.endswith(".bmp"):
-            bmpFile = Image.open(filename)
-            bmpToVector(bmpFile)
-        else:
-            print("Full directory")
-        exit(0)
+        print("Not a mespack.mes file")
+        exit(1)
     mespack = bytearray(open(filename,'rb').read())
     messageId = args.extract
+    if (args.bitmap != None):
+        bmpFile = Image.open(args.bitmap)
+        bmpToVector(bmpFile)
+        exit(0)
     if messageId == None:
         print("No message ID")
         exit(1)
