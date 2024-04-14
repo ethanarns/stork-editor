@@ -116,14 +116,10 @@ def bmpToVector(img: Image.Image) -> bytearray:
             curPixelIndex += 1
     return result
 
-def generate(mespack: bytearray,messageId: int, show: bool, languageIndex: int = HEADER_INDEX_ENGLISH):
-    if messageId < 0:
-        print("ERROR: messageInt cannot be negative")
-        return 
+def getMessageLocation(mespack: bytearray, messageId: int, maxCount: int, printOverflow: bool = False) -> int:
     # 020ccdc8
     index = 0
     messageTarget = 0
-    maxCount = readUint32(mespack,0)
     shouldBreak = False
     while (index <= maxCount or shouldBreak == False):
         checkLoc = index * 4
@@ -131,12 +127,22 @@ def generate(mespack: bytearray,messageId: int, show: bool, languageIndex: int =
         if (checkValue == messageId):
             break
         if (checkValue == 0xffff):
-            if show == True:
+            if printOverflow:
                 print("Message search overflow: " + hex(messageId))
-            return None
+            return 0
         index += 1
         messageTarget = messageTarget + readUint16(mespack,checkLoc + 2)
     messageLocation = BASE_POINTERS_LENGTH + messageTarget
+    return messageLocation
+
+def generate(mespack: bytearray,messageId: int, show: bool, languageIndex: int = HEADER_INDEX_ENGLISH):
+    if messageId < 0:
+        print("ERROR: messageInt cannot be negative")
+        return 
+    maxCount = readUint32(mespack,0)
+    messageLocation = getMessageLocation(mespack,messageId,maxCount,show)
+    if messageLocation == 0:
+        return None
     headerVector = mespack[messageLocation:messageLocation+LANGUAGE_SELECT_HEADER_SIZE]
     # The header is a bunch of offsets pertaining to each language, 6 different ones, 0 being Japanese...
     messageLocation += readUint16(headerVector,languageIndex*2) #020ccf7c
