@@ -30,6 +30,8 @@ def gbaPalColsToTuple(r: int, g: int, b: int) -> tuple:
 
 def colorDistance(c1, c2):
     (r1,g1,b1) = c1
+    if (len(c2) > 3):
+        c2 = c2[0:3]
     (r2,g2,b2) = c2
     return math.sqrt((r1 - r2)**2 + (g1 - g2) ** 2 + (b1 - b2) **2)
 
