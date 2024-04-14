@@ -116,10 +116,11 @@ def bmpToVector(img: Image.Image) -> bytearray:
             curPixelIndex += 1
     return result
 
-def getMessageLocation(mespack: bytearray, messageId: int, maxCount: int, printOverflow: bool = False, languageIndex: int = HEADER_INDEX_ENGLISH) -> int:
+def getMessageLocation(mespack: bytearray, messageId: int, printOverflow: bool = False, languageIndex: int = HEADER_INDEX_ENGLISH) -> int:
     # 020ccdc8
     index = 0
     messageTarget = 0
+    maxCount = readUint32(mespack,0)
     shouldBreak = False
     while (index <= maxCount or shouldBreak == False):
         checkLoc = index * 4
@@ -141,9 +142,8 @@ def getMessageLocation(mespack: bytearray, messageId: int, maxCount: int, printO
 def generate(mespack: bytearray,messageId: int, show: bool, languageIndex: int = HEADER_INDEX_ENGLISH):
     if messageId < 0:
         print("ERROR: messageInt cannot be negative")
-        return 
-    maxCount = readUint32(mespack,0)
-    messageLocation = getMessageLocation(mespack,messageId,maxCount,show)
+        return
+    messageLocation = getMessageLocation(mespack,messageId,show)
     if messageLocation == 0:
         if show:
             print("Invalid message location")
@@ -185,6 +185,11 @@ def generate(mespack: bytearray,messageId: int, show: bool, languageIndex: int =
         baseImg.show()
     return baseImg
 
+def writeBytes(baseData: bytearray, toWrite: bytearray, location: int):
+    for b in toWrite:
+        baseData[location] = b
+        location += 1
+
 if __name__ == '__main__':
     args = parser.parse_args()
     filename = args.filename
@@ -196,10 +201,14 @@ if __name__ == '__main__':
     if (args.bitmap != None):
         bmpFile = Image.open(args.bitmap)
         vec = bmpToVector(bmpFile)
+        compressedVector = bytearray(lz10.compress(vec))
+        messageInt = 0xa
+        writeLoc = getMessageLocation(mespack,messageInt,True)
+        writeBytes(mespack,compressedVector,writeLoc)
+        o = open(filename,"wb")
+        o.write(mespack)
+        o.close()
         exit(0)
-    if messageId == None:
-        print("No message ID")
-        exit(1)
     if str(messageId).lower() == "all":
         print("Extracting all")
         parentDir = os.path.abspath(os.path.dirname(__file__))
