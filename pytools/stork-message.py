@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, os
+import argparse, os, math
 from PIL import Image
 from ndspy import lz10
 
@@ -27,6 +27,36 @@ def gbaPalColsToTuple(r: int, g: int, b: int) -> tuple:
     green = int(g*8.2)
     blue = int(b*8.2)
     return (red,green,blue)
+
+def colorDistance(c1, c2):
+    (r1,g1,b1) = c1
+    (r2,g2,b2) = c2
+    return math.sqrt((r1 - r2)**2 + (g1 - g2) ** 2 + (b1 - b2) **2)
+
+codes = {
+    0x0: gbaPalColsToTuple(0x08,0x03,0x12),
+    0x1: gbaPalColsToTuple(0x00,0x00,0x00),
+    0x2: gbaPalColsToTuple(0x06,0x04,0x03),
+    0x3: gbaPalColsToTuple(0x0c,0x08,0x06),
+    0x4: gbaPalColsToTuple(0x10,0x0b,0x08),
+    0x5: gbaPalColsToTuple(0x12,0x0d,0x09),
+    0x6: gbaPalColsToTuple(0x03,0x09,0x06),
+    0x7: gbaPalColsToTuple(0x07,0x0d,0x0b),
+    0x8: gbaPalColsToTuple(0x09,0x0f,0x0d),
+    0x9: gbaPalColsToTuple(0x0b,0x11,0x0f),
+    0xa: gbaPalColsToTuple(0x0e,0x13,0x11),
+    0xb: gbaPalColsToTuple(0x12,0x16,0x14),
+    0xc: gbaPalColsToTuple(0x16,0x18,0x17),
+    0xd: gbaPalColsToTuple(0x18,0x18,0x18),
+    0xe: gbaPalColsToTuple(0x1c,0x1d,0x1c),
+    0xf: gbaPalColsToTuple(0x1f,0x1f,0x1f)
+}
+
+def colorTupleToPal(colorTup: tuple) -> int:
+    gbaColors = list(codes.values())
+    closestColors = sorted(gbaColors, key=lambda color: colorDistance(color, colorTup))
+    closest = closestColors[0]
+    return gbaColors.index(closest)
 
 def colorTupleToGbaNum(colorTup: tuple) -> int:
     if (colorTup == gbaPalColsToTuple(0x08,0x03,0x12)):
@@ -65,40 +95,9 @@ def colorTupleToGbaNum(colorTup: tuple) -> int:
         return 0x0 # error
 
 def fourBppToCol(bpp: int) -> tuple:
-    if (bpp == 0x0):
-        return gbaPalColsToTuple(0x08,0x03,0x12)
-    elif (bpp == 0x1):
-        return gbaPalColsToTuple(0,0,0)
-    elif (bpp == 0x2):
-        return gbaPalColsToTuple(0x06,0x04,0x03)
-    elif (bpp == 0x3):
-        return gbaPalColsToTuple(0x0c,0x08,0x06)
-    elif (bpp == 0x4):
-        return gbaPalColsToTuple(0x10,0x0b,0x08)
-    elif (bpp == 0x5):
-        return gbaPalColsToTuple(0x12,0x0d,0x09)
-    elif (bpp == 0x6):
-        return gbaPalColsToTuple(0x03,0x09,0x06)
-    elif (bpp == 0x7):
-        return gbaPalColsToTuple(0x07,0x0d,0x0b)
-    elif (bpp == 0x8):
-        return gbaPalColsToTuple(0x09,0x0f,0x0d) # The green
-    elif (bpp == 0x9):
-        return gbaPalColsToTuple(0x0b,0x11,0x0f)
-    elif (bpp == 0xa):
-        return gbaPalColsToTuple(0x0e,0x13,0x11)
-    elif (bpp == 0xb):
-        return gbaPalColsToTuple(0x12,0x16,0x14)
-    elif (bpp == 0xc):
-        return gbaPalColsToTuple(0x16,0x18,0x17)
-    elif (bpp == 0xd):
-        return gbaPalColsToTuple(0x18,0x18,0x18)
-    elif (bpp == 0xe):
-        return gbaPalColsToTuple(0x1c,0x1d,0x1c)
-    elif (bpp == 0xf):
-        return gbaPalColsToTuple(0x1f,0x1f,0x1f) # White
-    else:
-        return (255,0,0) # red
+    if bpp in codes:
+        return codes[bpp]
+    return (255,0,0)
 
 HEADER_INDEX_ENGLISH = 1 # multiplied by 2 later because 2 byte values
 BASE_POINTERS_LENGTH = 0x388 # End of this starts the actual data
@@ -114,7 +113,8 @@ def bmpToVector(img: Image.Image) -> bytearray:
     for y in range(0,IMAGE_HEIGHT):
         for x in range(0,IMAGE_WIDTH):
             curCol = pixels[x,y]
-            palCol = colorTupleToGbaNum(curCol)
+            #palCol = colorTupleToGbaNum(curCol)
+            palCol = colorTupleToPal(curCol)
             if curPixelIndex % 2 == 0:
                 curByteBuild = palCol
             else:
