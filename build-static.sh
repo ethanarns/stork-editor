@@ -15,4 +15,4 @@ chmod +x StorkEditor.AppImage
 # sanity check again
 ./StorkEditor.AppImage --version
 
-zip StorkEditor.X.Y.Z-linux.zip StorkEditor.AppImage lib/* sample_brushes/*/*
+zip StorkEditor.X.Y.Z-linux.zip StorkEditor.AppImage lib/* sample_brushes/*/* UserGuide.md

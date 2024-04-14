@@ -12,3 +12,4 @@ rm stork_plugin_import.cpp
 rm -r AppDir/usr/bin
 rm clean
 rm StorkEditor.AppImage
+rm -rf pytools/mespack_files
