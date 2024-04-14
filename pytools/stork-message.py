@@ -102,13 +102,17 @@ def bmpToVector(img: Image.Image) -> bytearray:
     result = bytearray()
     pixels = img.load()
     curPixelIndex = 0
+    curByteBuild = -1
     for x in range(0,IMAGE_WIDTH):
         for y in range(0,IMAGE_HEIGHT):
             curCol = pixels[x,y]
             palCol = colorTupleToGbaNum(curCol)
-            print(palCol)
-            if curPixelIndex > 0x10:
-                return result
+            if curPixelIndex % 2 == 0:
+                curByteBuild = palCol
+            else:
+                curByteBuild += palCol << 4
+                result.append(curByteBuild)
+                # it is odd
             curPixelIndex += 1
     return result
 
@@ -183,7 +187,7 @@ if __name__ == '__main__':
     messageId = args.extract
     if (args.bitmap != None):
         bmpFile = Image.open(args.bitmap)
-        bmpToVector(bmpFile)
+        vec = bmpToVector(bmpFile)
         exit(0)
     if messageId == None:
         print("No message ID")
