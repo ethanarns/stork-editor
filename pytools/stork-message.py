@@ -99,6 +99,16 @@ IMAGE_HEIGHT = 0x60
 
 def bmpToVector(img: Image.Image) -> bytearray:
     result = bytearray()
+    pixels = img.load()
+    curPixelIndex = 0
+    for x in range(0,IMAGE_WIDTH):
+        for y in range(0,IMAGE_HEIGHT):
+            curCol = pixels[x,y]
+            palCol = colorTupleToGbaNum(curCol)
+            print(palCol)
+            if curPixelIndex > 0x10:
+                return result
+            curPixelIndex += 1
     return result
 
 def generate(mespack: bytearray,messageId: int, show: bool, languageIndex: int = HEADER_INDEX_ENGLISH):
@@ -162,11 +172,22 @@ def generate(mespack: bytearray,messageId: int, show: bool, languageIndex: int =
         baseImg.show()
     return baseImg
 
+def repackDirectory(directory: str):
+    if os.path.isfile(filename):
+        print("Not a folder")
+        exit(1)
+    print("Repacking directory")
+    pass
+
 if __name__ == '__main__':
     args = parser.parse_args()
     filename = args.filename
     if (filename.endswith("mespack.mes") == False):
-        print("Warning: file is not called mespack.mes")
+        if not os.path.exists(filename):
+            print("Folder doesn't exist")
+            exit(1)
+        repackDirectory(filename)
+        exit(0)
     mespack = bytearray(open(filename,'rb').read())
     messageId = args.extract
     if messageId == None:
@@ -186,7 +207,7 @@ if __name__ == '__main__':
             imageFileName = "msg_" + str(x).zfill(4) + "_" + hex(x) + ".bmp"
             imageFilePath = os.path.join(folderPath,imageFileName)
             curImage.save(imageFilePath,"bmp")
-        exit(0)
-    messageInt = int(messageId,base=16)
-    print(hex(messageInt))
-    generate(mespack, messageInt, True) # 3 is 1-1's first block
+    else:
+        messageInt = int(messageId,base=16)
+        print(hex(messageInt))
+        generate(mespack, messageInt, True) # 3 is 1-1's first block
