@@ -7,6 +7,7 @@ parser = argparse.ArgumentParser("stork-message")
 parser.add_argument("filename",help="mespack.mes file")
 parser.add_argument("-e","--extract",help="Hexadecimal ID of message block")
 parser.add_argument("-b","--bitmap",help="BMP file to repack")
+parser.add_argument("-m","--mid",help="Message ID to repack")
 
 def readUint32(data: bytearray, start: int) -> int:
     return (data[start+3] << 24) + (data[start+2] << 16) + (data[start+1] << 8) + data[start]
@@ -60,42 +61,6 @@ def colorTupleToPal(colorTup: tuple) -> int:
     closest = closestColors[0]
     return gbaColors.index(closest)
 
-def colorTupleToGbaNum(colorTup: tuple) -> int:
-    if (colorTup == gbaPalColsToTuple(0x08,0x03,0x12)):
-        return 0x0
-    elif (colorTup == gbaPalColsToTuple(0x00,0x00,0x00)):
-        return 0x1
-    elif (colorTup == gbaPalColsToTuple(0x06,0x04,0x03)):
-        return 0x2
-    elif (colorTup == gbaPalColsToTuple(0x0c,0x08,0x06)):
-        return 0x3
-    elif (colorTup == gbaPalColsToTuple(0x10,0x0b,0x08)):
-        return 0x4
-    elif (colorTup == gbaPalColsToTuple(0x12,0x0d,0x09)):
-        return 0x5
-    elif (colorTup == gbaPalColsToTuple(0x03,0x09,0x06)):
-        return 0x6
-    elif (colorTup == gbaPalColsToTuple(0x07,0x0d,0x0b)):
-        return 0x7
-    elif (colorTup == gbaPalColsToTuple(0x09,0x0f,0x0d)):
-        return 0x8 # The green
-    elif (colorTup == gbaPalColsToTuple(0x0b,0x11,0x0f)):
-        return 0x9
-    elif (colorTup == gbaPalColsToTuple(0x0e,0x13,0x11)):
-        return 0xa
-    elif (colorTup == gbaPalColsToTuple(0x12,0x16,0x14)):
-        return 0xb
-    elif (colorTup == gbaPalColsToTuple(0x16,0x18,0x17)):
-        return 0xc
-    elif (colorTup == gbaPalColsToTuple(0x18,0x18,0x18)):
-        return 0xd
-    elif (colorTup == gbaPalColsToTuple(0x1c,0x1d,0x1c)):
-        return 0xe
-    elif (colorTup == gbaPalColsToTuple(0x1f,0x1f,0x1f)):
-        return 0xf # White
-    else:
-        return 0x0 # error
-
 def fourBppToCol(bpp: int) -> tuple:
     if bpp in codes:
         return codes[bpp]
@@ -116,7 +81,6 @@ def bmpToVector(img: Image.Image, whichPanel: int) -> bytearray:
     for y in range(0+yOffset,IMAGE_HEIGHT+yOffset):
         for x in range(0,IMAGE_WIDTH):
             curCol = pixels[x,y]
-            #palCol = colorTupleToGbaNum(curCol)
             palCol = colorTupleToPal(curCol)
             if curPixelIndex % 2 == 0:
                 curByteBuild = palCol
@@ -210,10 +174,15 @@ if __name__ == '__main__':
     mespack = bytearray(open(filename,'rb').read())
     messageId = args.extract
     if (args.bitmap != None):
+        bMessageIdStr = args.mid
+        if bMessageIdStr == None:
+            print("No repack message ID (-m)")
+            exit(1)
+        bMid = int(bMessageIdStr,base=16)
         bmpFile = Image.open(args.bitmap)
         imageHeight = bmpFile.height
         frameCount = int(imageHeight / IMAGE_HEIGHT)
-        writeLoc = getMessageLocation(mespack,0x3,True)
+        writeLoc = getMessageLocation(mespack,bMid,True)
         for whichPanel in range(0,frameCount):
             vec = bmpToVector(bmpFile,whichPanel)
             #print(vec)
