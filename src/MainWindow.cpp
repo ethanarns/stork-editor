@@ -669,6 +669,7 @@ void MainWindow::LoadRom() {
         // Triggers //
         this->grid->shouldShowTriggers = true;
         this->grid->updateTriggerBoxes();
+        this->triggerWindow->updateTriggerList();
 
         // Portals //
         this->grid->shouldDrawEntrances = true;
@@ -684,7 +685,6 @@ void MainWindow::LoadRom() {
         this->action_viewBg3->setDisabled(false);
         this->action_viewObjects->setDisabled(false);
         this->action_showTriggerBoxes->setDisabled(false);
-        this->grid->updateTriggerBoxes();
         this->menu_save->setDisabled(false);
         this->menu_export->setDisabled(false);
         this->menu_levelSettings->setDisabled(false);
@@ -923,6 +923,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     this->levelWindow->refreshLists();
     this->guiObjectList->updateList();
     this->grid->updateTriggerBoxes();
+    this->triggerWindow->updateTriggerList();
     // If it was hidden last time, hide it again
     this->grid->updatePortals(this->grid->shouldDrawEntrances,this->grid->shouldDrawExits);
     this->brushWindow->updateCharsetLabel();
