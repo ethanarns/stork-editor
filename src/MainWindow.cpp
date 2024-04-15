@@ -579,7 +579,7 @@ MainWindow::MainWindow() {
     this->spritePickerWindow = new SpritePickerWindow(this,this->rom);
 
     // TriggerWindow //
-    this->triggerWindow = new TriggerWindow(this,this->rom);
+    this->triggerWindow = new TriggerWindow(this,this->rom,this->grid);
     
     // Level data window //
     this->levelWindow = new LevelWindow(this,this->rom);
@@ -1187,6 +1187,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     this->colWindow->close();
     this->spritePickerWindow->close();
     this->levelWindow->close();
+    this->triggerWindow->close();
     event->accept();
 }
 

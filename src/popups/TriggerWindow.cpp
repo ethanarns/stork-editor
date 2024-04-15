@@ -1,4 +1,5 @@
 #include "TriggerWindow.h"
+#include "../DisplayTable.h"
 
 #include <iostream>
 #include <sstream>
@@ -9,9 +10,10 @@
 #include <QSpinBox>
 #include <QPushButton>
 
-TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom) {
+TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom, DisplayTable *grid) {
     Q_UNUSED(parent);
     this->yidsRom = rom;
+    this->grid = grid;
 
     this->setObjectName("triggerWindow");
     this->setWindowTitle(tr("Trigger Boxes"));
@@ -29,6 +31,7 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom) {
     auto row1text = new QLabel(tr("Left X"));
     row1->addWidget(row1text);
     this->leftX = new QSpinBox(this);
+    this->leftX->setMaximum(0xffff);
     row1->addWidget(this->leftX);
     connect(this->leftX,QOverload<int>::of(&QSpinBox::valueChanged),this,&TriggerWindow::spinboxValueChanged);
 
@@ -38,6 +41,7 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom) {
     auto row2text = new QLabel(tr("Top Y"));
     row2->addWidget(row2text);
     this->topY = new QSpinBox(this);
+    this->topY->setMaximum(0xffff);
     row2->addWidget(this->topY);
     connect(this->topY,QOverload<int>::of(&QSpinBox::valueChanged),this,&TriggerWindow::spinboxValueChanged);
 
@@ -47,6 +51,7 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom) {
     auto row3text = new QLabel(tr("Right X"));
     row3->addWidget(row3text);
     this->rightX = new QSpinBox(this);
+    this->rightX->setMaximum(0xffff);
     row3->addWidget(this->rightX);
     connect(this->rightX,QOverload<int>::of(&QSpinBox::valueChanged),this,&TriggerWindow::spinboxValueChanged);
 
@@ -56,6 +61,7 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom) {
     auto row4text = new QLabel(tr("Bottom Y"));
     row4->addWidget(row4text);
     this->bottomY = new QSpinBox(this);
+    this->bottomY->setMaximum(0xffff);
     row4->addWidget(this->bottomY);
     connect(this->bottomY,QOverload<int>::of(&QSpinBox::valueChanged),this,&TriggerWindow::spinboxValueChanged);
 
@@ -72,6 +78,7 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom) {
     mainLayout->addWidget(this->triggerList);
     mainLayout->addLayout(settingsLayout);
     this->setLayout(mainLayout);
+    this->allowChanges = true;
 }
 
 void TriggerWindow::updateTriggerList() {
@@ -79,6 +86,7 @@ void TriggerWindow::updateTriggerList() {
     if (areaMaybe == nullptr) {
         return;
     }
+    this->allowChanges = false;
     YUtils::printDebug("Updating TriggerBox list");
     while (this->triggerList->count() > 0) {
         delete this->triggerList->takeItem(0);
@@ -90,13 +98,40 @@ void TriggerWindow::updateTriggerList() {
         ss << "Trigger 0x" << std::hex << i++;
         this->triggerList->addItem(QString::fromStdString(ss.str()));
     }
+    this->allowChanges = true;
 }
 
 void TriggerWindow::spinboxValueChanged(int i) {
     YUtils::printDebug("spinboxValueChanged");
     Q_UNUSED(i);
+    if (!this->allowChanges) {
+        YUtils::printDebug("Could not make TriggerBox change, disabled",DebugType::WARNING);
+        return;
+    }
     int lx = this->leftX->value();
     int ty = this->topY->value();
     int rx = this->rightX->value();
     int by = this->bottomY->value();
+    auto curRowIndex = this->triggerList->currentRow();
+    if (curRowIndex < 0) {
+        YUtils::printDebug("No TriggerBox selected",DebugType::WARNING);
+        return;
+    }
+    // Get all triggers
+    auto areaMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::AREA_MAGIC_NUM,true);
+    if (areaMaybe == nullptr) {
+        YUtils::printDebug("Failed to get TriggerBoxes for level",DebugType::WARNING);
+        return;
+    }
+    auto triggers = static_cast<TriggerBoxData*>(areaMaybe)->triggers;
+    if ((uint)curRowIndex >= triggers.size()) {
+        YUtils::printDebug("Attempting to retrieve TriggerBox with too high an index",DebugType::ERROR);
+        return;
+    }
+    auto selectedTrigger = triggers.at(curRowIndex);
+    selectedTrigger->leftX = lx;
+    selectedTrigger->topY = ty;
+    selectedTrigger->rightX = rx;
+    selectedTrigger->bottomY = by;
+    this->grid->updateTriggerBoxes();
 }
