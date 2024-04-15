@@ -84,7 +84,9 @@ enum PixelDelegateData {
 
     OBJECT_TILES_FLIPV = 145, // bool
     OBJECT_TILES_FLIPH = 146,  // bool
-    OBJECT_TILES_BUILDFRAME_INDEX = 147
+    OBJECT_TILES_BUILDFRAME_INDEX = 147,
+
+    TRIGGER_HIGHLIGHT_UUID = 148
 };
 
 enum CollisionType {

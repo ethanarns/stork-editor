@@ -616,6 +616,10 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     if (!triggerData.toByteArray().isNull()) {
         auto triggerCount = triggerData.toByteArray().size();
         QColor boxColor(255, 0, 0, (30*triggerCount) );
+        auto selectedTrigger = (uint8_t)index.data(PixelDelegateData::TRIGGER_HIGHLIGHT_UUID).toUInt();
+        if (triggerData.toByteArray().contains(selectedTrigger)) {
+            boxColor = QColor(255, 255, 0, (30*triggerCount) );
+        }
         const int X_WIDTH = option.rect.width();
         const int Y_HEIGHT = option.rect.height();
         const int X_BASE = option.rect.x();

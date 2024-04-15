@@ -1190,7 +1190,7 @@ void DisplayTable::updateShowCollision() {
     }
 }
 
-void DisplayTable::updateTriggerBoxes() {
+void DisplayTable::updateTriggerBoxes(int highlight) {
     // Wipe em all
     const int ROW_COUNT = this->rowCount();
     const int COLUMN_COUNT = this->columnCount();
@@ -1212,6 +1212,7 @@ void DisplayTable::updateTriggerBoxes() {
     //YUtils::printDebug("Updating TriggerBoxes",DebugType::VERBOSE);
     auto triggerBoxData = static_cast<TriggerBoxData*>(triggerBoxDataMaybe);
     auto triggerBoxes = triggerBoxData->triggers;
+    int triggerIndex = 0;    
     for (auto tit = triggerBoxes.begin(); tit != triggerBoxes.end(); tit++) {
         auto tb = (*tit);
         auto leftX = tb->leftX;
@@ -1233,11 +1234,17 @@ void DisplayTable::updateTriggerBoxes() {
                     }
                     itemArray.push_back((uint8_t)tb->uuid);
                     curItem->setData(PixelDelegateData::DRAW_TRIGGERS,itemArray);
+                    if (triggerIndex == highlight) {
+                        curItem->setData(PixelDelegateData::TRIGGER_HIGHLIGHT_UUID,tb->uuid);
+                    } else {
+                        curItem->setData(PixelDelegateData::TRIGGER_HIGHLIGHT_UUID,0);
+                    }
                 } else {
                     curItem->setData(PixelDelegateData::DRAW_TRIGGERS,QByteArray());
                 }
             }
         }
+        triggerIndex++;
     }
 }
 

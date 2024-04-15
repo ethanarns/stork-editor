@@ -142,7 +142,7 @@ void TriggerWindow::spinboxValueChanged(int i) {
     selectedTrigger->topY = (uint16_t)ty;
     selectedTrigger->rightX = (uint16_t)rx;
     selectedTrigger->bottomY = (uint16_t)by;
-    this->grid->updateTriggerBoxes();
+    this->grid->updateTriggerBoxes(curRowIndex);
     emit this->markSavableChange();
 }
 
@@ -169,4 +169,5 @@ void TriggerWindow::triggerListSelectionChanged(int currentRow) {
     this->rightX->setValue(selectedTrigger->rightX);
     this->bottomY->setValue(selectedTrigger->bottomY);
     this->allowChanges = true;
+    this->grid->updateTriggerBoxes(currentRow);
 }
