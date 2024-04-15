@@ -596,6 +596,7 @@ MainWindow::MainWindow() {
     connect(this->grid,&DisplayTable::updateMainWindowStatus,this,&MainWindow::setWindowStatus);
     connect(this->levelWindow,&LevelWindow::portalsUpdated,this,&MainWindow::portalsUpdated);
     connect(this->grid,&DisplayTable::pushStateCommandToStack,this,&MainWindow::pushUndoableCommandToStack);
+    connect(this->triggerWindow,&TriggerWindow::markSavableChange,this,&MainWindow::markSavableUpdate);
 
     /***************
      *** OVERLAY ***

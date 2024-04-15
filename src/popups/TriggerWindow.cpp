@@ -33,6 +33,8 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom, DisplayTable *grid) 
     row1->addWidget(row1text);
     this->leftX = new QSpinBox(this);
     this->leftX->setMaximum(0xffff);
+    this->leftX->setDisplayIntegerBase(16);
+    this->leftX->setPrefix(tr("0x"));
     row1->addWidget(this->leftX);
     connect(this->leftX,QOverload<int>::of(&QSpinBox::valueChanged),this,&TriggerWindow::spinboxValueChanged);
 
@@ -43,6 +45,8 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom, DisplayTable *grid) 
     row2->addWidget(row2text);
     this->topY = new QSpinBox(this);
     this->topY->setMaximum(0xffff);
+    this->topY->setDisplayIntegerBase(16);
+    this->topY->setPrefix(tr("0x"));
     row2->addWidget(this->topY);
     connect(this->topY,QOverload<int>::of(&QSpinBox::valueChanged),this,&TriggerWindow::spinboxValueChanged);
 
@@ -53,6 +57,8 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom, DisplayTable *grid) 
     row3->addWidget(row3text);
     this->rightX = new QSpinBox(this);
     this->rightX->setMaximum(0xffff);
+    this->rightX->setDisplayIntegerBase(16);
+    this->rightX->setPrefix(tr("0x"));
     row3->addWidget(this->rightX);
     connect(this->rightX,QOverload<int>::of(&QSpinBox::valueChanged),this,&TriggerWindow::spinboxValueChanged);
 
@@ -63,6 +69,8 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom, DisplayTable *grid) 
     row4->addWidget(row4text);
     this->bottomY = new QSpinBox(this);
     this->bottomY->setMaximum(0xffff);
+    this->bottomY->setDisplayIntegerBase(16);
+    this->bottomY->setPrefix(tr("0x"));
     row4->addWidget(this->bottomY);
     connect(this->bottomY,QOverload<int>::of(&QSpinBox::valueChanged),this,&TriggerWindow::spinboxValueChanged);
 
@@ -106,7 +114,7 @@ void TriggerWindow::spinboxValueChanged(int i) {
     //YUtils::printDebug("spinboxValueChanged");
     Q_UNUSED(i);
     if (!this->allowChanges) {
-        YUtils::printDebug("Could not make TriggerBox change, disabled",DebugType::WARNING);
+        //YUtils::printDebug("Could not make TriggerBox change, disabled",DebugType::WARNING);
         return;
     }
     int lx = this->leftX->value();
@@ -135,14 +143,14 @@ void TriggerWindow::spinboxValueChanged(int i) {
     selectedTrigger->rightX = (uint16_t)rx;
     selectedTrigger->bottomY = (uint16_t)by;
     this->grid->updateTriggerBoxes();
+    emit this->markSavableChange();
 }
 
 void TriggerWindow::triggerListSelectionChanged(int currentRow) {
-    YUtils::printDebug("triggerListSelectionChanged");
+    //YUtils::printDebug("triggerListSelectionChanged");
     if (currentRow < 0) {
         return;
     }
-    std::cout << currentRow << std::endl;
     // Get all triggers
     auto areaMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::AREA_MAGIC_NUM,true);
     if (areaMaybe == nullptr) {
