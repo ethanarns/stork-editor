@@ -1191,12 +1191,25 @@ void DisplayTable::updateShowCollision() {
 }
 
 void DisplayTable::updateTriggerBoxes() {
+    // Wipe em all
+    const int ROW_COUNT = this->rowCount();
+    const int COLUMN_COUNT = this->columnCount();
+    for (int row = 0; row < ROW_COUNT; row++) {
+        for (int col = 0; col < COLUMN_COUNT; col++) {
+            auto potentialItem = this->item(row,col);
+            if (potentialItem != nullptr) {
+                // Clear it
+                potentialItem->setData(PixelDelegateData::DRAW_TRIGGERS,QByteArray());
+            }
+        }
+    }
+    // Get the data
     auto triggerBoxDataMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::AREA_MAGIC_NUM,true);
     if (triggerBoxDataMaybe == nullptr) {
         //YUtils::printDebug("No TriggerBoxes (AREA) for this map",DebugType::VERBOSE);
         return;
     }
-    YUtils::printDebug("Updating TriggerBoxes",DebugType::VERBOSE);
+    //YUtils::printDebug("Updating TriggerBoxes",DebugType::VERBOSE);
     auto triggerBoxData = static_cast<TriggerBoxData*>(triggerBoxDataMaybe);
     auto triggerBoxes = triggerBoxData->triggers;
     for (auto tit = triggerBoxes.begin(); tit != triggerBoxes.end(); tit++) {

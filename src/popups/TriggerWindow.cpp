@@ -20,6 +20,7 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom, DisplayTable *grid) 
 
     this->triggerList = new QListWidget(this);
     this->triggerList->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
+    connect(this->triggerList,&QListWidget::currentRowChanged,this,&TriggerWindow::triggerListSelectionChanged);
 
     auto mainLayout = new QHBoxLayout(this);
 
@@ -102,7 +103,7 @@ void TriggerWindow::updateTriggerList() {
 }
 
 void TriggerWindow::spinboxValueChanged(int i) {
-    YUtils::printDebug("spinboxValueChanged");
+    //YUtils::printDebug("spinboxValueChanged");
     Q_UNUSED(i);
     if (!this->allowChanges) {
         YUtils::printDebug("Could not make TriggerBox change, disabled",DebugType::WARNING);
@@ -129,9 +130,35 @@ void TriggerWindow::spinboxValueChanged(int i) {
         return;
     }
     auto selectedTrigger = triggers.at(curRowIndex);
-    selectedTrigger->leftX = lx;
-    selectedTrigger->topY = ty;
-    selectedTrigger->rightX = rx;
-    selectedTrigger->bottomY = by;
+    selectedTrigger->leftX = (uint16_t)lx;
+    selectedTrigger->topY = (uint16_t)ty;
+    selectedTrigger->rightX = (uint16_t)rx;
+    selectedTrigger->bottomY = (uint16_t)by;
     this->grid->updateTriggerBoxes();
+}
+
+void TriggerWindow::triggerListSelectionChanged(int currentRow) {
+    YUtils::printDebug("triggerListSelectionChanged");
+    if (currentRow < 0) {
+        return;
+    }
+    std::cout << currentRow << std::endl;
+    // Get all triggers
+    auto areaMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::AREA_MAGIC_NUM,true);
+    if (areaMaybe == nullptr) {
+        YUtils::printDebug("Failed to get TriggerBoxes for level",DebugType::WARNING);
+        return;
+    }
+    auto triggers = static_cast<TriggerBoxData*>(areaMaybe)->triggers;
+    if ((uint)currentRow >= triggers.size()) {
+        YUtils::printDebug("Attempting to retrieve TriggerBox with too high an index",DebugType::ERROR);
+        return;
+    }
+    auto selectedTrigger = triggers.at(currentRow);
+    this->allowChanges = false;
+    this->leftX->setValue(selectedTrigger->leftX);
+    this->topY->setValue(selectedTrigger->topY);
+    this->rightX->setValue(selectedTrigger->rightX);
+    this->bottomY->setValue(selectedTrigger->bottomY);
+    this->allowChanges = true;
 }
