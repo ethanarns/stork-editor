@@ -399,6 +399,11 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         //     meta.whichObjectFile = "objsavepointobj.arcz";
         //     break;
         // }
+        case 0x87: { // Blargg
+            meta.indexOfTiles = 0x4f;
+            meta.indexOfPalette = 0xd7;
+            break;
+        }
         case 0x8e: { // Large breakable rock squares
             meta.indexOfTiles = 0x48;
             // See 020db27c for other potential palettes
@@ -607,6 +612,13 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         case 0xa2: { // Slugger TODO: Test. Where is it located??
             meta.indexOfTiles = 0x5c;
             meta.indexOfPalette = 0xe1;
+            break;
+        }
+        case 0xb9: { // Egg Plant
+            meta.indexOfTiles = 0x61;
+            meta.indexOfPalette = 0xe6;
+            meta.frame = 1;
+            meta.xPixelOffset = 8;
             break;
         }
         case 0xc4: { // Item-Carrying Balloon
