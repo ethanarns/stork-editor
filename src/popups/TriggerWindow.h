@@ -25,6 +25,7 @@ private:
 
     void spinboxValueChanged(int i);
     void triggerListSelectionChanged(int currentRow);
+    void addNewTrigger();
     bool allowChanges = true;
 signals:
     void markSavableChange();

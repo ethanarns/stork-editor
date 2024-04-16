@@ -474,6 +474,10 @@ TriggerBoxData::TriggerBoxData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIn
     }
 }
 
+TriggerBoxData::TriggerBoxData() {
+    /* Nothing */
+}
+
 PathData::PathData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     //std::cout << "PathData()" << std::endl;
     // Not compressed

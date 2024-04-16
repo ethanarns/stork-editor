@@ -146,7 +146,7 @@ void SelectionInfoTable::cellChanged(int row, int column) {
             auto str = item->text().toStdString();
             auto hexVector = this->hexStringToByteVector(str);
             if (hexVector.size() == 0) {
-                YUtils::popupAlert("Error parsing settings data");
+                YUtils::popupAlert("Error parsing settings data, hex vector is empty");
                 return;
             }
             if (hexVector.size() != this->spritePointer->settingsLength) {

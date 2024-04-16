@@ -487,6 +487,7 @@ struct TriggerBox {
 class TriggerBoxData : public LevelData {
 public:
     TriggerBoxData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop);
+    TriggerBoxData();
     uint32_t getMagic() { return Constants::AREA_MAGIC_NUM; }
     std::string toString() {
         std::stringstream ss;
@@ -714,8 +715,8 @@ public:
     std::string filename;
     bool deleteSpriteByUUID(uint32_t uuid);
     LevelObject* addSpriteData(LevelObject lo, bool newUuid = true);
-private:    
     std::vector<LevelData*> subData;
+private:    
     QByteArray layerOrderCache;
     uint32_t paletteRamIndex;
 };

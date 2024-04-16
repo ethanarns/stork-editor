@@ -17,6 +17,7 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom, DisplayTable *grid) 
 
     this->setObjectName("triggerWindow");
     this->setWindowTitle(tr("Trigger Boxes"));
+    this->setMaximumWidth(400);
 
     this->triggerList = new QListWidget(this);
     this->triggerList->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
@@ -78,7 +79,7 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom, DisplayTable *grid) 
     auto row5 = new QHBoxLayout(this);
     settingsLayout->addLayout(row5);
     auto addButton = new QPushButton(tr("Add"),this);
-    addButton->setDisabled(true);
+    connect(addButton,&QPushButton::pressed,this,&TriggerWindow::addNewTrigger);
     row5->addWidget(addButton);
     auto deleteButton = new QPushButton(tr("Delete"),this);
     deleteButton->setDisabled(true);
@@ -91,15 +92,17 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom, DisplayTable *grid) 
 }
 
 void TriggerWindow::updateTriggerList() {
-    auto areaMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::AREA_MAGIC_NUM,true);
-    if (areaMaybe == nullptr) {
-        return;
-    }
-    this->allowChanges = false;
-    YUtils::printDebug("Updating TriggerBox list");
+    // Wipe first
     while (this->triggerList->count() > 0) {
         delete this->triggerList->takeItem(0);
     }
+    auto areaMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::AREA_MAGIC_NUM,true);
+    if (areaMaybe == nullptr) {
+        //YUtils::printDebug("AREA not found");
+        return;
+    }
+    this->allowChanges = false;
+    //YUtils::printDebug("Updating TriggerBox list");
     auto area = static_cast<TriggerBoxData*>(areaMaybe);
     uint i = 0;
     for (auto it = area->triggers.begin(); it != area->triggers.end(); it++) {
@@ -163,6 +166,9 @@ void TriggerWindow::triggerListSelectionChanged(int currentRow) {
         return;
     }
     auto selectedTrigger = triggers.at(currentRow);
+    std::stringstream ss;
+    ss << "Selected TriggerBox with UUID 0x" << std::hex << selectedTrigger->uuid;
+    YUtils::printDebug(ss.str());
     this->allowChanges = false;
     this->leftX->setValue(selectedTrigger->leftX);
     this->topY->setValue(selectedTrigger->topY);
@@ -170,4 +176,31 @@ void TriggerWindow::triggerListSelectionChanged(int currentRow) {
     this->bottomY->setValue(selectedTrigger->bottomY);
     this->allowChanges = true;
     this->grid->updateTriggerBoxes(currentRow);
+}
+
+void TriggerWindow::addNewTrigger() {
+    //YUtils::printDebug("addNewTrigger");
+    auto areaMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::AREA_MAGIC_NUM,true);
+    if (areaMaybe == nullptr) {
+        YUtils::printDebug("AREA data not found, creating new");
+        auto area = new TriggerBoxData();
+        this->yidsRom->mapData->subData.push_back(area);
+        areaMaybe = area;
+    }
+    auto trueArea = static_cast<TriggerBoxData*>(areaMaybe);
+    auto newTrigger = new TriggerBox();
+    newTrigger->leftX = 4;
+    newTrigger->topY = 4;
+    newTrigger->rightX = 8;
+    newTrigger->bottomY = 8;
+    uint32_t newUuid = 1;
+    if (trueArea->triggers.size() > 0) {
+        newUuid = trueArea->triggers.at(trueArea->triggers.size()-1)->uuid + 1;
+    }
+    newTrigger->uuid = newUuid;
+    trueArea->triggers.push_back(newTrigger);
+    // Update, selecting the new one
+    this->updateTriggerList();
+    this->grid->updateTriggerBoxes();
+    emit this->markSavableChange();
 }
