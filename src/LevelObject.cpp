@@ -644,6 +644,13 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0xf8;
             break;
         }
+        case 0xdf: { // Torch, may only show up in darkness
+            meta.whichObjectFile = "objspot.arcz";
+            meta.whichPaletteFile = "objspot.arcz";
+            meta.indexOfTiles = 1; // 0 appears to be the glow itself
+            meta.indexOfPalette = 2;
+            break;
+        }
         case 0xa5: // Somehow these are duplicates, but this has fewer settings
         case 0xe7: { // M Block that only shows up when carrying baby Mario
             meta.indexOfTiles = 0x5f;
