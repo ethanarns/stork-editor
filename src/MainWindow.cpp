@@ -1051,6 +1051,25 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
         globalSettings.layerSelectMode == LayerMode::BG3_LAYER
     ) {
+        if (event->key() == Qt::Key_Delete || event->key() == Qt::Key_Backspace) {
+            auto blankTileAttr = YUtils::getMapTileRecordDataFromShort(0x0000);
+            QUndoCommand* totalRmCmd = new QUndoCommand();
+            for (auto it = globalSettings.selectedItemPointers.begin(); it != globalSettings.selectedItemPointers.end(); it++) {
+                if (globalSettings.layerSelectMode == BG1_LAYER) {
+                    (*it)->setData(PixelDelegateData::TILE_SELECTED_BG1,false);
+                } else if (globalSettings.layerSelectMode == BG2_LAYER) {
+                    (*it)->setData(PixelDelegateData::TILE_SELECTED_BG2,false);
+                } else if (globalSettings.layerSelectMode == BG3_LAYER) {
+                    (*it)->setData(PixelDelegateData::TILE_SELECTED_BG3,false);
+                } else {
+                    YUtils::printDebug("Unusual BG layer mode",DebugType::ERROR);
+                }
+                auto tw = *it;
+                new AddTileToGridCommand(tw->row(),tw->column(),blankTileAttr,this->rom,this->grid,totalRmCmd);
+            }
+            this->pushUndoableCommandToStack(totalRmCmd);
+            this->markSavableUpdate();
+        }
         //YUtils::printDebug("keyPressEvent: BG Layer",DebugType::VERBOSE);
     } else if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
         //YUtils::printDebug("keyPressEvent: Collision layer",DebugType::VERBOSE);

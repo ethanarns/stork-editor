@@ -152,7 +152,8 @@ void AddTileToGridCommand::redo() {
 }
 
 void AddTileToGridCommand::undo() {
-    this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordOld,this->whichBg,true);
+    // The command is stored with the offset baked in
+    this->grid->placeNewTileOnMap(this->rowY,this->colX,this->mapRecordOld,this->whichBg,false);
 }
 
 void SetCollisionTileCommand::redo() {
