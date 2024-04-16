@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QSpinBox>
 #include <QPushButton>
+#include <QMessageBox>
 
 TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom, DisplayTable *grid) {
     Q_UNUSED(parent);
@@ -82,7 +83,7 @@ TriggerWindow::TriggerWindow(QWidget *parent, YidsRom *rom, DisplayTable *grid) 
     connect(addButton,&QPushButton::pressed,this,&TriggerWindow::addNewTrigger);
     row5->addWidget(addButton);
     auto deleteButton = new QPushButton(tr("Delete"),this);
-    deleteButton->setDisabled(true);
+    connect(deleteButton,&QPushButton::pressed,this,&TriggerWindow::deleteTrigger);
     row5->addWidget(deleteButton);
 
     mainLayout->addWidget(this->triggerList);
@@ -203,4 +204,28 @@ void TriggerWindow::addNewTrigger() {
     this->updateTriggerList();
     this->grid->updateTriggerBoxes();
     emit this->markSavableChange();
+}
+
+void TriggerWindow::deleteTrigger() {
+    auto currentSelectedRow = triggerList->currentRow();
+    if (currentSelectedRow < 0) {
+        YUtils::popupAlert("No TriggerBox selected");
+        return;
+    }
+    QMessageBox::StandardButton reply = QMessageBox::question(this,"Delete TriggerBox","Warning: TriggerBoxes are targeted by index, meaning position matters. Deleting WILL break connections. Are you sure?", QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        YUtils::printDebug("Deleting selected TriggerBox");
+        auto areaMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::AREA_MAGIC_NUM,true);
+        if (areaMaybe == nullptr) {
+            YUtils::printDebug("Failed to get TriggerBoxes for level",DebugType::WARNING);
+            return;
+        }
+        auto triggers = &static_cast<TriggerBoxData*>(areaMaybe)->triggers;
+        triggers->erase(std::next(triggers->begin(),currentSelectedRow));
+        this->updateTriggerList();
+        this->grid->updateTriggerBoxes();
+        emit this->markSavableChange();
+    } else {
+        YUtils::printDebug("Canceling delete TriggerBox");
+    }
 }

@@ -331,7 +331,7 @@ MainWindow::MainWindow() {
     this->layerSelectDropdown->addItem("BG2");
     this->layerSelectDropdown->addItem("BG3");
     this->layerSelectDropdown->addItem("Colliders");
-    this->layerSelectDropdown->addItem("Portals");
+    //this->layerSelectDropdown->addItem("Portals");
     this->layerSelectDropdown->setCurrentText("Sprites");
     this->layerSelectDropdown->setDisabled(true);
     toolbar->addWidget(this->layerSelectDropdown);
