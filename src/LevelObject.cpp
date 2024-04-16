@@ -399,6 +399,29 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
         //     meta.whichObjectFile = "objsavepointobj.arcz";
         //     break;
         // }
+        case 0x82: {
+            meta.indexOfTiles = 0x4c;
+            meta.indexOfPalette = 0xd3;
+            meta.yPixelOffset = -8*3;
+            ObjectGraphicMetadata sharp;
+            sharp.indexOfTiles = 0x4c;
+            sharp.indexOfPalette = 0xd3;
+            sharp.frame = 1;
+            meta.extras.push_back(sharp);
+            ObjectGraphicMetadata left;
+            left.indexOfTiles = 0x4c;
+            left.indexOfPalette = 0xd3;
+            left.xPixelOffset = -8*3;
+            left.yPixelOffset = -8*3;
+            meta.extras.push_back(left);
+            ObjectGraphicMetadata right;
+            right.indexOfTiles = 0x4c;
+            right.indexOfPalette = 0xd3;
+            right.xPixelOffset = 8*3;
+            right.yPixelOffset = -8*3;
+            meta.extras.push_back(right);
+            break;
+        }
         case 0x87: { // Blargg
             meta.indexOfTiles = 0x4f;
             meta.indexOfPalette = 0xd7;
