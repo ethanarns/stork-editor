@@ -347,6 +347,14 @@ ObjectGraphicMetadata LevelObject::getObjectGraphicMetadata(LevelObject lo) {
             meta.indexOfPalette = 0x9c;
             break;
         }
+        case 0x49: { // Chomp Rock
+            meta.indexOfTiles = 0x27;
+            meta.indexOfPalette = 0x9f;
+            if (lo.settings.at(0) == 1) {
+                meta.indexOfPalette = 0xa0;
+            }
+            break;
+        }
         case 0x4b: { // Windbag
             meta.indexOfTiles = 0x33;
             meta.indexOfPalette = 0xa1;

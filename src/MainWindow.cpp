@@ -307,7 +307,7 @@ MainWindow::MainWindow() {
     this->button_addSpriteWindow->setDisabled(true);
     connect(this->button_addSpriteWindow,&QAction::triggered,this,&MainWindow::toolbarClick_spritePicker);
 
-    QPixmap iconTriggerWindow(":/assets/coin.png");
+    QPixmap iconTriggerWindow(":/assets/icon_trigger.png");
     this->button_triggerBoxWindow = toolbar->addAction(QIcon(iconTriggerWindow), tr("Open Trigger window"));
     this->button_triggerBoxWindow->setObjectName("button_triggerBoxWindow");
     this->button_triggerBoxWindow->setDisabled(true);
