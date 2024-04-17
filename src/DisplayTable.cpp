@@ -610,6 +610,7 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                     //YUtils::printDebug("Mismatch in selected item and cursor item, deselecting",DebugType::VERBOSE);
                     this->selectedObjects.clear();
                     this->clearVisualSpriteSelection();
+                    emit this->clipboardUpdated();
                     return;
                 }
                 if (cursorUuidMaybe.toUInt() == selectedObjectUuid) {
@@ -623,12 +624,14 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
                     mimeData->setData("application/x-stork-sprite-uuid",uuidBytes);
                     drag->setMimeData(mimeData);
                     drag->exec(Qt::MoveAction);
+                    emit this->clipboardUpdated();
                     return;
                 } else {
                     //YUtils::printDebug("Clicked a different object, selecting it");
                     this->clearVisualSpriteSelection();
                     this->selectedObjects.clear();
                     this->selectItemByUuid(cursorUuidMaybe.toUInt());
+                    emit this->clipboardUpdated();
                     return;
                 }
             } else {
@@ -650,16 +653,19 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
 
                     //YUtils::printDebug("Doing item selection in mousePressEvent");
                     this->selectItemByUuid(cursorItemUuid);
+                    emit this->clipboardUpdated();
                     return;
                 } else {
                     //YUtils::printDebug("Area clicked does not have an item UUID, deselecting all");
                     this->selectedObjects.clear();
                     this->clearVisualSpriteSelection();
+                    emit this->clipboardUpdated();
                     return;
                 }
             }
         } else if (event->button() == Qt::RightButton) {
             this->handleSpritesRightClickPress(event);
+            emit this->clipboardUpdated();
         } else if (event->button() == Qt::MiddleButton) {
             //YUtils::printDebug("Middle Button");
             auto curItemUnderCursor = this->itemAt(event->pos());

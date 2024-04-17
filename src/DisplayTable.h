@@ -110,6 +110,7 @@ signals:
     int triggerMainWindowUpdate();
     void updateMainWindowStatus(std::string newStatus);
     void pushStateCommandToStack(QUndoCommand* cmdPtr);
+    void clipboardUpdated();
 };
 
 #endif

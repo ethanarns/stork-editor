@@ -597,6 +597,7 @@ MainWindow::MainWindow() {
     connect(this->levelWindow,&LevelWindow::portalsUpdated,this,&MainWindow::portalsUpdated);
     connect(this->grid,&DisplayTable::pushStateCommandToStack,this,&MainWindow::pushUndoableCommandToStack);
     connect(this->triggerWindow,&TriggerWindow::markSavableChange,this,&MainWindow::markSavableUpdate);
+    connect(this->grid,&DisplayTable::clipboardUpdated,this,&MainWindow::updateClipboardUi);
 
     /***************
      *** OVERLAY ***
@@ -836,7 +837,9 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
         return;
     }
     YUtils::printDebug(ss.str(),DebugType::VERBOSE);
+    this->grid->selectedObjects.clear();
     this->grid->clearVisualSpriteSelection();
+    this->updateClipboardUi();
 }
 
 /*******************
@@ -1237,93 +1240,115 @@ void MainWindow::pushUndoableCommandToStack(QUndoCommand *cmdPtr) {
 }
 
 void MainWindow::updateClipboardUi() {
-    if (this->grid->selectedObjects.size() == 0) {
+    if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
+        if (this->grid->selectedObjects.size() == 0) {
+            this->action_copy->setDisabled(true);
+            this->action_cut->setDisabled(true);
+        } else {
+            this->action_copy->setDisabled(false);
+            this->action_cut->setDisabled(false);
+        }
+        if (globalSettings.spriteClipboard.size() == 0) {
+            this->action_paste->setDisabled(true);
+        } else {
+            this->action_paste->setDisabled(false);
+        }
+    } else {
+        // Not supported
         this->action_copy->setDisabled(true);
         this->action_cut->setDisabled(true);
-    } else {
-        this->action_copy->setDisabled(false);
-        this->action_cut->setDisabled(false);
-    }
-    if (globalSettings.spriteClipboard.size() == 0) {
         this->action_paste->setDisabled(true);
-    } else {
-        this->action_paste->setDisabled(false);
     }
 }
 
 void MainWindow::menuClick_copy() {
-    if (this->grid->selectedObjects.size() == 0) {
-        YUtils::printDebug("Nothing to copy");
-        return;
+    if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
+        if (this->grid->selectedObjects.size() == 0) {
+            YUtils::printDebug("Nothing to copy");
+            this->updateClipboardUi();
+            return;
+        }
+        // They aren't pointers, so you can clear it normally
+        globalSettings.spriteClipboard.clear();
+        for (auto it = this->grid->selectedObjects.cbegin(); it != this->grid->selectedObjects.cend(); it++) {
+            auto loData = this->rom->mapData->getLevelObjectByUuid(*it);
+            LevelObject copy;
+            copy.objectId = loData->objectId;
+            copy.xPosition = loData->xPosition + 2;
+            copy.yPosition = loData->yPosition + 2;
+            copy.settingsLength = loData->settingsLength;
+            copy.settings = loData->settings;
+            copy.uuid = 0xffff; // UUID is actually set when adding to SETD
+            globalSettings.spriteClipboard.push_back(copy);
+        }
+        globalSettings.spriteClipboardWasCut = false;
+        std::stringstream ss;
+        ss << "Copied " << globalSettings.spriteClipboard.size() << " Sprites to clipboard";
+        this->statusLabel->setText(QString::fromStdString(ss.str()));   
+    } else {
+        YUtils::printDebug("Copy not supported for this layer",DebugType::WARNING);
     }
-    // They aren't pointers, so you can clear it normally
-    globalSettings.spriteClipboard.clear();
-    for (auto it = this->grid->selectedObjects.cbegin(); it != this->grid->selectedObjects.cend(); it++) {
-        auto loData = this->rom->mapData->getLevelObjectByUuid(*it);
-        LevelObject copy;
-        copy.objectId = loData->objectId;
-        copy.xPosition = loData->xPosition + 2;
-        copy.yPosition = loData->yPosition + 2;
-        copy.settingsLength = loData->settingsLength;
-        copy.settings = loData->settings;
-        copy.uuid = 0xffff; // UUID is actually set when adding to SETD
-        globalSettings.spriteClipboard.push_back(copy);
-    }
-    globalSettings.spriteClipboardWasCut = false;
-    std::stringstream ss;
-    ss << "Copied " << globalSettings.spriteClipboard.size() << " Sprites to clipboard";
-    this->statusLabel->setText(QString::fromStdString(ss.str()));
     this->updateClipboardUi();
 }
 
 void MainWindow::menuClick_cut() {
-    if (this->grid->selectedObjects.size() == 0) {
-        YUtils::printDebug("Nothing to copy");
-        return;
+    if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
+        if (this->grid->selectedObjects.size() == 0) {
+            YUtils::printDebug("Nothing to copy");
+            this->updateClipboardUi();
+            return;
+        }
+        // They aren't pointers, so you can clear it normally
+        globalSettings.spriteClipboard.clear();
+        for (auto it = this->grid->selectedObjects.cbegin(); it != this->grid->selectedObjects.cend(); it++) {
+            auto loData = this->rom->mapData->getLevelObjectByUuid(*it);
+            LevelObject copy;
+            copy.objectId = loData->objectId;
+            copy.xPosition = loData->xPosition + 2;
+            copy.yPosition = loData->yPosition + 2;
+            copy.settingsLength = loData->settingsLength;
+            copy.settings = loData->settings;
+            copy.uuid = 0xffff; // UUID is actually set when adding to SETD
+            globalSettings.spriteClipboard.push_back(copy);
+        }
+        globalSettings.spriteClipboardWasCut = true;
+        // Now wipe em
+        QUndoCommand* multiCutCmd = new QUndoCommand();
+        for (auto dit = this->grid->selectedObjects.begin(); dit != this->grid->selectedObjects.end(); dit++) {
+            LevelObject loDel = *this->rom->mapData->getLevelObjectByUuid(*dit);
+            new DeleteSpriteCommand(loDel,this->grid,this->rom,multiCutCmd);
+        }
+        this->pushUndoableCommandToStack(multiCutCmd);
+        std::stringstream ss;
+        ss << "Cut " << globalSettings.spriteClipboard.size() << " Sprites to clipboard";
+        this->statusLabel->setText(QString::fromStdString(ss.str()));
+    } else {
+        YUtils::printDebug("Cut not supported for this layer",DebugType::WARNING);
     }
-    // They aren't pointers, so you can clear it normally
-    globalSettings.spriteClipboard.clear();
-    for (auto it = this->grid->selectedObjects.cbegin(); it != this->grid->selectedObjects.cend(); it++) {
-        auto loData = this->rom->mapData->getLevelObjectByUuid(*it);
-        LevelObject copy;
-        copy.objectId = loData->objectId;
-        copy.xPosition = loData->xPosition + 2;
-        copy.yPosition = loData->yPosition + 2;
-        copy.settingsLength = loData->settingsLength;
-        copy.settings = loData->settings;
-        copy.uuid = 0xffff; // UUID is actually set when adding to SETD
-        globalSettings.spriteClipboard.push_back(copy);
-    }
-    globalSettings.spriteClipboardWasCut = true;
-    // Now wipe em
-    QUndoCommand* multiCutCmd = new QUndoCommand();
-    for (auto dit = this->grid->selectedObjects.begin(); dit != this->grid->selectedObjects.end(); dit++) {
-        LevelObject loDel = *this->rom->mapData->getLevelObjectByUuid(*dit);
-        new DeleteSpriteCommand(loDel,this->grid,this->rom,multiCutCmd);
-    }
-    this->pushUndoableCommandToStack(multiCutCmd);
-    std::stringstream ss;
-    ss << "Cut " << globalSettings.spriteClipboard.size() << " Sprites to clipboard";
-    this->statusLabel->setText(QString::fromStdString(ss.str()));
     this->updateClipboardUi();
 }
 
 void MainWindow::menuClick_paste() {
-    if (globalSettings.spriteClipboard.size() == 0) {
-        YUtils::printDebug("Nothing to paste");
-        return;
-    }
-    QUndoCommand* multiPasteCmd = new QUndoCommand();
-    for (auto it = globalSettings.spriteClipboard.begin(); it != globalSettings.spriteClipboard.end(); it++) {
-        // Maybe adjust position
-        new AddSpriteCommand(*it,this->grid,this->rom,multiPasteCmd);
-    }
-    this->pushUndoableCommandToStack(multiPasteCmd);
-    std::stringstream ss;
-    ss << "Pasted " << globalSettings.spriteClipboard.size() << " Sprites to map";
-    this->statusLabel->setText(QString::fromStdString(ss.str()));
-    if (globalSettings.spriteClipboardWasCut) {
-        globalSettings.spriteClipboard.clear();
+    if (globalSettings.layerSelectMode == LayerMode::SPRITES_LAYER) {
+        if (globalSettings.spriteClipboard.size() == 0) {
+            YUtils::printDebug("Nothing to paste");
+            this->updateClipboardUi();
+            return;
+        }
+        QUndoCommand* multiPasteCmd = new QUndoCommand();
+        for (auto it = globalSettings.spriteClipboard.begin(); it != globalSettings.spriteClipboard.end(); it++) {
+            // Maybe adjust position
+            new AddSpriteCommand(*it,this->grid,this->rom,multiPasteCmd);
+        }
+        this->pushUndoableCommandToStack(multiPasteCmd);
+        std::stringstream ss;
+        ss << "Pasted " << globalSettings.spriteClipboard.size() << " Sprites to map";
+        this->statusLabel->setText(QString::fromStdString(ss.str()));
+        if (globalSettings.spriteClipboardWasCut) {
+            globalSettings.spriteClipboard.clear();
+        }
+    } else {
+        YUtils::printDebug("Paste not supported for this layer",DebugType::WARNING);
     }
     this->updateClipboardUi();
 }
