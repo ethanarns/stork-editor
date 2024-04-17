@@ -1346,6 +1346,12 @@ void MainWindow::menuClick_paste() {
         this->statusLabel->setText(QString::fromStdString(ss.str()));
         if (globalSettings.spriteClipboardWasCut) {
             globalSettings.spriteClipboard.clear();
+        } else {
+            // Move them all more for more copying
+            for (auto mit = globalSettings.spriteClipboard.begin(); mit != globalSettings.spriteClipboard.end(); mit++) {
+                mit->xPosition += 2;
+                mit->yPosition += 2;
+            }
         }
     } else {
         YUtils::printDebug("Paste not supported for this layer",DebugType::WARNING);
