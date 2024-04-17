@@ -146,26 +146,26 @@ MainWindow::MainWindow() {
 
     menu_edit->addSeparator();
 
-    QAction* action_cut = new QAction("&Cut",this);
-    action_cut->setShortcut(tr("CTRL+X"));
-    action_cut->setIcon(QIcon::fromTheme("edit-cut"));
-    menu_edit->addAction(action_cut);
-    action_cut->setDisabled(true);
-    // Add connect() once implemented
+    this->action_cut = new QAction("&Cut",this);
+    this->action_cut->setShortcut(tr("CTRL+X"));
+    this->action_cut->setIcon(QIcon::fromTheme("edit-cut"));
+    menu_edit->addAction(this->action_cut);
+    this->action_cut->setDisabled(true);
+    connect(this->action_cut,&QAction::triggered,this,&MainWindow::menuClick_cut);
 
-    QAction* action_copy = new QAction("&Copy",this);
-    action_copy->setShortcut(tr("CTRL+C"));
-    action_copy->setIcon(QIcon::fromTheme("edit-copy"));
-    menu_edit->addAction(action_copy);
-    action_copy->setDisabled(true);
-    // Add connect() once implemented
+    this->action_copy = new QAction("&Copy",this);
+    this->action_copy->setShortcut(tr("CTRL+C"));
+    this->action_copy->setIcon(QIcon::fromTheme("edit-copy"));
+    menu_edit->addAction(this->action_copy);
+    this->action_copy->setDisabled(true);
+    connect(this->action_copy,&QAction::triggered,this,&MainWindow::menuClick_copy);
 
-    QAction* action_paste = new QAction("&Paste",this);
-    action_paste->setShortcut(tr("CTRL+V"));
-    action_paste->setIcon(QIcon::fromTheme("edit-paste"));
-    menu_edit->addAction(action_paste);
-    action_paste->setDisabled(true);
-    // Add connect() once implemented
+    this->action_paste = new QAction("&Paste",this);
+    this->action_paste->setShortcut(tr("CTRL+V"));
+    this->action_paste->setIcon(QIcon::fromTheme("edit-paste"));
+    menu_edit->addAction(this->action_paste);
+    this->action_paste->setDisabled(true);
+    connect(this->action_paste,&QAction::triggered,this,&MainWindow::menuClick_paste);
 
     // View menu //
     QMenu* menu_view = menuBar()->addMenu("&View");
@@ -689,6 +689,9 @@ void MainWindow::LoadRom() {
         this->menu_save->setDisabled(false);
         this->menu_export->setDisabled(false);
         this->menu_levelSettings->setDisabled(false);
+        this->action_copy->setDisabled(false);
+        this->action_cut->setDisabled(false);
+        this->action_paste->setDisabled(false);
 
         this->mapSelectPopup->updateLeftList();
 
@@ -1232,4 +1235,16 @@ void MainWindow::pushUndoableCommandToStack(QUndoCommand *cmdPtr) {
     //YUtils::printDebug("pushUndoableCommandToStack");
     this->undoStack->push(cmdPtr);
     this->updateUndoMenu();
+}
+
+void MainWindow::menuClick_copy() {
+    YUtils::printDebug("menuClick_copy");
+}
+
+void MainWindow::menuClick_cut() {
+    YUtils::printDebug("menuClick_cut");
+}
+
+void MainWindow::menuClick_paste() {
+    YUtils::printDebug("menuClick_paste");
 }

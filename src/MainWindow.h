@@ -99,6 +99,9 @@ private:
     
     QAction* action_undo;
     QAction* action_redo;
+    QAction* action_copy;
+    QAction* action_cut;
+    QAction* action_paste;
 
     QAction* action_viewBg1;
     QAction* action_viewBg2;
@@ -117,6 +120,9 @@ private:
     void menuClick_viewTriggers(bool checked);
     void menuClick_viewEntrances(bool checked);
     void menuClick_viewExits(bool checked);
+    void menuClick_copy();
+    void menuClick_cut();
+    void menuClick_paste();
 
     void toolbarClick_palette();
     void toolbarClick_tiles();
