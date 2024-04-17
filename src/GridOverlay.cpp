@@ -33,9 +33,8 @@ bool GridOverlay::eventFilter(QObject *obj, QEvent *event) {
     if (event->type() == QEvent::Paint) {
         auto overlay = dynamic_cast<QWidget*>(obj);
         QPainter painter(overlay);
-        if (this->pathData != nullptr && this->needsPathUpdate) {
+        if (this->pathData != nullptr) {
             this->handlePaths(&painter);
-            this->needsPathUpdate = false;
         }
         return true;
     }
@@ -46,8 +45,39 @@ bool GridOverlay::handlePaths(QPainter *paint) {
     if (this->pathData == nullptr) {
         return false;
     }
-    for (auto mpit = this->pathData->paths.begin(); mpit != this->pathData->paths.end(); mpit++) {
-        YUtils::printDebug("Handing parent path");
+    QColor magenta(245,66,149);
+    paint->setPen("white");
+    int pathIndex = 0;
+    int subPathIndex = 0;
+    for (auto mpit = this->pathData->paths.cbegin(); mpit != this->pathData->paths.cend(); mpit++) {
+        subPathIndex = 0;
+        uint32_t priorFinalX = 0;
+        uint32_t priorFinalY = 0;
+        for (auto it = mpit->cbegin(); it != mpit->cend(); it++) {
+            const int width = subPathIndex == 0 ? 10 : 5;
+            auto xFine = (*it)->xFine;
+            auto yFine = (*it)->yFine;
+            int finalX = (int)xFine >> 12;
+            int finalY = (int)yFine >> 12;
+
+            if (subPathIndex != 0) {
+                QLine subPathLine;
+                subPathLine.setP1(QPoint(priorFinalX,priorFinalY));
+                subPathLine.setP2(QPoint(finalX,finalY));
+                paint->drawLine(subPathLine);
+            }
+
+            priorFinalX = finalX;
+            priorFinalY = finalY;
+
+            paint->fillRect(finalX,finalY,width,width,magenta);
+            paint->drawRect(finalX,finalY,width,width);
+            std::stringstream ssPath;
+            ssPath << "" << pathIndex << "-" << subPathIndex;
+            paint->drawText(finalX,finalY,QString::fromStdString(ssPath.str()));
+            subPathIndex++;
+        }
+        pathIndex++;
     }
     return true;
 }

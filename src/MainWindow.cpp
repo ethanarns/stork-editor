@@ -1280,7 +1280,6 @@ void MainWindow::updateOverlay() {
         YUtils::printDebug("Updating PATH data");
         auto pathData = static_cast<PathData*>(pathsMaybe);
         this->gridOverlay->pathData = pathData;
-        this->gridOverlay->needsPathUpdate = true;
     }
 }
 

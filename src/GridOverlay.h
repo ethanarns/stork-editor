@@ -12,7 +12,6 @@ public:
     GridOverlay(QWidget* viewport, YidsRom* yidsRom);
     void updateSizeToGrid(int rows, int columns);
     PathData* pathData;
-    bool needsPathUpdate = false;
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
 private:
