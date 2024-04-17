@@ -37,7 +37,7 @@ src/GridOverlay.h src/StateCommands.h src/data/ProjectManager.h src/popups/Trigg
 QT += core gui widgets
 
 # version.majorRelease.minorRelease.hotfix
-VERSION = 0.5.0.1
+VERSION = 0.5.1.0
 
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
