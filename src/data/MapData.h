@@ -555,7 +555,8 @@ public:
     uint32_t getMagic() { return Constants::PATH_MAGIC_NUM; }
     std::string toString() {
         std::stringstream ss;
-        ss << "PathData { Path count: ???";
+        ss << "PathData { Path count: ";
+        ss << std::dec << paths.size();
         ss << " }";
         return ss.str();
     };

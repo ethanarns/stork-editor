@@ -602,7 +602,7 @@ MainWindow::MainWindow() {
     /***************
      *** OVERLAY ***
      ***************/
-    this->gridOverlay = new GridOverlay(this->grid->viewport());
+    this->gridOverlay = new GridOverlay(this->grid->viewport(),this->rom);
     this->gridOverlay->updateSizeToGrid(this->grid->rowCount(),this->grid->columnCount());
 }
 
@@ -693,6 +693,8 @@ void MainWindow::LoadRom() {
         this->updateClipboardUi();
 
         this->mapSelectPopup->updateLeftList();
+
+        this->updateOverlay();
 
         this->guiObjectList->updateList();
         this->statusLabel->setText(tr("ROM Loaded"));
@@ -932,6 +934,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     // If it was hidden last time, hide it again
     this->grid->updatePortals(this->grid->shouldDrawEntrances,this->grid->shouldDrawExits);
     this->brushWindow->updateCharsetLabel();
+    this->updateOverlay();
 }
 
 void MainWindow::menuClick_viewBg1(bool checked) {
@@ -1258,6 +1261,26 @@ void MainWindow::updateClipboardUi() {
         this->action_copy->setDisabled(true);
         this->action_cut->setDisabled(true);
         this->action_paste->setDisabled(true);
+    }
+}
+
+void MainWindow::updateOverlay() {
+    if (this->rom == nullptr) {
+        return;
+    }
+    if (this->rom->mapData == nullptr) {
+        return;
+    }
+    YUtils::printDebug("updateOverlay");
+    auto pathsMaybe = this->rom->mapData->getFirstDataByMagic(Constants::PATH_MAGIC_NUM,true);
+    if (pathsMaybe == nullptr) {
+        YUtils::printDebug("No PATH data found");
+        this->gridOverlay->pathData = nullptr;
+    } else {
+        YUtils::printDebug("Updating PATH data");
+        auto pathData = static_cast<PathData*>(pathsMaybe);
+        this->gridOverlay->pathData = pathData;
+        this->gridOverlay->needsPathUpdate = true;
     }
 }
 

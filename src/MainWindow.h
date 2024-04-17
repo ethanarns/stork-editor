@@ -152,6 +152,7 @@ private:
     void redo();
     void pushUndoableCommandToStack(QUndoCommand *cmdPtr);
     void updateClipboardUi();
+    void updateOverlay();
 };
 
 #endif
