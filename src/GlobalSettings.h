@@ -12,6 +12,7 @@
 
 #include "PixelDelegateEnums.h"
 #include "Chartile.h"
+#include "LevelObject.h"
 
 enum LayerMode {
     BG1_LAYER,
@@ -64,6 +65,8 @@ struct GlobalSettings {
     uint32_t currentSpriteIdToAdd = 0;
     uint32_t gridCellSizePx = 8;
     std::string extractFolderName = "yromfs";
+    std::vector<LevelObject> spriteClipboard;
+    bool spriteClipboardWasCut;
 
     uint32_t temp_paletteOffset = 0;
 
