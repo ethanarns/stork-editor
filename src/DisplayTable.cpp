@@ -660,6 +660,29 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
             }
         } else if (event->button() == Qt::RightButton) {
             this->handleSpritesRightClickPress(event);
+        } else if (event->button() == Qt::MiddleButton) {
+            //YUtils::printDebug("Middle Button");
+            auto curItemUnderCursor = this->itemAt(event->pos());
+            if (curItemUnderCursor == nullptr) {
+                YUtils::printDebug("No item loaded under cursor",DebugType::WARNING);
+                return;
+            }
+            auto uuidData = curItemUnderCursor->data(PixelDelegateData::OBJECT_UUID);
+            if (!uuidData.isNull()) {
+                auto levelObject = this->yidsRom->mapData->getLevelObjectByUuid(uuidData.toUInt());
+                if (levelObject == nullptr) {
+                    YUtils::printDebug("Cannot find LevelObject in MapData",DebugType::ERROR);
+                } else {
+                    globalSettings.currentSpriteIdToAdd = levelObject->objectId;
+                    std::stringstream ssMiddleSprite;
+                    ssMiddleSprite << "Setting current sprite brush to object 0x" << std::hex << levelObject->objectId;
+                    auto sm = this->yidsRom->getSpriteMetadata(levelObject->objectId);
+                    ssMiddleSprite << " (" << sm.name << ")";
+                    emit this->updateMainWindowStatus(ssMiddleSprite.str());
+                }
+            } else {
+                //YUtils::printDebug("Cannot find LevelObject, no UUID data");
+            }
         } else {
            YUtils::printDebug("Unhandled mouse click in DisplayTable"); 
         }

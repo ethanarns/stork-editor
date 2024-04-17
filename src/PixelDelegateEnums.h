@@ -37,7 +37,7 @@ enum PixelDelegateData {
     FLIP_V_BG1 = 113,
 
     /**
-     * Type: int
+     * Type: uint32_t
      * Purpose: Object ID to print out
      */
     OBJECT_ID = 114,
