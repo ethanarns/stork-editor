@@ -20,7 +20,8 @@ enum LayerMode {
     BG3_LAYER,
     SPRITES_LAYER,
     COLLISION_LAYER,
-    PORTALS_LAYER
+    PORTALS_LAYER,
+    PATHS_LAYER
 };
 
 struct TileBrush {

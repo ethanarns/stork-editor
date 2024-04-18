@@ -331,6 +331,7 @@ MainWindow::MainWindow() {
     this->layerSelectDropdown->addItem("BG2");
     this->layerSelectDropdown->addItem("BG3");
     this->layerSelectDropdown->addItem("Colliders");
+    this->layerSelectDropdown->addItem("Paths");
     //this->layerSelectDropdown->addItem("Portals");
     this->layerSelectDropdown->setCurrentText("Sprites");
     this->layerSelectDropdown->setDisabled(true);
@@ -829,6 +830,10 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
         globalSettings.layerSelectMode = LayerMode::PORTALS_LAYER;
         globalSettings.currentEditingBackground = 0;
         ss << "Portals";
+    } else if (str.compare("Paths") == 0) {
+        globalSettings.layerSelectMode = LayerMode::PATHS_LAYER;
+        globalSettings.currentEditingBackground = 0;
+        ss << "Paths";
     } else {
         std::stringstream ssLayerSelect;
         ssLayerSelect << "Unknown layer selected in dropdown: ";
@@ -1179,6 +1184,9 @@ void MainWindow::displayTableClicked() {
     } else if (globalSettings.layerSelectMode == LayerMode::PORTALS_LAYER) {
         YUtils::printDebug("MainWindow clicked while in PORTALS mode");
         YUtils::popupAlert("Portals mode selection not yet implemented");
+    } else if (globalSettings.layerSelectMode == LayerMode::PATHS_LAYER) {
+        YUtils::printDebug("MainWindow clicked while in PATHS mode");
+        //YUtils::popupAlert("Paths mode selection not yet implemented");
     } else {
         YUtils::printDebug("MainWindow clicked while in UNKNOWN mode");
     }

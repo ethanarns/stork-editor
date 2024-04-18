@@ -29,9 +29,9 @@ DisplayTable::DisplayTable(QWidget* parent,YidsRom* rom) {
 
     // Layout //
     this->horizontalHeader()->setMinimumSectionSize(0);
-    this->horizontalHeader()->setDefaultSectionSize(DisplayTable::CELL_SIZE_PX);
+    this->horizontalHeader()->setDefaultSectionSize(globalSettings.gridCellSizePx);
     this->verticalHeader()->setMinimumSectionSize(0);
-    this->verticalHeader()->setDefaultSectionSize(DisplayTable::CELL_SIZE_PX);
+    this->verticalHeader()->setDefaultSectionSize(globalSettings.gridCellSizePx);
     this->setRowCount(DisplayTable::CELL_COUNT_H);
     this->setColumnCount(DisplayTable::CELL_COUNT_W);
     this->horizontalHeader()->hide();
@@ -735,6 +735,13 @@ void DisplayTable::mousePressEvent(QMouseEvent *event) {
         } else {
             YUtils::printDebug("Unknown mouse button in collision layer mode",DebugType::VERBOSE);
         }
+    } else if (globalSettings.layerSelectMode == LayerMode::PATHS_LAYER) {
+        auto curCell = this->itemAt(event->pos());
+        auto xMod = event->pos().x() % globalSettings.gridCellSizePx;
+        auto yMod = event->pos().y() % globalSettings.gridCellSizePx;
+        auto trueX = (curCell->column() * globalSettings.gridCellSizePx) + xMod;
+        auto trueY = (curCell->row() * globalSettings.gridCellSizePx) + yMod;
+        std::cout << "x: 0x" << std::hex << trueX << ", y: 0x" << trueY << std::endl;
     }
     QTableWidget::mousePressEvent(event);
 }
@@ -752,7 +759,7 @@ void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
             bool bandBigEnoughForMultiSelect = false;
             auto bandWidth = this->selectorBand->width();
             auto bandHeight = this->selectorBand->height();
-            if (bandWidth > DisplayTable::CELL_SIZE_PX || bandHeight > DisplayTable::CELL_SIZE_PX) {
+            if (bandWidth > globalSettings.gridCellSizePx || bandHeight > globalSettings.gridCellSizePx) {
                 bandBigEnoughForMultiSelect = true;
             }
             this->selectorBand->hide();

@@ -77,7 +77,6 @@ public:
     void clearVisualSpriteSelection();
     void updatePortals(bool drawEntrances, bool drawExits);
 private:
-    const static int CELL_SIZE_PX = 8;
     const static int CELL_COUNT_W = 0xff*4;
     const static int CELL_COUNT_H = 0xff*2;
     YidsRom* yidsRom;
