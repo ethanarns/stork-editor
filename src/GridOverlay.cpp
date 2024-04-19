@@ -33,7 +33,7 @@ bool GridOverlay::eventFilter(QObject *obj, QEvent *event) {
     if (event->type() == QEvent::Paint) {
         auto overlay = dynamic_cast<QWidget*>(obj);
         QPainter painter(overlay);
-        if (this->pathData != nullptr) {
+        if (this->pathData != nullptr && this->shouldRenderGrid) {
             this->handlePaths(&painter);
         }
         return true;
@@ -56,6 +56,9 @@ bool GridOverlay::handlePaths(QPainter *paint) {
     paint->setPen(whitePen);
     int pathIndex = 0;
     int subPathIndex = 0;
+    if (this->pathData->paths.empty()) {
+        return false;
+    }
     for (auto mpit = this->pathData->paths.cbegin(); mpit != this->pathData->paths.cend(); mpit++) {
         subPathIndex = 0;
         uint32_t priorFinalX = 0;

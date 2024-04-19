@@ -14,6 +14,8 @@ public:
     PathData* pathData;
     int selectedPathIndex = -1;
     int selectedPathSubIndex = -1;
+    // This is not a user setting, it prevents crashes during path data deletion
+    bool shouldRenderGrid = true;
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
 private:

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../yidsrom.h"
+#include "../GridOverlay.h"
 
 #include <QtCore>
 #include <QWidget>
@@ -9,11 +10,12 @@
 class PathWindow : public QWidget {
     Q_OBJECT
 public:
-    PathWindow(QWidget *parent, YidsRom* rom);
+    PathWindow(QWidget *parent, YidsRom* rom, GridOverlay* gOverlay);
     QListWidget* pathListWidget;
     QListWidget* subPathListWidget;
-    void refreshLists();
+    void refreshPathList();
 private:
     YidsRom* yidsRom;
+    GridOverlay* gridOverlay;
     bool detectChanges = true;
 };

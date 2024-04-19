@@ -595,7 +595,7 @@ MainWindow::MainWindow() {
     this->projectManager = new ProjectManager(this->rom);
 
     // Paths Window //
-    this->pathWindow = new PathWindow(this,this->rom);
+    this->pathWindow = new PathWindow(this,this->rom,this->gridOverlay);
 
     /*******************
      *** Connections ***
@@ -653,6 +653,7 @@ void MainWindow::LoadRom() {
 
         this->button_triggerBoxWindow->setDisabled(false);
         this->button_pathsWindow->setDisabled(false);
+        this->pathWindow->refreshPathList();
 
         // Level window //
         this->levelWindow->refreshLists();
@@ -942,6 +943,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     YUtils::printDebug(ssMapPopup.str());
     this->grid->wipeTable();
     this->guiObjectList->wipeList();
+    this->gridOverlay->shouldRenderGrid = false;
     this->rom->wipeLevelData();
     this->rom->loadMpdz(mpdzNoExt);
     // Visual updates
@@ -952,6 +954,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     this->grid->setLayerDraw(4,true);
     this->paletteTable->refreshLoadedTiles();
     this->levelWindow->refreshLists();
+    this->pathWindow->refreshPathList();
     this->guiObjectList->updateList();
     this->grid->updateTriggerBoxes();
     this->triggerWindow->updateTriggerList();
@@ -959,6 +962,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     this->grid->updatePortals(this->grid->shouldDrawEntrances,this->grid->shouldDrawExits);
     this->brushWindow->updateCharsetLabel();
     this->updateOverlay();
+    this->gridOverlay->shouldRenderGrid = true;
 }
 
 void MainWindow::menuClick_viewBg1(bool checked) {
