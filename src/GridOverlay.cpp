@@ -41,15 +41,17 @@ bool GridOverlay::eventFilter(QObject *obj, QEvent *event) {
     return QObject::eventFilter(obj, event);
 }
 
-QColor magenta(245,66,149);
-QColor white("white");
-QColor yellow("yellow");
+QPen magentaPen(QColor(245,66,149));
+QPen whitePen("white");
+QPen yellowPen("yellow");
 
 bool GridOverlay::handlePaths(QPainter *paint) {
+    constexpr int pathWidthMedium = 10;
+    constexpr int pathWidthLarge = 15;
     if (this->pathData == nullptr) {
         return false;
     }
-    paint->setPen(white);
+    paint->setPen(whitePen);
     int pathIndex = 0;
     int subPathIndex = 0;
     for (auto mpit = this->pathData->paths.cbegin(); mpit != this->pathData->paths.cend(); mpit++) {
@@ -57,7 +59,6 @@ bool GridOverlay::handlePaths(QPainter *paint) {
         uint32_t priorFinalX = 0;
         uint32_t priorFinalY = 0;
         for (auto it = mpit->cbegin(); it != mpit->cend(); it++) {
-            const int width = subPathIndex == 0 ? 10 : 5;
             auto xFine = (*it)->xFine;
             auto yFine = (*it)->yFine;
             int finalX = (int)xFine >> 12;
@@ -66,7 +67,8 @@ bool GridOverlay::handlePaths(QPainter *paint) {
             if (subPathIndex != 0) {
                 QLine subPathLine;
                 if (pathIndex == this->selectedPathIndex) {
-                    paint->setPen(yellow);
+                    yellowPen.setWidth(2);
+                    paint->setPen(yellowPen);
                 }
                 subPathLine.setP1(QPoint(priorFinalX,priorFinalY));
                 subPathLine.setP2(QPoint(finalX,finalY));
@@ -76,9 +78,17 @@ bool GridOverlay::handlePaths(QPainter *paint) {
             priorFinalX = finalX;
             priorFinalY = finalY;
 
-            paint->setPen(white);
-            paint->fillRect(finalX,finalY,width,width,magenta);
-            paint->drawRect(finalX,finalY,width,width);
+
+            if (pathIndex == this->selectedPathIndex && subPathIndex == this->selectedPathSubIndex) {
+                paint->setPen(magentaPen);
+                paint->fillRect(finalX,finalY,pathWidthLarge,pathWidthLarge,whitePen.color());
+                paint->drawRect(finalX,finalY,pathWidthLarge,pathWidthLarge);
+                paint->setPen(whitePen);
+            } else {
+                paint->setPen(whitePen);
+                paint->fillRect(finalX,finalY,pathWidthMedium,pathWidthMedium,magentaPen.color());
+                paint->drawRect(finalX,finalY,pathWidthMedium,pathWidthMedium);
+            }
             std::stringstream ssPath;
             ssPath << "" << pathIndex << "-" << subPathIndex;
             paint->drawText(finalX,finalY,QString::fromStdString(ssPath.str()));
