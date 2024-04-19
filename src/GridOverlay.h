@@ -12,8 +12,8 @@ public:
     GridOverlay(QWidget* viewport, YidsRom* yidsRom);
     void updateSizeToGrid(int rows, int columns);
     PathData* pathData;
-    int selectedPathIndex = 0;
-    int selectedPathSubIndex = 5;
+    int selectedPathIndex = -1;
+    int selectedPathSubIndex = -1;
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
 private:
