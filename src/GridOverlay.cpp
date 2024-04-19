@@ -41,12 +41,15 @@ bool GridOverlay::eventFilter(QObject *obj, QEvent *event) {
     return QObject::eventFilter(obj, event);
 }
 
+QColor magenta(245,66,149);
+QColor white("white");
+QColor yellow("yellow");
+
 bool GridOverlay::handlePaths(QPainter *paint) {
     if (this->pathData == nullptr) {
         return false;
     }
-    QColor magenta(245,66,149);
-    paint->setPen("white");
+    paint->setPen(white);
     int pathIndex = 0;
     int subPathIndex = 0;
     for (auto mpit = this->pathData->paths.cbegin(); mpit != this->pathData->paths.cend(); mpit++) {
@@ -62,6 +65,9 @@ bool GridOverlay::handlePaths(QPainter *paint) {
 
             if (subPathIndex != 0) {
                 QLine subPathLine;
+                if (pathIndex == this->selectedPathIndex) {
+                    paint->setPen(yellow);
+                }
                 subPathLine.setP1(QPoint(priorFinalX,priorFinalY));
                 subPathLine.setP2(QPoint(finalX,finalY));
                 paint->drawLine(subPathLine);
@@ -70,6 +76,7 @@ bool GridOverlay::handlePaths(QPainter *paint) {
             priorFinalX = finalX;
             priorFinalY = finalY;
 
+            paint->setPen(white);
             paint->fillRect(finalX,finalY,width,width,magenta);
             paint->drawRect(finalX,finalY,width,width);
             std::stringstream ssPath;

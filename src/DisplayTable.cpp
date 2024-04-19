@@ -757,8 +757,8 @@ void DisplayTable::mouseReleaseEvent(QMouseEvent *event) {
     ) {
         if (event->button() == Qt::LeftButton || event->button() == Qt::RightButton) {
             bool bandBigEnoughForMultiSelect = false;
-            auto bandWidth = this->selectorBand->width();
-            auto bandHeight = this->selectorBand->height();
+            auto bandWidth = (uint32_t)this->selectorBand->width();
+            auto bandHeight = (uint32_t)this->selectorBand->height();
             if (bandWidth > globalSettings.gridCellSizePx || bandHeight > globalSettings.gridCellSizePx) {
                 bandBigEnoughForMultiSelect = true;
             }
