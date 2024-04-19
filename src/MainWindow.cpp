@@ -313,6 +313,12 @@ MainWindow::MainWindow() {
     this->button_triggerBoxWindow->setDisabled(true);
     connect(this->button_triggerBoxWindow,&QAction::triggered,this,&MainWindow::toolbarClick_triggerWindow);
 
+    QPixmap iconPathsWindow(":/assets/icon_trigger.png");
+    this->button_pathsWindow = toolbar->addAction(QIcon(iconPathsWindow), tr("Open Paths window"));
+    this->button_pathsWindow->setObjectName("button_pathsWindow");
+    this->button_pathsWindow->setDisabled(true);
+    connect(this->button_pathsWindow,&QAction::triggered,this,&MainWindow::toolbarClick_pathWindow);
+
     toolbar->addSeparator();
 
     QPixmap iconCollisionShow(":/assets/icon_collision.png");
@@ -588,6 +594,9 @@ MainWindow::MainWindow() {
     // Project Manager //
     this->projectManager = new ProjectManager(this->rom);
 
+    // Paths Window //
+    this->pathWindow = new PathWindow(this,this->rom);
+
     /*******************
      *** Connections ***
      *******************/
@@ -643,6 +652,7 @@ void MainWindow::LoadRom() {
         this->spritePickerWindow->updateSpriteList("");
 
         this->button_triggerBoxWindow->setDisabled(false);
+        this->button_pathsWindow->setDisabled(false);
 
         // Level window //
         this->levelWindow->refreshLists();
@@ -768,6 +778,15 @@ void MainWindow::toolbarClick_triggerWindow() {
         this->triggerWindow->activateWindow();
     } else {
         this->triggerWindow->show();
+    }
+}
+
+void MainWindow::toolbarClick_pathWindow() {
+    if (this->pathWindow->isVisible()) {
+        this->pathWindow->raise();
+        this->pathWindow->activateWindow();
+    } else {
+        this->pathWindow->show();
     }
 }
 
@@ -1224,6 +1243,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     this->spritePickerWindow->close();
     this->levelWindow->close();
     this->triggerWindow->close();
+    this->pathWindow->close();
     event->accept();
 }
 

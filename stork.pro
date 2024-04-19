@@ -20,7 +20,8 @@ src/data/LevelSelectData.cpp src/cue_lzss.cpp src/cue_blz.cpp \
 src/popups/ObjTilesTable.cpp src/data/ObjectRenderFile.cpp src/popups/BrushWindow.cpp \
 src/popups/BrushTable.cpp src/popups/ColWindow.cpp src/popups/ColTable.cpp \
 src/popups/MapSelect.cpp src/popups/SpritePickerWindow.cpp src/popups/LevelWindow.cpp \
-src/GridOverlay.cpp src/StateCommands.cpp src/data/ProjectManager.cpp src/popups/TriggerWindow.cpp
+src/GridOverlay.cpp src/StateCommands.cpp src/data/ProjectManager.cpp src/popups/TriggerWindow.cpp \
+src/popups/PathWindow.cpp
 
 HEADERS += src/Chartile.h \
 src/yidsrom.h src/utils.h src/compression.h src/MainWindow.h \
@@ -32,7 +33,8 @@ src/data/LevelSelectData.h src/cue_lzss.h src/cue_blz.h \
 src/popups/ObjTilesTable.h src/data/ObjectRenderFile.h src/popups/BrushWindow.h \
 src/popups/BrushTable.h src/popups/ColWindow.h src/popups/ColTable.h src/PixelDelegateEnums.h \
 src/popups/MapSelect.h src/popups/SpritePickerWindow.h src/popups/LevelWindow.h \
-src/GridOverlay.h src/StateCommands.h src/data/ProjectManager.h src/popups/TriggerWindow.h
+src/GridOverlay.h src/StateCommands.h src/data/ProjectManager.h src/popups/TriggerWindow.h \
+src/popups/PathWindow.h
 
 QT += core gui widgets
 

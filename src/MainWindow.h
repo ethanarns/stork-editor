@@ -34,6 +34,7 @@
 #include "GridOverlay.h"
 #include "data/ProjectManager.h"
 #include "popups/TriggerWindow.h"
+#include "popups/PathWindow.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -56,6 +57,7 @@ public:
     TriggerWindow* triggerWindow;
     LevelWindow* levelWindow;
     ProjectManager* projectManager;
+    PathWindow* pathWindow;
 
     std::string currentFileName = "";
 
@@ -90,6 +92,7 @@ private:
     QAction* button_colWindow;
     QAction* button_addSpriteWindow;
     QAction* button_triggerBoxWindow;
+    QAction* button_pathsWindow;
     QAction* button_toggleCollision;
 
     QAction* menu_levelSelect;
@@ -131,6 +134,7 @@ private:
     void toolbarClick_col();
     void toolbarClick_spritePicker();
     void toolbarClick_triggerWindow();
+    void toolbarClick_pathWindow();
     void toolbarClick_showCollision(bool shouldShow);
     void toolbarClick_toggleCollision();
     void toolbarClick_layerSelect(const QString str);

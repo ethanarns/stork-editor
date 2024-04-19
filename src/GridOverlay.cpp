@@ -49,6 +49,7 @@ constexpr int PATH_WIDTH_LARGE = 10;
 
 bool GridOverlay::handlePaths(QPainter *paint) {
     int pathWidth = PATH_WIDTH_SMALL;
+    int offset = 0;
     if (this->pathData == nullptr) {
         return false;
     }
@@ -68,14 +69,14 @@ bool GridOverlay::handlePaths(QPainter *paint) {
             if (pathIndex == this->selectedPathIndex && subPathIndex == this->selectedPathSubIndex) {
                 paint->setPen(magentaPen);
                 pathWidth = PATH_WIDTH_LARGE;
-                int offset = pathWidth >> 1;
+                offset = pathWidth >> 1;
                 paint->fillRect(finalX-offset,finalY-offset,pathWidth,pathWidth,whitePen.color());
                 paint->drawRect(finalX-offset,finalY-offset,pathWidth,pathWidth);
                 paint->setPen(whitePen);
                 pathWidth = PATH_WIDTH_SMALL;
             } else {
                 paint->setPen(whitePen);
-                int offset = pathWidth >> 1;
+                offset = pathWidth >> 1;
                 paint->fillRect(finalX-offset,finalY-offset,pathWidth,pathWidth,magentaPen.color());
                 paint->drawRect(finalX-offset,finalY-offset,pathWidth,pathWidth);
             }
