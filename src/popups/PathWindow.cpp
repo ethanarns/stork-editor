@@ -12,6 +12,11 @@
 PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
     Q_UNUSED(parent);
     this->yidsRom = rom;
+    if (gOverlay == nullptr) {
+        YUtils::printDebug("gOverlay was null",DebugType::FATAL);
+        YUtils::popupAlert("gOverlay was null");
+        exit(EXIT_FAILURE);
+    }
     this->gridOverlay = gOverlay;
     this->detectChanges = false;
     this->setWindowTitle(tr("Path Window"));
@@ -37,6 +42,7 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
 }
 
 void PathWindow::refreshPathList() {
+    //std::cout << "refreshPathList" << std::endl;
     this->detectChanges = false;
 
     // Wipe everything before checking for data
@@ -104,7 +110,7 @@ void PathWindow::refreshPointList() {
     }
     auto pathData = static_cast<PathData*>(pathDataMaybe);
 
-    if (pathIndex >= pathData->paths.size()) {
+    if (pathIndex >= (int)pathData->paths.size()) {
         YUtils::printDebug("Seeking Path data out of bounds",DebugType::ERROR);
         this->detectChanges = true;
         return;
@@ -115,6 +121,7 @@ void PathWindow::refreshPointList() {
     uint pointIndex = 0;
     for (auto pit = pathDataSelected.cbegin(); pit != pathDataSelected.cend(); pit++) {
         auto point = (*pit);
+        Q_UNUSED(point);
         std::stringstream ss;
         ss << "Point 0x" << std::hex << pointIndex;
         this->pointListWidget->addItem(QString::fromStdString(ss.str()));
@@ -125,6 +132,20 @@ void PathWindow::refreshPointList() {
 }
 
 void PathWindow::pathListRowSelectionChanged(int rowIndex) {
-    std::cout << "pathListRowSelectionChanged " << rowIndex << std::endl;
+    //std::cout << "pathListRowSelectionChanged " << rowIndex << std::endl;
     this->refreshPointList();
+    if (rowIndex >= this->pathListWidget->count()) {
+        YUtils::printDebug("rowIndex too high in pathListRowSelectionChanged",DebugType::ERROR);
+        return;
+    }
+    if (rowIndex < -1) {
+        YUtils::printDebug("Unusually negative rowIndex",DebugType::ERROR);
+        return;
+    }
+    if (this->gridOverlay == nullptr) {
+        YUtils::printDebug("gridOverlay was null",DebugType::ERROR);
+        return;
+    }
+    this->gridOverlay->selectedPathIndex = rowIndex;
+    this->gridOverlay->repaint();
 }

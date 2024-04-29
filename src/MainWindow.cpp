@@ -611,9 +611,6 @@ MainWindow::MainWindow() {
     // Project Manager //
     this->projectManager = new ProjectManager(this->rom);
 
-    // Paths Window //
-    this->pathWindow = new PathWindow(this,this->rom,this->gridOverlay);
-
     /*******************
      *** Connections ***
      *******************/
@@ -631,6 +628,9 @@ MainWindow::MainWindow() {
      ***************/
     this->gridOverlay = new GridOverlay(this->grid->viewport(),this->rom);
     this->gridOverlay->updateSizeToGrid(this->grid->rowCount(),this->grid->columnCount());
+
+    // Paths Window //
+    this->pathWindow = new PathWindow(this,this->rom,this->gridOverlay);
 }
 
 void MainWindow::LoadRom() {
@@ -968,7 +968,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     YUtils::printDebug(ssMapPopup.str());
     this->grid->wipeTable();
     this->guiObjectList->wipeList();
-    this->gridOverlay->shouldRenderGrid = false;
+    this->gridOverlay->shouldRenderGridOverlay = false;
     this->rom->wipeLevelData();
     this->rom->loadMpdz(mpdzNoExt);
     // Visual updates
@@ -988,7 +988,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     this->grid->updatePortals(this->grid->shouldDrawEntrances,this->grid->shouldDrawExits);
     this->brushWindow->updateCharsetLabel();
     this->updateOverlay();
-    this->gridOverlay->shouldRenderGrid = true;
+    this->gridOverlay->shouldRenderGridOverlay = true;
 }
 
 void MainWindow::menuClick_viewBg1(bool checked) {
