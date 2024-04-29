@@ -30,8 +30,10 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
 
     this->pathListWidget = new QListWidget(this);
     leftColumn->addWidget(this->pathListWidget);
-    this->subPathListWidget = new QListWidget(this);
-    rightColumn->addWidget(this->subPathListWidget);
+    this->pointListWidget = new QListWidget(this);
+    rightColumn->addWidget(this->pointListWidget);
+
+    connect(this->pathListWidget,&QListWidget::currentRowChanged,this,&PathWindow::pathListRowSelectionChanged);
 }
 
 void PathWindow::refreshPathList() {
@@ -42,11 +44,8 @@ void PathWindow::refreshPathList() {
         // Holds them as pointers
         delete this->pathListWidget->takeItem(0);
     }
-    while (this->subPathListWidget->count() > 0) {
-        delete this->subPathListWidget->takeItem(0);
-    }
+
     this->pathListWidget->clear();
-    this->subPathListWidget->clear();
 
     if (this->yidsRom->mapData == nullptr) {
         YUtils::printDebug("MapData is null",DebugType::ERROR);
@@ -75,4 +74,57 @@ void PathWindow::refreshPathList() {
         pathIndex++;
     }
     this->detectChanges = true;
+}
+
+void PathWindow::refreshPointList() {
+    this->detectChanges = false;
+    while (this->pointListWidget->count() > 0) {
+        delete this->pointListWidget->takeItem(0);
+    }
+    this->pointListWidget->clear();
+
+    auto pathIndex = this->pathListWidget->currentRow();
+    if (pathIndex == -1) {
+        YUtils::printDebug("No Path selected",DebugType::WARNING);
+        this->detectChanges = true;
+        return;
+    }
+
+    // Get data
+    if (this->yidsRom->mapData == nullptr) {
+        YUtils::printDebug("MapData is null",DebugType::ERROR);
+        this->detectChanges = true; // Just in case
+        return;
+    }
+    auto pathDataMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::PATH_MAGIC_NUM,true);
+    if (pathDataMaybe == nullptr) {
+        YUtils::printDebug("No PATH data found",DebugType::WARNING);
+        this->detectChanges = true;
+        return;
+    }
+    auto pathData = static_cast<PathData*>(pathDataMaybe);
+
+    if (pathIndex >= pathData->paths.size()) {
+        YUtils::printDebug("Seeking Path data out of bounds",DebugType::ERROR);
+        this->detectChanges = true;
+        return;
+    }
+
+    auto pathDataSelected = pathData->paths.at(pathIndex);
+
+    uint pointIndex = 0;
+    for (auto pit = pathDataSelected.cbegin(); pit != pathDataSelected.cend(); pit++) {
+        auto point = (*pit);
+        std::stringstream ss;
+        ss << "Point 0x" << std::hex << pointIndex;
+        this->pointListWidget->addItem(QString::fromStdString(ss.str()));
+        pointIndex++;
+    }
+
+    this->detectChanges = true;
+}
+
+void PathWindow::pathListRowSelectionChanged(int rowIndex) {
+    std::cout << "pathListRowSelectionChanged " << rowIndex << std::endl;
+    this->refreshPointList();
 }

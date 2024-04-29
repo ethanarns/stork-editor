@@ -654,6 +654,7 @@ void MainWindow::LoadRom() {
         this->button_triggerBoxWindow->setDisabled(false);
         this->button_pathsWindow->setDisabled(false);
         this->pathWindow->refreshPathList();
+        this->pathWindow->refreshPointList();
 
         // Level window //
         this->levelWindow->refreshLists();
@@ -955,6 +956,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     this->paletteTable->refreshLoadedTiles();
     this->levelWindow->refreshLists();
     this->pathWindow->refreshPathList();
+    this->pathWindow->refreshPointList();
     this->guiObjectList->updateList();
     this->grid->updateTriggerBoxes();
     this->triggerWindow->updateTriggerList();
@@ -1303,7 +1305,7 @@ void MainWindow::updateOverlay() {
     if (this->rom->mapData == nullptr) {
         return;
     }
-    YUtils::printDebug("updateOverlay");
+    //YUtils::printDebug("updateOverlay");
     auto pathsMaybe = this->rom->mapData->getFirstDataByMagic(Constants::PATH_MAGIC_NUM,true);
     if (pathsMaybe == nullptr) {
         YUtils::printDebug("No PATH data found");

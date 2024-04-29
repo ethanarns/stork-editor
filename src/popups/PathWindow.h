@@ -12,8 +12,10 @@ class PathWindow : public QWidget {
 public:
     PathWindow(QWidget *parent, YidsRom* rom, GridOverlay* gOverlay);
     QListWidget* pathListWidget;
-    QListWidget* subPathListWidget;
+    QListWidget* pointListWidget;
     void refreshPathList();
+    void refreshPointList();
+    void pathListRowSelectionChanged(int rowIndex);
 private:
     YidsRom* yidsRom;
     GridOverlay* gridOverlay;
