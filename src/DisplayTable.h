@@ -76,6 +76,7 @@ public:
     bool placeNewTileOnMap(int row, int column, MapTileRecordData mapRecord, uint32_t whichBg, bool skipPalOffset = true);
     void clearVisualSpriteSelection();
     void updatePortals(bool drawEntrances, bool drawExits);
+    void updateSelectedTilesVisuals(int whichBg);
 private:
     const static int CELL_COUNT_W = 0xff*4;
     const static int CELL_COUNT_H = 0xff*2;
@@ -89,7 +90,6 @@ private:
 
     void doBgBrushClick(QTableWidgetItem* curItem);
     std::vector<QTableWidgetItem*> getIntersectedTiles(QRect selectionRect);
-    void updateSelectedTilesVisuals(int whichBg);
     void handleSpritesRightClickPress(QMouseEvent *event);
 
     void handleCollisionMouseClick(QPoint position, bool isCopy = false);

@@ -41,6 +41,7 @@
 #include <QSpinBox>
 #include <QFrame>
 #include <QCheckBox>
+#include <QIcon>
 
 #include <iostream>
 #include <filesystem>
@@ -166,6 +167,22 @@ MainWindow::MainWindow() {
     menu_edit->addAction(this->action_paste);
     this->action_paste->setDisabled(true);
     connect(this->action_paste,&QAction::triggered,this,&MainWindow::menuClick_paste);
+
+    menu_edit->addSeparator();
+
+    this->action_select_all = new QAction("&Select All",this);
+    this->action_select_all->setShortcut(tr("CTRL+A"));
+    this->action_select_all->setIcon(QIcon::fromTheme("edit-select-all"));
+    menu_edit->addAction(this->action_select_all);
+    this->action_select_all->setDisabled(true);
+    connect(this->action_select_all,&QAction::triggered,this,&MainWindow::menuClick_selectAll);
+
+    this->action_select_none = new QAction("&Select None",this);
+    this->action_select_none->setShortcut(tr("CTRL+SHIFT+A"));
+    //this->action_select_none->setIcon(QIcon::fromTheme("edit-clear"));
+    menu_edit->addAction(this->action_select_none);
+    this->action_select_none->setDisabled(true);
+    connect(this->action_select_none,&QAction::triggered,this,&MainWindow::menuClick_selectNone);
 
     // View menu //
     QMenu* menu_view = menuBar()->addMenu("&View");
@@ -702,6 +719,8 @@ void MainWindow::LoadRom() {
         this->action_showTriggerBoxes->setDisabled(false);
         this->menu_save->setDisabled(false);
         this->menu_export->setDisabled(false);
+        this->action_select_all->setDisabled(false);
+        this->action_select_none->setDisabled(false);
         this->menu_levelSettings->setDisabled(false);
         this->updateClipboardUi();
 
@@ -811,6 +830,11 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
     globalSettings.currentTileIndex = 0xffff; // Any change in layer resets the tile index
     this->brushWindow->brushTable->resetTable();
     this->brushWindow->curCharset->setText(tr(" "));
+    // Clear selection
+    // Does not delete the tiles themselves
+    globalSettings.selectedItemPointers.clear();
+    this->grid->updateSelectedTilesVisuals(globalSettings.currentEditingBackground);
+
     ss << "Layer selected: ";
     if (str.compare("BG1") == 0) {
         globalSettings.layerSelectMode = LayerMode::BG1_LAYER;
@@ -1413,4 +1437,40 @@ void MainWindow::menuClick_paste() {
         YUtils::printDebug("Paste not supported for this layer",DebugType::WARNING);
     }
     this->updateClipboardUi();
+}
+
+void MainWindow::menuClick_selectAll() {
+    YUtils::printDebug("menuClick_selectAll");
+    if (
+        globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
+        globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
+        globalSettings.layerSelectMode == LayerMode::BG3_LAYER
+    ) {
+        auto allCells = this->grid->findItems("",Qt::MatchFlag::MatchContains);
+        std::cout << "Selecting 0x" << allCells.size() << " cell items" << std::endl;
+        globalSettings.selectedItemPointers.clear(); // Does not delete the tiles
+        for (auto cit = allCells.begin(); cit != allCells.end(); cit++) {
+            globalSettings.selectedItemPointers.push_back(*cit);
+        }
+        this->grid->updateSelectedTilesVisuals(globalSettings.currentEditingBackground);
+    } else {
+        YUtils::printDebug("Select All not supported for this layer");
+        YUtils::popupAlert("Select All not supported for this layer");
+    }
+}
+
+void MainWindow::menuClick_selectNone() {
+    YUtils::printDebug("menuClick_selectNone");
+    if (
+        globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
+        globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
+        globalSettings.layerSelectMode == LayerMode::BG3_LAYER
+    ) {
+        // Does not delete the tiles themselves
+        globalSettings.selectedItemPointers.clear();
+        this->grid->updateSelectedTilesVisuals(globalSettings.currentEditingBackground);
+    } else {
+        YUtils::printDebug("Select None not supported for this layer");
+        YUtils::popupAlert("Select None not supported for this layer");
+    }
 }

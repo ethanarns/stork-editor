@@ -105,6 +105,8 @@ private:
     QAction* action_copy;
     QAction* action_cut;
     QAction* action_paste;
+    QAction* action_select_all;
+    QAction* action_select_none;
 
     QAction* action_viewBg1;
     QAction* action_viewBg2;
@@ -126,6 +128,8 @@ private:
     void menuClick_copy();
     void menuClick_cut();
     void menuClick_paste();
+    void menuClick_selectAll();
+    void menuClick_selectNone();
 
     void toolbarClick_palette();
     void toolbarClick_tiles();
