@@ -21,6 +21,7 @@ GridOverlay::GridOverlay(QWidget *viewport, YidsRom* yidsRom) : QFrame(viewport)
     this->setMouseTracking(false);
     this->installEventFilter(this);
     this->show();
+    this->pathData = nullptr;
 }
 
 void GridOverlay::updateSizeToGrid(int rows, int columns) {

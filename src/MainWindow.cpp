@@ -726,7 +726,9 @@ void MainWindow::LoadRom() {
 
         this->mapSelectPopup->updateLeftList();
 
+        this->gridOverlay->shouldRenderGridOverlay = false;
         this->updateOverlay();
+        this->gridOverlay->shouldRenderGridOverlay = true;
 
         this->guiObjectList->updateList();
         this->statusLabel->setText(tr("ROM Loaded"));
