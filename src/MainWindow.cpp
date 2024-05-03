@@ -1440,14 +1440,14 @@ void MainWindow::menuClick_paste() {
 }
 
 void MainWindow::menuClick_selectAll() {
-    YUtils::printDebug("menuClick_selectAll");
+    //YUtils::printDebug("menuClick_selectAll");
     if (
         globalSettings.layerSelectMode == LayerMode::BG1_LAYER ||
         globalSettings.layerSelectMode == LayerMode::BG2_LAYER ||
         globalSettings.layerSelectMode == LayerMode::BG3_LAYER
     ) {
         auto allCells = this->grid->findItems("",Qt::MatchFlag::MatchContains);
-        std::cout << "Selecting 0x" << allCells.size() << " cell items" << std::endl;
+        //std::cout << "Selecting 0x" << allCells.size() << " cell items" << std::endl;
         globalSettings.selectedItemPointers.clear(); // Does not delete the tiles
         for (auto cit = allCells.begin(); cit != allCells.end(); cit++) {
             globalSettings.selectedItemPointers.push_back(*cit);

@@ -65,7 +65,7 @@ void PathWindow::refreshPathList() {
         return;
     }
     auto pathData = static_cast<PathData*>(pathDataMaybe);
-    YUtils::printDebug("refreshPathList for PathWindow");
+    //YUtils::printDebug("refreshPathList for PathWindow");
     int pathIndex = 0;
 
     if (pathData->paths.size() == 0) {
