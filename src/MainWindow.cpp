@@ -330,7 +330,7 @@ MainWindow::MainWindow() {
     this->button_triggerBoxWindow->setDisabled(true);
     connect(this->button_triggerBoxWindow,&QAction::triggered,this,&MainWindow::toolbarClick_triggerWindow);
 
-    QPixmap iconPathsWindow(":/assets/icon_trigger.png");
+    QPixmap iconPathsWindow(":/assets/icon_paths.png");
     this->button_pathsWindow = toolbar->addAction(QIcon(iconPathsWindow), tr("Open Paths window"));
     this->button_pathsWindow->setObjectName("button_pathsWindow");
     this->button_pathsWindow->setDisabled(true);
@@ -1332,7 +1332,7 @@ void MainWindow::updateOverlay() {
     //YUtils::printDebug("updateOverlay");
     auto pathsMaybe = this->rom->mapData->getFirstDataByMagic(Constants::PATH_MAGIC_NUM,true);
     if (pathsMaybe == nullptr) {
-        YUtils::printDebug("No PATH data found");
+        //YUtils::printDebug("No PATH data found in updateOverlay");
         this->gridOverlay->pathData = nullptr;
     } else {
         YUtils::printDebug("Updating PATH data");

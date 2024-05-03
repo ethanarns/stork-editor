@@ -60,7 +60,7 @@ void PathWindow::refreshPathList() {
     }
     auto pathDataMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::PATH_MAGIC_NUM,true);
     if (pathDataMaybe == nullptr) {
-        YUtils::printDebug("No PATH data found",DebugType::WARNING);
+        //YUtils::printDebug("No PATH data found in refreshPathList",DebugType::WARNING);
         this->detectChanges = true;
         return;
     }
@@ -91,7 +91,7 @@ void PathWindow::refreshPointList() {
 
     auto pathIndex = this->pathListWidget->currentRow();
     if (pathIndex == -1) {
-        YUtils::printDebug("No Path selected",DebugType::WARNING);
+        //YUtils::printDebug("No Path selected",DebugType::WARNING);
         this->detectChanges = true;
         return;
     }
@@ -104,7 +104,7 @@ void PathWindow::refreshPointList() {
     }
     auto pathDataMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::PATH_MAGIC_NUM,true);
     if (pathDataMaybe == nullptr) {
-        YUtils::printDebug("No PATH data found",DebugType::WARNING);
+        YUtils::printDebug("No PATH data found in refreshPointList",DebugType::WARNING);
         this->detectChanges = true;
         return;
     }

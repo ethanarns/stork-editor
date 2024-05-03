@@ -10,6 +10,7 @@
         <file>assets/exit.png</file>
         <file>assets/entrance.png</file>
         <file>assets/icon_trigger.png</file>
+        <file>assets/icon_paths.png</file>
         <file>sprites.csv</file>
     </qresource>
 </RCC>
