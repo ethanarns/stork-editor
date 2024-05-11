@@ -694,7 +694,7 @@ void MainWindow::LoadRom() {
 
         // Objects //
         this->grid->updateSprites();
-        this->grid->setLayerDraw(4,true); // 4 here means objects
+        this->grid->setLayerDraw(LayerShouldDraw::SPRITES,true); // 4 here means objects
         this->layerSelectDropdown->setDisabled(false);
         this->toolbarClick_layerSelect("Sprites");
 
@@ -978,7 +978,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     this->grid->updateBg();
     this->grid->initCellCollision();
     this->grid->updateSprites();
-    this->grid->setLayerDraw(4,true);
+    this->grid->setLayerDraw(LayerShouldDraw::SPRITES,true);
     this->paletteTable->refreshLoadedTiles();
     this->levelWindow->refreshLists();
     this->pathWindow->refreshPathList();
@@ -994,19 +994,19 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
 }
 
 void MainWindow::menuClick_viewBg1(bool checked) {
-    this->grid->setLayerDraw(1,checked);
+    this->grid->setLayerDraw(LayerShouldDraw::BG1,checked);
 }
 
 void MainWindow::menuClick_viewBg2(bool checked) {
-    this->grid->setLayerDraw(2,checked);
+    this->grid->setLayerDraw(LayerShouldDraw::BG2,checked);
 }
 
 void MainWindow::menuClick_viewBg3(bool checked) {
-    this->grid->setLayerDraw(3,checked);
+    this->grid->setLayerDraw(LayerShouldDraw::BG3,checked);
 }
 
 void MainWindow::menuClick_viewObjects(bool checked) {
-    this->grid->setLayerDraw(4,checked);
+    this->grid->setLayerDraw(LayerShouldDraw::SPRITES,checked);
 }
 
 void MainWindow::menuClick_viewTriggers(bool checked) {

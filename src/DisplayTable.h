@@ -61,7 +61,7 @@ public:
     void initCellCollision();
     void updateShowCollision();
     void updateTriggerBoxes(int highlight = -1);
-    void setLayerDraw(uint whichLayer, bool shouldDraw);
+    void setLayerDraw(LayerShouldDraw whichLayer, bool shouldDraw);
     void updateSprites();
     int wipeTable();
     

@@ -1442,14 +1442,14 @@ void DisplayTable::clearVisualSpriteSelection() {
     this->clearSelection();
 }
 
-void DisplayTable::setLayerDraw(uint whichLayer, bool shouldDraw) {
-    if (whichLayer == 1) {
+void DisplayTable::setLayerDraw(LayerShouldDraw whichLayer, bool shouldDraw) {
+    if (whichLayer == LayerShouldDraw::BG1) {
         this->drawBg1 = shouldDraw;
-    } else if (whichLayer == 2) {
+    } else if (whichLayer == LayerShouldDraw::BG2) {
         this->drawBg2 = shouldDraw;
-    } else if (whichLayer == 3) {
+    } else if (whichLayer == LayerShouldDraw::BG3) {
         this->drawBg3 = shouldDraw;
-    } else if (whichLayer == 4) { // Use 4 for objects
+    } else if (whichLayer == LayerShouldDraw::SPRITES) { // Use 4 for objects
         this->drawObjects = shouldDraw;
     } else {
         YUtils::printDebug("Unknown layer to draw used",DebugType::ERROR);
@@ -1539,7 +1539,7 @@ void DisplayTable::updateBg() {
         // We want to put the layer drawing properties ON the tiles initially,
         // but not to overwrite it repeatedly when updating the BG
         if (!this->firstLayerDrawDone) {
-            this->setLayerDraw(bgIndex,true);
+            this->setLayerDraw(static_cast<LayerShouldDraw>(bgIndex),true);
         }
     }
     emit this->updateMainWindowStatus("All backgrounds updated");

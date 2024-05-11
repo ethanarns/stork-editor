@@ -24,6 +24,15 @@ enum LayerMode {
     PATHS_LAYER
 };
 
+enum LayerShouldDraw {
+    ERR = 0,
+    BG1 = 1,
+    BG2 = 2,
+    BG3 = 3,
+    SPRITES = 4,
+    BLKZ = 5
+};
+
 struct TileBrush {
     std::vector<MapTileRecordData> tileAttrs;
     std::string brushTileset;
