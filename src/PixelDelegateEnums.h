@@ -86,7 +86,15 @@ enum PixelDelegateData {
     OBJECT_TILES_FLIPH = 146,  // bool
     OBJECT_TILES_BUILDFRAME_INDEX = 147,
 
-    TRIGGER_HIGHLIGHT_UUID = 148
+    TRIGGER_HIGHLIGHT_UUID = 148,
+
+    DRAW_BLKZ = 149, // bool
+    PIXEL_ARRAY_BLKZ = 150, // QByteArray
+    PALETTE_ARRAY_BLKZ = 151, // QByteArray
+    TILEATTR_BLKZ = 152, // uint
+    FLIP_H_BLKZ = 153, // bool
+    FLIP_V_BLKZ = 154, // bool
+    TILE_SELECTED_BLKZ = 155 // bool
 };
 
 enum CollisionType {

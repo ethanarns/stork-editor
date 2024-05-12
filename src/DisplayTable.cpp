@@ -1284,6 +1284,29 @@ void DisplayTable::updateTriggerBoxes(int highlight) {
     }
 }
 
+void DisplayTable::updateBlkzLayer() {
+    // Get the data
+    auto blkzDataMaybe = this->yidsRom->mapData->getFirstDataByMagic(Constants::BLKZ_MAGIC_NUM,true);
+    if (blkzDataMaybe == nullptr) {
+        YUtils::printDebug("No Soft Rock Backing (BLKZ) for this map",DebugType::VERBOSE);
+        return;
+    }
+    auto blkzData = static_cast<SoftRockBackdrop*>(blkzDataMaybe);
+    YUtils::printDebug("Updating BLKZ",DebugType::VERBOSE);
+    const int ROW_COUNT = this->rowCount();
+    const int COLUMN_COUNT = this->columnCount();
+    for (int row = 0; row < ROW_COUNT; row++) {
+        for (int col = 0; col < COLUMN_COUNT; col++) {
+            auto potentialItem = this->item(row,col);
+            if (potentialItem != nullptr) {
+                // Here, check the 
+                potentialItem->setData(PixelDelegateData::DRAW_BLKZ,this->shouldDrawBlkz);
+                // TODO: Make SoftRockBackdrop get function for tiles at location
+            }
+        }
+    }
+}
+
 void DisplayTable::moveSpriteTo(uint32_t uuid, uint32_t newX, uint32_t newY) {
     //this->wipeObject(uuid);
     this->yidsRom->moveObjectTo(uuid,newX,newY);

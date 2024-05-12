@@ -32,6 +32,7 @@ public:
     bool shouldShowTriggers;
     bool shouldDrawEntrances;
     bool shouldDrawExits;
+    bool shouldDrawBlkz;
     /**
      * A list/vector of uint32_t UUIDs of selected objects, usually LevelObjects
     */
@@ -61,6 +62,7 @@ public:
     void initCellCollision();
     void updateShowCollision();
     void updateTriggerBoxes(int highlight = -1);
+    void updateBlkzLayer();
     void setLayerDraw(LayerShouldDraw whichLayer, bool shouldDraw);
     void updateSprites();
     int wipeTable();

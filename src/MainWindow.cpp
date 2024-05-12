@@ -710,6 +710,10 @@ void MainWindow::LoadRom() {
         this->action_showEntrances->setDisabled(false);
         this->action_showExits->setDisabled(false);
 
+        // BLKZ //
+        this->grid->shouldDrawBlkz = true;
+        this->grid->updateBlkzLayer();
+
         // Misc menu items //
         this->action_showCollision->setDisabled(false);
         this->action_viewBg1->setDisabled(false);

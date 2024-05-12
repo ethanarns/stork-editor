@@ -225,6 +225,61 @@ void PixelDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         }
     }
 
+    /************
+     *** BLKZ ***
+     ************/
+    if (index.data(PixelDelegateData::DRAW_BLKZ).toBool() == true) {
+        QByteArray byteArrayBlkz = index.data(PixelDelegateData::PIXEL_ARRAY_BLKZ).toByteArray();
+        // Check the byte array size
+        if (byteArrayBlkz.size() == 0) {
+            const char testArrayPrimitive[] = {
+                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+                0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+            };
+            byteArrayBlkz = QByteArray::fromRawData(testArrayPrimitive, 64);
+        } else if (byteArrayBlkz.size() != PIXEL_TILE_TOTAL) {
+            cerr << "Attempting to paint BLKZ without " << PIXEL_TILE_TOTAL;
+            cerr << " pixels! Found " << byteArrayBlkz.size() << " pixels instead." << endl;
+            return;
+        }
+        auto paletteBlkz = index.data(PixelDelegateData::PALETTE_ARRAY_BLKZ).toByteArray();
+        for (int i = 0; i < PIXEL_TILE_TOTAL; i++) {
+            QColor qc;
+            auto whichPalette = (uint8_t)byteArrayBlkz.at(i);
+            if (whichPalette == 0 && index.data(PixelDelegateData::DRAW_TRANS_TILES).toBool() == false) {
+                // NOTE: Palette index 0 seems to almost always be the transparent
+                //   value. This may not be true, keep this in mind for future bugs
+                continue;
+            }
+
+            auto firstByte = (uint8_t)paletteBlkz[whichPalette*2];
+            auto secondByte = (uint8_t)paletteBlkz[whichPalette*2+1];
+            qc = YUtils::getColorFromBytes(
+                firstByte,
+                secondByte
+            );
+            if (index.data(PixelDelegateData::TILE_SELECTED_BLKZ).toBool()) {
+                qc = YUtils::invertColor(qc);
+            }
+
+            int x = i % 8;
+            if (index.data(PixelDelegateData::FLIP_H_BLKZ).toBool() == true) {
+                x = (8 - x - 1);
+            }
+            int y = i / 8;
+            if (index.data(PixelDelegateData::FLIP_V_BLKZ).toBool() == true) {
+                y = (8 - y - 1);
+            }
+            this->drawPixel(painter, option.rect, x, y, qc);
+        }
+    }
+
     /*****************
      *** COLLISION ***
      *****************/
