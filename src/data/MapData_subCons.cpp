@@ -308,6 +308,8 @@ SoftRockBackdrop::SoftRockBackdrop(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
     uint totalTiles = this->width*this->height;
     for (uint i = 0; i < totalTiles; i++) {
         auto curShort = YUtils::getUint16FromVec(blkzData,blkzIndex);
+        // This may need to be updated later once SCEN for BLKZ is better understood
+        curShort += 0x1000; // 0201c730
         auto mapTile = YUtils::getMapTileRecordDataFromShort(curShort);
         blkzIndex += 2;
         this->mapTiles.push_back(mapTile);
