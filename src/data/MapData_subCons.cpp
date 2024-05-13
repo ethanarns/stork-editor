@@ -326,6 +326,29 @@ SoftRockBackdrop::SoftRockBackdrop(std::vector<uint8_t> &mpdzBytes, uint32_t &mp
     mpdzIndex = stop;
 }
 
+MapTileRecordData SoftRockBackdrop::getMapTileAt(int colX, int rowY) {
+    if (colX < 0) {
+        YUtils::printDebug("Negative softrock xCol in getMapTileAt",DebugType::ERROR);
+        return MapTileRecordData();
+    }
+    if (rowY < 0) {
+        YUtils::printDebug("Negative softrock yRow in getMapTileAt",DebugType::ERROR);
+        return MapTileRecordData();
+    }
+    // Remove offset
+    colX -= this->xOffset;
+    rowY -= this->yOffset;
+    if (colX < 0 || rowY < 0) {
+        return MapTileRecordData();
+    }
+    uint32_t index = colX + rowY * this->width;
+    if (index >= this->mapTiles.size()) {
+        //YUtils::printDebug("Overflow in getMapTileAt");
+        return MapTileRecordData();
+    }
+    return this->mapTiles.at(index);
+}
+
 SoftRockSiding::SoftRockSiding(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
     this->bytes = YUtils::subVector(mpdzBytes,mpdzIndex,stop);
     mpdzIndex = stop;

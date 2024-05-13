@@ -1293,6 +1293,9 @@ void DisplayTable::updateBlkzLayer() {
     }
     auto blkzData = static_cast<SoftRockBackdrop*>(blkzDataMaybe);
     YUtils::printDebug("Updating BLKZ",DebugType::VERBOSE);
+
+    auto scen = this->yidsRom->mapData->getScenByBg(2,false); // Why 2?
+    auto vramChartiles = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     const int ROW_COUNT = this->rowCount();
     const int COLUMN_COUNT = this->columnCount();
     for (int row = 0; row < ROW_COUNT; row++) {
@@ -1301,7 +1304,26 @@ void DisplayTable::updateBlkzLayer() {
             if (potentialItem != nullptr) {
                 // Here, check the 
                 potentialItem->setData(PixelDelegateData::DRAW_BLKZ,this->shouldDrawBlkz);
-                // TODO: Make SoftRockBackdrop get function for tiles at location
+                auto mapTile = blkzData->getMapTileAt(col,row);
+                if (mapTile.tileAttr != 0) {
+                    potentialItem->setData(PixelDelegateData::TILEATTR_BLKZ,mapTile.tileAttr);
+                    potentialItem->setData(PixelDelegateData::FLIP_H_BLKZ,mapTile.flipH);
+                    potentialItem->setData(PixelDelegateData::FLIP_V_BLKZ,mapTile.flipV);
+                    uint8_t pal = mapTile.paletteId;
+                    pal += (uint8_t)this->yidsRom->chartileVramPaletteOffset[scen->getInfo()->charBaseBlock];
+                    auto bgPals = this->yidsRom->mapData->getBackgroundPalettes(this->yidsRom->universalPalette).at(pal);
+                    potentialItem->setData(PixelDelegateData::PALETTE_ARRAY_BLKZ,bgPals);
+                    Chartile loadedTile;
+                    if (vramChartiles.count(mapTile.tileId) > 0) {
+                        loadedTile = vramChartiles.at(mapTile.tileId);
+                        potentialItem->setData(PixelDelegateData::PIXEL_ARRAY_BLKZ,loadedTile.tiles);
+                    } else {
+                        std::stringstream ssTileNotFound;
+                        ssTileNotFound << "Could not find tile with ID of 0x" << std::hex << mapTile.tileId;
+                        ssTileNotFound << ", stored tile attr 0x" << std::hex << mapTile.tileAttr;
+                        YUtils::printDebug(ssTileNotFound.str(),DebugType::ERROR);
+                    }
+                }
             }
         }
     }
@@ -1366,6 +1388,7 @@ bool DisplayTable::placeNewTileOnMap(int row, int column, MapTileRecordData mapR
     Chartile loadedTile;
     try {
         loadedTile = vramChartiles.at(mapRecord.tileId);
+
     } catch (...) {
         // 0 often just means "empty," but is not consistent
         // Use this as a fallback until you find out

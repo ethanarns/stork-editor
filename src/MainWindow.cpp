@@ -992,6 +992,7 @@ void MainWindow::mapPopupMpdzSelected(std::string mpdzNoExt) {
     this->triggerWindow->updateTriggerList();
     // If it was hidden last time, hide it again
     this->grid->updatePortals(this->grid->shouldDrawEntrances,this->grid->shouldDrawExits);
+    this->grid->updateBlkzLayer();
     this->brushWindow->updateCharsetLabel();
     this->updateOverlay();
     this->gridOverlay->shouldRenderGridOverlay = true;
