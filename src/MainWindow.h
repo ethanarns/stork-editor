@@ -117,6 +117,7 @@ private:
     QAction* action_showTriggerBoxes;
     QAction* action_showEntrances;
     QAction* action_showExits;
+    QAction* action_showSoftRock;
 
     void menuClick_viewBg1(bool checked);
     void menuClick_viewBg2(bool checked);
@@ -125,6 +126,7 @@ private:
     void menuClick_viewTriggers(bool checked);
     void menuClick_viewEntrances(bool checked);
     void menuClick_viewExits(bool checked);
+    void menuClick_viewSoftRock(bool checked);
     void menuClick_copy();
     void menuClick_cut();
     void menuClick_paste();

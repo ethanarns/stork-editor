@@ -253,6 +253,14 @@ MainWindow::MainWindow() {
     menu_view->addAction(this->action_showExits);
     connect(this->action_showExits, &QAction::triggered, this, &MainWindow::menuClick_viewExits);
 
+    this->action_showSoftRock = new QAction("&Show Soft Rock BG");
+    this->action_showSoftRock->setShortcut(tr("CTRL+9"));
+    this->action_showSoftRock->setCheckable(true);
+    this->action_showSoftRock->setChecked(true);
+    this->action_showSoftRock->setDisabled(true);
+    menu_view->addAction(this->action_showSoftRock);
+    connect(this->action_showSoftRock, &QAction::triggered, this, &MainWindow::menuClick_viewSoftRock);
+
     // Tools menu //
     QMenu* menu_tools = menuBar()->addMenu("&Tools");
 
@@ -355,6 +363,7 @@ MainWindow::MainWindow() {
     this->layerSelectDropdown->addItem("BG3");
     this->layerSelectDropdown->addItem("Colliders");
     this->layerSelectDropdown->addItem("Paths");
+    this->layerSelectDropdown->addItem("Soft Rock BG");
     //this->layerSelectDropdown->addItem("Portals");
     this->layerSelectDropdown->setCurrentText("Sprites");
     this->layerSelectDropdown->setDisabled(true);
@@ -713,6 +722,7 @@ void MainWindow::LoadRom() {
         // BLKZ //
         this->grid->shouldDrawBlkz = true;
         this->grid->updateBlkzLayer();
+        this->action_showSoftRock->setDisabled(false);
 
         // Misc menu items //
         this->action_showCollision->setDisabled(false);
@@ -881,6 +891,10 @@ void MainWindow::toolbarClick_layerSelect(const QString str) {
         globalSettings.layerSelectMode = LayerMode::PORTALS_LAYER;
         globalSettings.currentEditingBackground = 0;
         ss << "Portals";
+    } else if (str.compare("Soft Rock BG") == 0) {
+        globalSettings.layerSelectMode = LayerMode::SOFTROCK_LAYER;
+        globalSettings.currentEditingBackground = 0;
+        ss << "SoftRock BG";
     } else if (str.compare("Paths") == 0) {
         globalSettings.layerSelectMode = LayerMode::PATHS_LAYER;
         globalSettings.currentEditingBackground = 0;
@@ -958,6 +972,11 @@ void MainWindow::menuClick_about() {
 
 void MainWindow::menuClick_viewExits(bool checked) {
     this->grid->updatePortals(this->grid->shouldDrawEntrances,checked);
+}
+
+void MainWindow::menuClick_viewSoftRock(bool checked) {
+    this->grid->shouldDrawBlkz = checked;
+    this->grid->updateBlkzLayer();
 }
 
 void MainWindow::menuClick_viewEntrances(bool checked) {

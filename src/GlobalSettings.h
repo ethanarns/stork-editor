@@ -21,7 +21,8 @@ enum LayerMode {
     SPRITES_LAYER,
     COLLISION_LAYER,
     PORTALS_LAYER,
-    PATHS_LAYER
+    PATHS_LAYER,
+    SOFTROCK_LAYER
 };
 
 enum LayerShouldDraw {

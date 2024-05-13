@@ -1292,8 +1292,7 @@ void DisplayTable::updateBlkzLayer() {
         return;
     }
     auto blkzData = static_cast<SoftRockBackdrop*>(blkzDataMaybe);
-    YUtils::printDebug("Updating BLKZ",DebugType::VERBOSE);
-
+    //YUtils::printDebug("Updating BLKZ",DebugType::VERBOSE);
     auto scen = this->yidsRom->mapData->getScenByBg(2,false); // Why 2?
     auto vramChartiles = this->yidsRom->chartileVram[scen->getInfo()->charBaseBlock];
     const int ROW_COUNT = this->rowCount();
