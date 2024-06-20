@@ -21,6 +21,15 @@ stork_plugin_import.cpp
 StorkEditor.AppImage
 lib/ndstool.exe
 _bak*
+AppDir/etc/
+AppDir/lib/
+AppDir/lib64/
+AppDir/bin/
+AppDir/usr/bin/
+AppDir/usr/lib64/
+AppDir/usr/share/doc/
+AppDir/AppRun
+Stork_Editor-1.0-x86_64.AppImage
 
 # test extracted files
 *.arcz
