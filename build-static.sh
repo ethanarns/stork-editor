@@ -2,7 +2,7 @@
 
 # https://doc.qt.io/qt-6/linux-deployment.html
 ./clean.sh
-/usr/local/Qt-6.6.3/bin/qmake -config release
+/usr/local/Qt-6.6.3-static/bin/qmake -config release
 make
 # sanity check
 ./stork --version
