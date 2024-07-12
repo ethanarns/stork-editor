@@ -164,7 +164,7 @@ void SetCollisionTileCommand::redo() {
     }
     uint32_t posInColArray = this->colX + (this->rowY * this->colWidth);
     collisionContainer->colData.at(posInColArray) = this->colNew;
-    this->grid->initCellCollision();
+    //this->grid->initCellCollision(); // Do after each time
 }
 
 void SetCollisionTileCommand::undo() {
@@ -175,5 +175,5 @@ void SetCollisionTileCommand::undo() {
     }
     uint32_t posInColArray = this->colX + (this->rowY * this->colWidth);
     collisionContainer->colData.at(posInColArray) = this->colOld;
-    this->grid->initCellCollision();
+    //this->grid->initCellCollision();
 }

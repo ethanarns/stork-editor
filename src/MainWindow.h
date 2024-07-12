@@ -99,6 +99,7 @@ private:
     QAction* menu_save;
     QAction* menu_export;
     QAction* menu_levelSettings;
+    QAction* menu_clearLayer;
     
     QAction* action_undo;
     QAction* action_redo;
@@ -148,6 +149,7 @@ private:
     void menuClick_levelSelect();
     void menuClick_export();
     void menuClick_levelSettings();
+    void menuClick_clearLayer();
     void menuClick_about();
 
     void mapPopupMpdzSelected(std::string mpdzNameNoExt);

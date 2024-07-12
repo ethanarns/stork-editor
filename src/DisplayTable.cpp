@@ -498,6 +498,7 @@ void DisplayTable::handleCollisionMouseClick(QPoint position, bool isCopy) {
         uint32_t rowY = curItemUnderCursor->row() / 2;
         auto colCmd = new SetCollisionTileCommand(rowY,colX,globalSettings.colTypeToDraw,this->yidsRom,this);
         emit this->pushStateCommandToStack(colCmd);
+        this->initCellCollision();
         emit this->triggerMainWindowUpdate(); // Mark savable update mainly
         return;
     } else if (isCopy == true) {

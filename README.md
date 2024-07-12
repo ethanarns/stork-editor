@@ -31,7 +31,7 @@ It uses the USA version 1.0. Do NOT use 1.1 or "rev 1." SHA256 Sum: `c75bf32c31f
 3. Creating a staging folder and copy the `stork.exe` in the `release` folder into it
 4. Copy the `lib` folder into the staging folder
 5. (Optional) Copy `sample_brushes`, `README.md`, and `UserGuide.md` into the staging folder
-6. Locate `windeployqt6.exe` (on my comptuer, it is in `C:\Qt\6.6.2\mingw_64\bin`)
+6. Locate `windeployqt6.exe` (on my computer, it is in `C:\Qt\6.6.2\mingw_64\bin`)
 7. Run `windeployqt6.exe <path\to\staging\folder>` and wait for it to populate with dependencies
 
 ### Todo

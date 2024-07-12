@@ -271,13 +271,19 @@ MainWindow::MainWindow() {
     action_settings->setDisabled(true); // Once implemented, never disable
     // Connect
 
-    menu_tools->addSeparator();
-
     this->menu_levelSettings = new QAction("&Level Settings...",this);
     this->menu_levelSettings->setShortcut(tr("CTRL+L"));
     menu_tools->addAction(this->menu_levelSettings);
     this->menu_levelSettings->setDisabled(true);
     connect(this->menu_levelSettings, &QAction::triggered,this,&MainWindow::menuClick_levelSettings);
+
+    menu_tools->addSeparator();
+
+    this->menu_clearLayer = new QAction("&Clear layer",this);
+    // No shortcut
+    menu_tools->addAction(this->menu_clearLayer);
+    this->menu_clearLayer->setDisabled(true);
+    connect(this->menu_clearLayer, &QAction::triggered,this,&MainWindow::menuClick_clearLayer);
 
     QMenu* menu_help = menuBar()->addMenu("&Help");
 
@@ -736,6 +742,7 @@ void MainWindow::LoadRom() {
         this->action_select_all->setDisabled(false);
         this->action_select_none->setDisabled(false);
         this->menu_levelSettings->setDisabled(false);
+        this->menu_clearLayer->setDisabled(false);
         this->updateClipboardUi();
 
         this->mapSelectPopup->updateLeftList();
@@ -956,6 +963,39 @@ void MainWindow::menuClick_levelSettings() {
     this->levelWindow->show();
     this->spritePickerWindow->raise();
     this->levelWindow->activateWindow();
+}
+
+void MainWindow::menuClick_clearLayer() {
+    QMessageBox::StandardButton reply = QMessageBox::question(this,"Clear Current Layer?",
+        "This will delete everything on this layer. Are you sure you want to continue?",
+        QMessageBox::Yes|QMessageBox::No);
+    if (reply != QMessageBox::Yes) {
+        YUtils::printDebug("Caneled layer clear",DebugType::VERBOSE);
+        return;
+    }
+
+    if (globalSettings.layerSelectMode == LayerMode::COLLISION_LAYER) {
+        QUndoCommand* collClearCmd = new QUndoCommand();
+
+        const int ROW_COUNT = this->grid->rowCount()/2; // Divide by 2 since colls are 2x2
+        const int COLUMN_COUNT = this->grid->columnCount()/2;
+        YUtils::printDebug("Starting giant grid search...");
+        for (int row = 0; row < ROW_COUNT; row++) {
+            for (int col = 0; col < COLUMN_COUNT; col++) {
+                auto potentialItem = this->grid->item(row,col);
+                if (potentialItem != nullptr && potentialItem) {
+                    new SetCollisionTileCommand(row, col, CollisionType::NONE, this->rom, this->grid, collClearCmd);
+                }
+            }
+        }
+        YUtils::printDebug("Looped");
+        this->pushUndoableCommandToStack(collClearCmd);
+        YUtils::printDebug("Pushed");
+        this->grid->initCellCollision();
+        YUtils::printDebug("Done!");
+    } else {
+        YUtils::popupAlert("Clearing not yet supported for this layer");
+    }
 }
 
 void MainWindow::menuClick_about() {
@@ -1312,12 +1352,14 @@ void MainWindow::undo() {
     this->undoStack->undo();
     this->updateUndoMenu();
     this->markSavableUpdate();
+    this->grid->initCellCollision(); // Maybe do this elsewhere?
 }
 
 void MainWindow::redo() {
     this->undoStack->redo();
     this->updateUndoMenu();
     this->markSavableUpdate();
+    this->grid->initCellCollision(); // Maybe do this elsewhere?
 }
 
 void MainWindow::pushUndoableCommandToStack(QUndoCommand *cmdPtr) {
