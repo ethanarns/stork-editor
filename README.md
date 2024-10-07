@@ -21,9 +21,15 @@ It uses the USA version 1.0. Do NOT use 1.1 or "rev 1." SHA256 Sum: `c75bf32c31f
 4. Run StorkEditor.AppImage
 
 ### Linux build instructions
-1. Install QT 6.6 c++ libraries directly or install QT Creator
-2. Install devkitPro nds-dev (https://devkitpro.org/wiki/devkitPro_pacman)
-3. Extract a USA YIDS 1.0 rom (see details above)
+1. Install QT 6.7
+2. Install clang
+3. Install devkitPro nds-dev (https://devkitpro.org/wiki/devkitPro_pacman)
+4. Extract a USA YIDS 1.0 rom (see details above)
+5. Open the project in QT Creator
+6. Build it, and attempt to run it
+7. Create the `lib/` directory where it specifies (usually inside the build folder)
+8. Place a copy of `ndstool` inside it (named that exactly)
+9. Run it again, and let it unpack
 
 ### Windows build instructions
 1. Open in QT Creator
@@ -36,3 +42,4 @@ It uses the USA version 1.0. Do NOT use 1.1 or "rev 1." SHA256 Sum: `c75bf32c31f
 
 ### Todo
 See documentation for latest: https://docs.google.com/spreadsheets/d/14wyO5R_ZZthzR4zfV5cDCKMmF-06exZupx3A8-u-xac/edit?usp=sharing
+

@@ -856,7 +856,7 @@ void DisplayTable::dropEvent(QDropEvent *event) {
         if (event->mimeData()->hasFormat("application/x-stork-sprite-uuid")) {
             auto uuidByteData = event->mimeData()->data("application/x-stork-sprite-uuid");
             uint32_t uuid = uuidByteData.toUInt();
-            auto tableItem = this->itemAt(event->pos());
+            auto tableItem = this->itemAt(event->position().toPoint());
             int tableX = tableItem->column();
             int tableY = tableItem->row();
             auto lo = *this->yidsRom->mapData->getLevelObjectByUuid(uuid);
@@ -1542,7 +1542,7 @@ void DisplayTable::updateBg() {
 
     for (uint8_t bgIndex = 1; bgIndex <= 3; bgIndex++) {
         std::stringstream ssDoBg;
-        ssDoBg << "Updating background " << (uint16_t)bgIndex;
+        ssDoBg << "Updating background " << (uint16_t)bgIndex << "/3";
         YUtils::printDebug(ssDoBg.str(),DebugType::VERBOSE);
         // Update the main window
         emit this->updateMainWindowStatus(ssDoBg.str());

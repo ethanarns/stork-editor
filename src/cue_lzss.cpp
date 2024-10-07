@@ -1,3 +1,4 @@
+#pragma clang diagnostic ignored "-Weverything"
 /*----------------------------------------------------------------------------*/
 /*--  lzss.c - LZSS coding for Nintendo GBA/DS                              --*/
 /*--  Copyright (C) 2011 CUE                                                --*/

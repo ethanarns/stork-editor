@@ -159,7 +159,7 @@ private:
     void displayTableUpdate();
     void portalsUpdated();
 
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
     void undo();
     void redo();
     void pushUndoableCommandToStack(QUndoCommand *cmdPtr);

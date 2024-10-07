@@ -1,3 +1,4 @@
+#pragma clang diagnostic ignored "-Weverything"
 /*----------------------------------------------------------------------------*/
 /*--  blz.c - Bottom LZ coding for Nintendo GBA/DS                          --*/
 /*--  Copyright (C) 2011 CUE                                                --*/
