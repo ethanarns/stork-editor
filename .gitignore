@@ -22,11 +22,16 @@ lib/ndstool.exe
 _bak*
 build/
 bin/
+lib32/
 lib64/
+plugins/
+translations/
 etc/
 AppDir/AppRun
 AppDir/stork-editor.desktop
 *.AppImage
+AppDir/usr/lib
+build*.sh
 
 # test extracted files
 *.arcz

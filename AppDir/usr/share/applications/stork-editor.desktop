@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Stork Editor
+Exec=stork-editor
+Icon=stork-editor
+Categories=Utility;
+X-AppImage-Version=b671ac6
