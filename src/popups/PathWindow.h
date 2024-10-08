@@ -2,6 +2,7 @@
 
 #include "../yidsrom.h"
 #include "../GridOverlay.h"
+#include "qspinbox.h"
 
 #include <QtCore>
 #include <QWidget>
@@ -13,11 +14,17 @@ public:
     PathWindow(QWidget *parent, YidsRom* rom, GridOverlay* gOverlay);
     QListWidget* pathListWidget;
     QListWidget* pointListWidget;
+    QSpinBox* xSpinBox;
+    QSpinBox* ySpinBox;
     void refreshPathList();
     void refreshPointList();
     void pathListRowSelectionChanged(int rowIndex);
+    void pointSelectionChanged(int rowIndex);
 private:
     YidsRom* yidsRom;
     GridOverlay* gridOverlay;
     bool detectChanges = true;
+
+    std::vector<PathSection *> getSelectedPathData();
+    PathSection* getSelectedPathPoint();
 };
