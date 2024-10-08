@@ -9,6 +9,7 @@
 #include <QSpinBox>
 
 #include <sstream>
+#include <climits>
 
 PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
     Q_UNUSED(parent);
@@ -36,10 +37,12 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
     auto locationsLayout = new QHBoxLayout(this);
     this->xSpinBox = new QSpinBox(this);
     this->xSpinBox->setMinimum(0);
+    this->xSpinBox->setMaximum(INT_MAX);
     this->xSpinBox->setSingleStep(1);
     locationsLayout->addWidget(xSpinBox);
     this->ySpinBox = new QSpinBox(this);
     this->ySpinBox->setMinimum(0);
+    this->ySpinBox->setMaximum(INT_MAX);
     this->ySpinBox->setSingleStep(1);
     locationsLayout->addWidget(ySpinBox);
 
@@ -141,6 +144,8 @@ void PathWindow::pathListRowSelectionChanged(int rowIndex) {
     }
     this->gridOverlay->selectedPathIndex = rowIndex;
     this->gridOverlay->repaint();
+    this->pointListWidget->setCurrentRow(-1);
+    this->pointListWidget->clearSelection();
     this->detectChanges = true;
 }
 
@@ -149,7 +154,7 @@ void PathWindow::pointSelectionChanged(int rowIndex) {
         return;
     }
     // Debug stuff
-    std::cout << "pointSelectionChanged: " << rowIndex << std::endl;
+    //std::cout << "pointSelectionChanged: 0x" << std::hex << rowIndex << std::endl;
     if (rowIndex < -1) {
         YUtils::printDebug("rowIndex too low, below -1 somehow", DebugType::ERROR);
         return;
@@ -159,9 +164,6 @@ void PathWindow::pointSelectionChanged(int rowIndex) {
         return;
     }
 
-    // Retrieve the major/parent path data within PATH for this map
-    auto selectedPath = this->getSelectedPathData();
-
     // Update GridOverlay
     if (this->gridOverlay == nullptr) {
         YUtils::printDebug("gridOverlay was null",DebugType::ERROR);
@@ -169,6 +171,13 @@ void PathWindow::pointSelectionChanged(int rowIndex) {
     }
     this->gridOverlay->selectedPathSubIndex = rowIndex;
     this->gridOverlay->repaint();
+
+    // Now update the spinboxes
+    auto point = this->getPathPoint(rowIndex);
+    auto x = point->xFine;
+    auto y = point->yFine;
+    this->xSpinBox->setValue(x);
+    this->ySpinBox->setValue(y);
 }
 
 std::vector<PathSection *> PathWindow::getSelectedPathData() {
@@ -179,6 +188,9 @@ std::vector<PathSection *> PathWindow::getSelectedPathData() {
     int rowIndex = this->pathListWidget->currentRow();
     if (rowIndex >= this->pathListWidget->count()) {
         YUtils::printDebug("rowIndex too high in getSelectedPathData",DebugType::ERROR);
+        std::stringstream ss;
+        ss << "rowIndex: 0x" << std::hex << rowIndex << ", pathListCount: 0x" << std::hex << this->pathListWidget->count();
+        YUtils::printDebug(ss.str(),DebugType::ERROR);
         return std::vector<PathSection *>(); // Return empty
     }
     if (rowIndex < 0) {
@@ -207,6 +219,9 @@ PathSection* PathWindow::getSelectedPathPoint() {
     int rowIndex = this->pointListWidget->currentRow();
     if (rowIndex >= this->pathListWidget->count()) {
         YUtils::printDebug("rowIndex too high in getSelectedPathPoint",DebugType::ERROR);
+        std::stringstream ss;
+        ss << "rowIndex: 0x" << std::hex << rowIndex << ", pathListCount: 0x" << std::hex << this->pathListWidget->count();
+        YUtils::printDebug(ss.str(),DebugType::ERROR);
         return nullptr; // Return empty
     }
     // This should never be called if there is nothing selected, check prior
@@ -228,6 +243,30 @@ PathSection* PathWindow::getSelectedPathPoint() {
     auto pointSelected = pathData.at(rowIndex);
     if (pointSelected == nullptr) {
         YUtils::printDebug("pointSelected is null",DebugType::ERROR);
+        return nullptr;
+    }
+    return pointSelected;
+}
+
+PathSection* PathWindow::getPathPoint(int index) {
+    if (index < 0) {
+        YUtils::printDebug("negative rowIndex in getPathPoint",DebugType::ERROR);
+        return nullptr;
+    }
+
+    auto pathData = this->getSelectedPathData();
+    if (pathData.size() == 0) {
+        YUtils::printDebug("No selected path data found in getPathPoint",DebugType::WARNING);
+        return nullptr;
+    }
+    // Safe to cast to unsigned as negative check was earlier
+    if ((unsigned int)index >= pathData.size()) {
+        YUtils::printDebug("point index selected is out of bounds in actual point list in getPathPoint",DebugType::ERROR);
+        return nullptr;
+    }
+    auto pointSelected = pathData.at(index);
+    if (pointSelected == nullptr) {
+        YUtils::printDebug("pointSelected is null in getPathPoint",DebugType::ERROR);
         return nullptr;
     }
     return pointSelected;

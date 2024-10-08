@@ -27,4 +27,5 @@ private:
 
     std::vector<PathSection *> getSelectedPathData();
     PathSection* getSelectedPathPoint();
+    PathSection* getPathPoint(int index);
 };
