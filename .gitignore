@@ -18,10 +18,15 @@ qrc_images.cpp
 clean
 stork_plugin_import.cpp
 .DirIcon
-StorkEditor.AppImage
 lib/ndstool.exe
 _bak*
 build/
+bin/
+lib64/
+etc/
+AppDir/AppRun
+AppDir/stork-editor.desktop
+*.AppImage
 
 # test extracted files
 *.arcz

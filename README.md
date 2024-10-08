@@ -17,19 +17,25 @@ It uses the USA version 1.0. Do NOT use 1.1 or "rev 1." SHA256 Sum: `c75bf32c31f
 ### Linux run instructions
 1. Download release ZIP
 2. Extract
-3. Install libraries: `sudo apt install libxcb-cursor0 libpcre2-dev` (requires Universe repositories)
+3. Install libraries:
+	- APT Systems: `sudo apt install libxcb-cursor0 libpcre2-dev` (requires Universe repositories)
 4. Run StorkEditor.AppImage
 
-### Linux build instructions
-1. Install QT 6.7
-2. Install clang
+### Linux dev build instructions
+1. Install QT 6.7 (the default for Desktop works)
+2. Install clang using your package manager
 3. Install devkitPro nds-dev (https://devkitpro.org/wiki/devkitPro_pacman)
 4. Extract a USA YIDS 1.0 rom (see details above)
 5. Open the project in QT Creator
 6. Build it, and attempt to run it
 7. Create the `lib/` directory where it specifies (usually inside the build folder)
 8. Place a copy of `ndstool` inside it (named that exactly)
-9. Run it again, and let it unpack
+9. Run it again (unpacking for the first time may take time)
+
+### Linux release build instructions
+1. Complete everything in the dev build instructions
+2. Build a static version of QT6.7 (https://doc.qt.io/qt-6/linux-deployment.html)
+3. 
 
 ### Windows build instructions
 1. Open in QT Creator

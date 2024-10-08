@@ -11,5 +11,9 @@ rm rom_uncomp_temp.nds
 rm stork_plugin_import.cpp
 rm AppDir/usr/bin/stork
 rm clean
-rm StorkEditor.AppImage
+rm *.AppImage
 rm -rf pytools/mespack_files
+# These are auto-generated
+rm AppDir/stork-editor.desktop
+rm AppDir/AppRun
+rm AppDir/.DirIcon

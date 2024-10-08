@@ -2,7 +2,7 @@
 
 # https://doc.qt.io/qt-6/linux-deployment.html
 ./clean.sh
-/usr/local/Qt-6.6.3-static/bin/qmake -config release
+/usr/local/Qt-6.7.3/bin/qmake6 -config release
 make
 # sanity check
 ./stork --version
@@ -10,7 +10,7 @@ make
 mkdir -p AppDir/usr/bin
 cp stork AppDir/usr/bin
 echo "AppImage structure generated"
-ARCH=x86_64 ~/Programs/appimagetool-x86_64.AppImage AppDir StorkEditor.AppImage
+ARCH=x86_64 appimagetool AppDir StorkEditor.AppImage
 chmod +x StorkEditor.AppImage
 # sanity check again
 ./StorkEditor.AppImage --version
