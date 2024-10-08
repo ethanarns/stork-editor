@@ -43,7 +43,8 @@ bool GridOverlay::eventFilter(QObject *obj, QEvent *event) {
 }
 
 QPen magentaPen(QColor(245,66,149));
-QPen whitePen("white");
+QPen pinkPen("pink");
+QPen orangePen("orange");
 QPen yellowPen("yellow");
 constexpr int PATH_WIDTH_SMALL = 6;
 constexpr int PATH_WIDTH_LARGE = 10;
@@ -54,7 +55,7 @@ bool GridOverlay::handlePaths(QPainter *paint) {
     if (this->pathData == nullptr) {
         return false;
     }
-    paint->setPen(whitePen);
+    paint->setPen(pinkPen);
     int pathIndex = 0;
     int subPathIndex = 0;
     if (this->pathData->paths.empty()) {
@@ -74,12 +75,12 @@ bool GridOverlay::handlePaths(QPainter *paint) {
                 paint->setPen(magentaPen);
                 pathWidth = PATH_WIDTH_LARGE;
                 offset = pathWidth >> 1;
-                paint->fillRect(finalX-offset,finalY-offset,pathWidth,pathWidth,whitePen.color());
+                paint->fillRect(finalX-offset,finalY-offset,pathWidth,pathWidth,pinkPen.color());
                 paint->drawRect(finalX-offset,finalY-offset,pathWidth,pathWidth);
-                paint->setPen(whitePen);
+                paint->setPen(pinkPen);
                 pathWidth = PATH_WIDTH_SMALL;
             } else {
-                paint->setPen(whitePen);
+                paint->setPen(pinkPen);
                 offset = pathWidth >> 1;
                 paint->fillRect(finalX-offset,finalY-offset,pathWidth,pathWidth,magentaPen.color());
                 paint->drawRect(finalX-offset,finalY-offset,pathWidth,pathWidth);
@@ -101,6 +102,7 @@ bool GridOverlay::handlePaths(QPainter *paint) {
 
             std::stringstream ssPath;
             ssPath << "" << pathIndex << "-" << subPathIndex;
+            paint->setPen(orangePen);
             paint->drawText(finalX,finalY,QString::fromStdString(ssPath.str()));
             subPathIndex++;
         }
