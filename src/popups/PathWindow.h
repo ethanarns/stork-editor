@@ -28,4 +28,7 @@ private:
     std::vector<PathSection *> getSelectedPathData();
     PathSection* getSelectedPathPoint();
     PathSection* getPathPoint(int index);
+
+    void xSpinChange(int newValueX);
+    void ySpinChange(int newValueY);
 };

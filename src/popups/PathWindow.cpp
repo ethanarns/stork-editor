@@ -36,14 +36,18 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
     rightColumn->addWidget(rightColumnTitle);
     auto locationsLayout = new QHBoxLayout(this);
     this->xSpinBox = new QSpinBox(this);
+    this->xSpinBox->setDisplayIntegerBase(16);
     this->xSpinBox->setMinimum(0);
     this->xSpinBox->setMaximum(INT_MAX);
-    this->xSpinBox->setSingleStep(1);
+    this->xSpinBox->setSingleStep(0x1000);
+    this->setDisabled(false);
     locationsLayout->addWidget(xSpinBox);
     this->ySpinBox = new QSpinBox(this);
+    this->ySpinBox->setDisplayIntegerBase(16);
     this->ySpinBox->setMinimum(0);
     this->ySpinBox->setMaximum(INT_MAX);
-    this->ySpinBox->setSingleStep(1);
+    this->ySpinBox->setSingleStep(0x1000);
+    this->ySpinBox->setDisabled(false);
     locationsLayout->addWidget(ySpinBox);
 
     mainLayout->addLayout(rightColumn);
@@ -56,6 +60,8 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
 
     connect(this->pathListWidget,&QListWidget::currentRowChanged,this,&PathWindow::pathListRowSelectionChanged);
     connect(this->pointListWidget,&QListWidget::currentRowChanged,this,&PathWindow::pointSelectionChanged);
+    connect(this->xSpinBox,&QSpinBox::valueChanged,this,&PathWindow::xSpinChange);
+    connect(this->ySpinBox,&QSpinBox::valueChanged,this,&PathWindow::ySpinChange);
 }
 
 void PathWindow::refreshPathList() {
@@ -146,6 +152,11 @@ void PathWindow::pathListRowSelectionChanged(int rowIndex) {
     this->gridOverlay->repaint();
     this->pointListWidget->setCurrentRow(-1);
     this->pointListWidget->clearSelection();
+    // Since there should be nothing selected now
+    this->xSpinBox->setDisabled(true);
+    this->xSpinBox->setValue(0);
+    this->ySpinBox->setDisabled(true);
+    this->ySpinBox->setValue(0);
     this->detectChanges = true;
 }
 
@@ -176,8 +187,15 @@ void PathWindow::pointSelectionChanged(int rowIndex) {
     auto point = this->getPathPoint(rowIndex);
     auto x = point->xFine;
     auto y = point->yFine;
+    this->detectChanges = false;
     this->xSpinBox->setValue(x);
     this->ySpinBox->setValue(y);
+    this->detectChanges = true;
+
+    if (rowIndex != -1) {
+        this->xSpinBox->setDisabled(false);
+        this->ySpinBox->setDisabled(false);
+    }
 }
 
 std::vector<PathSection *> PathWindow::getSelectedPathData() {
@@ -270,4 +288,58 @@ PathSection* PathWindow::getPathPoint(int index) {
         return nullptr;
     }
     return pointSelected;
+}
+
+void PathWindow::xSpinChange(int newValueX) {
+    if (this->pointListWidget->currentRow() == -1) {
+        //YUtils::printDebug("No Point selected, cannot change X",DebugType::WARNING);
+        return;
+    }
+    if (this->detectChanges == false) {
+        //YUtils::printDebug("Don't allow changes to X",DebugType::WARNING);
+        return;
+    }
+    std::cout << "xSpinChange: 0x" << std::hex << newValueX << std::endl;
+    if (newValueX < 0) {
+        YUtils::printDebug("X cannot be below 0",DebugType::ERROR);
+        return;
+    }
+    if (newValueX >= INT_MAX) {
+        YUtils::printDebug("X cannot be above INT_MAX",DebugType::ERROR);
+        return;
+    }
+    auto curPoint = this->getSelectedPathPoint();
+    if (curPoint == nullptr) {
+        YUtils::printDebug("No point active in xSpinChange",DebugType::WARNING);
+        return;
+    }
+    curPoint->xFine = newValueX;
+    this->gridOverlay->repaint();
+}
+
+void PathWindow::ySpinChange(int newValueY) {
+    if (this->pointListWidget->currentRow() == -1) {
+        //YUtils::printDebug("No Point selected, cannot change Y",DebugType::WARNING);
+        return;
+    }
+    if (this->detectChanges == false) {
+        //YUtils::printDebug("Don't allow changes to Y",DebugType::WARNING);
+        return;
+    }
+    std::cout << "ySpinChange: 0x" << std::hex << newValueY << std::endl;
+    if (newValueY < 0) {
+        YUtils::printDebug("Y cannot be below 0",DebugType::ERROR);
+        return;
+    }
+    if (newValueY >= INT_MAX) {
+        YUtils::printDebug("Y cannot be above INT_MAX",DebugType::ERROR);
+        return;
+    }
+    auto curPoint = this->getSelectedPathPoint();
+    if (curPoint == nullptr) {
+        YUtils::printDebug("No point active in ySpinChange",DebugType::WARNING);
+        return;
+    }
+    curPoint->yFine = newValueY;
+    this->gridOverlay->repaint();
 }
