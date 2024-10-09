@@ -16,6 +16,8 @@ public:
     QListWidget* pointListWidget;
     QSpinBox* xSpinBox;
     QSpinBox* ySpinBox;
+    QSpinBox* angleBox;
+    QSpinBox* distanceBox;
     void refreshPathList();
     void refreshPointList();
     void pathListRowSelectionChanged(int rowIndex);
@@ -31,4 +33,6 @@ private:
 
     void xSpinChange(int newValueX);
     void ySpinChange(int newValueY);
+signals:
+    void markSavableChange();
 };

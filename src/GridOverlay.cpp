@@ -88,10 +88,15 @@ bool GridOverlay::handlePaths(QPainter *paint) {
 
             if (subPathIndex != 0) {
                 QLine subPathLine;
+                //QLineF subPathLineF;
                 if (pathIndex == this->selectedPathIndex) {
                     yellowPen.setWidth(2);
                     paint->setPen(yellowPen);
                 }
+                // subPathLineF.setP1(QPointF(priorFinalX,priorFinalY));
+                // subPathLineF.setAngle(45);
+                // subPathLineF.setLength((*it)->distance);
+                // paint->drawLine(subPathLineF);
                 subPathLine.setP1(QPoint(priorFinalX,priorFinalY));
                 subPathLine.setP2(QPoint(finalX,finalY));
                 paint->drawLine(subPathLine);

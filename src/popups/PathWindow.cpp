@@ -50,6 +50,20 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
     this->ySpinBox->setDisabled(false);
     locationsLayout->addWidget(ySpinBox);
 
+    auto pointInfoLayout = new QHBoxLayout(this);
+    this->distanceBox = new QSpinBox(this);
+    this->distanceBox->setDisabled(true);
+    this->distanceBox->setMinimum(0);
+    this->distanceBox->setMaximum(INT_MAX);
+    this->distanceBox->setDisplayIntegerBase(16);
+    pointInfoLayout->addWidget(this->distanceBox);
+    this->angleBox = new QSpinBox(this);
+    this->angleBox->setDisabled(true);
+    this->angleBox->setMinimum(0);
+    this->angleBox->setMaximum(INT_MAX);
+    this->angleBox->setDisplayIntegerBase(16);
+    pointInfoLayout->addWidget(this->angleBox);
+
     mainLayout->addLayout(rightColumn);
 
     this->pathListWidget = new QListWidget(this);
@@ -57,6 +71,7 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
     this->pointListWidget = new QListWidget(this);
     rightColumn->addWidget(this->pointListWidget);
     rightColumn->addLayout(locationsLayout);
+    rightColumn->addLayout(pointInfoLayout);
 
     connect(this->pathListWidget,&QListWidget::currentRowChanged,this,&PathWindow::pathListRowSelectionChanged);
     connect(this->pointListWidget,&QListWidget::currentRowChanged,this,&PathWindow::pointSelectionChanged);
@@ -157,6 +172,10 @@ void PathWindow::pathListRowSelectionChanged(int rowIndex) {
     this->xSpinBox->setValue(0);
     this->ySpinBox->setDisabled(true);
     this->ySpinBox->setValue(0);
+    this->distanceBox->setDisabled(true);
+    this->distanceBox->setValue(0);
+    this->angleBox->setDisabled(true);
+    this->angleBox->setValue(0);
     this->detectChanges = true;
 }
 
@@ -190,6 +209,8 @@ void PathWindow::pointSelectionChanged(int rowIndex) {
     this->detectChanges = false;
     this->xSpinBox->setValue(x);
     this->ySpinBox->setValue(y);
+    this->distanceBox->setValue(point->distance);
+    this->angleBox->setValue(point->angle);
     this->detectChanges = true;
 
     if (rowIndex != -1) {
@@ -314,6 +335,7 @@ void PathWindow::xSpinChange(int newValueX) {
         return;
     }
     curPoint->xFine = newValueX;
+    emit this->markSavableChange();
     this->gridOverlay->repaint();
 }
 
@@ -341,5 +363,6 @@ void PathWindow::ySpinChange(int newValueY) {
         return;
     }
     curPoint->yFine = newValueY;
+    emit this->markSavableChange();
     this->gridOverlay->repaint();
 }

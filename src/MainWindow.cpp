@@ -626,6 +626,16 @@ MainWindow::MainWindow() {
     // Project Manager //
     this->projectManager = new ProjectManager(this->rom);
 
+
+    /***************
+     *** OVERLAY ***
+     ***************/
+    this->gridOverlay = new GridOverlay(this->grid->viewport(),this->rom);
+    this->gridOverlay->updateSizeToGrid(this->grid->rowCount(),this->grid->columnCount());
+
+    // Paths Window (uses overlay) //
+    this->pathWindow = new PathWindow(this,this->rom,this->gridOverlay);
+
     /*******************
      *** Connections ***
      *******************/
@@ -636,16 +646,8 @@ MainWindow::MainWindow() {
     connect(this->levelWindow,&LevelWindow::portalsUpdated,this,&MainWindow::portalsUpdated);
     connect(this->grid,&DisplayTable::pushStateCommandToStack,this,&MainWindow::pushUndoableCommandToStack);
     connect(this->triggerWindow,&TriggerWindow::markSavableChange,this,&MainWindow::markSavableUpdate);
+    connect(this->pathWindow,&PathWindow::markSavableChange,this,&MainWindow::markSavableUpdate);
     connect(this->grid,&DisplayTable::clipboardUpdated,this,&MainWindow::updateClipboardUi);
-
-    /***************
-     *** OVERLAY ***
-     ***************/
-    this->gridOverlay = new GridOverlay(this->grid->viewport(),this->rom);
-    this->gridOverlay->updateSizeToGrid(this->grid->rowCount(),this->grid->columnCount());
-
-    // Paths Window //
-    this->pathWindow = new PathWindow(this,this->rom,this->gridOverlay);
 }
 
 void MainWindow::LoadRom() {

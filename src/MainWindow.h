@@ -47,6 +47,7 @@ public:
 
     void saveRom();
     void markSavableUpdate();
+    void pathsUpdated();
 
     SelectionInfoTable* selectionInfoTable;
     PaletteTable* paletteTable;
