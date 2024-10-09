@@ -40,7 +40,8 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
     this->xSpinBox->setMinimum(0);
     this->xSpinBox->setMaximum(INT_MAX);
     this->xSpinBox->setSingleStep(0x1000);
-    this->setDisabled(false);
+    this->xSpinBox->setDisabled(false);
+    this->xSpinBox->setToolTip("Fine X Location");
     locationsLayout->addWidget(xSpinBox);
     this->ySpinBox = new QSpinBox(this);
     this->ySpinBox->setDisplayIntegerBase(16);
@@ -48,20 +49,23 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
     this->ySpinBox->setMaximum(INT_MAX);
     this->ySpinBox->setSingleStep(0x1000);
     this->ySpinBox->setDisabled(false);
+    this->ySpinBox->setToolTip("Fine Y Location");
     locationsLayout->addWidget(ySpinBox);
 
     auto pointInfoLayout = new QHBoxLayout(this);
     this->distanceBox = new QSpinBox(this);
-    this->distanceBox->setDisabled(true);
+    this->distanceBox->setDisabled(false);
     this->distanceBox->setMinimum(0);
     this->distanceBox->setMaximum(INT_MAX);
     this->distanceBox->setDisplayIntegerBase(16);
+    this->distanceBox->setToolTip("Distance (Fine)");
     pointInfoLayout->addWidget(this->distanceBox);
     this->angleBox = new QSpinBox(this);
-    this->angleBox->setDisabled(true);
+    this->angleBox->setDisabled(false);
     this->angleBox->setMinimum(0);
     this->angleBox->setMaximum(INT_MAX);
     this->angleBox->setDisplayIntegerBase(16);
+    this->angleBox->setToolTip("Angle");
     pointInfoLayout->addWidget(this->angleBox);
 
     mainLayout->addLayout(rightColumn);
@@ -77,6 +81,8 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
     connect(this->pointListWidget,&QListWidget::currentRowChanged,this,&PathWindow::pointSelectionChanged);
     connect(this->xSpinBox,&QSpinBox::valueChanged,this,&PathWindow::xSpinChange);
     connect(this->ySpinBox,&QSpinBox::valueChanged,this,&PathWindow::ySpinChange);
+    connect(this->distanceBox,&QSpinBox::valueChanged,this,&PathWindow::distanceSpinChange);
+    connect(this->angleBox,&QSpinBox::valueChanged,this,&PathWindow::angleSpinChange);
 }
 
 void PathWindow::refreshPathList() {
@@ -216,6 +222,8 @@ void PathWindow::pointSelectionChanged(int rowIndex) {
     if (rowIndex != -1) {
         this->xSpinBox->setDisabled(false);
         this->ySpinBox->setDisabled(false);
+        this->angleBox->setDisabled(false);
+        this->distanceBox->setDisabled(false);
     }
 }
 
@@ -320,7 +328,7 @@ void PathWindow::xSpinChange(int newValueX) {
         //YUtils::printDebug("Don't allow changes to X",DebugType::WARNING);
         return;
     }
-    std::cout << "xSpinChange: 0x" << std::hex << newValueX << std::endl;
+    //std::cout << "xSpinChange: 0x" << std::hex << newValueX << std::endl;
     if (newValueX < 0) {
         YUtils::printDebug("X cannot be below 0",DebugType::ERROR);
         return;
@@ -348,7 +356,7 @@ void PathWindow::ySpinChange(int newValueY) {
         //YUtils::printDebug("Don't allow changes to Y",DebugType::WARNING);
         return;
     }
-    std::cout << "ySpinChange: 0x" << std::hex << newValueY << std::endl;
+    //std::cout << "ySpinChange: 0x" << std::hex << newValueY << std::endl;
     if (newValueY < 0) {
         YUtils::printDebug("Y cannot be below 0",DebugType::ERROR);
         return;
@@ -363,6 +371,60 @@ void PathWindow::ySpinChange(int newValueY) {
         return;
     }
     curPoint->yFine = newValueY;
+    emit this->markSavableChange();
+    this->gridOverlay->repaint();
+}
+
+void PathWindow::angleSpinChange(int newValueAngle) {
+    if (this->pointListWidget->currentRow() == -1) {
+        //YUtils::printDebug("No Point selected, cannot change",DebugType::WARNING);
+        return;
+    }
+    if (this->detectChanges == false) {
+        //YUtils::printDebug("Don't allow changes",DebugType::WARNING);
+        return;
+    }
+    if (newValueAngle < 0) {
+        YUtils::printDebug("angle cannot be below 0",DebugType::ERROR);
+        return;
+    }
+    if (newValueAngle >= INT_MAX) {
+        YUtils::printDebug("angle cannot be above INT_MAX",DebugType::ERROR);
+        return;
+    }
+    auto curPoint = this->getSelectedPathPoint();
+    if (curPoint == nullptr) {
+        YUtils::printDebug("No point active in angleSpinChange",DebugType::WARNING);
+        return;
+    }
+    curPoint->angle = newValueAngle;
+    emit this->markSavableChange();
+    this->gridOverlay->repaint();
+}
+
+void PathWindow::distanceSpinChange(int newValueDistance) {
+    if (this->pointListWidget->currentRow() == -1) {
+        //YUtils::printDebug("No Point selected, cannot change",DebugType::WARNING);
+        return;
+    }
+    if (this->detectChanges == false) {
+        //YUtils::printDebug("Don't allow changes",DebugType::WARNING);
+        return;
+    }
+    if (newValueDistance < 0) {
+        YUtils::printDebug("distance cannot be below 0",DebugType::ERROR);
+        return;
+    }
+    if (newValueDistance >= INT_MAX) {
+        YUtils::printDebug("distance cannot be above INT_MAX",DebugType::ERROR);
+        return;
+    }
+    auto curPoint = this->getSelectedPathPoint();
+    if (curPoint == nullptr) {
+        YUtils::printDebug("No point active in distanceSpinChange",DebugType::WARNING);
+        return;
+    }
+    curPoint->distance = newValueDistance;
     emit this->markSavableChange();
     this->gridOverlay->repaint();
 }

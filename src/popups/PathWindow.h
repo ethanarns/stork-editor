@@ -33,6 +33,8 @@ private:
 
     void xSpinChange(int newValueX);
     void ySpinChange(int newValueY);
+    void angleSpinChange(int newValueAngle);
+    void distanceSpinChange(int newValueDistance);
 signals:
     void markSavableChange();
 };
