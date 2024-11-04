@@ -164,6 +164,7 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
     auto arm9toolPath = std::filesystem::absolute(ssArm9Path.str());
     auto newBinFilePath = std::filesystem::absolute(Constants::NEW_BIN_FILE);
     if (!std::filesystem::exists(newBinFilePath)) {
+        YUtils::printDebug("Decompressing ARM9 Binary");
         std::filesystem::copy(
             arm9toolPath, newBinFilePath,
             std::filesystem::copy_options::overwrite_existing
@@ -219,6 +220,8 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
     std::filesystem::remove(Constants::NEW_ROM_FILE);
     std::filesystem::remove(newBinFilePath);
 
+    YUtils::printDebug("Testing ARM9 data");
+
     // Test it
     const Address TEST_POSITION = 0xe9e6e;
     const auto TEST_TEXT = "1-1_D3";
@@ -241,6 +244,8 @@ void YidsRom::initArm9RomData(std::string fileName, std::vector<uint8_t> &comped
 
     // It worked! Report them as loaded successfully
     this->filesLoaded = true;
+
+    YUtils::printDebug("ARM9 data loaded successfully");
 
     // Write universal palette
     this->backgroundPalettes[0].resize(Constants::PALETTE_SIZE);

@@ -21,7 +21,7 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
     }
     this->gridOverlay = gOverlay;
     this->detectChanges = false;
-    this->setWindowTitle(tr("Path Window"));
+    this->setWindowTitle(tr("Path Window (WIP)"));
     this->setObjectName(tr("pathWindow"));
 
     auto mainLayout = new QHBoxLayout(this);
