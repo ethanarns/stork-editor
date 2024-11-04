@@ -103,6 +103,7 @@ public:
     AddTileToGridCommand(int row, int column, MapTileRecordData mapRecord, YidsRom* yidsrom, DisplayTable *gridPtr, QUndoCommand* parent = nullptr) :
         QUndoCommand(parent), rowY(row), colX(column), mapRecordNew(mapRecord), rom(yidsrom), grid(gridPtr), mapRecordOld(mapRecord)
     {
+        Q_UNUSED(rom);
         // This sets up the data when it is created, but does not actually change anything
         this->setText(QString("place bg tiles"));
         this->whichBg = globalSettings.currentEditingBackground;
@@ -155,6 +156,7 @@ public:
     SetCollisionTileCommand(int rowYpos, int colXpos, CollisionType colTile, YidsRom* yidsrom, DisplayTable *gridPtr, QUndoCommand* parent = nullptr) :
         QUndoCommand(parent), rowY(rowYpos), colX(colXpos), colNew(colTile), rom(yidsrom), grid(gridPtr)
     {
+        Q_UNUSED(grid);
         // Set up data at creation, but do not make any changes outside of this class
         this->colWidth = this->rom->mapData->getCollisionCanvasWidth() / 2;
         uint32_t posInColArray = this->colX + (this->rowY * this->colWidth);

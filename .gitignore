@@ -4,6 +4,7 @@
 *.txt
 *.log
 *.sav
+*pro.user*
 
 # Build files
 Makefile
