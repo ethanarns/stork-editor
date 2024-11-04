@@ -200,14 +200,14 @@ void LevelWindow::refreshLists() {
         delete this->exitListWidget->takeItem(0);
     }
 
-    uint exitIndex = 0;
+    //uint exitIndex = 0;
     for (auto xit = curLevelData->exits.begin(); xit != curLevelData->exits.end(); xit++) {
         std::stringstream ssExit;
         ssExit << std::hex << "UUID 0x" << (*xit)->_uuid;
         QListWidgetItem* exitItem = new QListWidgetItem(tr(ssExit.str().c_str()));
         exitItem->setData(LevelSelectEnums::LevelWindowDataKey::EXIT_UUID,(*xit)->_uuid);
         this->exitListWidget->addItem(exitItem);
-        exitIndex++;
+        //exitIndex++;
     }
 
     // Populate with available maps

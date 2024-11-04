@@ -60,12 +60,12 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
     this->distanceBox->setDisplayIntegerBase(16);
     this->distanceBox->setToolTip("Distance (Fine)");
     pointInfoLayout->addWidget(this->distanceBox);
-    this->angleBox = new QSpinBox(this);
+    this->angleBox = new QDoubleSpinBox(this);
     this->angleBox->setDisabled(false);
-    this->angleBox->setMinimum(0);
-    this->angleBox->setMaximum(INT_MAX);
-    this->angleBox->setDisplayIntegerBase(16);
-    this->angleBox->setToolTip("Angle");
+    this->angleBox->setMinimum(-720);
+    this->angleBox->setMaximum(720);
+    this->angleBox->setToolTip("Angle (Degrees");
+    this->angleBox->setSingleStep(0.1);
     pointInfoLayout->addWidget(this->angleBox);
 
     mainLayout->addLayout(rightColumn);
@@ -82,7 +82,7 @@ PathWindow::PathWindow(QWidget *parent, YidsRom *rom, GridOverlay* gOverlay) {
     connect(this->xSpinBox,&QSpinBox::valueChanged,this,&PathWindow::xSpinChange);
     connect(this->ySpinBox,&QSpinBox::valueChanged,this,&PathWindow::ySpinChange);
     connect(this->distanceBox,&QSpinBox::valueChanged,this,&PathWindow::distanceSpinChange);
-    connect(this->angleBox,&QSpinBox::valueChanged,this,&PathWindow::angleSpinChange);
+    connect(this->angleBox,&QDoubleSpinBox::valueChanged,this,&PathWindow::angleSpinChange);
 }
 
 void PathWindow::refreshPathList() {
@@ -216,7 +216,9 @@ void PathWindow::pointSelectionChanged(int rowIndex) {
     this->xSpinBox->setValue(x);
     this->ySpinBox->setValue(y);
     this->distanceBox->setValue(point->distance);
-    this->angleBox->setValue(point->angle);
+    float degrees = YUtils::yanglesToDegrees(point->angle);
+    std::cout << std::hex << "Yangles: 0x" << point->angle << ", Degrees: " << std::dec << degrees << std::endl;
+    this->angleBox->setValue(degrees);
     this->detectChanges = true;
 
     if (rowIndex != -1) {
@@ -375,7 +377,7 @@ void PathWindow::ySpinChange(int newValueY) {
     this->gridOverlay->repaint();
 }
 
-void PathWindow::angleSpinChange(int newValueAngle) {
+void PathWindow::angleSpinChange(double newValueAngleDegrees) {
     if (this->pointListWidget->currentRow() == -1) {
         //YUtils::printDebug("No Point selected, cannot change",DebugType::WARNING);
         return;
@@ -384,12 +386,12 @@ void PathWindow::angleSpinChange(int newValueAngle) {
         //YUtils::printDebug("Don't allow changes",DebugType::WARNING);
         return;
     }
-    if (newValueAngle < 0) {
+    if (newValueAngleDegrees < 0) {
         YUtils::printDebug("angle cannot be below 0",DebugType::ERROR);
         return;
     }
-    if (newValueAngle >= INT_MAX) {
-        YUtils::printDebug("angle cannot be above INT_MAX",DebugType::ERROR);
+    if (newValueAngleDegrees >= 720) {
+        YUtils::printDebug("angle cannot be above 720 degrees",DebugType::ERROR);
         return;
     }
     auto curPoint = this->getSelectedPathPoint();
@@ -397,7 +399,7 @@ void PathWindow::angleSpinChange(int newValueAngle) {
         YUtils::printDebug("No point active in angleSpinChange",DebugType::WARNING);
         return;
     }
-    curPoint->angle = newValueAngle;
+    curPoint->angle = YUtils::degreesToYangles(newValueAngleDegrees);
     emit this->markSavableChange();
     this->gridOverlay->repaint();
 }

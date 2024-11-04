@@ -9,6 +9,8 @@
 #include <filesystem>
 // std::tolower
 #include <cctype>
+// round
+#include <cmath>
 
 #include <vector>
 #include <fstream>
@@ -19,6 +21,7 @@
 #include <QColor>
 #include <QMessageBox>
 #include <QApplication>
+#include <QtMath>
 
 /**
  * @brief I am amazed this is not in STD
@@ -767,4 +770,31 @@ std::string YUtils::relativeToEscapedAbs(std::string relPath) {
     auto absPath = std::filesystem::absolute(relPath);
     res << std::quoted(absPath.string());
     return res.str();
+}
+
+uint16_t YUtils::degreesToYangles(float degrees) {
+    float yangsDouble = degrees * 182.04444444444445;
+    return (uint16_t)std::round(yangsDouble);
+}
+
+float YUtils::yanglesToDegrees(int16_t yangles) {
+    float degreesFloat = ((float)yangles) / 182.04444444444445;
+    // if (yangles >= 0x1000 && yangles % 0x1000 == 0) { // Last 3 numbers are 0
+    //     // Do nothing, it's a cardinal direction
+    // } else {
+    //     // Chop off the top
+    //     degreesFloat = (float)(yangles % 0x1000);
+    //     degreesFloat = qRadiansToDegrees((float)degreesFloat);
+    // }
+    // uint16_t bottomPartInt = yangles % 0x1000;
+    // float bottomPartFloat = ((float)bottomPartInt / 182.04444444444445);
+    // std::cout << "bottomPart: 0x" << std::hex << bottomPartInt << std::endl;
+    if (yangles >= 0x1000 && yangles % 0x1000 == 0) {
+        // Cardinal direction, skip
+    } else {
+        degreesFloat = (float)(yangles % 0x1000);
+        degreesFloat = qRadiansToDegrees(degreesFloat);
+    }
+
+    return degreesFloat;
 }

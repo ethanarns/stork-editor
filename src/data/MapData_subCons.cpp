@@ -6,7 +6,6 @@
 #include "../Chartile.h"
 
 #include <vector>
-#include <fstream>
 #include <QByteArray>
 
 LayerData::LayerData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_t stop) {
@@ -517,7 +516,7 @@ PathData::PathData(std::vector<uint8_t> &mpdzBytes, uint32_t &mpdzIndex, uint32_
         std::vector<PathSection*> currentPath;
         bool continuePath = true;
         while (continuePath) {
-            auto angle = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
+            auto angle = YUtils::getSint16FromVec(mpdzBytes,mpdzIndex);
             mpdzIndex += 2;
             auto distance = YUtils::getUint16FromVec(mpdzBytes,mpdzIndex);
             mpdzIndex += 2;

@@ -48,6 +48,8 @@ public:
     static std::string relativeToEscapedAbs(std::string relPath);
     
     static int16_t roundI16Down(int16_t unrounded, int16_t multiple);
+    static uint16_t degreesToYangles(float degrees);
+    static float yanglesToDegrees(int16_t yangles);
 
     static std::vector<uint8_t> subVector(std::vector<uint8_t> &inVec, uint32_t startOffset, uint32_t endOffset);
     static void joinVectors(std::vector<uint8_t> &firstVec, std::vector<uint8_t> &secondVec, std::vector<uint8_t> &resultVec);

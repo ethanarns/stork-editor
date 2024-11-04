@@ -526,7 +526,7 @@ public:
 
 struct PathSection {
     // Can also be the "final angle" of a path
-    uint16_t angle;
+    int16_t angle;
     // Can be 0x0000, indicating the end of a path
     uint16_t distance;
     // X Position starts at, or if last, end X
